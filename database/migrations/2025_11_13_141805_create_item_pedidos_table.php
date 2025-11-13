@@ -13,6 +13,11 @@ return new class extends Migration
     {
         Schema::create('item_pedidos', function (Blueprint $table) {
             $table->id();
+             $table->foreignId('pedido_id')->constrained('pedidos')->onDelete('cascade');
+            $table->foreignId('medicamento_id')->constrained('medicamentos')->onDelete('cascade');
+            $table->integer('quantidade')->default(1);
+            $table->decimal('preco_unitario', 10, 2);
+            $table->decimal('subtotal', 10, 2);
             $table->timestamps();
         });
     }

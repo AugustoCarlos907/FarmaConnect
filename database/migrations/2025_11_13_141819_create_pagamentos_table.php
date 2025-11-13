@@ -13,6 +13,11 @@ return new class extends Migration
     {
         Schema::create('pagamentos', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('pedido_id')->constrained('pedidos')->onDelete('cascade');
+            $table->enum('metodo', ['Multicaixa', 'Transferência', 'Dinheiro'])->default('Dinheiro');
+            $table->decimal('valor', 10, 2);
+            $table->enum('status', ['Pendente', 'Pago', 'Cancelado'])->default('Pendente');
+            $table->dateTime('data_pagamento')->nullable();
             $table->timestamps();
         });
     }

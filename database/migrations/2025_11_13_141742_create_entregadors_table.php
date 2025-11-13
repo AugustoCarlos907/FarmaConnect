@@ -13,6 +13,15 @@ return new class extends Migration
     {
         Schema::create('entregadors', function (Blueprint $table) {
             $table->id();
+            $table->string('nome');
+            $table->string('telefone')->nullable();
+            $table->string('email')->unique();
+            $table->string('numero_bi')->unique()->nullable();
+            $table->string('matricula_moto')->nullable();
+            $table->string('foto_perfil')->nullable();
+            $table->enum('status', ['Ativo', 'Desativado'])->default('Ativo');
+            $table->decimal('latitude', 10, 7)->nullable();
+            $table->decimal('longitude', 10, 7)->nullable();
             $table->timestamps();
         });
     }

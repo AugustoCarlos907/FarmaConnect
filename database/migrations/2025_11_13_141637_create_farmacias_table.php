@@ -13,7 +13,14 @@ return new class extends Migration
     {
         Schema::create('farmacias', function (Blueprint $table) {
             $table->id();
-            $table->timestamps();
+            $table->string('nome');
+            $table->string('email')->unique();
+            $table->string('telefone')->nullable();
+            $table->string('descricao')->nullable();
+            $table->string('endereco'); 
+            $table->decimal('latitude', 10, 7)->nullable();
+            $table->decimal('longitude', 10, 7)->nullable();
+            $table->enum('status', ['Ativo', 'Desativado'])->default('Ativo');
         });
     }
 

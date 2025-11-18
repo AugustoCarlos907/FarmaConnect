@@ -18,7 +18,7 @@ return new class extends Migration
             $table->foreignId('farmacia_id')->nullable()->constrained('farmacia')->onDelete('set null');
             $table->string('tipo_relatorio');
             $table->text('descricao')->nullable();
-            $table->dateTime('data_geracao')->default(now());
+            // $table->dateTime('data_geracao')->default(now());
             $table->timestamps();
         });
     }

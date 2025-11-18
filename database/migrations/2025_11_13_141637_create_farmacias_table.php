@@ -18,8 +18,8 @@ return new class extends Migration
             $table->string('telefone')->nullable();
             $table->string('descricao')->nullable();
             $table->string('endereco'); 
-            $table->decimal('latitude', 10, 7)->nullable();
-            $table->decimal('longitude', 10, 7)->nullable();
+            $table->decimal('latitude', 10, 8)->nullable();
+            $table->decimal('longitude', 10, 8)->nullable();
             $table->enum('status', ['Ativo', 'Desativado'])->default('Ativo');
         });
     }

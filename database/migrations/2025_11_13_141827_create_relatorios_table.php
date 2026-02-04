@@ -13,12 +13,20 @@ return new class extends Migration
     {
         Schema::create('relatorios', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('pedido_id')->nullable()->constrained('pedidos')->onDelete('set null');
-            $table->foreignId('cliente_id')->nullable()->constrained('clientes')->onDelete('set null');
-            $table->foreignId('farmacia_id')->nullable()->constrained('farmacia')->onDelete('set null');
+            
+            $table->foreignId('pedido_id')
+                  ->nullable()
+                  ->constrained('pedidos')
+                  ->onDelete('set null');
+
+            // $table->foreignId('cliente_id')->nullable()->constrained('clientes')->onDelete('set null');
+            $table->foreignId('farmacia_id')
+                  ->nullable()->constrained('farmacias')
+                  ->onDelete('set null');
+                  
             $table->string('tipo_relatorio');
             $table->text('descricao')->nullable();
-            // $table->dateTime('data_geracao')->default(now());
+            $table->dateTime('data_geracao')->default(now());
             $table->timestamps();
         });
     }

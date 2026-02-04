@@ -13,12 +13,20 @@ return new class extends Migration
     {
         Schema::create('medicamentos', function (Blueprint $table) {
             $table->id();
-            $table->string('nome');
+            $table->string('name');
             $table->string('descricao');
-            $table->decimal('preco', 10,2);
-            $table->integer('quantidade');
-            $table->foreignId('farmacia_id')->constrained('farmacias')->onDelete('cascade');
+            $table->string('principio_ativo');
+            $table->string('forma_farmaceutica'); //xarope , comprimido , pomada 
+            $table->string('dosagem');
+
+            $table->foreignId('categoria_id')
+                  ->constrained('categorias')
+                  ->onDelete('cascade');
+
             $table->timestamps();
+            // $table->decimal('preco', 10,2);
+            // $table->integer('quantidade');
+            // $table->foreignId('farmacia_id')->constrained('farmacias')->onDelete('cascade');
         });
     }
 

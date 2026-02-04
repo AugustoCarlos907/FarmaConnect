@@ -13,14 +13,27 @@ return new class extends Migration
     {
         Schema::create('pedidos', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('cliente_id')->constrained('clientes')->onDelete('cascade');
-            $table->foreignId('farmacia_id')->constrained('farmacias')->onDelete('cascade');
-            $table->foreignId('entregador_id')->nullable()->constrained('entregadores')->onDelete('set null');
-            $table->decimal('valor_total', 10, 2)->nullable();
-            $table->enum('status', [ 'Pendente', 'Aprovado','Em Entrega','Concluído','Cancelado'
-            ])->default('Pendente');
+
+            $table->foreignId('cliente_id')
+                  ->constrained('clientes')
+                  ->onDelete('cascade');
+
+            $table->foreignId('farmacia_id')
+                  ->constrained('farmacias')
+                  ->onDelete('cascade');
+
+            $table->enum('status', 
+            [ 
+                'Pendente', 
+                'Aprovado',
+                'Em Entrega',
+                'Concluído',
+                'Cancelado' ])->default('Pendente');
+
             $table->dateTime('data_pedido')->default(now());
-            $table->dateTime('data_entrega')->nullable();
+            // $table->foreignId('entregador_id')->nullable()->constrained('entregadores')->onDelete('set null');
+            // $table->decimal('valor_total', 10, 2)->nullable();
+            // $table->dateTime('data_entrega')->nullable();
             $table->timestamps();
         });
     }

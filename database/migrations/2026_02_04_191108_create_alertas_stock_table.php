@@ -11,20 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('item_pedidos', function (Blueprint $table) {
+        Schema::create('alertas_stock', function (Blueprint $table) {
             $table->id();
-            
-             $table->foreignId('pedido_id')
-                   ->constrained('pedidos')
-                   ->onDelete('cascade');
 
             $table->foreignId('stock_items_id')
                   ->constrained('stock_items')
                   ->onDelete('cascade');
-
-            $table->integer('quantidade')->default(1);
-            $table->decimal('preco_unitario', 10, 2);
-            $table->decimal('subtotal', 10, 2);
+                  
+            $table->enum('tipo', ['baixo_stock', 'validade_proxima']);
+            $table->text('mensagem');
+            // $table->boolean('lido')->default(false);
             $table->timestamps();
         });
     }
@@ -34,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('item_pedidos');
+        Schema::dropIfExists('alertas_stock');
     }
 };

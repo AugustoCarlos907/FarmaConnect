@@ -11,15 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('clientes', function (Blueprint $table) {
+        Schema::create('entregadores', function (Blueprint $table) {
             $table->id();
             $table->string('nome');
             $table->string('email')->unique();
-            $table->string('password');
             $table->string('telefone')->nullable();
-            $table->text('endereco')->nullable();
-            $table->decimal('latitude', 10, 8)->nullable();
-            $table->decimal('longitude', 11, 8)->nullable();
+            $table->string('descricao')->nullable();
+            $table->string('numero_bi')->unique()->nullable();
+            $table->string('matricula_moto')->nullable();
+            $table->string('foto_perfil')->nullable();
+            $table->enum('status', ['Ativo', 'Inativo'])->default('Ativo');
+            $table->decimal('latitude', 10, 7)->nullable();
+            $table->decimal('longitude', 10, 7)->nullable();
             $table->timestamps();
         });
     }
@@ -29,6 +32,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('clientes');
+        Schema::dropIfExists('entregadors');
     }
 };

@@ -12,7 +12,9 @@ class MedicamentoRepository implements MedicamentoInterface
         return Medicamento::with('farmacia')
                             ->where('name', 'LIKE', "%{$search}%")
                             ->orWhere('descricao', 'LIKE', "%{$search}%")
+                            ->orWhere('principio_ativo', 'LIKE', "%{$search}%")
                             ->groupBy('categoria_id')
+                            ->orderBy('dosagem', 'desc')
                             ->paginate($perPage);
 
     }

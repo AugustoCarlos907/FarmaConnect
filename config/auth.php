@@ -36,9 +36,24 @@ return [
     */
 
     'guards' => [
-        'web' => [
+        // 'web' => [
+        //     'driver' => 'session',
+        //     'provider' => 'users',
+        // ],    
+        
+        'user' => [
             'driver' => 'session',
             'provider' => 'users',
+        ],        
+        
+        'farmacia' => [
+            'driver' => 'session',
+            'provider' => 'farmacias',
+        ],        
+        
+        'entregador' => [
+            'driver' => 'session',
+            'provider' => 'entregadores',
         ],
     ],
 
@@ -63,6 +78,16 @@ return [
         'users' => [
             'driver' => 'eloquent',
             'model' => env('AUTH_MODEL', App\Models\User::class),
+        ],      
+        
+        'entregadores' => [
+            'driver' => 'eloquent',
+            'model' => env('AUTH_MODEL', App\Models\Entregador::class),
+        ],      
+        
+        'farmacias' => [
+            'driver' => 'eloquent',
+            'model' => env('AUTH_MODEL', App\Models\Farmacia::class),
         ],
 
         // 'users' => [

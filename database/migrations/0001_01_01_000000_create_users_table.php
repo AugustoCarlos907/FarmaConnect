@@ -19,8 +19,9 @@ return new class extends Migration
             $table->string('password');
             $table->string('phone')->nullable();
             $table->text('endereco')->nullable();
-            // $table->decimal('latitude', 10, 8)->nullable();
-            // $table->decimal('longitude', 11, 8)->nullable();
+            
+            $table->decimal('latitude', 10, 8)->nullable();
+            $table->decimal('longitude', 11, 8)->nullable();
 
             $table->timestamps();
         });

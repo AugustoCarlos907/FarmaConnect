@@ -18,11 +18,16 @@ return new class extends Migration
             $table->string('telefone')->nullable();
             $table->string('descricao')->nullable();
             $table->string('numero_bi')->unique()->nullable();
-            $table->string('matricula_moto')->nullable();
+            $table->string('matricula_veiculo')->nullable();
             $table->string('foto_perfil')->nullable();
             $table->enum('status', ['Ativo', 'Inativo'])->default('Ativo');
             $table->decimal('latitude', 10, 7)->nullable();
             $table->decimal('longitude', 10, 7)->nullable();
+
+            $table->foreignId('farmacia_id')    
+                  ->constrained('farmacias')
+                  ->onDelete('cascade');
+
             $table->timestamps();
         });
     }

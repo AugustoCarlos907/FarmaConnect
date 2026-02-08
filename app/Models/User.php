@@ -21,28 +21,41 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'phone',
+        'endereco',
     ];
 
     /**
      * The attributes that should be hidden for serialization.
      *
-     * @var list<string>
+    * @var list<string>
      */
-    protected $hidden = [
-        'password',
-        'remember_token',
-    ];
+    // protected $hidden = [
+    //     'password',
+    //     'remember_token',
+    // ];
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
-    protected function casts(): array
+    // /**
+    //  * Get the attributes that should be cast.
+    //  *
+    //  * @return array<string, string>
+    //  */
+    // protected function casts(): array
+    // {
+    //     return [
+    //         'email_verified_at' => 'datetime',
+    //         'password' => 'hashed',
+    //     ];
+    // }
+
+    public function avaliacoes()
     {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-        ];
+        return $this->hasMany(Avaliacao::class);
     }
+
+    public function pedidos()
+    {
+        return $this->hasMany(Pedido::class);
+    }
+
 }

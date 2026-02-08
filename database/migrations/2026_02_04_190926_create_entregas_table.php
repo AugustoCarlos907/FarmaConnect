@@ -27,7 +27,7 @@ return new class extends Migration
                   ->constrained('avaliacoes')
                   ->nullOnDelete();
 
-            $table->enum('status', ['pendente', 'atribuida', 'em_transito', 'entregue', 'cancelada']);
+            $table->enum('status', ['pendente',  'em_transito', 'entregue', 'cancelada']);
             // ex: pendente, atribuida, em_transito, entregue, cancelada
 
             $table->decimal('taxa_entrega', 10, 2)->default(0);

@@ -1,652 +1,479 @@
 <!DOCTYPE html>
-
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title> FarmaConnect </title>
-     
-    <!-- ======= Google Font =======-->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&amp;display=swap" rel="stylesheet">
-    <!-- End Google Font-->
-    
-    <!-- ======= Styles =======-->
-    <link href="assets/vendors/bootstrap/bootstrap.min.css" rel="stylesheet">
-    <link href="assets/vendors/bootstrap-icons/font/bootstrap-icons.min.css" rel="stylesheet">
-    <link href="assets/vendors/glightbox/glightbox.min.css" rel="stylesheet">
-    <link href="assets/vendors/swiper/swiper-bundle.min.css" rel="stylesheet">
-    <link href="assets/vendors/aos/aos.css" rel="stylesheet">
-    <!-- End Styles-->
-    
-    <!-- ======= Theme Style =======-->
-    <link href="assets/css/style.css" rel="stylesheet">
-    <!-- End Theme Style-->
-    
-    <!-- ======= Apply theme =======-->
-    <script>
-      // Apply the theme as early as possible to avoid flicker
-      (function() {
-      const storedTheme = localStorage.getItem('theme') || 'light';
-      document.documentElement.setAttribute('data-bs-theme', storedTheme);
-      })();
-    </script>
-  </head>
-  <body>
-    
-    
-    <!-- ======= Site Wrap =======-->
-    <div class="site-wrap">
-      
-      
-      <!-- ======= Header =======-->
-      <header class="fbs__net-navbar navbar navbar-expand-lg dark" aria-label="freebootstrap.net navbar">
-        <div class="container d-flex align-items-center justify-content-between">
-          
-          
-          <!-- Start Logo-->
-          <a class="navbar-brand w-auto" href="{{ route('index') }}">
-            <!-- If you use a text logo, uncomment this if it is commented-->
-            <!-- Vertex--> 
-            
-            <!-- If you plan to use an image logo, uncomment this if it is commented-->
-            
-            <!-- logo dark--><img class="logo dark img-fluid" src="assets/images/logo-dark.svg" alt="FreeBootstrap.net image placeholder"> 
-            
-            <!-- logo light--><img class="logo light img-fluid" src="assets/images/logo-light.svg" alt="FreeBootstrap.net image placeholder">
-            
-            </a>
-          <!-- End Logo-->
-          
-          <!-- Start offcanvas-->
-          <div class="offcanvas offcanvas-start w-75" id="fbs__net-navbars" tabindex="-1" aria-labelledby="fbs__net-navbarsLabel">
-            
-            
-            <div class="offcanvas-header">
-              <div class="offcanvas-header-logo">
-                <!-- If you use a text logo, uncomment this if it is commented-->
-                
-                <!-- h5#fbs__net-navbarsLabel.offcanvas-title Vertex-->
-                
-                <!-- If you plan to use an image logo, uncomment this if it is commented-->
-                <a class="logo-link" id="fbs__net-navbarsLabel" href="index.html">
-                  
-                  
-                  <!-- logo dark--><img class="logo dark img-fluid" src="assets/images/logo-dark.svg" alt="FreeBootstrap.net image placeholder"> 
-                  
-                  <!-- logo light--><img class="logo light img-fluid" src="assets/images/logo-light.svg" alt="FreeBootstrap.net image placeholder"></a>
-                
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>Index - MediNest Bootstrap Template</title>
+  <meta name="description" content="">
+  <meta name="keywords" content="">
+
+  <!-- Favicons -->
+  <link href="assets/img/favicon.png" rel="icon">
+  <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com" rel="preconnect">
+  <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap" rel="stylesheet">
+
+  <!-- Vendor CSS Files -->
+  <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+  <link href="assets/vendor/aos/aos.css" rel="stylesheet">
+  <link href="assets/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
+  <link href="assets/vendor/fontawesome-free/css/all.min.css" rel="stylesheet">
+  <link href="assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
+
+  <!-- Main CSS File -->
+  <link href="assets/css/main.css" rel="stylesheet">
+
+  <!-- =======================================================
+  * Template Name: MediNest
+  * Template URL: https://bootstrapmade.com/medinest-bootstrap-hospital-template/
+  * Updated: Aug 11 2025 with Bootstrap v5.3.7
+  * Author: BootstrapMade.com
+  * License: https://bootstrapmade.com/license/
+  ======================================================== -->
+</head>
+
+<body class="index-page">
+
+  <header id="header" class="header d-flex align-items-center fixed-top">
+    <div class="container position-relative d-flex align-items-center justify-content-between">
+
+      <a href="index.html" class="logo d-flex align-items-center me-auto me-xl-0">
+        <!-- Uncomment the line below if you also wish to use an image logo -->
+        <!-- <img src="assets/img/logo.webp" alt=""> -->
+        <h1 class="sitename">Medi<span>Nest</span></h1>
+      </a>
+
+      <nav id="navmenu" class="navmenu">
+        <ul>
+          <li><a href="index.html" class="active">Home</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="departments.html">Departments</a></li>
+          <li><a href="services.html">Services</a></li>
+          <li><a href="doctors.html">Doctors</a></li>
+          <li class="dropdown"><a href="#"><span>More Pages</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
+            <ul>
+              <li><a href="department-details.html">Department Details</a></li>
+              <li><a href="service-details.html">Service Details</a></li>
+              <li><a href="appointment.html">Appointment</a></li>
+              <li><a href="testimonials.html">Testimonials</a></li>
+              <li><a href="faq.html">Frequently Asked Questions</a></li>
+              <li><a href="gallery.html">Gallery</a></li>
+              <li><a href="terms.html">Terms</a></li>
+              <li><a href="privacy.html">Privacy</a></li>
+              <li><a href="404.html">404</a></li>
+            </ul>
+          </li>
+          <li class="dropdown"><a href="#"><span>Dropdown</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
+            <ul>
+              <li><a href="#">Dropdown 1</a></li>
+              <li class="dropdown"><a href="#"><span>Deep Dropdown</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
+                <ul>
+                  <li><a href="#">Deep Dropdown 1</a></li>
+                  <li><a href="#">Deep Dropdown 2</a></li>
+                  <li><a href="#">Deep Dropdown 3</a></li>
+                  <li><a href="#">Deep Dropdown 4</a></li>
+                  <li><a href="#">Deep Dropdown 5</a></li>
+                </ul>
+              </li>
+              <li><a href="#">Dropdown 2</a></li>
+              <li><a href="#">Dropdown 3</a></li>
+              <li><a href="#">Dropdown 4</a></li>
+            </ul>
+          </li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+        <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+      </nav>
+
+      <a class="btn-getstarted" href="apointment.html">Apointment</a>
+
+    </div>
+  </header>
+
+  <main class="main">
+
+    <!-- Hero Section -->
+    <section id="hero" class="hero section">
+      <div class="container">
+        <div class="row align-items-center">
+          <div class="col-lg-5">
+            <div class="hero-image" data-aos="fade-right" data-aos-delay="100">
+              <img src="assets/img/health/staff-8.webp" alt="Healthcare Professional" class="img-fluid main-image">
+              <div class="floating-card emergency-card" data-aos="fade-up" data-aos-delay="300">
+                <div class="card-content">
+                  <i class="bi bi-telephone-fill"></i>
+                  <div class="text">
+                    <span class="label">24/7 Emergency</span>
+                    <span class="number">+1 (555) 911-2468</span>
+                  </div>
+                </div>
               </div>
-              <button class="btn-close btn-close-black" type="button" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-            </div>
-            
-            <div class="offcanvas-body align-items-lg-center">
-              
-              
-              <ul class="navbar-nav nav me-auto ps-lg-5 mb-2 mb-lg-0">
-                <li class="nav-item"><a class="nav-link scroll-link active" aria-current="page" href="#home">Home</a></li>
-                <li class="nav-item"><a class="nav-link scroll-link" href="#about">About</a></li>
-                <li class="nav-item"><a class="nav-link scroll-link" href="#pricing">Pricing</a></li>
-                <li class="nav-item"><a class="nav-link scroll-link" href="#how-it-works">How It Works</a></li>
-                <li class="nav-item"><a class="nav-link scroll-link" href="#services">Services</a></li>
-                <li class="nav-item dropdown"><a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown" aria-expanded="false">Dropdown <i class="bi bi-chevron-down"></i></a>
-                  
-                  <ul class="dropdown-menu">
-                    <li><a class="nav-link scroll-link dropdown-item" href="#">Multipages</a></li>
-                    <li><a class="nav-link scroll-link dropdown-item" href="#services">Services</a></li>
-                    <li><a class="nav-link scroll-link dropdown-item" href="#pricing">Pricing</a></li>
-                    <li class="nav-item dropstart"><a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown" aria-expanded="false">Dropstart <i class="bi bi-chevron-right"></i></a>
-                      <ul class="dropdown-menu">
-                        <li><a class="nav-link scroll-link dropdown-item" href="#services">Services</a></li>
-                        <li><a class="nav-link scroll-link dropdown-item" href="#pricing">Pricing</a></li>
-                        <li class="nav-item dropstart"><a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown" aria-expanded="false">Dropstart <i class="bi bi-chevron-right"></i></a>
-                          <ul class="dropdown-menu">
-                            <li><a class="nav-link scroll-link dropdown-item" href="#services">Services</a></li>
-                            <li><a class="nav-link scroll-link dropdown-item" href="#pricing">Pricing</a></li>
-                            <li><a class="nav-link scroll-link dropdown-item" href="#">Something else here</a></li>
-                            <li class="nav-item dropend"><a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown" aria-expanded="false">Dropend <i class="bi bi-chevron-right"></i></a>
-                              <ul class="dropdown-menu">
-                                <li><a class="nav-link scroll-link dropdown-item" href="#services">Services</a></li>
-                                <li><a class="nav-link scroll-link dropdown-item" href="#pricing">Pricing</a></li>
-                                <li><a class="nav-link scroll-link dropdown-item" href="#">Something else here</a></li>
-                              </ul>
-                            </li>
-                          </ul>
-                        </li>
-                      </ul>
-                    </li>
-                  </ul>
-                  
-                </li>
-                <li class="nav-item"><a class="nav-link scroll-link" href="#contact">Contact</a></li>
-              </ul>
-              
+              <div class="floating-card stats-card" data-aos="fade-up" data-aos-delay="400">
+                <div class="stat-item">
+                  <span class="number">25K+</span>
+                  <span class="label">Patients Treated</span>
+                </div>
+                <div class="stat-item">
+                  <span class="number">98%</span>
+                  <span class="label">Satisfaction Rate</span>
+                </div>
+              </div>
             </div>
           </div>
-          <!-- End offcanvas-->
-          
-          <div class="ms-auto w-auto">
-            
-            
-            <div class="header-social d-flex align-items-center gap-1"><a class="btn btn-primary py-2" href="#">Get Started</a>
-              
-              <button class="fbs__net-navbar-toggler justify-content-center align-items-center ms-auto" data-bs-toggle="offcanvas" data-bs-target="#fbs__net-navbars" aria-controls="fbs__net-navbars" aria-label="Toggle navigation" aria-expanded="false">
-                <svg class="fbs__net-icon-menu" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <line x1="21" x2="3" y1="6" y2="6"></line>
-                  <line x1="15" x2="3" y1="12" y2="12"></line>
-                  <line x1="17" x2="3" y1="18" y2="18"></line>
-                </svg>
-                <svg class="fbs__net-icon-close" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M18 6 6 18"></path>
-                  <path d="m6 6 12 12"></path>
-                </svg>
-              </button>
-              
+
+          <div class="col-lg-7">
+            <div class="hero-content" data-aos="fade-left" data-aos-delay="200">
+              <div class="badge-container">
+                <span class="hero-badge">Trusted Healthcare Provider</span>
+              </div>
+
+              <h1 class="hero-title">Excellence in Medical Care Since 1985</h1>
+              <p class="hero-description">Mauris blandit aliquet elit, eget tincidunt nibh pulvinar a. Pellentesque in ipsum id orci porta dapibus. Vivamus magna justo, lacinia eget consectetur sed, convallis at tellus.</p>
+
+              <div class="hero-stats">
+                <div class="stat-group">
+                  <div class="stat">
+                    <i class="bi bi-award"></i>
+                    <div class="stat-text">
+                      <span class="number">35+</span>
+                      <span class="label">Years Experience</span>
+                    </div>
+                  </div>
+                  <div class="stat">
+                    <i class="bi bi-people"></i>
+                    <div class="stat-text">
+                      <span class="number">150+</span>
+                      <span class="label">Medical Specialists</span>
+                    </div>
+                  </div>
+                  <div class="stat">
+                    <i class="bi bi-geo-alt"></i>
+                    <div class="stat-text">
+                      <span class="number">12</span>
+                      <span class="label">Clinic Locations</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="cta-section">
+                <div class="cta-buttons">
+                  <a href="#" class="btn btn-primary">Schedule Consultation</a>
+                  <a href="https://www.youtube.com/watch?v=Y7f98aduVJ8" class="btn btn-secondary glightbox">
+                    <i class="bi bi-play-circle"></i>
+                    Watch Our Story
+                  </a>
+                </div>
+
+                <div class="quick-actions">
+                  <a href="#" class="action-link">
+                    <i class="bi bi-calendar-check"></i>
+                    <span>Find Available Times</span>
+                  </a>
+                  <a href="#" class="action-link">
+                    <i class="bi bi-chat-dots"></i>
+                    <span>Chat with Support</span>
+                  </a>
+                  <a href="#" class="action-link">
+                    <i class="bi bi-file-medical"></i>
+                    <span>Patient Portal</span>
+                  </a>
+                </div>
+              </div>
             </div>
-            
           </div>
         </div>
-      </header>
-      <!-- End Header-->
-      
-      <!-- ======= Main =======-->
-      <main>
-        
-        
-        <!-- ======= Hero =======-->
-        <section class="hero__v6 section" id="home">
-          <div class="container">
+      </div>
+
+      <div class="background-elements">
+        <div class="bg-shape shape-1"></div>
+        <div class="bg-shape shape-2"></div>
+        <div class="bg-pattern"></div>
+      </div>
+    </section><!-- /Hero Section -->
+
+    <!-- Home About Section -->
+    <section id="home-about" class="home-about section">
+
+      <div class="container" data-aos="fade-up" data-aos-delay="100">
+
+        <div class="row">
+          <div class="col-lg-8 mx-auto text-center mb-5" data-aos="fade-up" data-aos-delay="150">
+            <h2 class="section-heading">Excellence in Healthcare Since 1985</h2>
+            <p class="lead-description">We are committed to providing world-class medical care through innovation, compassion, and unwavering dedication to our patients' wellbeing and recovery.</p>
+          </div>
+        </div>
+
+        <div class="row align-items-center gy-5">
+          <div class="col-lg-7" data-aos="fade-right" data-aos-delay="200">
+            <div class="image-grid">
+              <div class="primary-image">
+                <img src="assets/img/health/facilities-6.webp" alt="Modern hospital facility" class="img-fluid">
+                <div class="certification-badge">
+                  <i class="bi bi-award"></i>
+                  <span>JCI Accredited</span>
+                </div>
+              </div>
+              <div class="secondary-images">
+                <div class="small-image">
+                  <img src="assets/img/health/consultation-3.webp" alt="Doctor consultation" class="img-fluid">
+                </div>
+                <div class="small-image">
+                  <img src="assets/img/health/surgery-2.webp" alt="Medical procedure" class="img-fluid">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-5" data-aos="fade-left" data-aos-delay="300">
+            <div class="content-wrapper">
+              <div class="highlight-box">
+                <div class="highlight-icon">
+                  <i class="bi bi-heart-pulse-fill"></i>
+                </div>
+                <div class="highlight-content">
+                  <h4>Patient-Centered Approach</h4>
+                  <p>Every treatment plan is carefully customized to meet individual patient needs and medical history.</p>
+                </div>
+              </div>
+
+              <div class="feature-list">
+                <div class="feature-item">
+                  <div class="feature-icon">
+                    <i class="bi bi-check-circle-fill"></i>
+                  </div>
+                  <div class="feature-text">Advanced diagnostic technology and imaging</div>
+                </div>
+                <div class="feature-item">
+                  <div class="feature-icon">
+                    <i class="bi bi-check-circle-fill"></i>
+                  </div>
+                  <div class="feature-text">Board-certified physicians and specialists</div>
+                </div>
+                <div class="feature-item">
+                  <div class="feature-icon">
+                    <i class="bi bi-check-circle-fill"></i>
+                  </div>
+                  <div class="feature-text">Comprehensive rehabilitation programs</div>
+                </div>
+                <div class="feature-item">
+                  <div class="feature-icon">
+                    <i class="bi bi-check-circle-fill"></i>
+                  </div>
+                  <div class="feature-text">24/7 emergency and critical care services</div>
+                </div>
+              </div>
+
+              <div class="metrics-row">
+                <div class="metric-box">
+                  <div class="metric-number">
+                    <span class="purecounter" data-purecounter-start="0" data-purecounter-end="98" data-purecounter-duration="0">98</span>%
+                  </div>
+                  <div class="metric-label">Patient Satisfaction</div>
+                </div>
+                <div class="metric-box">
+                  <div class="metric-number">
+                    <span class="purecounter" data-purecounter-start="0" data-purecounter-end="35" data-purecounter-duration="0">35</span>K+
+                  </div>
+                  <div class="metric-label">Lives Improved</div>
+                </div>
+              </div>
+
+              <div class="action-buttons">
+                <a href="about.html" class="btn-explore">Explore Our Services</a>
+                <a href="contact.html" class="btn-contact">
+                  <i class="bi bi-telephone"></i>
+                  Schedule Consultation
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </section><!-- /Home About Section -->
+
+    <!-- Featured Departments Section -->
+    <section id="featured-departments" class="featured-departments section">
+
+      <!-- Section Title -->
+      <div class="container section-title" data-aos="fade-up">
+        <h2>Featured Departments</h2>
+        <p>Necessitatibus eius consequatur ex aliquid fuga eum quidem sint consectetur velit</p>
+      </div><!-- End Section Title -->
+
+      <div class="container" data-aos="fade-up" data-aos-delay="100">
+
+        <div class="departments-showcase">
+
+          <div class="featured-department" data-aos="fade-up" data-aos-delay="200">
+            <div class="row align-items-center">
+              <div class="col-lg-6 order-lg-1">
+                <div class="department-content">
+                  <div class="department-category">Emergency Medicine</div>
+                  <h2 class="department-title">24/7 Emergency Care Services</h2>
+                  <p class="department-description">Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.</p>
+                  <div class="department-features">
+                    <div class="feature-item">
+                      <i class="fas fa-check-circle"></i>
+                      <span>24/7 Emergency Response</span>
+                    </div>
+                    <div class="feature-item">
+                      <i class="fas fa-check-circle"></i>
+                      <span>Advanced Life Support</span>
+                    </div>
+                    <div class="feature-item">
+                      <i class="fas fa-check-circle"></i>
+                      <span>Trauma Care Specialists</span>
+                    </div>
+                  </div>
+                  <a href="#" class="cta-link">Learn More <i class="fas fa-arrow-right"></i></a>
+                </div>
+              </div>
+              <div class="col-lg-6 order-lg-2">
+                <div class="department-visual">
+                  <div class="image-wrapper">
+                    <img src="assets/img/health/emergency-3.webp" alt="Emergency Department" class="img-fluid">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="departments-grid">
             <div class="row">
-              <div class="col-lg-6 mb-4 mb-lg-0">
-                <div class="row">
-                  <div class="col-lg-11"><span class="hero-subtitle text-uppercase" data-aos="fade-up" data-aos-delay="0">Innovative FarmaConnect Solutions</span>
-                    <h1 class="hero-title mb-3" data-aos="fade-up" data-aos-delay="100">Secure, Efficient, and User-Friendly Financial Services</h1>
-                    <p class="hero-description mb-4 mb-lg-5" data-aos="fade-up" data-aos-delay="200">Experience the future of finance with our secure, efficient, and user-friendly financial services.</p>
-                    <div class="cta d-flex gap-2 mb-4 mb-lg-5" data-aos="fade-up" data-aos-delay="300"><a class="btn" href="#">Get Started Now</a><a class="btn btn-white-outline" href="#">Learn More 
-                        <svg class="lucide lucide-arrow-up-right" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                          <path d="M7 7h10v10"></path>
-                          <path d="M7 17 17 7"></path>
-                        </svg></a></div>
-                    <div class="logos mb-4" data-aos="fade-up" data-aos-delay="400"><span class="logos-title text-uppercase mb-4 d-block">Trusted by major companies worldwide</span>
-                      <div class="logos-images d-flex gap-4 align-items-center"><img class="img-fluid js-img-to-inline-svg" src="assets/images/logo/actual-size/logo-air-bnb__black.svg" alt="Company 1" style="width: 110px;"><img class="img-fluid js-img-to-inline-svg" src="assets/images/logo/actual-size/logo-ibm__black.svg" alt="Company 2" style="width: 80px;"><img class="img-fluid js-img-to-inline-svg" src="assets/images/logo/actual-size/logo-google__black.svg" alt="Company 3" style="width: 110px;"></div>
-                    </div>
+              <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="300">
+                <div class="department-card">
+                  <div class="card-icon">
+                    <i class="fas fa-heartbeat"></i>
                   </div>
-                </div>
-              </div>
-              <div class="col-lg-6">
-                <div class="hero-img"><img class="img-card img-fluid" src="assets/images/card-expenses.png" alt="Image card" data-aos="fade-down" data-aos-delay="600"><img class="img-main img-fluid rounded-4" src="assets/images/hero-img-1-min.jpg" alt="Hero Image" data-aos="fade-in" data-aos-delay="500"></div>
-              </div>
-            </div>
-          </div>
-          <!-- End Hero-->
-        </section>
-        <!-- End Hero-->
-        
-        <!-- ======= About =======-->
-        <section class="about__v4 section" id="about">
-          <div class="container">
-            <div class="row">
-              <div class="col-md-6 order-md-2">
-                <div class="row justify-content-end">
-                  <div class="col-md-11 mb-4 mb-md-0"><span class="subtitle text-uppercase mb-3" data-aos="fade-up" data-aos-delay="0">About us</span>
-                    <h2 class="mb-4" data-aos="fade-up" data-aos-delay="100">Experience the future of finance with our secure, efficient, and user-friendly financial services</h2>
-                    <div data-aos="fade-up" data-aos-delay="200">
-                      <p>Founded with the vision of revolutionizing the financial industry, we are a leading fintech company dedicated to providing innovative and secure financial solutions.</p>
-                      <p>Our cutting-edge platform ensures your transactions are safe, streamlined, and easy to manage, empowering you to take control of your financial journey with confidence and convenience.</p>
-                    </div>
-                    <h4 class="small fw-bold mt-4 mb-3" data-aos="fade-up" data-aos-delay="300">Key Values and Vision</h4>
-                    <ul class="d-flex flex-row flex-wrap list-unstyled gap-3 features" data-aos="fade-up" data-aos-delay="400">
-                      <li class="d-flex align-items-center gap-2"><span class="icon rounded-circle text-center"><i class="bi bi-check"></i></span><span class="text">Innovation</span></li>
-                      <li class="d-flex align-items-center gap-2"><span class="icon rounded-circle text-center"><i class="bi bi-check"></i></span><span class="text">Security</span></li>
-                      <li class="d-flex align-items-center gap-2"><span class="icon rounded-circle text-center"><i class="bi bi-check"></i></span><span class="text">User-Centric Design </span></li>
-                      <li class="d-flex align-items-center gap-2"><span class="icon rounded-circle text-center"><i class="bi bi-check"></i></span><span class="text">Transparency</span></li>
-                      <li class="d-flex align-items-center gap-2"><span class="icon rounded-circle text-center"><i class="bi bi-check"></i></span><span class="text">Empowerment</span></li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-              <div class="col-md-6"> 
-                <div class="img-wrap position-relative"><img class="img-fluid rounded-4" src="assets/images/about_2-min.jpg" alt="FreeBootstrap.net image placeholder" data-aos="fade-up" data-aos-delay="0">
-                  <div class="mission-statement p-4 rounded-4 d-flex gap-4" data-aos="fade-up" data-aos-delay="100">
-                    <div class="mission-icon text-center rounded-circle"><i class="bi bi-lightbulb fs-4"></i></div>
-                    <div>
-                      <h3 class="text-uppercase fw-bold">Mission Statement</h3>
-                      <p class="fs-5 mb-0">Our mission is to empower individuals and businesses by delivering secure, efficient, and user-friendly financial services.</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-        <!-- End About-->
-        
-        <!-- ======= Features =======-->
-        <section class="section features__v2" id="features">
-          <div class="container">
-            <div class="row">
-              <div class="col-12">
-                <div class="d-lg-flex p-5 rounded-4 content" data-aos="fade-in" data-aos-delay="0">
-                  <div class="row">
-                    <div class="col-lg-5 mb-5 mb-lg-0" data-aos="fade-up" data-aos-delay="0">
-                      <div class="row"> 
-                        <div class="col-lg-11">
-                          <div class="h-100 flex-column justify-content-between d-flex">
-                            <div>
-                              <h2 class="mb-4">Why Choose us</h2>
-                              <p class="mb-5">Experience the future of finance with our secure, efficient, and user-friendly financial services. Our cutting-edge platform ensures your transactions are safe, streamlined, and easy to manage, empowering you to take control of your financial journey with confidence and convenience."</p>
-                            </div>
-                            <div class="align-self-start"><a class="glightbox btn btn-play d-inline-flex align-items-center gap-2" href="https://www.youtube.com/watch?v=DQx96G4yHd8" data-gallery="video"><i class="bi bi-play-fill"></i> Watch the Video</a></div>
-                          </div>
-                        </div>
+                  <div class="card-content">
+                    <h3 class="card-title">Cardiology</h3>
+                    <p class="card-description">Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores.</p>
+                    <div class="card-stats">
+                      <div class="stat-item">
+                        <span class="stat-number">15+</span>
+                        <span class="stat-label">Specialists</span>
                       </div>
-                    </div>
-                    <div class="col-lg-7">
-                      <div class="row justify-content-end">
-                        <div class="col-lg-11">
-                          <div class="row">
-                            <div class="col-sm-6" data-aos="fade-up" data-aos-delay="0">
-                              <div class="icon text-center mb-4"><i class="bi bi-person-check fs-4"></i></div>
-                              <h3 class="fs-6 fw-bold mb-3">User-Friendly Interface</h3>
-                              <p>Easy navigation with responsive design for various devices.</p>
-                            </div>
-                            <div class="col-sm-6" data-aos="fade-up" data-aos-delay="100">
-                              <div class="icon text-center mb-4"><i class="bi bi-graph-up fs-4"></i></div>
-                              <h3 class="fs-6 fw-bold mb-3">Financial Analytics</h3>
-                              <p>Budget tracking, expense categorization, and personalized insights.</p>
-                            </div>
-                            <div class="col-sm-6" data-aos="fade-up" data-aos-delay="200">
-                              <div class="icon text-center mb-4"><i class="bi bi-headset fs-4"></i></div>
-                              <h3 class="fs-6 fw-bold mb-3">Customer Support</h3>
-                              <p>24/7 service via chat, email, phone, and a detailed help center.</p>
-                            </div>
-                            <div class="col-sm-6" data-aos="fade-up" data-aos-delay="300">
-                              <div class="icon text-center mb-4"><i class="bi bi-shield-lock fs-4"></i></div>
-                              <h3 class="fs-6 fw-bold mb-3">Security Features</h3>
-                              <p>Data encryption, fraud detection, and prevention mechanisms.</p>
-                            </div>
-                          </div>
-                        </div>
+                      <div class="stat-item">
+                        <span class="stat-number">500+</span>
+                        <span class="stat-label">Procedures</span>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
-          </div>
-        </section>
-        <!-- End Features-->
-        
-        <!-- ======= Pricing =======-->
-        <section class="section pricing__v2" id="pricing">
-          <div class="container">
-            <div class="row mb-5">
-              <div class="col-md-5 mx-auto text-center"><span class="subtitle text-uppercase mb-3" data-aos="fade-up" data-aos-delay="0">Pricing</span>
-                <h2 class="mb-3" data-aos="fade-up" data-aos-delay="100">Plan for every budget</h2>
-                <p data-aos="fade-up" data-aos-delay="200">Experience the future of finance with our secure, efficient, and user-friendly financial services</p>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-md-4 mb-4 mb-md-0" data-aos="fade-up" data-aos-delay="300">
-                <div class="p-5 rounded-4 price-table h-100">
-                  <h3>Personal</h3>
-                  <p>Choose a plan that fits your personal financial needs and start managing your finances more effectively.</p>
-                  <div class="price mb-4"><strong>$7</strong><span>/ month</span></div>
-                  <div><a class="btn" href="#">Get Started</a></div>
-                </div>
-              </div>
-              <div class="col-md-8" data-aos="fade-up" data-aos-delay="400">
-                <div class="p-5 rounded-4 price-table popular h-100">
-                  <div class="row">
-                    <div class="col-md-6">
-                      <h3 class="mb-3">Business</h3>
-                      <p>Optimize your business financial operations with our tailored business plans.</p>
-                      <div class="price mb-4"><strong class="me-1">$29</strong><span>/ month</span></div>
-                      <div><a class="btn btn-white hover-outline" href="#">Get Started</a></div>
-                    </div>
-                    <div class="col-md-6 pricing-features">
-                      <h4 class="text-uppercase fw-bold mb-3">Features</h4>
-                      <ul class="list-unstyled d-flex flex-column gap-3">
-                        <li class="d-flex gap-2 align-items-start mb-0"><span class="icon rounded-circle position-relative mt-1"><i class="bi bi-check"></i></span><span>Personalized financial insights and reports</span></li>
-                        <li class="d-flex gap-2 align-items-start mb-0"><span class="icon rounded-circle position-relative mt-1"><i class="bi bi-check"></i></span><span>Priority customer support</span></li>
-                        <li class="d-flex gap-2 align-items-start mb-0"><span class="icon rounded-circle position-relative mt-1"><i class="bi bi-check"></i></span><span>Access to exclusive investment opportunities</span></li>
-                        <li class="d-flex gap-2 align-items-start mb-0"><span class="icon rounded-circle position-relative mt-1"><i class="bi bi-check"></i></span><span>AI-driven financial recommendations</span></li>
-                      </ul>
-                    </div>
+
+              <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="350">
+                <div class="department-card">
+                  <div class="card-icon">
+                    <i class="fas fa-brain"></i>
                   </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-        <!-- End Pricing-->
-        
-        <!-- ======= How it works =======-->
-        <section class="section howitworks__v1" id="how-it-works">
-          <div class="container">
-            <div class="row mb-5">
-              <div class="col-md-6 text-center mx-auto"><span class="subtitle text-uppercase mb-3" data-aos="fade-up" data-aos-delay="0">How it works</span>
-                <h2 data-aos="fade-up" data-aos-delay="100">How It Works</h2>
-                <p data-aos="fade-up" data-aos-delay="200">Our platform is designed to make managing your finances simple and efficient. Follow these easy steps to get started: </p>
-              </div>
-            </div>
-            <div class="row g-md-5">
-              <div class="col-md-6 col-lg-3">
-                <div class="step-card text-center h-100 d-flex flex-column justify-content-start position-relative" data-aos="fade-up" data-aos-delay="0">
-                  <div data-aos="fade-right" data-aos-delay="500"><img class="arch-line" src="assets/images/arch-line.svg" alt="FreeBootstrap.net image placeholder"></div><span class="step-number rounded-circle text-center fw-bold mb-5 mx-auto">1</span>
-                  <div>
-                    <h3 class="fs-5 mb-4">Sign Up</h3>
-                    <p>Visit our website or download our app to sign up. Provide basic information to set up your secure account.</p>
-                  </div>
-                </div>
-              </div>
-              <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="600">
-                <div class="step-card reverse text-center h-100 d-flex flex-column justify-content-start position-relative">
-                  <div data-aos="fade-right" data-aos-delay="1100"><img class="arch-line reverse" src="assets/images/arch-line-reverse.svg" alt="FreeBootstrap.net image placeholder"></div><span class="step-number rounded-circle text-center fw-bold mb-5 mx-auto">2</span>
-                  <h3 class="fs-5 mb-4">Set Up Your Profile</h3>
-                  <p>Add your personal or business details to tailor the platform to your specific needs.</p>
-                </div>
-              </div>
-              <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="1200">
-                <div class="step-card text-center h-100 d-flex flex-column justify-content-start position-relative">
-                  <div data-aos="fade-right" data-aos-delay="1700"><img class="arch-line" src="assets/images/arch-line.svg" alt="FreeBootstrap.net image placeholder"></div><span class="step-number rounded-circle text-center fw-bold mb-5 mx-auto">3</span>
-                  <h3 class="fs-5 mb-4">Explore Features</h3>
-                  <p>Access your dashboard for a summary of your finances: balances, recent transactions, and insights.</p>
-                </div>
-              </div>
-              <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="1800">
-                <div class="step-card last text-center h-100 d-flex flex-column justify-content-start position-relative"><span class="step-number rounded-circle text-center fw-bold mb-5 mx-auto">4</span>
-                  <div>
-                    <h3 class="fs-5 mb-4">Invest and Grow</h3>
-                    <p>Discover a variety of investment opportunities tailored to your financial goals.</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-        <!-- End How it works-->
-        
-        <!-- ======= Stats =======-->
-        <section class="stats__v3 section">
-          <div class="container">
-            <div class="row">
-              <div class="col-12">
-                <div class="d-flex flex-wrap content rounded-4" data-aos="fade-up" data-aos-delay="0">
-                  <div class="rounded-borders">
-                    <div class="rounded-border-1"></div>
-                    <div class="rounded-border-2"></div>
-                    <div class="rounded-border-3"></div>
-                  </div>
-                  <div class="col-12 col-sm-6 col-md-4 mb-4 mb-md-0 text-center" data-aos="fade-up" data-aos-delay="100">
-                    <div class="stat-item">
-                      <h3 class="fs-1 fw-bold"><span class="purecounter" data-purecounter-start="0" data-purecounter-end="10" data-purecounter-duration="2">0</span><span>K+</span></h3>
-                      <p class="mb-0">Customer Satisfaction</p>
-                    </div>
-                  </div>
-                  <div class="col-12 col-sm-6 col-md-4 mb-4 mb-md-0 text-center" data-aos="fade-up" data-aos-delay="200">
-                    <div class="stat-item">
-                      <h3 class="fs-1 fw-bold"> <span class="purecounter" data-purecounter-start="0" data-purecounter-end="200" data-purecounter-duration="2">0</span><span>%+</span></h3>
-                      <p class="mb-0">Revenue Increase</p>
-                    </div>
-                  </div>
-                  <div class="col-12 col-sm-6 col-md-4 mb-4 mb-md-0 text-center" data-aos="fade-up" data-aos-delay="300">
-                    <div class="stat-item">
-                      <h3 class="fs-1 fw-bold"><span class="purecounter" data-purecounter-start="0" data-purecounter-end="20" data-purecounter-duration="2">0</span><span>x</span></h3>
-                      <p class="mb-0">Business Growth</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-        <!-- End Stats-->
-        
-        <!-- ======= Services =======-->
-        <section class="section services__v3" id="services">
-          <div class="container">
-            <div class="row mb-5">
-              <div class="col-md-8 mx-auto text-center"><span class="subtitle text-uppercase mb-3" data-aos="fade-up" data-aos-delay="0">Our Services</span>
-                <h2 class="mb-3" data-aos="fade-up" data-aos-delay="100">Empowering Financial Innovation Through Cutting-Edge Services</h2>
-              </div>
-            </div>
-            <div class="row g-4">
-              <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="0">
-                <div class="service-card p-4 rounded-4 h-100 d-flex flex-column justify-content-between gap-5">
-                  <div><span class="icon mb-4">
-                      <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" x="0" y="0" viewbox="0 0 64 64" style="enable-background:new 0 0 512 512" xml:space="preserve">
-                        <g>
-                          <path d="M50.327 4H25.168a6.007 6.007 0 0 0-6 6v5.11h-8.375a3.154 3.154 0 0 0-3.12 3.18v5.47a1 1 0 0 0 .724.961 3.204 3.204 0 0 1 0 6.097 1 1 0 0 0-.724.962v5.49a3.154 3.154 0 0 0 3.12 3.18H34.5c-2.147 8.057 9.408 12.135 12.77 4.441a1 1 0 0 0-1.841-.779 4.778 4.778 0 1 1-4.403-6.636c1.039-.159 2.453 1.082 3.063-.225.449-1.37-1.383-1.598-2.336-1.734V31.8a1 1 0 0 0-.72-.96 3.21 3.21 0 0 1 0-6.11 1 1 0 0 0 .72-.96v-5.48a3.154 3.154 0 0 0-3.12-3.18H21.168V10a4.004 4.004 0 0 1 4-4h3.21l1.24 3.066a3.982 3.982 0 0 0 3.708 2.503h8.826a3.984 3.984 0 0 0 3.71-2.503L47.1 6h3.228a4.004 4.004 0 0 1 4 4v1.6a1 1 0 0 0 2 0V10a6.007 6.007 0 0 0-6-6ZM38.633 17.11a1.153 1.153 0 0 1 1.12 1.18v4.792a5.234 5.234 0 0 0 0 9.405V35.6a6.789 6.789 0 0 0-4.333 2.85H10.793a1.153 1.153 0 0 1-1.12-1.18v-4.8a5.232 5.232 0 0 0 0-9.401V18.29a1.153 1.153 0 0 1 1.12-1.18Zm5.375-8.793a1.994 1.994 0 0 1-1.856 1.252h-8.826a1.991 1.991 0 0 1-1.854-1.252l-.934-2.312H44.94Z" fill="currentColor" opacity="1" data-original="#000000"></path>
-                          <path d="M55.327 14.6a1 1 0 0 0-1 1V54a4.004 4.004 0 0 1-4 4H25.168a4.004 4.004 0 0 1-4-4V43.45a1 1 0 0 0-2 0V54a6.007 6.007 0 0 0 6 6h25.16a6.007 6.007 0 0 0 6-6V15.6a1 1 0 0 0-1-1Z" fill="currentColor" opacity="1" data-original="#000000"></path>
-                          <path d="M41.185 54.52a1 1 0 0 0 0-2h-6.891a1 1 0 0 0 0 2ZM24.713 28.383a.853.853 0 1 1-.835 1.028.998.998 0 0 0-1.184-.775c-1.765.61-.18 2.94 1.017 3.265-.271 1.919 2.27 1.926 2-.003a2.852 2.852 0 0 0-.998-5.515.851.851 0 1 1 .821-1.084 1 1 0 0 0 1.926-.54 2.857 2.857 0 0 0-1.749-1.893v-.518a1 1 0 0 0-2 0v.521a2.852 2.852 0 0 0 1.002 5.514Z" fill="currentColor" opacity="1" data-original="#000000"></path>
-                          <path d="M24.713 36.43a9.092 9.092 0 0 0 9.082-9.082c-.499-12.047-17.666-12.045-18.163 0a9.092 9.092 0 0 0 9.08 9.082Zm0-16.163a7.09 7.09 0 0 1 7.082 7.081c-.371 9.388-13.793 9.387-14.163 0a7.09 7.09 0 0 1 7.08-7.081ZM46.413 37.53l-4.757 4.757-1.68-1.68a1 1 0 0 0-1.413 1.415l2.386 2.386a1 1 0 0 0 1.414 0l5.464-5.464a1 1 0 0 0-1.414-1.414Z" fill="currentColor" opacity="1" data-original="#000000"></path>
-                        </g>
-                      </svg></span>
-                    <h3 class="fs-5 mb-3">Digital Payments</h3>
-                    <p class="mb-4">Seamless and secure transactions through various digital platforms, enabling quick and convenient payments for businesses and consumers alike.</p>
-                  </div><a class="special-link d-inline-flex gap-2 align-items-center text-decoration-none" href="#"><span class="icons"><i class="icon-1 bi bi-arrow-right-short"></i><i class="icon-2 bi bi-arrow-right-short"> </i></span><span>Read more</span></a>
-                </div>
-              </div>
-              <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="200">
-                <div class="service-card p-4 rounded-4 h-100 d-flex flex-column justify-content-between gap-5">
-                  <div><span class="icon mb-4">
-                      <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" x="0" y="0" viewbox="0 0 64 64" style="enable-background:new 0 0 512 512" xml:space="preserve">
-                        <g>
-                          <path d="m57.936 58.647-4.47-11.871a9.542 9.542 0 0 0-5.914-5.693l-7.659-2.609-1.944-2.116v-2.62a13.043 13.043 0 0 0 4.739-5.175 14.256 14.256 0 0 0 3.237.14 2.909 2.909 0 0 0 2.905-2.906v-5.382a2.895 2.895 0 0 0-1.495-2.523 13.84 13.84 0 0 0-2.807-7.777 1 1 0 0 0-1.597 1.205 11.879 11.879 0 0 1 2.386 6.19c-.012-.01-2.017.036-1.987-.023-4.064-11.113-18.668-11.126-22.702.024h-1.875c.73-9.938 13.556-14.987 21.539-8.81a1 1 0 0 0 1.196-1.605c-9.394-7.24-24.311-1.02-24.754 10.758a2.895 2.895 0 0 0-1.566 2.561v5.382a2.909 2.909 0 0 0 2.905 2.906c.4-.042 2.932.115 3.213-.122a12.843 12.843 0 0 0 4.542 5.038v2.757l-1.825 2.184-7.553 2.521a9.547 9.547 0 0 0-5.917 5.695l-4.47 11.871a1.008 1.008 0 0 0 .935 1.352H49.97a1 1 0 0 0 0-2H36.123l-2.985-7.876 2.014-2.491 2.009 1.746a1.007 1.007 0 0 0 1.643-.594l1.322-8.118 6.785 2.312a7.549 7.549 0 0 1 4.682 4.504L55.555 58H53.97a1 1 0 0 0 0 2H57a1.007 1.007 0 0 0 .936-1.353zm-13.77-39.136h1.759a.906.906 0 0 1 .905.904v5.382a.906.906 0 0 1-.905.906h-1.759zm-24.334 7.192h-1.759a.906.906 0 0 1-.905-.906v-5.382a.906.906 0 0 1 .905-.904h1.76s.038 5.959 0 7.192zm12.146-15.6a10.16 10.16 0 0 1 9.15 6.288L38.85 18.43a4.677 4.677 0 0 1-4.986-.747 6.633 6.633 0 0 0-7.78-.736l-3.91 2.325c1.2-4.704 5.135-8.169 9.803-8.169zM21.832 23.168V21.8l5.273-3.133a4.632 4.632 0 0 1 5.433.51 6.72 6.72 0 0 0 7.15 1.07l2.098-.957a12.113 12.113 0 0 1 .38 2.98c-.464 14.245-18.826 15.065-20.334.9zM35.95 34.706v1.718l-3.968 5.464-4.153-5.473v-1.78a11.242 11.242 0 0 0 8.12.071zm-9.164 3.643 3.852 5.075-3.771 3.28-1.206-7.008zM8.444 58l3.96-10.516a7.551 7.551 0 0 1 4.681-4.505l6.724-2.245 1.387 8.06a1.007 1.007 0 0 0 1.641.585l2.01-1.746 2.013 2.491L27.875 58zm25.54 0h-3.97L32 52.763zm-1.985-9.65-1.642-2.03 1.642-1.428 1.642 1.427zm5.12-1.658-3.772-3.28 3.693-5.085 1.224 1.332z" fill="currentColor" opacity="1" data-original="currentColor"></path>
-                        </g>
-                      </svg></span>
-                    <h3 class="fs-5 mb-3">Personal Finance Management</h3>
-                    <p class="mb-4">Seamless and secure transactions through various digital platforms, enabling quick and convenient payments for businesses and consumers alike.</p>
-                  </div><a class="special-link d-inline-flex gap-2 align-items-center text-decoration-none" href="#"><span class="icons"><i class="icon-1 bi bi-arrow-right-short"></i><i class="icon-2 bi bi-arrow-right-short"> </i></span><span>Read more</span></a>
-                </div>
-              </div>
-              <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="300">
-                <div class="service-card p-4 rounded-4 h-100 d-flex flex-column justify-content-between gap-5">
-                  <div><span class="icon mb-4">
-                      <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" x="0" y="0" viewbox="0 0 64 64" style="enable-background:new 0 0 512 512" xml:space="preserve">
-                        <g>
-                          <path d="M35.719 21.413a1 1 0 0 0-1.586 1.218 15.554 15.554 0 0 1 1.806 3.012h-6.1a19.93 19.93 0 0 0-3.417-8.42 15.637 15.637 0 0 1 5.012 2.652 1 1 0 0 0 1.245-1.565 17.676 17.676 0 1 0-11.002 31.51c14.511.067 22.936-16.94 14.042-28.407zm.966 6.23a15.507 15.507 0 0 1 .001 8.994h-6.533a35.942 35.942 0 0 0-.001-8.995zM29.84 38.635h6.102a15.688 15.688 0 0 1-9.534 8.447 19.91 19.91 0 0 0 3.432-8.447zm-1.402-6.491a34.461 34.461 0 0 1-.292 4.492h-12.94a34.731 34.731 0 0 1 .001-8.995h12.938a34.461 34.461 0 0 1 .293 4.503zm-6.812-15.67c2.533-.006 5.021 3.488 6.193 9.168H15.535c1.138-5.63 3.672-9.12 6.092-9.168zm-4.683.734a19.903 19.903 0 0 0-3.429 8.434H7.417a15.707 15.707 0 0 1 9.527-8.434zM6 32.149a15.682 15.682 0 0 1 .671-4.507h6.53a35.936 35.936 0 0 0 0 8.995H6.67A15.558 15.558 0 0 1 6 32.15zm1.413 6.487h6.1a19.912 19.912 0 0 0 3.43 8.446 15.69 15.69 0 0 1-9.53-8.446zm8.118 0h12.29c-2.589 12.171-9.703 12.166-12.29 0zM16.844 8.31H38.91a8.42 8.42 0 0 1 8.4 8.106l-2.018-2.018a1 1 0 0 0-1.414 1.414l3.74 3.74a1 1 0 0 0 1.414 0l3.74-3.74a1 1 0 0 0-1.413-1.414l-2.048 2.047A10.421 10.421 0 0 0 38.911 6.31H16.844a1 1 0 0 0 0 2zM50.105 44.448a1 1 0 0 0-1.413 0l-3.74 3.74a1 1 0 1 0 1.413 1.414l2.018-2.018a8.419 8.419 0 0 1-8.4 8.107H17.916a1 1 0 0 0 0 2h22.067a10.42 10.42 0 0 0 10.401-10.136l2.048 2.047a1 1 0 0 0 1.413-1.414zM58.589 27.13a1 1 0 0 0-1.694 1.062 7.174 7.174 0 1 1-2.549-2.453 1 1 0 1 0 .992-1.736 9.2 9.2 0 1 0-4.545 17.195c7.082.128 11.668-8.14 7.796-14.068z" fill="currentColor" opacity="1" data-original="#000000"></path>
-                          <path d="M49.754 34.379a1.001 1.001 0 0 0-1.238-.682c-1.769.767.123 2.972 1.275 3.302a1 1 0 1 0 2-.024 3.075 3.075 0 0 0-1-5.975 1.078 1.078 0 1 1 1.053-1.306 1 1 0 0 0 1.187.77c1.894-.7-.034-3.134-1.24-3.463a1 1 0 1 0-2 .024 3.075 3.075 0 0 0 1 5.975 1.079 1.079 0 1 1-1.037 1.379z" fill="currentColor" opacity="1" data-original="#000000"></path>
-                        </g>
-                      </svg></span>
-                    <h3 class="fs-5 mb-3">Online Lending</h3>
-                    <p class="mb-4">Fast and accessible lending services that provide personal and business loans through online platforms, simplifying the borrowing process.</p>
-                  </div><a class="special-link d-inline-flex gap-2 align-items-center text-decoration-none" href="#"><span class="icons"><i class="icon-1 bi bi-arrow-right-short"></i><i class="icon-2 bi bi-arrow-right-short"> </i></span><span>Read more</span></a>
-                </div>
-              </div>
-              <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="400">
-                <div class="service-card p-4 rounded-4 h-100 d-flex flex-column justify-content-between gap-5">
-                  <div><span class="icon mb-4">
-                      <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" x="0" y="0" viewbox="0 0 64 64" style="enable-background:new 0 0 512 512" xml:space="preserve">
-                        <g>
-                          <path d="M59 47.487h-1.81v-27.61a5.223 5.223 0 0 0-5-5.409h-3.71a1 1 0 0 0 0 2h3.71a3.228 3.228 0 0 1 3 3.41v27.609H26.03a1.013 1.013 0 0 0-.996 1.02 34.358 34.358 0 0 0 1.49 3.57 2 2 0 0 0 1.828 1.188h7.296a2 2 0 0 0 1.828-1.188l1.149-2.589L58 49.487v2.74a2.823 2.823 0 0 1-2.82 2.82H8.82A2.823 2.823 0 0 1 6 52.227v-2.74h16.03a1 1 0 0 0 0-2H8.81v-27.61a3.228 3.228 0 0 1 3-3.41h6.89c-3.535 9.154 3.658 19.594 13.63 19.48 11.076.08 18.127-12.336 12.587-21.706a14.54 14.54 0 0 0-25.162-.073 1.646 1.646 0 0 1-.163.299H11.81a5.223 5.223 0 0 0-5 5.41v27.61H5a1 1 0 0 0-1 1v3.74a4.825 4.825 0 0 0 4.82 4.82h46.36a4.825 4.825 0 0 0 4.82-4.82v-3.74a1 1 0 0 0-1-1zm-23.352 3.778h-7.296l-.788-1.775h8.872zm-4.332-17.37a12.517 12.517 0 0 1-9.29-5.372l2.072-1.196a10.137 10.137 0 0 0 7.218 4.188zm2 .001v-2.38a10.12 10.12 0 0 0 7.224-4.178l2.073 1.197a12.5 12.5 0 0 1-9.297 5.361zm11.521-12.471A12.435 12.435 0 0 1 43.61 26.8l-2.064-1.192a10.127 10.127 0 0 0 .008-8.344l2.064-1.192a12.412 12.412 0 0 1 1.22 5.353zM33.33 8.967a12.503 12.503 0 0 1 9.295 5.37l-2.073 1.196a10.124 10.124 0 0 0-7.222-4.187zm7.129 12.458a8.144 8.144 0 0 1-8.13 8.14c-10.794-.446-10.804-15.824 0-16.27a8.138 8.138 0 0 1 8.13 8.13zM31.329 8.966v2.38a10.138 10.138 0 0 0-7.226 4.177l-2.073-1.196a12.518 12.518 0 0 1 9.3-5.36zm-10.295 7.095 2.064 1.192a10.022 10.022 0 0 0-.003 8.343l-2.064 1.192a12.473 12.473 0 0 1 .003-10.727z" fill="currentColor" opacity="1" data-original="#000000"></path>
-                          <path d="M32.322 22.446a1.276 1.276 0 1 1-1.225 1.632 1 1 0 0 0-1.921.556 3.29 3.29 0 0 0 2.146 2.202v.352a1 1 0 0 0 2 0v-.363a3.272 3.272 0 0 0-1-6.38A1.276 1.276 0 1 1 33.57 18.9a1 1 0 0 0 1.956-.418 3.287 3.287 0 0 0-2.204-2.423c.082-.687-.226-1.374-1-1.385-.78.016-1.08.697-1 1.392a3.272 3.272 0 0 0 1 6.38z" fill="currentColor" opacity="1" data-original="#000000"></path>
-                        </g>
-                      </svg></span>
-                    <h3 class="fs-5 mb-3">Investment Platforms</h3>
-                    <p class="mb-4">User-friendly platforms that allow individuals to invest in stocks, bonds, and other assets with minimal barriers, making investment accessible to all.</p>
-                  </div><a class="special-link d-inline-flex gap-2 align-items-center text-decoration-none" href="#"><span class="icons"><i class="icon-1 bi bi-arrow-right-short"></i><i class="icon-2 bi bi-arrow-right-short"> </i></span><span>Read more</span></a>
-                </div>
-              </div>
-              <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="500">
-                <div class="service-card p-4 rounded-4 h-100 d-flex flex-column justify-content-between gap-5">
-                  <div><span class="icon mb-4">
-                      <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" x="0" y="0" viewbox="0 0 64 64" style="enable-background:new 0 0 512 512" xml:space="preserve">
-                        <g>
-                          <path d="M38.972 31.507a7.01 7.01 0 0 0-4.32-12.487H23.604a3.001 3.001 0 0 0-2.998 2.998v19.988a3.001 3.001 0 0 0 2.998 2.998h12.8c7.723-.104 9.639-10.635 2.568-13.497zm-16.367-9.49a1 1 0 0 1 1-.999h11.047a4.997 4.997 0 1 1 0 9.994H22.605zm13.798 20.988H23.604a1 1 0 0 1-.999-1v-8.994h13.798a4.997 4.997 0 0 1 0 9.994z" fill="currentColor" opacity="1" data-original="#000000"></path>
-                          <path d="M51.798 12.238a27.71 27.71 0 0 0-3.132-2.708 1 1 0 0 0-1.186 1.609 25.317 25.317 0 0 1 2.162 1.82l-2.117 2.117A22.896 22.896 0 0 0 33.002 9.05V6.057a25.425 25.425 0 0 1 11.2 3.02 1 1 0 0 0 .946-1.761C26.702-2.634 3.907 11.036 4.02 32.012c-.31 15.036 12.945 28.294 27.983 27.983 24.827-.03 37.332-30.174 19.795-47.757zm-.734 2.126a25.768 25.768 0 0 1 6.899 16.648h-3A22.896 22.896 0 0 0 48.94 16.49zm-38.123 0 2.118 2.117A22.815 22.815 0 0 0 9.05 31.012H6.043a25.768 25.768 0 0 1 6.898-16.648zM6.043 33.01h2.999a22.896 22.896 0 0 0 6.025 14.524L12.94 49.66A25.768 25.768 0 0 1 6.043 33.01zm24.96 24.96a25.768 25.768 0 0 1-16.648-6.898l2.125-2.125a22.896 22.896 0 0 0 14.523 6.025zm-19.988-25.96a20.892 20.892 0 0 1 11.64-18.784 1 1 0 0 0-.892-1.788 23.283 23.283 0 0 0-5.294 3.626l-2.114-2.114a25.768 25.768 0 0 1 16.648-6.9v3.01a22.7 22.7 0 0 0-5.356.865 1 1 0 0 0 .558 1.918c13.1-3.976 26.996 6.454 26.785 20.168-1.15 27.836-40.823 27.84-41.975 0zm21.987 25.96v-2.998a22.896 22.896 0 0 0 14.523-6.025l2.125 2.125a25.768 25.768 0 0 1-16.648 6.899zm18.062-8.311-2.125-2.125a22.896 22.896 0 0 0 6.024-14.524h3a25.768 25.768 0 0 1-6.9 16.649z" fill="currentColor" opacity="1" data-original="#000000"></path>
-                        </g>
-                      </svg></span>
-                    <h3 class="fs-5 mb-3">Cryptocurrency Trading</h3>
-                    <p class="mb-4">Services that facilitate the buying, selling, and trading of cryptocurrencies, offering users a gateway to the digital currency market.</p>
-                  </div><a class="special-link d-inline-flex gap-2 align-items-center text-decoration-none" href="#"><span class="icons"><i class="icon-1 bi bi-arrow-right-short"></i><i class="icon-2 bi bi-arrow-right-short"> </i></span><span>Read more</span></a>
-                </div>
-              </div>
-              <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="600">
-                <div class="service-card p-4 rounded-4 h-100 d-flex flex-column justify-content-between gap-5">
-                  <div><span class="icon mb-4">
-                      <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" x="0" y="0" viewbox="0 0 64 64" style="enable-background:new 0 0 512 512" xml:space="preserve">
-                        <g>
-                          <path d="M49.5 4H24.34a6.007 6.007 0 0 0-6 6v5.29a1 1 0 0 0 2 0V10a4.005 4.005 0 0 1 4-4h3.218l1.237 3.066a3.984 3.984 0 0 0 3.71 2.503h8.826a3.984 3.984 0 0 0 3.71-2.503L46.277 6H49.5a4.004 4.004 0 0 1 4 4v44a4.004 4.004 0 0 1-4 4H24.34a4.005 4.005 0 0 1-4-4V39.42h11.8a6.774 6.774 0 0 0 12.998 2.159 1 1 0 0 0-1.842-.78 4.778 4.778 0 1 1-2.638-6.3 1 1 0 0 0 1.298-.56c.446-1.634-1.965-1.701-3.062-1.776a6.785 6.785 0 0 0-6.6 5.257H13.502a3.003 3.003 0 0 1-3-3v-7.932h27.4v2.672a1 1 0 0 0 2 0v-5.87a5.006 5.006 0 0 0-5-5H13.5a5.006 5.006 0 0 0-5 5c.007 1.424-.005 9.521 0 11.13a5.006 5.006 0 0 0 5 5h4.84V54a6.007 6.007 0 0 0 6 6H49.5a6.007 6.007 0 0 0 6-6V10a6.007 6.007 0 0 0-6-6zm-6.314 4.317a1.994 1.994 0 0 1-1.855 1.252h-8.827a1.992 1.992 0 0 1-1.854-1.252l-.934-2.312H44.12zM10.501 23.29a3.003 3.003 0 0 1 3-3h21.4a3.003 3.003 0 0 1 3 3v1.198H10.5z" fill="currentColor" opacity="1" data-original="#000000"></path>
-                          <path d="M33.472 52.52a1 1 0 0 0 0 2h6.89a1 1 0 0 0 0-2zM37.844 37.294a1 1 0 0 0-1.414 1.415l2.387 2.387a1 1 0 0 0 1.414 0l5.464-5.465a1 1 0 0 0-1.414-1.414l-4.757 4.757zM13.29 33.143a1 1 0 0 0 0 2h2.45a1 1 0 0 0 0-2z" fill="currentColor" opacity="1" data-original="#000000"></path>
-                        </g>
-                      </svg></span>
-                    <h3 class="fs-5 mb-3">Insurtech Solutions</h3>
-                    <p class="mb-4">Innovative insurance services that leverage technology to offer personalized policies, faster claims processing, and enhanced customer experiences.</p>
-                  </div><a class="special-link d-inline-flex gap-2 align-items-center text-decoration-none" href="#"><span class="icons"><i class="icon-1 bi bi-arrow-right-short"></i><i class="icon-2 bi bi-arrow-right-short"> </i></span><span>Read more</span></a>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-        <!-- Services-->
-        
-        <!-- ======= Testimonials =======-->
-        <section class="section testimonials__v2" id="testimonials">
-          <div class="container">
-            <div class="row mb-5">
-              <div class="col-lg-5 mx-auto text-center"><span class="subtitle text-uppercase mb-3" data-aos="fade-up" data-aos-delay="0">Testimonials</span>
-                <h2 class="mb-3" data-aos="fade-up" data-aos-delay="100">What Our Users Are Saying</h2>
-                <p data-aos="fade-up" data-aos-delay="200">Real Stories of Success and Satisfaction from Our Diverse Community</p>
-              </div>
-            </div>
-            <div class="row g-4" data-masonry="{&quot;percentPosition&quot;: true }">
-              <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="0">
-                <div class="testimonial rounded-4 p-4">
-                  <blockquote class="mb-3">
-                     &ldquo;
-                    This platform has completely transformed the way I manage my business finances. The real-time transaction tracking and seamless payment options have saved me so much time and effort!
-                    &rdquo;
-                  </blockquote>
-                  <div class="testimonial-author d-flex gap-3 align-items-center">
-                    <div class="author-img"><img class="rounded-circle img-fluid" src="assets/images/person-sq-2-min.jpg" alt="FreeBootstrap.net image placeholder"></div>
-                    <div class="lh-base"><strong class="d-block">John Davis</strong><span>Small Business Owner</span></div>
-                  </div>
-                </div>
-              </div>
-              <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="100">
-                <div class="testimonial rounded-4 p-4">
-                  <blockquote class="mb-3">
-                     &ldquo;
-                    As a freelancer, managing my finances can be overwhelming. The budgeting tools and personalized insights have made it so much easier to stay on top of my expenses and plan for the future.
-                    &rdquo;
-                  </blockquote>
-                  <div class="testimonial-author d-flex gap-3 align-items-center">
-                    <div class="author-img"><img class="rounded-circle img-fluid" src="assets/images/person-sq-1-min.jpg" alt="FreeBootstrap.net image placeholder"></div>
-                    <div class="lh-base"><strong class="d-block">Emily Smith</strong><span>Freelancer</span></div>
-                  </div>
-                </div>
-              </div>
-              <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="200">
-                <div class="testimonial rounded-4 p-4">
-                  <blockquote class="mb-3">
-                     &ldquo;
-                    The investment options and portfolio management tools on this platform are top-notch. The variety of choices caters to all types of investors, from conservative to aggressive. I especially appreciate how the tailored recommendations align perfectly with my financial goals. It’s a game-changer for anyone serious about growing their wealth.
-                    &rdquo;
-                  </blockquote>
-                  <div class="testimonial-author d-flex gap-3 align-items-center">
-                    <div class="author-img"><img class="rounded-circle img-fluid" src="assets/images/person-sq-5-min.jpg" alt="FreeBootstrap.net image placeholder"></div>
-                    <div class="lh-base"><strong class="d-block">Michael Rodriguez</strong><span>Investor</span></div>
-                  </div>
-                </div>
-              </div>
-              <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="300">
-                <div class="testimonial rounded-4 p-4">
-                  <blockquote class="mb-3">
-                     &ldquo;
-                    I never thought managing money could be this simple! The user-friendly interface and secure transaction process give me the confidence to handle my finances independently.
-                    &rdquo;
-                  </blockquote>
-                  <div class="testimonial-author d-flex gap-3 align-items-center">
-                    <div class="author-img"><img class="rounded-circle img-fluid" src="assets/images/person-sq-3-min.jpg" alt="FreeBootstrap.net image placeholder"></div>
-                    <div class="lh-base"><strong class="d-block">Sarah Lee</strong><span>College Student</span></div>
-                  </div>
-                </div>
-              </div>
-              <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="400">
-                <div class="testimonial rounded-4 p-4">
-                  <blockquote class="mb-3">
-                     &ldquo;
-                    The security features are outstanding. Knowing that my financial data is protected gives me peace of mind, and the platform's efficiency makes it a pleasure to use.
-                    &rdquo;
-                  </blockquote>
-                  <div class="testimonial-author d-flex gap-3 align-items-center">
-                    <div class="author-img"><img class="rounded-circle img-fluid" src="assets/images/person-sq-7-min.jpg" alt="FreeBootstrap.net image placeholder"></div>
-                    <div class="lh-base"><strong class="d-block">James Kim</strong><span>IT Consultant</span></div>
-                  </div>
-                </div>
-              </div>
-              <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="500">
-                <div class="testimonial rounded-4 p-4">
-                  <blockquote class="mb-3">
-                     &ldquo;
-                    The platform’s intuitive design and robust features have been a game-changer for my startup. It’s helped me streamline operations and focus on growing my business.
-                    &rdquo;
-                  </blockquote>
-                  <div class="testimonial-author d-flex gap-3 align-items-center">
-                    <div class="author-img"><img class="rounded-circle img-fluid" src="assets/images/person-sq-8-min.jpg" alt="FreeBootstrap.net image placeholder"></div>
-                    <div class="lh-base"><strong class="d-block">Laura Brown</strong><span>Entrepreneur</span></div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-        <!-- Testimonials-->
-        
-        <!-- ======= FAQ =======-->
-        <section class="section faq__v2" id="faq">
-          <div class="container">
-            <div class="row mb-4">
-              <div class="col-md-6 col-lg-7 mx-auto text-center"><span class="subtitle text-uppercase mb-3" data-aos="fade-up" data-aos-delay="0">FAQ</span>
-                <h2 class="h2 fw-bold mb-3" data-aos="fade-up" data-aos-delay="0">Frequently Asked Questions</h2>
-                <p data-aos="fade-up" data-aos-delay="100">Utilize our tools to develop your concepts and bring your vision to life. Once complete, effortlessly share your creations.</p>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-md-8 mx-auto" data-aos="fade-up" data-aos-delay="200">
-                <div class="faq-content">
-                  <div class="accordion custom-accordion" id="accordionPanelsStayOpenExample">
-                    <div class="accordion-item">
-                      <h2 class="accordion-header">
-                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true" aria-controls="panelsStayOpen-collapseOne"> What services does your web agency offer? </button>
-                      </h2>
-                      <div class="accordion-collapse collapse show" id="panelsStayOpen-collapseOne">
-                        <div class="accordion-body">Our web agency offers a comprehensive range of services including web design and development, e-commerce solutions, SEO optimization, content creation, website maintenance, and digital marketing strategies. We tailor our services to meet the unique needs of each client, ensuring a customized approach to every project.</div>
+                  <div class="card-content">
+                    <h3 class="card-title">Neurology</h3>
+                    <p class="card-description">Eos qui ratione voluptatem sequi nesciunt neque porro quisquam est, qui dolorem ipsum quia dolor sit amet.</p>
+                    <div class="card-stats">
+                      <div class="stat-item">
+                        <span class="stat-number">8+</span>
+                        <span class="stat-label">Specialists</span>
+                      </div>
+                      <div class="stat-item">
+                        <span class="stat-number">200+</span>
+                        <span class="stat-label">Treatments</span>
                       </div>
                     </div>
-                    <div class="accordion-item">
-                      <h2 class="accordion-header">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseTwo" aria-expanded="false" aria-controls="panelsStayOpen-collapseTwo"> How much does it cost to build a website? </button>
-                      </h2>
-                      <div class="accordion-collapse collapse" id="panelsStayOpen-collapseTwo">
-                        <div class="accordion-body">The cost of building a website can vary widely depending on the complexity, features, and specific requirements of your project. We offer several pricing packages to accommodate different budgets and needs. After an initial consultation, we can provide a detailed quote based on your specific goals and objectives.</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="400">
+                <div class="department-card">
+                  <div class="card-icon">
+                    <i class="fas fa-cut"></i>
+                  </div>
+                  <div class="card-content">
+                    <h3 class="card-title">Surgery</h3>
+                    <p class="card-description">Consectetur adipisci velit sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam.</p>
+                    <div class="card-stats">
+                      <div class="stat-item">
+                        <span class="stat-number">12+</span>
+                        <span class="stat-label">Surgeons</span>
+                      </div>
+                      <div class="stat-item">
+                        <span class="stat-number">1000+</span>
+                        <span class="stat-label">Operations</span>
                       </div>
                     </div>
-                    <div class="accordion-item">
-                      <h2 class="accordion-header">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseThree" aria-expanded="false" aria-controls="panelsStayOpen-collapseThree"> How long does it take to design and develop a website? </button>
-                      </h2>
-                      <div class="accordion-collapse collapse" id="panelsStayOpen-collapseThree">
-                        <div class="accordion-body">The timeline for designing and developing a website depends on the project&apos;s complexity and scope. Typically, a standard business website takes about 4-6 weeks to complete, while more complex projects like e-commerce sites or custom applications may take longer. We work closely with our clients to establish a realistic timeline and keep you informed throughout the process.</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="450">
+                <div class="department-card">
+                  <div class="card-icon">
+                    <i class="fas fa-baby"></i>
+                  </div>
+                  <div class="card-content">
+                    <h3 class="card-title">Pediatrics</h3>
+                    <p class="card-description">Quaerat voluptatem ut enim ad minima veniam quis nostrum exercitationem ullam corporis suscipit laboriosam.</p>
+                    <div class="card-stats">
+                      <div class="stat-item">
+                        <span class="stat-number">10+</span>
+                        <span class="stat-label">Pediatricians</span>
+                      </div>
+                      <div class="stat-item">
+                        <span class="stat-number">2000+</span>
+                        <span class="stat-label">Young Patients</span>
                       </div>
                     </div>
-                    <div class="accordion-item">
-                      <h2 class="accordion-header">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseFour" aria-expanded="false" aria-controls="panelsStayOpen-collapseFour"> Will my website be mobile-friendly? </button>
-                      </h2>
-                      <div class="accordion-collapse collapse" id="panelsStayOpen-collapseFour">
-                        <div class="accordion-body">Absolutely! All the websites we design and develop are fully responsive, meaning they are optimized to work seamlessly across all devices, including desktops, tablets, and smartphones. Ensuring a great user experience on mobile devices is a top priority in our development process.</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="500">
+                <div class="department-card">
+                  <div class="card-icon">
+                    <i class="fas fa-eye"></i>
+                  </div>
+                  <div class="card-content">
+                    <h3 class="card-title">Ophthalmology</h3>
+                    <p class="card-description">Nisi ut aliquid ex ea commodi consequatur quis autem vel eum iure reprehenderit qui in ea voluptate velit esse.</p>
+                    <div class="card-stats">
+                      <div class="stat-item">
+                        <span class="stat-number">6+</span>
+                        <span class="stat-label">Eye Doctors</span>
+                      </div>
+                      <div class="stat-item">
+                        <span class="stat-number">800+</span>
+                        <span class="stat-label">Eye Exams</span>
                       </div>
                     </div>
-                    <div class="accordion-item">
-                      <h2 class="accordion-header">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseFive" aria-expanded="false" aria-controls="panelsStayOpen-collapseFive"> Do you provide ongoing support and maintenance for websites? </button>
-                      </h2>
-                      <div class="accordion-collapse collapse" id="panelsStayOpen-collapseFive">
-                        <div class="accordion-body">Yes, we offer ongoing support and maintenance services to ensure your website remains up-to-date, secure, and functioning smoothly. Our maintenance packages can include regular updates, security monitoring, backups, and technical support to address any issues that may arise. We&apos;re here to help you keep your website running efficiently long after it&apos;s launched.</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="550">
+                <div class="department-card">
+                  <div class="card-icon">
+                    <i class="fas fa-band-aid"></i>
+                  </div>
+                  <div class="card-content">
+                    <h3 class="card-title">Dermatology</h3>
+                    <p class="card-description">Quam nihil molestiae consequatur vel illum qui dolorem eum fugiat quo voluptas nulla pariatur at vero eos.</p>
+                    <div class="card-stats">
+                      <div class="stat-item">
+                        <span class="stat-number">7+</span>
+                        <span class="stat-label">Dermatologists</span>
+                      </div>
+                      <div class="stat-item">
+                        <span class="stat-number">600+</span>
+                        <span class="stat-label">Skin Treatments</span>
                       </div>
                     </div>
                   </div>
@@ -654,156 +481,655 @@
               </div>
             </div>
           </div>
-          <!-- End FAQ-->
-        </section>
-        <!-- End FAQ-->
-        
-        <!-- ======= Contact =======-->
-        <section class="section contact__v2" id="contact">
-          <div class="container">
-            <div class="row mb-5">
-              <div class="col-md-6 col-lg-7 mx-auto text-center"><span class="subtitle text-uppercase mb-3" data-aos="fade-up" data-aos-delay="0">Contact</span>
-                <h2 class="h2 fw-bold mb-3" data-aos="fade-up" data-aos-delay="0">Contact Us</h2>
-                <p data-aos="fade-up" data-aos-delay="100">Utilize our tools to develop your concepts and bring your vision to life. Once complete, effortlessly share your creations.</p>
+
+          <div class="departments-cta" data-aos="fade-up" data-aos-delay="600">
+            <div class="cta-content">
+              <h3 class="cta-title">Explore All Our Medical Departments</h3>
+              <p class="cta-description">Et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores.</p>
+              <a href="#" class="btn btn-primary">View All Departments</a>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </section><!-- /Featured Departments Section -->
+
+    <!-- Featured Services Section -->
+    <section id="featured-services" class="featured-services section">
+
+      <!-- Section Title -->
+      <div class="container section-title" data-aos="fade-up">
+        <h2>Featured Services</h2>
+        <p>Necessitatibus eius consequatur ex aliquid fuga eum quidem sint consectetur velit</p>
+      </div><!-- End Section Title -->
+
+      <div class="container" data-aos="fade-up" data-aos-delay="100">
+
+        <div class="row gy-4">
+
+          <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
+            <div class="service-card">
+              <div class="service-icon">
+                <i class="fas fa-heartbeat"></i>
+              </div>
+              <div class="service-image">
+                <img src="assets/img/health/cardiology-2.webp" alt="Service" class="img-fluid" loading="lazy">
+              </div>
+              <div class="service-content">
+                <h3>Cardiology Excellence</h3>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae.</p>
+                <a href="#" class="service-link">Learn More <i class="fas fa-arrow-right"></i></a>
               </div>
             </div>
-            <div class="row">
-              <div class="col-md-6">
-                <div class="d-flex gap-5 flex-column">
-                  <div class="d-flex align-items-start gap-3" data-aos="fade-up" data-aos-delay="0">
-                    <div class="icon d-block"><i class="bi bi-telephone"></i></div><span> <span class="d-block">Phone</span><strong>+(01 234 567 890)</strong></span>
+          </div><!-- End Service Card -->
+
+          <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="300">
+            <div class="service-card">
+              <div class="service-icon">
+                <i class="fas fa-brain"></i>
+              </div>
+              <div class="service-image">
+                <img src="assets/img/health/neurology-3.webp" alt="Service" class="img-fluid" loading="lazy">
+              </div>
+              <div class="service-content">
+                <h3>Neurology Care</h3>
+                <p>Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi.</p>
+                <a href="#" class="service-link">Learn More <i class="fas fa-arrow-right"></i></a>
+              </div>
+            </div>
+          </div><!-- End Service Card -->
+
+          <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="400">
+            <div class="service-card">
+              <div class="service-icon">
+                <i class="fas fa-bone"></i>
+              </div>
+              <div class="service-image">
+                <img src="assets/img/health/orthopedics-1.webp" alt="Service" class="img-fluid" loading="lazy">
+              </div>
+              <div class="service-content">
+                <h3>Orthopedic Surgery</h3>
+                <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident.</p>
+                <a href="#" class="service-link">Learn More <i class="fas fa-arrow-right"></i></a>
+              </div>
+            </div>
+          </div><!-- End Service Card -->
+
+          <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
+            <div class="service-card">
+              <div class="service-icon">
+                <i class="fas fa-baby"></i>
+              </div>
+              <div class="service-image">
+                <img src="assets/img/health/pediatrics-4.webp" alt="Service" class="img-fluid" loading="lazy">
+              </div>
+              <div class="service-content">
+                <h3>Pediatric Care</h3>
+                <p>Sunt in culpa qui officia deserunt mollit anim id est laborum. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium.</p>
+                <a href="#" class="service-link">Learn More <i class="fas fa-arrow-right"></i></a>
+              </div>
+            </div>
+          </div><!-- End Service Card -->
+
+          <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="300">
+            <div class="service-card">
+              <div class="service-icon">
+                <i class="fas fa-ribbon"></i>
+              </div>
+              <div class="service-image">
+                <img src="assets/img/health/oncology-2.webp" alt="Service" class="img-fluid" loading="lazy">
+              </div>
+              <div class="service-content">
+                <h3>Oncology Treatment</h3>
+                <p>At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias.</p>
+                <a href="#" class="service-link">Learn More <i class="fas fa-arrow-right"></i></a>
+              </div>
+            </div>
+          </div><!-- End Service Card -->
+
+          <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="400">
+            <div class="service-card">
+              <div class="service-icon">
+                <i class="fas fa-flask"></i>
+              </div>
+              <div class="service-image">
+                <img src="assets/img/health/laboratory-3.webp" alt="Service" class="img-fluid" loading="lazy">
+              </div>
+              <div class="service-content">
+                <h3>Laboratory Services</h3>
+                <p>Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae.</p>
+                <a href="#" class="service-link">Learn More <i class="fas fa-arrow-right"></i></a>
+              </div>
+            </div>
+          </div><!-- End Service Card -->
+
+        </div>
+
+      </div>
+
+    </section><!-- /Featured Services Section -->
+
+    <!-- Find A Doctor Section -->
+    <section id="find-a-doctor" class="find-a-doctor section">
+
+      <!-- Section Title -->
+      <div class="container section-title" data-aos="fade-up">
+        <h2>Find A Doctor</h2>
+        <p>Necessitatibus eius consequatur ex aliquid fuga eum quidem sint consectetur velit</p>
+      </div><!-- End Section Title -->
+
+      <div class="container" data-aos="fade-up" data-aos-delay="100">
+
+        <div class="row justify-content-center" data-aos="fade-up" data-aos-delay="200">
+          <div class="col-lg-10">
+            <div class="search-header">
+              <h2>Discover Your Ideal Medical Specialist</h2>
+              <p>Connect with our network of certified healthcare professionals across all medical disciplines</p>
+            </div>
+
+            <div class="advanced-search-container">
+              <form class="search-form" action="forms/doctor-search.php" method="get">
+                <div class="search-row">
+                  <div class="search-field">
+                    <label>Practitioner Name</label>
+                    <div class="input-group">
+                      <i class="bi bi-search"></i>
+                      <input type="text" class="form-control" name="doctor_name" placeholder="Search by name...">
+                    </div>
                   </div>
-                  <div class="d-flex align-items-start gap-3" data-aos="fade-up" data-aos-delay="100">
-                    <div class="icon d-block"><i class="bi bi-send"></i></div><span> <span class="d-block">Email</span><strong>info@mydomain.com</strong></span>
+                  <div class="search-field">
+                    <label>Medical Specialty</label>
+                    <div class="select-group">
+                      <i class="bi bi-plus-circle"></i>
+                      <select class="form-select" name="specialty">
+                        <option value="">Select specialty</option>
+                        <option value="cardiology">Cardiovascular Medicine</option>
+                        <option value="neurology">Neurological Sciences</option>
+                        <option value="orthopedics">Orthopedic Surgery</option>
+                        <option value="pediatrics">Pediatric Medicine</option>
+                        <option value="dermatology">Dermatological Care</option>
+                        <option value="oncology">Oncological Treatment</option>
+                      </select>
+                    </div>
                   </div>
-                  <div class="d-flex align-items-start gap-3" data-aos="fade-up" data-aos-delay="200">
-                    <div class="icon d-block"><i class="bi bi-geo-alt"></i></div><span> <span class="d-block">Address</span>
-                      <address class="fw-bold">123 Main Street Apt 4B Springfield, <br> IL 62701 United States</address></span>
+                  <div class="search-field">
+                    <label>Location</label>
+                    <div class="select-group">
+                      <i class="bi bi-geo-alt"></i>
+                      <select class="form-select" name="location">
+                        <option value="">All locations</option>
+                        <option value="downtown">Downtown Medical Center</option>
+                        <option value="northside">Northside Clinic</option>
+                        <option value="westend">West End Hospital</option>
+                      </select>
+                    </div>
                   </div>
+                  <button type="submit" class="search-submit">
+                    <i class="bi bi-arrow-right"></i>
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+
+        <div class="specialists-showcase" data-aos="fade-up" data-aos-delay="300">
+          <div class="specialist-card featured" data-aos="slide-up" data-aos-delay="100">
+            <div class="card-content">
+              <div class="specialist-info">
+                <div class="profile-section">
+                  <div class="profile-image">
+                    <img src="assets/img/health/staff-1.webp" alt="Dr. Jennifer Morgan" class="img-fluid">
+                    <div class="online-status active"></div>
+                  </div>
+                  <div class="specialist-data">
+                    <h3>Dr. Jennifer Morgan</h3>
+                    <p class="specialty">Senior Cardiologist</p>
+                    <div class="credentials">
+                      <span class="badge">MD, FACC</span>
+                      <span class="experience">18 years</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="rating-info">
+                  <div class="stars-display">
+                    <i class="bi bi-star-fill"></i>
+                    <i class="bi bi-star-fill"></i>
+                    <i class="bi bi-star-fill"></i>
+                    <i class="bi bi-star-fill"></i>
+                    <i class="bi bi-star-fill"></i>
+                  </div>
+                  <span class="score">4.9</span>
+                  <small>(142 patients)</small>
                 </div>
               </div>
-              <div class="col-md-6">
-                <div class="form-wrapper" data-aos="fade-up" data-aos-delay="300">
-                  <form id="contactForm">
-                    <div class="row gap-3 mb-3">
-                      <div class="col-md-12">
-                        <label class="mb-2" for="name">Name</label>
-                        <input class="form-control" id="name" type="text" name="name" required="">
-                      </div>
-                      <div class="col-md-12">
-                        <label class="mb-2" for="email">Email</label>
-                        <input class="form-control" id="email" type="email" name="email" required="">
-                      </div>
-                    </div>
-                    <div class="row gap-3 mb-3">
-                      <div class="col-md-12">
-                        <label class="mb-2" for="subject">Subject</label>
-                        <input class="form-control" id="subject" type="text" name="subject">
-                      </div>
-                    </div>
-                    <div class="row gap-3 gap-md-0 mb-3">
-                      <div class="col-md-12">
-                        <label class="mb-2" for="message">Message</label>
-                        <textarea class="form-control" id="message" name="message" rows="5" required=""></textarea>
-                      </div>
-                    </div>
-                    <button class="btn btn-primary fw-semibold" type="submit">Send Message</button>
-                  </form>
-                  <div class="mt-3 d-none alert alert-success" id="successMessage">Message sent successfully!</div>
-                  <div class="mt-3 d-none alert alert-danger" id="errorMessage">Message sending failed. Please try again later.</div>
-                </div>
+              <div class="quick-actions">
+                <a href="#" class="action-btn outline">Profile</a>
+                <a href="#" class="action-btn primary">Consult</a>
               </div>
             </div>
           </div>
-        </section>
-        <!-- End Contact-->
-        
-        <!-- ======= Footer =======-->
-        <footer class="footer pt-5 pb-5">
-          <div class="container">
-            <div class="row mb-5 pb-4">
-              <div class="col-md-7">
-                <h2 class="fs-5">Join our newsletter</h2>
-                <p>Stay updated with our latest templates and offers—join our newsletter today!</p>
+
+          <div class="specialist-card" data-aos="slide-up" data-aos-delay="200">
+            <div class="card-content">
+              <div class="specialist-info">
+                <div class="profile-section">
+                  <div class="profile-image">
+                    <img src="assets/img/health/staff-3.webp" alt="Dr. Robert Kim" class="img-fluid">
+                    <div class="online-status busy"></div>
+                  </div>
+                  <div class="specialist-data">
+                    <h3>Dr. Robert Kim</h3>
+                    <p class="specialty">Neurosurgeon</p>
+                    <div class="credentials">
+                      <span class="badge">MD, PhD</span>
+                      <span class="experience">24 years</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="rating-info">
+                  <div class="stars-display">
+                    <i class="bi bi-star-fill"></i>
+                    <i class="bi bi-star-fill"></i>
+                    <i class="bi bi-star-fill"></i>
+                    <i class="bi bi-star-fill"></i>
+                    <i class="bi bi-star-half"></i>
+                  </div>
+                  <span class="score">4.8</span>
+                  <small>(98 patients)</small>
+                </div>
               </div>
-              <div class="col-md-5">
-                <form class="d-flex gap-2">
-                  <input class="form-control" type="email" placeholder="Email your email" required="">
-                  <button class="btn btn-primary fs-6" type="submit">Subscribe</button>
-                </form>
+              <div class="quick-actions">
+                <a href="#" class="action-btn outline">Profile</a>
+                <a href="#" class="action-btn primary">Schedule</a>
               </div>
             </div>
-            <div class="row justify-content-between mb-5 g-xl-5">
-              <div class="col-md-4 mb-5 mb-lg-0">
-                <h3 class="mb-3">About</h3>
-                <p class="mb-4">Utilize our tools to develop your concepts and bring your vision to life. Once complete, effortlessly share your creations.</p>
+          </div>
+
+          <div class="specialist-card" data-aos="slide-up" data-aos-delay="300">
+            <div class="card-content">
+              <div class="specialist-info">
+                <div class="profile-section">
+                  <div class="profile-image">
+                    <img src="assets/img/health/staff-5.webp" alt="Dr. Sarah Thompson" class="img-fluid">
+                    <div class="online-status active"></div>
+                  </div>
+                  <div class="specialist-data">
+                    <h3>Dr. Sarah Thompson</h3>
+                    <p class="specialty">Pediatric Specialist</p>
+                    <div class="credentials">
+                      <span class="badge">MD, FAAP</span>
+                      <span class="experience">12 years</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="rating-info">
+                  <div class="stars-display">
+                    <i class="bi bi-star-fill"></i>
+                    <i class="bi bi-star-fill"></i>
+                    <i class="bi bi-star-fill"></i>
+                    <i class="bi bi-star-fill"></i>
+                    <i class="bi bi-star-fill"></i>
+                  </div>
+                  <span class="score">5.0</span>
+                  <small>(156 patients)</small>
+                </div>
               </div>
-              <div class="col-md-7">
-                <div class="row g-2">
-                  <div class="col-md-6 col-lg-4 mb-4 mb-lg-0">
-                    <h3 class="mb-3">Company</h3>
-                    <ul class="list-unstyled">
-                      <li><a href="page-about.html">Leadership</a></li>
-                      <li><a href="page-careers.html">Careers <span class="badge ms-1">we're hiring</span></a></li>
-                      <li><a href="page-case-studies.html">Case Studies</a></li>
-                      <li><a href="page-terms-conditions.html">Terms &amp; Conditions</a></li>
-                      <li><a href="page-privacy-policy.html">Privacy Policy</a></li>
-                      <li><a href="page-404.html">404 page</a></li>
-                    </ul>
+              <div class="quick-actions">
+                <a href="#" class="action-btn outline">Profile</a>
+                <a href="#" class="action-btn primary">Book Now</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="specialist-card" data-aos="slide-up" data-aos-delay="400">
+            <div class="card-content">
+              <div class="specialist-info">
+                <div class="profile-section">
+                  <div class="profile-image">
+                    <img src="assets/img/health/staff-7.webp" alt="Dr. Michael Rivera" class="img-fluid">
+                    <div class="online-status offline"></div>
                   </div>
-                  <div class="col-md-6 col-lg-4 mb-4 mb-lg-0">
-                    <h3 class="mb-3">Accounts</h3>
-                    <ul class="list-unstyled">
-                      <li><a href="page-signup.html">Register</a></li>
-                      <li><a href="page-signin.html">Sign in</a></li>
-                      <li><a href="page-forgot-password.html">Fogot Password</a></li>
-                      <li><a href="page-coming-soon.html">Coming soon</a></li>
-                      <li><a href="page-portfolio-masonry.html">Portfolio Masonry</a></li>
-                    </ul>
+                  <div class="specialist-data">
+                    <h3>Dr. Michael Rivera</h3>
+                    <p class="specialty">Orthopedic Surgeon</p>
+                    <div class="credentials">
+                      <span class="badge">MD, FAAOS</span>
+                      <span class="experience">20 years</span>
+                    </div>
                   </div>
-                  <div class="col-md-6 col-lg-4 mb-4 mb-lg-0 quick-contact">
-                    <h3 class="mb-3">Contact</h3>
-                    <p class="d-flex mb-3"><i class="bi bi-geo-alt-fill me-3"></i><span>123 Main Street Apt 4B Springfield, <br> IL 62701 United States</span></p><a class="d-flex mb-3" href="mailto:info@mydomain.com"><i class="bi bi-envelope-fill me-3"></i><span>info@mydomain.com</span></a><a class="d-flex mb-3" href="tel://+123456789900"><i class="bi bi-telephone-fill me-3"></i><span>+1 (234) 5678 9900</span></a><a class="d-flex mb-3" href="https://freebootstrap.net"><i class="bi bi-globe me-3"></i><span>FreeBootstrap.net</span></a>
+                </div>
+                <div class="rating-info">
+                  <div class="stars-display">
+                    <i class="bi bi-star-fill"></i>
+                    <i class="bi bi-star-fill"></i>
+                    <i class="bi bi-star-fill"></i>
+                    <i class="bi bi-star-fill"></i>
+                    <i class="bi bi-star-half"></i>
                   </div>
+                  <span class="score">4.7</span>
+                  <small>(134 patients)</small>
+                </div>
+              </div>
+              <div class="quick-actions">
+                <a href="#" class="action-btn outline">Profile</a>
+                <a href="#" class="action-btn primary">Request</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="specialist-card" data-aos="slide-up" data-aos-delay="500">
+            <div class="card-content">
+              <div class="specialist-info">
+                <div class="profile-section">
+                  <div class="profile-image">
+                    <img src="assets/img/health/staff-9.webp" alt="Dr. Lisa Garcia" class="img-fluid">
+                    <div class="online-status active"></div>
+                  </div>
+                  <div class="specialist-data">
+                    <h3>Dr. Lisa Garcia</h3>
+                    <p class="specialty">Dermatologist</p>
+                    <div class="credentials">
+                      <span class="badge">MD, FAAD</span>
+                      <span class="experience">15 years</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="rating-info">
+                  <div class="stars-display">
+                    <i class="bi bi-star-fill"></i>
+                    <i class="bi bi-star-fill"></i>
+                    <i class="bi bi-star-fill"></i>
+                    <i class="bi bi-star-fill"></i>
+                    <i class="bi bi-star"></i>
+                  </div>
+                  <span class="score">4.6</span>
+                  <small>(89 patients)</small>
+                </div>
+              </div>
+              <div class="quick-actions">
+                <a href="#" class="action-btn outline">Profile</a>
+                <a href="#" class="action-btn primary">Consult</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="specialist-card" data-aos="slide-up" data-aos-delay="600">
+            <div class="card-content">
+              <div class="specialist-info">
+                <div class="profile-section">
+                  <div class="profile-image">
+                    <img src="assets/img/health/staff-12.webp" alt="Dr. Daniel Wong" class="img-fluid">
+                    <div class="online-status active"></div>
+                  </div>
+                  <div class="specialist-data">
+                    <h3>Dr. Daniel Wong</h3>
+                    <p class="specialty">Oncology Expert</p>
+                    <div class="credentials">
+                      <span class="badge">MD, FASCO</span>
+                      <span class="experience">21 years</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="rating-info">
+                  <div class="stars-display">
+                    <i class="bi bi-star-fill"></i>
+                    <i class="bi bi-star-fill"></i>
+                    <i class="bi bi-star-fill"></i>
+                    <i class="bi bi-star-fill"></i>
+                    <i class="bi bi-star-fill"></i>
+                  </div>
+                  <span class="score">4.9</span>
+                  <small>(211 patients)</small>
+                </div>
+              </div>
+              <div class="quick-actions">
+                <a href="#" class="action-btn outline">Profile</a>
+                <a href="#" class="action-btn primary">Appointment</a>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="text-center mt-5" data-aos="fade-up" data-aos-delay="700">
+          <a href="specialists.html" class="view-all-link">
+            Browse Complete Directory
+            <i class="bi bi-chevron-right"></i>
+          </a>
+        </div>
+
+      </div>
+
+    </section><!-- /Find A Doctor Section -->
+
+    <!-- Call To Action Section -->
+    <section id="call-to-action" class="call-to-action section light-background">
+
+      <div class="container" data-aos="fade-up" data-aos-delay="100">
+
+        <div class="hero-content" data-aos="fade-up" data-aos-delay="200">
+          <div class="row align-items-center">
+            <div class="col-lg-6">
+              <div class="content-wrapper">
+                <h2>Exceptional Care for Your Health Journey</h2>
+                <p>Discover comprehensive healthcare services delivered with compassion and expertise. Our dedicated team is committed to providing personalized medical care that puts you first.</p>
+
+                <div class="action-buttons">
+                  <a href="appointment.html" class="primary-btn">Schedule Consultation</a>
+                  <a href="services.html" class="secondary-link">
+                    <span>Explore Services</span>
+                    <i class="fas fa-arrow-right"></i>
+                  </a>
                 </div>
               </div>
             </div>
-            <div class="row credits pt-3">
-              <div class="col-xl-8 text-center text-xl-start mb-3 mb-xl-0">
-                <!--
-                Note:
-                =>>> Please keep all the footer links intact. <<<=
-                =>>> You can only remove the links if you buy the pro version. <<<=
-                =>>> Buy the pro version, which includes a functional PHP/AJAX contact form and many additional features.: https://freebootstrap.net/template/vertex-pro-bootstrap-website-template-for-portfolio/ <<<=
-                --> 
-                &copy;
-                <script>document.write(new Date().getFullYear());</script> Nova. 
-                 All rights reserved. Designed with <i class="bi bi-heart-fill text-danger"></i> by <a href="https://freebootstrap.net">FreeBootstrap.net</a>
+            <div class="col-lg-6">
+              <div class="hero-image" data-aos="zoom-in" data-aos-delay="300">
+                <img src="assets/img/health/showcase-2.webp" alt="Healthcare Excellence" class="img-fluid">
               </div>
-              <div class="col-xl-4 justify-content-start justify-content-xl-end quick-links d-flex flex-column flex-xl-row text-center text-xl-start gap-1">Distributed by<a href="https://themewagon.com" target="_blank">ThemeWagon</a></div>
             </div>
           </div>
-        </footer>
-        <!-- End Footer-->
-        
-      </main>
+        </div>
+
+        <div class="stats-section" data-aos="fade-up" data-aos-delay="400">
+          <div class="row">
+            <div class="col-lg-3 col-md-6">
+              <div class="stat-item">
+                <div class="stat-number">25+</div>
+                <div class="stat-label">Years Experience</div>
+              </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+              <div class="stat-item">
+                <div class="stat-number">15K+</div>
+                <div class="stat-label">Happy Patients</div>
+              </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+              <div class="stat-item">
+                <div class="stat-number">50+</div>
+                <div class="stat-label">Medical Experts</div>
+              </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+              <div class="stat-item">
+                <div class="stat-number">24/7</div>
+                <div class="stat-label">Emergency Care</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="services-grid" data-aos="fade-up" data-aos-delay="500">
+          <div class="row">
+
+            <div class="col-lg-4 col-md-6">
+              <div class="service-card" data-aos="fade-up" data-aos-delay="100">
+                <div class="service-icon">
+                  <i class="fas fa-heartbeat"></i>
+                </div>
+                <h4>Cardiology Excellence</h4>
+                <p>Advanced cardiac care with state-of-the-art diagnostic equipment and experienced cardiologists dedicated to heart health.</p>
+                <a href="#" class="service-link">Learn More</a>
+              </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6">
+              <div class="service-card" data-aos="fade-up" data-aos-delay="200">
+                <div class="service-icon">
+                  <i class="fas fa-brain"></i>
+                </div>
+                <h4>Neurology Center</h4>
+                <p>Comprehensive neurological services including diagnosis and treatment of brain, spine, and nervous system conditions.</p>
+                <a href="#" class="service-link">Learn More</a>
+              </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6">
+              <div class="service-card" data-aos="fade-up" data-aos-delay="300">
+                <div class="service-icon">
+                  <i class="fas fa-shield-alt"></i>
+                </div>
+                <h4>Preventive Care</h4>
+                <p>Proactive health screenings and wellness programs designed to prevent illness and maintain optimal health.</p>
+                <a href="#" class="service-link">Learn More</a>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="contact-banner" data-aos="zoom-in" data-aos-delay="600">
+          <div class="banner-content">
+            <div class="contact-info">
+              <div class="contact-icon">
+                <i class="fas fa-phone"></i>
+              </div>
+              <div class="contact-text">
+                <h5>Need Immediate Assistance?</h5>
+                <p>Our medical team is available around the clock for urgent consultations and emergency support.</p>
+              </div>
+            </div>
+            <div class="contact-actions">
+              <a href="tel:+15551234567" class="call-btn">
+                <i class="fas fa-phone"></i>
+                (555) 123-4567
+              </a>
+              <a href="contact.html" class="contact-link">Get Directions</a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </section><!-- /Call To Action Section -->
+
+  </main>
+
+  <footer id="footer" class="footer position-relative">
+
+    <div class="container footer-top">
+      <div class="row gy-4">
+        <div class="col-lg-4 col-md-6 footer-about">
+          <a href="index.html" class="logo d-flex align-items-center">
+            <span class="sitename">MediNest</span>
+          </a>
+          <div class="footer-contact pt-3">
+            <p>A108 Adam Street</p>
+            <p>New York, NY 535022</p>
+            <p class="mt-3"><strong>Phone:</strong> <span>+1 5589 55488 55</span></p>
+            <p><strong>Email:</strong> <span>info@example.com</span></p>
+          </div>
+          <div class="social-links d-flex mt-4">
+            <a href=""><i class="bi bi-twitter-x"></i></a>
+            <a href=""><i class="bi bi-facebook"></i></a>
+            <a href=""><i class="bi bi-instagram"></i></a>
+            <a href=""><i class="bi bi-linkedin"></i></a>
+          </div>
+        </div>
+
+        <div class="col-lg-2 col-md-3 footer-links">
+          <h4>Useful Links</h4>
+          <ul>
+            <li><a href="#">Home</a></li>
+            <li><a href="#">About us</a></li>
+            <li><a href="#">Services</a></li>
+            <li><a href="#">Terms of service</a></li>
+            <li><a href="#">Privacy policy</a></li>
+          </ul>
+        </div>
+
+        <div class="col-lg-2 col-md-3 footer-links">
+          <h4>Our Services</h4>
+          <ul>
+            <li><a href="#">Web Design</a></li>
+            <li><a href="#">Web Development</a></li>
+            <li><a href="#">Product Management</a></li>
+            <li><a href="#">Marketing</a></li>
+            <li><a href="#">Graphic Design</a></li>
+          </ul>
+        </div>
+
+        <div class="col-lg-2 col-md-3 footer-links">
+          <h4>Hic solutasetp</h4>
+          <ul>
+            <li><a href="#">Molestiae accusamus iure</a></li>
+            <li><a href="#">Excepturi dignissimos</a></li>
+            <li><a href="#">Suscipit distinctio</a></li>
+            <li><a href="#">Dilecta</a></li>
+            <li><a href="#">Sit quas consectetur</a></li>
+          </ul>
+        </div>
+
+        <div class="col-lg-2 col-md-3 footer-links">
+          <h4>Nobis illum</h4>
+          <ul>
+            <li><a href="#">Ipsam</a></li>
+            <li><a href="#">Laudantium dolorum</a></li>
+            <li><a href="#">Dinera</a></li>
+            <li><a href="#">Trodelas</a></li>
+            <li><a href="#">Flexo</a></li>
+          </ul>
+        </div>
+
+      </div>
     </div>
-    
-    <!-- ======= Back to Top =======-->
-    <button id="back-to-top"><i class="bi bi-arrow-up-short"></i></button>
-    <!-- End Back to top-->
-    
-    <!-- ======= Javascripts =======-->
-    <script src="assets/vendors/bootstrap/bootstrap.bundle.min.js"></script>
-    <script src="assets/vendors/gsap/gsap.min.js"></script>
-    <script src="assets/vendors/imagesloaded/imagesloaded.pkgd.min.js"></script>
-    <script src="assets/vendors/isotope/isotope.pkgd.min.js"></script>
-    <script src="assets/vendors/glightbox/glightbox.min.js"></script>
-    <script src="assets/vendors/swiper/swiper-bundle.min.js"></script>
-    <script src="assets/vendors/aos/aos.js"></script>
-    <script src="assets/vendors/purecounter/purecounter.js"></script>
-    <script src="assets/js/custom.js"></script>
-    <script src="assets/js/send_email.js"></script>
-    <!-- End JavaScripts-->
-  </body>
+
+    <div class="container copyright text-center mt-4">
+      <p>© <span>Copyright</span> <strong>MediNest</strong>&nbsp;<span>All Rights Reserved</span></p>
+      <div class="credits">
+        <!-- All the links in the footer should remain intact. -->
+        <!-- You can delete the links only if you've purchased the pro version. -->
+        <!-- Licensing information: https://bootstrapmade.com/license/ -->
+        <!-- Purchase the pro version with working PHP/AJAX contact form: [buy-url] -->
+        Designed by <a href="https://bootstrapmade.com/">BootstrapMade</a> | <a href="https://bootstrapmade.com/tools/">DevTools</a>
+      </div>
+    </div>
+
+  </footer>
+
+  <!-- Scroll Top -->
+  <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+
+  <!-- Preloader -->
+  <div id="preloader"></div>
+
+  <!-- Vendor JS Files -->
+  <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="assets/vendor/php-email-form/validate.js"></script>
+  <script src="assets/vendor/aos/aos.js"></script>
+  <script src="assets/vendor/glightbox/js/glightbox.min.js"></script>
+  <script src="assets/vendor/purecounter/purecounter_vanilla.js"></script>
+  <script src="assets/vendor/imagesloaded/imagesloaded.pkgd.min.js"></script>
+  <script src="assets/vendor/isotope-layout/isotope.pkgd.min.js"></script>
+  <script src="assets/vendor/swiper/swiper-bundle.min.js"></script>
+
+  <!-- Main JS File -->
+  <script src="assets/js/main.js"></script>
+
+</body>
+
 </html>

@@ -3,6 +3,10 @@
 use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Route;
 
+    Route::get('/', function(){
+        return view('index');
+    });
+
 Route::middleware(['guest'])->group(function(){
     Route::get('/register', [AuthController::class, 'create'])->name('register');
     

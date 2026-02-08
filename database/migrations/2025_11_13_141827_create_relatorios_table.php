@@ -24,8 +24,11 @@ return new class extends Migration
                   ->nullable()->constrained('farmacias')
                   ->onDelete('set null');
                   
-            $table->string('tipo_relatorio');
-            $table->text('descricao')->nullable();
+            $table->date('data_inicio');
+            $table->date('data_fim');
+            $table->integer('total_vendas')->default(0);
+            $table->decimal('total_receita', 10, 2)->default(0);
+            $table->enum('tipo_relatorio', ['csv', 'pdf'])->default('csv');
             $table->dateTime('data_geracao')->default(now());
             $table->timestamps();
         });

@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('avaliacoes', function (Blueprint $table) {
             $table->id();
             
-            $table->foreignId('usuario_id')
+            $table->foreignId('user_id')
                   ->constrained('users')
                   ->onDelete('cascade');
 
@@ -22,7 +22,7 @@ return new class extends Migration
                   ->constrained('farmacias')
                   ->onDelete('cascade');
 
-            $table->unsignedTinyInteger('nota'); // ideal para 1-5
+            $table->unsignedTinyInteger('classificacao'); // ideal para 1-5
             $table->text('comentario')->nullable();
             $table->timestamps();
         });

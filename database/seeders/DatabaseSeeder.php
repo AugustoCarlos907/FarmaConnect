@@ -49,11 +49,12 @@ class DatabaseSeeder extends Seeder
             'telefone' => '1234567890',
             'descricao' => 'Entregador central da cidade',
             'numero_bi' => '1234567890123',
-            'matricula_moto' => 'ABC-1234',
+            'matricula_veiculo' => 'ABC-1234',
             'foto_perfil' => 'perfil.jpg',
             'status' => 'Ativo',
             'latitude' => -23.5505,
             'longitude' => -46.6333,
+            'farmacia_id' => 1,
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),
         ]);

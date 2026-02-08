@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('pedidos', function (Blueprint $table) {
             $table->id();
 
-            $table->foreignId('cliente_id')
-                  ->constrained('clientes')
+            $table->foreignId('user_id')
+                  ->constrained('users')
                   ->onDelete('cascade');
 
             $table->foreignId('farmacia_id')

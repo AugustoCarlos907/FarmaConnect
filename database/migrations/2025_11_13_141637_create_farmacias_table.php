@@ -17,9 +17,11 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->string('telefone')->nullable();
             $table->string('descricao')->nullable();
+
             $table->string('endereco'); 
             $table->decimal('latitude', 10, 8)->nullable();
             $table->decimal('longitude', 10, 8)->nullable();
+            
             $table->enum('status', ['Ativo', 'Desativado'])->default('Ativo');
         });
     }

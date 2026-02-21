@@ -22,4 +22,11 @@ class PedidoController extends Controller
 
         // return response()->json($pedido, 201);
     }
+
+    public function index($perPage = 10)
+    {
+        $this->service->getAllPedidosByPharmacy($perPage);
+
+        // return response()->json($pedidos);
+    }
 }

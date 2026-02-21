@@ -3,9 +3,18 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 
-class Entregador extends Model
+class Entregador extends Authenticatable
 {
+    /** @use HasFactory<\Database\Factories\UserFactory> */
+    use HasFactory, Notifiable , MustVerifyEmail ;
+
+    protected $table = 'entregadores'; // Ou o nome real da sua tabela
+
     protected $fillable = [
         'name',
         'email',
@@ -17,7 +26,8 @@ class Entregador extends Model
         'foto_perfil',
         'latitude',
         'longitude',
-        'farmacia_id'
+        'farmacia_id',
+        'password'
     ];
 
     public function entregas()
@@ -28,5 +38,9 @@ class Entregador extends Model
     public function farmacia()
     {
         return $this->belongsTo(Farmacia::class);
+    }
+
+    public function user(){
+        return $this->belongsTo(User::class);
     }
 }

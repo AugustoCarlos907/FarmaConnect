@@ -9,7 +9,7 @@ class Entrega extends Model
     protected $fillable = [
         'pedido_id',
         'entregador_id',
-        'avaliacao_id',
+        // 'avaliacao_id',
         'status',
         'taxa_entrega',
         'distancia_km',

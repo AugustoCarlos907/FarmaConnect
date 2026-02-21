@@ -9,6 +9,7 @@ use Carbon\Carbon;
 use DB;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
@@ -24,6 +25,9 @@ class DatabaseSeeder extends Seeder
         User::create([
             'name' => 'Cliente User',
             'email' => 'cliente@gmail.com',
+            'phone'=>'931334499',
+            'endereco' => 'Luanda , Angola',
+            'password' => Hash::make('123456'),
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),
         ]);
@@ -32,6 +36,7 @@ class DatabaseSeeder extends Seeder
         Farmacia::create([
             'name' => 'Farmacia Central',
             'email' => 'farmacia@gmail.com',
+            'password' => Hash::make('123456'),
             'telefone' => '1234567890',
             'descricao' => 'Farmacia central da cidade',
             'endereco' => 'Rua das Flores, 123',
@@ -43,9 +48,28 @@ class DatabaseSeeder extends Seeder
         ]);
 
 
-        Entregador::create([
+        // Entregador::create([
+        //     'name' => 'Entregador Central',
+        //     'email' => 'entregador@gmail.com',
+        //     'password' => Hash::make('123456'),
+        //     'telefone' => '1234567890',
+        //     'descricao' => 'Entregador central da cidade',
+        //     'numero_bi' => '1234567890123',
+        //     'matricula_veiculo' => 'ABC-1234',
+        //     'foto_perfil' => 'perfil.jpg',
+        //     'status' => 'Ativo',
+        //     'latitude' => -23.5505,
+        //     'longitude' => -46.6333,
+        //     'farmacia_id' => 1,
+        //     'created_at' => Carbon::now(),
+        //     'updated_at' => Carbon::now(),
+        // ]);
+
+        
+        DB::table('entregadores')->insert([
             'name' => 'Entregador Central',
             'email' => 'entregador@gmail.com',
+            'password' => Hash::make('123456'),
             'telefone' => '1234567890',
             'descricao' => 'Entregador central da cidade',
             'numero_bi' => '1234567890123',
@@ -58,7 +82,6 @@ class DatabaseSeeder extends Seeder
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),
         ]);
-
 
 
         $categorias = [
@@ -109,7 +132,7 @@ class DatabaseSeeder extends Seeder
 
         foreach ($categorias as $categoria) {
             DB::table('categorias')->insert([
-                'nome' => $categoria,
+                'name' => $categoria,
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ]);

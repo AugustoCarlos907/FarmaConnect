@@ -22,6 +22,10 @@ return new class extends Migration
                   ->constrained('farmacias')
                   ->onDelete('cascade');
 
+            $table->text('endereco')->nullable();
+            $table->decimal('latitude', 10, 8)->nullable();
+            $table->decimal('longitude', 11, 8)->nullable();
+
             $table->enum('status', 
             [ 
                 'Pendente', 

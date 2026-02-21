@@ -7,11 +7,13 @@ use Illuminate\Database\Eloquent\Model;
 class Avaliacao extends Model
 {
     protected $fillable = [
+
         'classificacao',
         'comentario',
 
         'farmacia_id',
-        'user_id',
+        'user_id'
+        
     ];
 
     public function farmacia()

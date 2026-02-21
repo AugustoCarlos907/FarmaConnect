@@ -11,8 +11,8 @@ class Pedido extends Model
         'farmacia_id',
         'status',
         'total',
-        // 'endereco_entrega',
         'data_pedido',
+        // 'endereco_entrega',
     ];
 
     public function usuario()

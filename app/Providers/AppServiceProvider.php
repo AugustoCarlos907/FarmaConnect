@@ -5,7 +5,9 @@ namespace App\Providers;
 use App\Repositories\FileRepository;
 use App\Repositories\Interfaces\FileInterface;
 use App\Repositories\Interfaces\MedicamentoInterface;
+use App\Repositories\Interfaces\PedidoInterface;
 use App\Repositories\MedicamentoRepository;
+use App\Repositories\PedidoRepository;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -25,5 +27,6 @@ class AppServiceProvider extends ServiceProvider
     {
         $this->app->bind(FileInterface::class , FileRepository::class);
         $this->app->bind(MedicamentoInterface::class , MedicamentoRepository::class);
+        $this->app->bind(PedidoInterface::class , PedidoRepository::class);
     }
 }

@@ -8,6 +8,7 @@ use App\Models\StockItem;
 class AlertService{
 
 
+
     public function checkLowPriceItems(float $limit = 5): void
     {
        $items = StockItem::query()

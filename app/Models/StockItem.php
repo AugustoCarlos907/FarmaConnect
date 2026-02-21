@@ -8,12 +8,14 @@ class StockItem extends Model
 {
     
     protected $fillable = [
+
         'quantidade',
         'preco',
         'data_validade',
         'lote',
         'ativo',
-        'medicamento_id',
+        'medicamento_id'
+        
     ];
 
     public function farmacia()

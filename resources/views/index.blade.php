@@ -1,1135 +1,1313 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt">
 
 <head>
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
-  <title>Index - MediNest Bootstrap Template</title>
-  <meta name="description" content="">
-  <meta name="keywords" content="">
+  <title>FarmaConnect - Plataforma de Busca e Entrega de Medicamentos em Angola</title>
+  <meta name="description" content="Encontre medicamentos nas farmácias de Luanda e receba em casa. Comparação de preços, entregas rápidas e farmácias parceiras.">
+  <meta name="keywords" content="farmácia angola, medicamentos luanda, entrega de medicamentos, farmácia online angola">
 
   <!-- Favicons -->
-  <link href="assets/img/favicon.png" rel="icon">
-  <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90' fill='%23099aa7'>💊</text></svg>">
 
   <!-- Fonts -->
   <link href="https://fonts.googleapis.com" rel="preconnect">
   <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
 
-  <!-- Vendor CSS Files -->
-  <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-  <link href="assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
-  <link href="assets/vendor/aos/aos.css" rel="stylesheet">
-  <link href="assets/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
-  <link href="assets/vendor/fontawesome-free/css/all.min.css" rel="stylesheet">
-  <link href="assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  
+  <style>
+    /* ----- PALETA FARMA CONNECT ----- */
+    :root {
+      --background-color: #ffffff;
+      --default-color: #363f40;
+      --heading-color: #1f2f31;
+      --accent-color: #099aa7;
+      --surface-color: #ffffff;
+      --contrast-color: #ffffff;
+      --soft-green: #dff3f0;
+      --light-mint: #eaf6f5;
+      --google-gray: #f1f3f4;
+      --apple-dark: #1c1c1e;
+    }
 
-  <!-- Main CSS File -->
-  <link href="assets/css/main.css" rel="stylesheet">
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-  <!-- =======================================================
-  * Template Name: MediNest
-  * Template URL: https://bootstrapmade.com/medinest-bootstrap-hospital-template/
-  * Updated: Aug 11 2025 with Bootstrap v5.3.7
-  * Author: BootstrapMade.com
-  * License: https://bootstrapmade.com/license/
-  ======================================================== -->
+    body {
+      background-color: var(--background-color);
+      color: var(--default-color);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      overflow-x: hidden;
+    }
+
+    /* Header */
+    .header {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 2px 20px rgba(9, 154, 167, 0.08);
+      padding: 1rem 0;
+      transition: all 0.3s ease;
+    }
+
+    .header .logo {
+      text-decoration: none;
+    }
+
+    .header .sitename {
+      font-size: 2rem;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      margin: 0;
+    }
+
+    .header .sitename span:first-child {
+      color: var(--accent-color);
+    }
+
+    .header .sitename span:last-child {
+      color: var(--heading-color);
+    }
+
+    /* Navegação */
+    .navmenu ul {
+      margin: 0;
+      padding: 0;
+      display: flex;
+      list-style: none;
+      align-items: center;
+    }
+
+    .navmenu li {
+      position: relative;
+      margin: 0 0.5rem;
+    }
+
+    .navmenu a {
+      color: var(--heading-color);
+      font-weight: 600;
+      font-size: 1rem;
+      padding: 0.5rem 1rem;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      transition: 0.3s;
+      border-radius: 50px;
+    }
+
+    .navmenu a:hover,
+    .navmenu .active {
+      background-color: var(--soft-green);
+      color: var(--accent-color);
+    }
+
+    .navmenu .dropdown ul {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      background: white;
+      box-shadow: 0 10px 30px rgba(9, 154, 167, 0.1);
+      border-radius: 20px;
+      padding: 0.5rem;
+      min-width: 200px;
+      z-index: 99;
+    }
+
+    .navmenu .dropdown:hover ul {
+      display: block;
+    }
+
+    .navmenu .dropdown ul li {
+      margin: 0;
+    }
+
+    .navmenu .dropdown ul a {
+      padding: 0.7rem 1rem;
+      border-radius: 12px;
+    }
+
+    .btn-getstarted {
+      background-color: var(--accent-color);
+      color: white;
+      font-weight: 600;
+      padding: 0.7rem 1.5rem;
+      border-radius: 50px;
+      text-decoration: none;
+      transition: all 0.3s;
+      border: 2px solid var(--accent-color);
+    }
+
+    .btn-getstarted:hover {
+      background-color: transparent;
+      color: var(--accent-color);
+    }
+
+    .btn-outline {
+      background-color: transparent;
+      color: var(--accent-color);
+      font-weight: 600;
+      padding: 0.7rem 1.5rem;
+      border-radius: 50px;
+      text-decoration: none;
+      transition: all 0.3s;
+      border: 2px solid var(--accent-color);
+    }
+
+    .btn-outline:hover {
+      background-color: var(--accent-color);
+      color: white;
+    }
+
+    /* Hero Section */
+    .hero {
+      padding: 120px 0 60px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-badge {
+      background: var(--soft-green);
+      color: var(--accent-color);
+      padding: 0.5rem 1rem;
+      border-radius: 50px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      display: inline-block;
+      margin-bottom: 1.5rem;
+    }
+
+    .hero-title {
+      font-size: 3.5rem;
+      font-weight: 700;
+      color: var(--heading-color);
+      line-height: 1.2;
+      margin-bottom: 1.5rem;
+    }
+
+    .hero-title span {
+      color: var(--accent-color);
+    }
+
+    .hero-description {
+      font-size: 1.1rem;
+      color: #6c8285;
+      margin-bottom: 2rem;
+      max-width: 90%;
+    }
+
+    .hero-stats {
+      display: flex;
+      gap: 2rem;
+      margin: 2rem 0;
+    }
+
+    .hero-stats .stat {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .hero-stats .stat .number {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--accent-color);
+    }
+
+    .hero-stats .stat .label {
+      font-size: 0.9rem;
+      color: #6c8285;
+    }
+
+    .hero-image {
+      position: relative;
+    }
+
+    .hero-image .main-image {
+      border-radius: 40px;
+      box-shadow: 0 30px 60px rgba(9, 154, 167, 0.15);
+    }
+
+    .floating-card {
+      position: absolute;
+      background: white;
+      padding: 1rem 1.5rem;
+      border-radius: 60px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(9, 154, 167, 0.1);
+    }
+
+    .floating-card.delivery-card {
+      bottom: 30px;
+      left: 30px;
+    }
+
+    .floating-card.promo-card {
+      top: 30px;
+      right: 30px;
+    }
+
+    .floating-card i {
+      font-size: 2rem;
+      color: var(--accent-color);
+    }
+
+    .floating-card .text .label {
+      font-size: 0.8rem;
+      color: #6c8285;
+    }
+
+    .floating-card .text .value {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--heading-color);
+    }
+
+    /* Search Section */
+    .search-section {
+      background: linear-gradient(145deg, var(--light-mint) 0%, #ffffff 100%);
+      padding: 4rem 0;
+      border-radius: 60px 60px 0 0;
+    }
+
+    .search-container {
+      background: white;
+      padding: 1rem;
+      border-radius: 70px;
+      box-shadow: 0 20px 40px rgba(9, 154, 167, 0.08);
+      margin-top: -80px;
+    }
+
+    .search-row {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+    }
+
+    .search-field {
+      flex: 1;
+      position: relative;
+    }
+
+    .search-field i {
+      position: absolute;
+      left: 1.5rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--accent-color);
+    }
+
+    .search-field input,
+    .search-field select {
+      width: 100%;
+      padding: 1rem 1rem 1rem 3rem;
+      border: 2px solid var(--soft-green);
+      border-radius: 60px;
+      font-size: 1rem;
+      transition: all 0.3s;
+    }
+
+    .search-field input:focus,
+    .search-field select:focus {
+      outline: none;
+      border-color: var(--accent-color);
+    }
+
+    .search-submit {
+      background: var(--accent-color);
+      color: white;
+      border: none;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      transition: all 0.3s;
+    }
+
+    .search-submit:hover {
+      background: #067e8a;
+      transform: scale(1.1);
+    }
+
+    /* Section Titles */
+    .section-title {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+
+    .section-title h2 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: var(--heading-color);
+      margin-bottom: 1rem;
+    }
+
+    .section-title p {
+      color: #6c8285;
+      font-size: 1.1rem;
+    }
+
+    /* Pharmacy Cards */
+    .pharmacy-card {
+      background: white;
+      border-radius: 32px;
+      padding: 1.5rem;
+      box-shadow: 0 10px 30px rgba(9, 154, 167, 0.08);
+      transition: all 0.3s;
+      height: 100%;
+      border: 1px solid transparent;
+    }
+
+    .pharmacy-card:hover {
+      transform: translateY(-10px);
+      border-color: var(--accent-color);
+      box-shadow: 0 20px 40px rgba(9, 154, 167, 0.15);
+    }
+
+    .pharmacy-image {
+      width: 80px;
+      height: 80px;
+      border-radius: 20px;
+      object-fit: cover;
+      margin-bottom: 1rem;
+    }
+
+    .pharmacy-name {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--heading-color);
+      margin-bottom: 0.5rem;
+    }
+
+    .pharmacy-location {
+      color: #6c8285;
+      font-size: 0.95rem;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .pharmacy-status {
+      display: inline-block;
+      padding: 0.3rem 0.8rem;
+      border-radius: 50px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+    }
+
+    .status-open {
+      background: #d4edda;
+      color: #155724;
+    }
+
+    .status-closed {
+      background: #f8d7da;
+      color: #721c24;
+    }
+
+    .pharmacy-actions {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .pharmacy-actions a {
+      flex: 1;
+      padding: 0.5rem;
+      text-align: center;
+      border-radius: 50px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: all 0.3s;
+    }
+
+    .btn-view {
+      background: var(--soft-green);
+      color: var(--accent-color);
+    }
+
+    .btn-order {
+      background: var(--accent-color);
+      color: white;
+    }
+
+    /* Service Cards */
+    .service-card {
+      background: white;
+      border-radius: 32px;
+      padding: 2rem;
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(9, 154, 167, 0.08);
+      transition: all 0.3s;
+      height: 100%;
+    }
+
+    .service-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 20px 40px rgba(9, 154, 167, 0.15);
+    }
+
+    .service-icon {
+      width: 80px;
+      height: 80px;
+      background: var(--soft-green);
+      border-radius: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1.5rem;
+    }
+
+    .service-icon i {
+      font-size: 2.5rem;
+      color: var(--accent-color);
+    }
+
+    .service-card h4 {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--heading-color);
+      margin-bottom: 1rem;
+    }
+
+    .service-card p {
+      color: #6c8285;
+      line-height: 1.6;
+    }
+
+    /* How It Works */
+    .how-it-works {
+      padding: 4rem 0;
+      background: var(--light-mint);
+    }
+
+    .step-item {
+      text-align: center;
+      padding: 2rem;
+    }
+
+    .step-number {
+      width: 60px;
+      height: 60px;
+      background: var(--accent-color);
+      color: white;
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin: 0 auto 1.5rem;
+      transform: rotate(10deg);
+      transition: all 0.3s;
+    }
+
+    .step-item:hover .step-number {
+      transform: rotate(0deg) scale(1.1);
+    }
+
+    .step-item h4 {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--heading-color);
+      margin-bottom: 1rem;
+    }
+
+    .step-item p {
+      color: #6c8285;
+    }
+
+    /* App Section */
+    .app-section {
+      padding: 4rem 0;
+    }
+
+    .app-content {
+      background: linear-gradient(135deg, var(--accent-color) 0%, #067e8a 100%);
+      border-radius: 60px;
+      padding: 3rem;
+      color: white;
+    }
+
+    .app-buttons {
+      display: flex;
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+
+    .app-button {
+      background: white;
+      color: var(--accent-color);
+      padding: 0.8rem 1.5rem;
+      border-radius: 50px;
+      text-decoration: none;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.3s;
+    }
+
+    .app-button:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    .app-image {
+      max-width: 100%;
+      border-radius: 40px;
+      transform: translateY(-30px);
+    }
+
+    /* Footer */
+    .footer {
+      background: var(--heading-color);
+      color: white;
+      padding: 4rem 0 2rem;
+    }
+
+    .footer h4 {
+      color: white;
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+    }
+
+    .footer a {
+      color: #a0b9bc;
+      text-decoration: none;
+      transition: all 0.3s;
+    }
+
+    .footer a:hover {
+      color: var(--accent-color);
+    }
+
+    .footer .social-links a {
+      width: 40px;
+      height: 40px;
+      background: rgba(255, 255, 255, 0.1);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      margin-right: 0.5rem;
+    }
+
+    .footer .social-links a:hover {
+      background: var(--accent-color);
+    }
+
+    .footer .contact-info i {
+      color: var(--accent-color);
+      margin-right: 0.5rem;
+    }
+
+    .copyright {
+      text-align: center;
+      margin-top: 3rem;
+      padding-top: 2rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    /* Animações */
+    .animate-fade-up {
+      animation: fadeUp 0.6s ease;
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Responsive */
+    @media (max-width: 992px) {
+      .hero-title {
+        font-size: 2.5rem;
+      }
+      
+      .search-row {
+        flex-direction: column;
+      }
+      
+      .search-container {
+        border-radius: 30px;
+      }
+      
+      .search-submit {
+        width: 100%;
+        border-radius: 60px;
+      }
+    }
+  </style>
 </head>
 
-<body class="index-page">
+<body>
+  <!-- Header -->
+  <header class="header fixed-top">
+    <div class="container">
+      <div class="d-flex align-items-center justify-content-between">
+        <a href="{{ route('index') }}" class="logo">
+          <h1 class="sitename"><span>Farma</span><span>Connect</span></h1>
+        </a>
 
-  <header id="header" class="header d-flex align-items-center fixed-top">
-    <div class="container position-relative d-flex align-items-center justify-content-between">
+        <nav class="navmenu">
+          <ul>
+            <li><a href="#hero" class="active">Início</a></li>
+            <li><a href="#search">Medicamentos</a></li>
+            <li><a href="#pharmacies">Farmácias</a></li>
+            <li class="dropdown">
+              <a href="#">Cadastro <i class="bi bi-chevron-down"></i></a>
+              <ul>
+                <li><a href="cadastro.html">Cliente</a></li>
+                <li><a href="cadastrar_farmacia.html">Farmácia</a></li>
+                <li><a href="cadastro-entregador.html">Entregador</a></li>
+              </ul>
+            </li>
+            <li><a href="#contact">Contacto</a></li>
+          </ul>
+        </nav>
 
-      <a href="index.html" class="logo d-flex align-items-center me-auto me-xl-0">
-        <!-- Uncomment the line below if you also wish to use an image logo -->
-        <!-- <img src="assets/img/logo.webp" alt=""> -->
-        <h1 class="sitename">Medi<span>Nest</span></h1>
-      </a>
-
-      <nav id="navmenu" class="navmenu">
-        <ul>
-          <li><a href="index.html" class="active">Home</a></li>
-          <li><a href="about.html">About</a></li>
-          <li><a href="departments.html">Departments</a></li>
-          <li><a href="services.html">Services</a></li>
-          <li><a href="doctors.html">Doctors</a></li>
-          <li class="dropdown"><a href="#"><span>More Pages</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
-            <ul>
-              <li><a href="department-details.html">Department Details</a></li>
-              <li><a href="service-details.html">Service Details</a></li>
-              <li><a href="appointment.html">Appointment</a></li>
-              <li><a href="testimonials.html">Testimonials</a></li>
-              <li><a href="faq.html">Frequently Asked Questions</a></li>
-              <li><a href="gallery.html">Gallery</a></li>
-              <li><a href="terms.html">Terms</a></li>
-              <li><a href="privacy.html">Privacy</a></li>
-              <li><a href="404.html">404</a></li>
-            </ul>
-          </li>
-          <li class="dropdown"><a href="#"><span>Dropdown</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
-            <ul>
-              <li><a href="#">Dropdown 1</a></li>
-              <li class="dropdown"><a href="#"><span>Deep Dropdown</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
-                <ul>
-                  <li><a href="#">Deep Dropdown 1</a></li>
-                  <li><a href="#">Deep Dropdown 2</a></li>
-                  <li><a href="#">Deep Dropdown 3</a></li>
-                  <li><a href="#">Deep Dropdown 4</a></li>
-                  <li><a href="#">Deep Dropdown 5</a></li>
-                </ul>
-              </li>
-              <li><a href="#">Dropdown 2</a></li>
-              <li><a href="#">Dropdown 3</a></li>
-              <li><a href="#">Dropdown 4</a></li>
-            </ul>
-          </li>
-          <li><a href="contact.html">Contact</a></li>
-        </ul>
-        <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
-      </nav>
-
-      <a class="btn-getstarted" href="apointment.html">Apointment</a>
-
+        <a class="btn-getstarted" href="{{route('login')}}">Entrar</a>
+      </div>
     </div>
   </header>
 
-  <main class="main">
-
+  <main>
     <!-- Hero Section -->
-    <section id="hero" class="hero section">
+    <section id="hero" class="hero">
       <div class="container">
         <div class="row align-items-center">
-          <div class="col-lg-5">
-            <div class="hero-image" data-aos="fade-right" data-aos-delay="100">
-              <img src="assets/img/health/staff-8.webp" alt="Healthcare Professional" class="img-fluid main-image">
-              <div class="floating-card emergency-card" data-aos="fade-up" data-aos-delay="300">
-                <div class="card-content">
-                  <i class="bi bi-telephone-fill"></i>
-                  <div class="text">
-                    <span class="label">24/7 Emergency</span>
-                    <span class="number">+1 (555) 911-2468</span>
-                  </div>
-                </div>
+          <div class="col-lg-6" data-aos="fade-right">
+            <div class="hero-badge">
+              <i class="bi bi-shield-check"></i> Entrega segura em Luanda
+            </div>
+            <h1 class="hero-title">
+              Medicamentos na <span>palma da sua mão</span>
+            </h1>
+            <p class="hero-description">
+              Encontre farmácias próximas, compare preços e receba seus medicamentos em casa. 
+              Entrega rápida em todos os bairros de Luanda.
+            </p>
+            
+            <div class="hero-stats">
+              <div class="stat">
+                <span class="number">50+</span>
+                <span class="label">Farmácias Parceiras</span>
               </div>
-              <div class="floating-card stats-card" data-aos="fade-up" data-aos-delay="400">
-                <div class="stat-item">
-                  <span class="number">25K+</span>
-                  <span class="label">Patients Treated</span>
-                </div>
-                <div class="stat-item">
-                  <span class="number">98%</span>
-                  <span class="label">Satisfaction Rate</span>
-                </div>
+              <div class="stat">
+                <span class="number">30min</span>
+                <span class="label">Entrega Média</span>
               </div>
+              <div class="stat">
+                <span class="number">5000+</span>
+                <span class="label">Medicamentos</span>
+              </div>
+            </div>
+
+            <div class="d-flex gap-3">
+              <a href="#search" class="btn-getstarted">Pesquisar agora</a>
+              <a href="#how" class="btn-outline">Como funciona</a>
             </div>
           </div>
 
-          <div class="col-lg-7">
-            <div class="hero-content" data-aos="fade-left" data-aos-delay="200">
-              <div class="badge-container">
-                <span class="hero-badge">Trusted Healthcare Provider</span>
-              </div>
-
-              <h1 class="hero-title">Excellence in Medical Care Since 1985</h1>
-              <p class="hero-description">Mauris blandit aliquet elit, eget tincidunt nibh pulvinar a. Pellentesque in ipsum id orci porta dapibus. Vivamus magna justo, lacinia eget consectetur sed, convallis at tellus.</p>
-
-              <div class="hero-stats">
-                <div class="stat-group">
-                  <div class="stat">
-                    <i class="bi bi-award"></i>
-                    <div class="stat-text">
-                      <span class="number">35+</span>
-                      <span class="label">Years Experience</span>
-                    </div>
-                  </div>
-                  <div class="stat">
-                    <i class="bi bi-people"></i>
-                    <div class="stat-text">
-                      <span class="number">150+</span>
-                      <span class="label">Medical Specialists</span>
-                    </div>
-                  </div>
-                  <div class="stat">
-                    <i class="bi bi-geo-alt"></i>
-                    <div class="stat-text">
-                      <span class="number">12</span>
-                      <span class="label">Clinic Locations</span>
-                    </div>
-                  </div>
+          <div class="col-lg-6" data-aos="fade-left">
+            <div class="hero-image">
+              <img src="https://images.unsplash.com/photo-1631549916768-4119b2e5f926?w=800&auto=format&fit=crop" 
+                   alt="Entrega de medicamentos" class="img-fluid main-image">
+              
+              <div class="floating-card delivery-card">
+                <i class="bi bi-truck"></i>
+                <div class="text">
+                  <span class="label">Entrega em</span>
+                  <span class="value">30 minutos</span>
                 </div>
               </div>
 
-              <div class="cta-section">
-                <div class="cta-buttons">
-                  <a href="#" class="btn btn-primary">Schedule Consultation</a>
-                  <a href="https://www.youtube.com/watch?v=Y7f98aduVJ8" class="btn btn-secondary glightbox">
-                    <i class="bi bi-play-circle"></i>
-                    Watch Our Story
-                  </a>
-                </div>
-
-                <div class="quick-actions">
-                  <a href="#" class="action-link">
-                    <i class="bi bi-calendar-check"></i>
-                    <span>Find Available Times</span>
-                  </a>
-                  <a href="#" class="action-link">
-                    <i class="bi bi-chat-dots"></i>
-                    <span>Chat with Support</span>
-                  </a>
-                  <a href="#" class="action-link">
-                    <i class="bi bi-file-medical"></i>
-                    <span>Patient Portal</span>
-                  </a>
+              <div class="floating-card promo-card">
+                <i class="bi bi-tag"></i>
+                <div class="text">
+                  <span class="label">Primeira compra</span>
+                  <span class="value">10% desconto</span>
                 </div>
               </div>
             </div>
           </div>
         </div>
       </div>
+    </section>
 
-      <div class="background-elements">
-        <div class="bg-shape shape-1"></div>
-        <div class="bg-shape shape-2"></div>
-        <div class="bg-pattern"></div>
+    <!-- Search Section -->
+    <section id="search" class="search-section">
+      <div class="container">
+        <div class="search-container" data-aos="fade-up">
+          <form class="search-row">
+            <div class="search-field">
+              <i class="bi bi-capsule"></i>
+              <input type="text" placeholder="Nome do medicamento..." id="medicamento">
+            </div>
+            <div class="search-field">
+              <i class="bi bi-geo-alt"></i>
+              <select id="bairro">
+                <option value="">Todos os bairros</option>
+                <option>Ingombotas</option>
+                <option>Maianga</option>
+                <option>Alvalade</option>
+                <option>Kilamba</option>
+                <option>Talatona</option>
+                <option>Benfica</option>
+                <option>Viana</option>
+              </select>
+            </div>
+            <button type="submit" class="search-submit">
+              <i class="bi bi-search"></i>
+            </button>
+          </form>
+        </div>
+
+        <div class="row mt-5">
+          <div class="col-12">
+            <div class="section-title">
+              <h2>Medicamentos mais procurados</h2>
+              <p>Os medicamentos mais pesquisados em Luanda esta semana</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="row g-3">
+          <div class="col-lg-2 col-md-4 col-6">
+            <div class="badge bg-light text-dark p-3 w-100 text-center rounded-pill">
+              Paracetamol 500mg
+            </div>
+          </div>
+          <div class="col-lg-2 col-md-4 col-6">
+            <div class="badge bg-light text-dark p-3 w-100 text-center rounded-pill">
+              Amoxicilina
+            </div>
+          </div>
+          <div class="col-lg-2 col-md-4 col-6">
+            <div class="badge bg-light text-dark p-3 w-100 text-center rounded-pill">
+              Ibuprofeno
+            </div>
+          </div>
+          <div class="col-lg-2 col-md-4 col-6">
+            <div class="badge bg-light text-dark p-3 w-100 text-center rounded-pill">
+              Dipirona
+            </div>
+          </div>
+          <div class="col-lg-2 col-md-4 col-6">
+            <div class="badge bg-light text-dark p-3 w-100 text-center rounded-pill">
+              Losartana
+            </div>
+          </div>
+          <div class="col-lg-2 col-md-4 col-6">
+            <div class="badge bg-light text-dark p-3 w-100 text-center rounded-pill">
+              Omeprazol
+            </div>
+          </div>
+        </div>
       </div>
-    </section><!-- /Hero Section -->
+    </section>
 
-    <!-- Home About Section -->
-    <section id="home-about" class="home-about section">
+    <!-- Featured Pharmacies -->
+    <section id="pharmacies" class="py-5">
+      <div class="container">
+        <div class="section-title" data-aos="fade-up">
+          <h2>Farmácias Parceiras em Luanda</h2>
+          <p>As melhores farmácias da cidade já estão na FarmaConnect</p>
+        </div>
 
-      <div class="container" data-aos="fade-up" data-aos-delay="100">
+        <div class="row g-4">
+          <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
+            <div class="pharmacy-card">
+              <img src="https://images.unsplash.com/photo-1587854692152-cbe660dbde88?w=400&auto=format&fit=crop" 
+                   alt="Farmácia Central" class="pharmacy-image">
+              <h3 class="pharmacy-name">Farmácia Central</h3>
+              <div class="pharmacy-location">
+                <i class="bi bi-geo-alt"></i> Ingombotas, Rua Ho Chi Min
+              </div>
+              <span class="pharmacy-status status-open">
+                <i class="bi bi-clock"></i> Aberta agora
+              </span>
+              <div class="pharmacy-actions">
+                <a href="#" class="btn-view">Ver medicamentos</a>
+                <a href="#" class="btn-order">Pedir entrega</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
+            <div class="pharmacy-card">
+              <img src="https://images.unsplash.com/photo-1579684289531-9f9e6f7b0f5b?w=400&auto=format&fit=crop" 
+                   alt="Farmácia Kilamba" class="pharmacy-image">
+              <h3 class="pharmacy-name">Farmácia Kilamba</h3>
+              <div class="pharmacy-location">
+                <i class="bi bi-geo-alt"></i> Kilamba, Rua dos Combates
+              </div>
+              <span class="pharmacy-status status-open">
+                <i class="bi bi-clock"></i> Aberta agora
+              </span>
+              <div class="pharmacy-actions">
+                <a href="#" class="btn-view">Ver medicamentos</a>
+                <a href="#" class="btn-order">Pedir entrega</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="300">
+            <div class="pharmacy-card">
+              <img src="https://images.unsplash.com/photo-1631549916768-4119b2e5f926?w=400&auto=format&fit=crop" 
+                   alt="Farmácia Talatona" class="pharmacy-image">
+              <h3 class="pharmacy-name">Farmácia Talatona</h3>
+              <div class="pharmacy-location">
+                <i class="bi bi-geo-alt"></i> Talatona, Belas Shopping
+              </div>
+              <span class="pharmacy-status status-open">
+                <i class="bi bi-clock"></i> Aberta agora
+              </span>
+              <div class="pharmacy-actions">
+                <a href="#" class="btn-view">Ver medicamentos</a>
+                <a href="#" class="btn-order">Pedir entrega</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="text-center mt-5">
+          <a href="#" class="btn-outline">Ver todas as farmácias <i class="bi bi-arrow-right"></i></a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Services Section -->
+    <section class="py-5 bg-light">
+      <div class="container">
+        <div class="section-title" data-aos="fade-up">
+          <h2>Nossos Serviços</h2>
+          <p>Tudo o que precisa para cuidar da sua saúde</p>
+        </div>
+
+        <div class="row g-4">
+          <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="100">
+            <div class="service-card">
+              <div class="service-icon">
+                <i class="bi bi-search"></i>
+              </div>
+              <h4>Busca Inteligente</h4>
+              <p>Encontre medicamentos disponíveis nas farmácias mais próximas em tempo real.</p>
+            </div>
+          </div>
+
+          <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="200">
+            <div class="service-card">
+              <div class="service-icon">
+                <i class="bi bi-truck"></i>
+              </div>
+              <h4>Entrega Rápida</h4>
+              <p>Receba seus medicamentos em casa com entregadores treinados e seguros.</p>
+            </div>
+          </div>
+
+          <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="300">
+            <div class="service-card">
+              <div class="service-icon">
+                <i class="bi bi-credit-card"></i>
+              </div>
+              <h4>Pagamento Digital</h4>
+              <p>Pague com cartão, multicaixa ou dinheiro no ato da entrega.</p>
+            </div>
+          </div>
+
+          <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="400">
+            <div class="service-card">
+              <div class="service-icon">
+                <i class="bi bi-prescription2"></i>
+              </div>
+              <h4>Receita Digital</h4>
+              <p>Envie a receita do seu médico e nós preparamos com antecedência.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- How It Works -->
+    <section id="how" class="how-it-works">
+      <div class="container">
+        <div class="section-title" data-aos="fade-up">
+          <h2>Como funciona?</h2>
+          <p>4 passos simples para receber seus medicamentos em casa</p>
+        </div>
 
         <div class="row">
-          <div class="col-lg-8 mx-auto text-center mb-5" data-aos="fade-up" data-aos-delay="150">
-            <h2 class="section-heading">Excellence in Healthcare Since 1985</h2>
-            <p class="lead-description">We are committed to providing world-class medical care through innovation, compassion, and unwavering dedication to our patients' wellbeing and recovery.</p>
-          </div>
-        </div>
-
-        <div class="row align-items-center gy-5">
-          <div class="col-lg-7" data-aos="fade-right" data-aos-delay="200">
-            <div class="image-grid">
-              <div class="primary-image">
-                <img src="assets/img/health/facilities-6.webp" alt="Modern hospital facility" class="img-fluid">
-                <div class="certification-badge">
-                  <i class="bi bi-award"></i>
-                  <span>JCI Accredited</span>
-                </div>
-              </div>
-              <div class="secondary-images">
-                <div class="small-image">
-                  <img src="assets/img/health/consultation-3.webp" alt="Doctor consultation" class="img-fluid">
-                </div>
-                <div class="small-image">
-                  <img src="assets/img/health/surgery-2.webp" alt="Medical procedure" class="img-fluid">
-                </div>
-              </div>
+          <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="100">
+            <div class="step-item">
+              <div class="step-number">1</div>
+              <h4>Pesquise</h4>
+              <p>Encontre o medicamento que precisa nas farmácias próximas</p>
             </div>
           </div>
 
-          <div class="col-lg-5" data-aos="fade-left" data-aos-delay="300">
-            <div class="content-wrapper">
-              <div class="highlight-box">
-                <div class="highlight-icon">
-                  <i class="bi bi-heart-pulse-fill"></i>
-                </div>
-                <div class="highlight-content">
-                  <h4>Patient-Centered Approach</h4>
-                  <p>Every treatment plan is carefully customized to meet individual patient needs and medical history.</p>
-                </div>
-              </div>
+          <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="200">
+            <div class="step-item">
+              <div class="step-number">2</div>
+              <h4>Compare</h4>
+              <p>Veja os preços e escolha a melhor opção</p>
+            </div>
+          </div>
 
-              <div class="feature-list">
-                <div class="feature-item">
-                  <div class="feature-icon">
-                    <i class="bi bi-check-circle-fill"></i>
-                  </div>
-                  <div class="feature-text">Advanced diagnostic technology and imaging</div>
-                </div>
-                <div class="feature-item">
-                  <div class="feature-icon">
-                    <i class="bi bi-check-circle-fill"></i>
-                  </div>
-                  <div class="feature-text">Board-certified physicians and specialists</div>
-                </div>
-                <div class="feature-item">
-                  <div class="feature-icon">
-                    <i class="bi bi-check-circle-fill"></i>
-                  </div>
-                  <div class="feature-text">Comprehensive rehabilitation programs</div>
-                </div>
-                <div class="feature-item">
-                  <div class="feature-icon">
-                    <i class="bi bi-check-circle-fill"></i>
-                  </div>
-                  <div class="feature-text">24/7 emergency and critical care services</div>
-                </div>
-              </div>
+          <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="300">
+            <div class="step-item">
+              <div class="step-number">3</div>
+              <h4>Peça</h4>
+              <p>Faça o pedido e escolha a forma de pagamento</p>
+            </div>
+          </div>
 
-              <div class="metrics-row">
-                <div class="metric-box">
-                  <div class="metric-number">
-                    <span class="purecounter" data-purecounter-start="0" data-purecounter-end="98" data-purecounter-duration="0">98</span>%
-                  </div>
-                  <div class="metric-label">Patient Satisfaction</div>
-                </div>
-                <div class="metric-box">
-                  <div class="metric-number">
-                    <span class="purecounter" data-purecounter-start="0" data-purecounter-end="35" data-purecounter-duration="0">35</span>K+
-                  </div>
-                  <div class="metric-label">Lives Improved</div>
-                </div>
-              </div>
-
-              <div class="action-buttons">
-                <a href="about.html" class="btn-explore">Explore Our Services</a>
-                <a href="contact.html" class="btn-contact">
-                  <i class="bi bi-telephone"></i>
-                  Schedule Consultation
-                </a>
-              </div>
+          <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="400">
+            <div class="step-item">
+              <div class="step-number">4</div>
+              <h4>Receba</h4>
+              <p>Receba em casa ou retire na farmácia mais próxima</p>
             </div>
           </div>
         </div>
-
       </div>
+    </section>
 
-    </section><!-- /Home About Section -->
-
-    <!-- Featured Departments Section -->
-    <section id="featured-departments" class="featured-departments section">
-
-      <!-- Section Title -->
-      <div class="container section-title" data-aos="fade-up">
-        <h2>Featured Departments</h2>
-        <p>Necessitatibus eius consequatur ex aliquid fuga eum quidem sint consectetur velit</p>
-      </div><!-- End Section Title -->
-
-      <div class="container" data-aos="fade-up" data-aos-delay="100">
-
-        <div class="departments-showcase">
-
-          <div class="featured-department" data-aos="fade-up" data-aos-delay="200">
-            <div class="row align-items-center">
-              <div class="col-lg-6 order-lg-1">
-                <div class="department-content">
-                  <div class="department-category">Emergency Medicine</div>
-                  <h2 class="department-title">24/7 Emergency Care Services</h2>
-                  <p class="department-description">Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.</p>
-                  <div class="department-features">
-                    <div class="feature-item">
-                      <i class="fas fa-check-circle"></i>
-                      <span>24/7 Emergency Response</span>
-                    </div>
-                    <div class="feature-item">
-                      <i class="fas fa-check-circle"></i>
-                      <span>Advanced Life Support</span>
-                    </div>
-                    <div class="feature-item">
-                      <i class="fas fa-check-circle"></i>
-                      <span>Trauma Care Specialists</span>
-                    </div>
-                  </div>
-                  <a href="#" class="cta-link">Learn More <i class="fas fa-arrow-right"></i></a>
-                </div>
-              </div>
-              <div class="col-lg-6 order-lg-2">
-                <div class="department-visual">
-                  <div class="image-wrapper">
-                    <img src="assets/img/health/emergency-3.webp" alt="Emergency Department" class="img-fluid">
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="departments-grid">
-            <div class="row">
-              <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="300">
-                <div class="department-card">
-                  <div class="card-icon">
-                    <i class="fas fa-heartbeat"></i>
-                  </div>
-                  <div class="card-content">
-                    <h3 class="card-title">Cardiology</h3>
-                    <p class="card-description">Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores.</p>
-                    <div class="card-stats">
-                      <div class="stat-item">
-                        <span class="stat-number">15+</span>
-                        <span class="stat-label">Specialists</span>
-                      </div>
-                      <div class="stat-item">
-                        <span class="stat-number">500+</span>
-                        <span class="stat-label">Procedures</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="350">
-                <div class="department-card">
-                  <div class="card-icon">
-                    <i class="fas fa-brain"></i>
-                  </div>
-                  <div class="card-content">
-                    <h3 class="card-title">Neurology</h3>
-                    <p class="card-description">Eos qui ratione voluptatem sequi nesciunt neque porro quisquam est, qui dolorem ipsum quia dolor sit amet.</p>
-                    <div class="card-stats">
-                      <div class="stat-item">
-                        <span class="stat-number">8+</span>
-                        <span class="stat-label">Specialists</span>
-                      </div>
-                      <div class="stat-item">
-                        <span class="stat-number">200+</span>
-                        <span class="stat-label">Treatments</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="400">
-                <div class="department-card">
-                  <div class="card-icon">
-                    <i class="fas fa-cut"></i>
-                  </div>
-                  <div class="card-content">
-                    <h3 class="card-title">Surgery</h3>
-                    <p class="card-description">Consectetur adipisci velit sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam.</p>
-                    <div class="card-stats">
-                      <div class="stat-item">
-                        <span class="stat-number">12+</span>
-                        <span class="stat-label">Surgeons</span>
-                      </div>
-                      <div class="stat-item">
-                        <span class="stat-number">1000+</span>
-                        <span class="stat-label">Operations</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="450">
-                <div class="department-card">
-                  <div class="card-icon">
-                    <i class="fas fa-baby"></i>
-                  </div>
-                  <div class="card-content">
-                    <h3 class="card-title">Pediatrics</h3>
-                    <p class="card-description">Quaerat voluptatem ut enim ad minima veniam quis nostrum exercitationem ullam corporis suscipit laboriosam.</p>
-                    <div class="card-stats">
-                      <div class="stat-item">
-                        <span class="stat-number">10+</span>
-                        <span class="stat-label">Pediatricians</span>
-                      </div>
-                      <div class="stat-item">
-                        <span class="stat-number">2000+</span>
-                        <span class="stat-label">Young Patients</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="500">
-                <div class="department-card">
-                  <div class="card-icon">
-                    <i class="fas fa-eye"></i>
-                  </div>
-                  <div class="card-content">
-                    <h3 class="card-title">Ophthalmology</h3>
-                    <p class="card-description">Nisi ut aliquid ex ea commodi consequatur quis autem vel eum iure reprehenderit qui in ea voluptate velit esse.</p>
-                    <div class="card-stats">
-                      <div class="stat-item">
-                        <span class="stat-number">6+</span>
-                        <span class="stat-label">Eye Doctors</span>
-                      </div>
-                      <div class="stat-item">
-                        <span class="stat-number">800+</span>
-                        <span class="stat-label">Eye Exams</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="550">
-                <div class="department-card">
-                  <div class="card-icon">
-                    <i class="fas fa-band-aid"></i>
-                  </div>
-                  <div class="card-content">
-                    <h3 class="card-title">Dermatology</h3>
-                    <p class="card-description">Quam nihil molestiae consequatur vel illum qui dolorem eum fugiat quo voluptas nulla pariatur at vero eos.</p>
-                    <div class="card-stats">
-                      <div class="stat-item">
-                        <span class="stat-number">7+</span>
-                        <span class="stat-label">Dermatologists</span>
-                      </div>
-                      <div class="stat-item">
-                        <span class="stat-number">600+</span>
-                        <span class="stat-label">Skin Treatments</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="departments-cta" data-aos="fade-up" data-aos-delay="600">
-            <div class="cta-content">
-              <h3 class="cta-title">Explore All Our Medical Departments</h3>
-              <p class="cta-description">Et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores.</p>
-              <a href="#" class="btn btn-primary">View All Departments</a>
-            </div>
-          </div>
-
-        </div>
-
-      </div>
-
-    </section><!-- /Featured Departments Section -->
-
-    <!-- Featured Services Section -->
-    <section id="featured-services" class="featured-services section">
-
-      <!-- Section Title -->
-      <div class="container section-title" data-aos="fade-up">
-        <h2>Featured Services</h2>
-        <p>Necessitatibus eius consequatur ex aliquid fuga eum quidem sint consectetur velit</p>
-      </div><!-- End Section Title -->
-
-      <div class="container" data-aos="fade-up" data-aos-delay="100">
-
-        <div class="row gy-4">
-
-          <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
-            <div class="service-card">
-              <div class="service-icon">
-                <i class="fas fa-heartbeat"></i>
-              </div>
-              <div class="service-image">
-                <img src="assets/img/health/cardiology-2.webp" alt="Service" class="img-fluid" loading="lazy">
-              </div>
-              <div class="service-content">
-                <h3>Cardiology Excellence</h3>
-                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae.</p>
-                <a href="#" class="service-link">Learn More <i class="fas fa-arrow-right"></i></a>
-              </div>
-            </div>
-          </div><!-- End Service Card -->
-
-          <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="300">
-            <div class="service-card">
-              <div class="service-icon">
-                <i class="fas fa-brain"></i>
-              </div>
-              <div class="service-image">
-                <img src="assets/img/health/neurology-3.webp" alt="Service" class="img-fluid" loading="lazy">
-              </div>
-              <div class="service-content">
-                <h3>Neurology Care</h3>
-                <p>Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi.</p>
-                <a href="#" class="service-link">Learn More <i class="fas fa-arrow-right"></i></a>
-              </div>
-            </div>
-          </div><!-- End Service Card -->
-
-          <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="400">
-            <div class="service-card">
-              <div class="service-icon">
-                <i class="fas fa-bone"></i>
-              </div>
-              <div class="service-image">
-                <img src="assets/img/health/orthopedics-1.webp" alt="Service" class="img-fluid" loading="lazy">
-              </div>
-              <div class="service-content">
-                <h3>Orthopedic Surgery</h3>
-                <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident.</p>
-                <a href="#" class="service-link">Learn More <i class="fas fa-arrow-right"></i></a>
-              </div>
-            </div>
-          </div><!-- End Service Card -->
-
-          <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
-            <div class="service-card">
-              <div class="service-icon">
-                <i class="fas fa-baby"></i>
-              </div>
-              <div class="service-image">
-                <img src="assets/img/health/pediatrics-4.webp" alt="Service" class="img-fluid" loading="lazy">
-              </div>
-              <div class="service-content">
-                <h3>Pediatric Care</h3>
-                <p>Sunt in culpa qui officia deserunt mollit anim id est laborum. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium.</p>
-                <a href="#" class="service-link">Learn More <i class="fas fa-arrow-right"></i></a>
-              </div>
-            </div>
-          </div><!-- End Service Card -->
-
-          <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="300">
-            <div class="service-card">
-              <div class="service-icon">
-                <i class="fas fa-ribbon"></i>
-              </div>
-              <div class="service-image">
-                <img src="assets/img/health/oncology-2.webp" alt="Service" class="img-fluid" loading="lazy">
-              </div>
-              <div class="service-content">
-                <h3>Oncology Treatment</h3>
-                <p>At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias.</p>
-                <a href="#" class="service-link">Learn More <i class="fas fa-arrow-right"></i></a>
-              </div>
-            </div>
-          </div><!-- End Service Card -->
-
-          <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="400">
-            <div class="service-card">
-              <div class="service-icon">
-                <i class="fas fa-flask"></i>
-              </div>
-              <div class="service-image">
-                <img src="assets/img/health/laboratory-3.webp" alt="Service" class="img-fluid" loading="lazy">
-              </div>
-              <div class="service-content">
-                <h3>Laboratory Services</h3>
-                <p>Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae.</p>
-                <a href="#" class="service-link">Learn More <i class="fas fa-arrow-right"></i></a>
-              </div>
-            </div>
-          </div><!-- End Service Card -->
-
-        </div>
-
-      </div>
-
-    </section><!-- /Featured Services Section -->
-
-    <!-- Find A Doctor Section -->
-    <section id="find-a-doctor" class="find-a-doctor section">
-
-      <!-- Section Title -->
-      <div class="container section-title" data-aos="fade-up">
-        <h2>Find A Doctor</h2>
-        <p>Necessitatibus eius consequatur ex aliquid fuga eum quidem sint consectetur velit</p>
-      </div><!-- End Section Title -->
-
-      <div class="container" data-aos="fade-up" data-aos-delay="100">
-
-        <div class="row justify-content-center" data-aos="fade-up" data-aos-delay="200">
-          <div class="col-lg-10">
-            <div class="search-header">
-              <h2>Discover Your Ideal Medical Specialist</h2>
-              <p>Connect with our network of certified healthcare professionals across all medical disciplines</p>
-            </div>
-
-            <div class="advanced-search-container">
-              <form class="search-form" action="forms/doctor-search.php" method="get">
-                <div class="search-row">
-                  <div class="search-field">
-                    <label>Practitioner Name</label>
-                    <div class="input-group">
-                      <i class="bi bi-search"></i>
-                      <input type="text" class="form-control" name="doctor_name" placeholder="Search by name...">
-                    </div>
-                  </div>
-                  <div class="search-field">
-                    <label>Medical Specialty</label>
-                    <div class="select-group">
-                      <i class="bi bi-plus-circle"></i>
-                      <select class="form-select" name="specialty">
-                        <option value="">Select specialty</option>
-                        <option value="cardiology">Cardiovascular Medicine</option>
-                        <option value="neurology">Neurological Sciences</option>
-                        <option value="orthopedics">Orthopedic Surgery</option>
-                        <option value="pediatrics">Pediatric Medicine</option>
-                        <option value="dermatology">Dermatological Care</option>
-                        <option value="oncology">Oncological Treatment</option>
-                      </select>
-                    </div>
-                  </div>
-                  <div class="search-field">
-                    <label>Location</label>
-                    <div class="select-group">
-                      <i class="bi bi-geo-alt"></i>
-                      <select class="form-select" name="location">
-                        <option value="">All locations</option>
-                        <option value="downtown">Downtown Medical Center</option>
-                        <option value="northside">Northside Clinic</option>
-                        <option value="westend">West End Hospital</option>
-                      </select>
-                    </div>
-                  </div>
-                  <button type="submit" class="search-submit">
-                    <i class="bi bi-arrow-right"></i>
-                  </button>
-                </div>
-              </form>
-            </div>
-          </div>
-        </div>
-
-        <div class="specialists-showcase" data-aos="fade-up" data-aos-delay="300">
-          <div class="specialist-card featured" data-aos="slide-up" data-aos-delay="100">
-            <div class="card-content">
-              <div class="specialist-info">
-                <div class="profile-section">
-                  <div class="profile-image">
-                    <img src="assets/img/health/staff-1.webp" alt="Dr. Jennifer Morgan" class="img-fluid">
-                    <div class="online-status active"></div>
-                  </div>
-                  <div class="specialist-data">
-                    <h3>Dr. Jennifer Morgan</h3>
-                    <p class="specialty">Senior Cardiologist</p>
-                    <div class="credentials">
-                      <span class="badge">MD, FACC</span>
-                      <span class="experience">18 years</span>
-                    </div>
-                  </div>
-                </div>
-                <div class="rating-info">
-                  <div class="stars-display">
-                    <i class="bi bi-star-fill"></i>
-                    <i class="bi bi-star-fill"></i>
-                    <i class="bi bi-star-fill"></i>
-                    <i class="bi bi-star-fill"></i>
-                    <i class="bi bi-star-fill"></i>
-                  </div>
-                  <span class="score">4.9</span>
-                  <small>(142 patients)</small>
-                </div>
-              </div>
-              <div class="quick-actions">
-                <a href="#" class="action-btn outline">Profile</a>
-                <a href="#" class="action-btn primary">Consult</a>
-              </div>
-            </div>
-          </div>
-
-          <div class="specialist-card" data-aos="slide-up" data-aos-delay="200">
-            <div class="card-content">
-              <div class="specialist-info">
-                <div class="profile-section">
-                  <div class="profile-image">
-                    <img src="assets/img/health/staff-3.webp" alt="Dr. Robert Kim" class="img-fluid">
-                    <div class="online-status busy"></div>
-                  </div>
-                  <div class="specialist-data">
-                    <h3>Dr. Robert Kim</h3>
-                    <p class="specialty">Neurosurgeon</p>
-                    <div class="credentials">
-                      <span class="badge">MD, PhD</span>
-                      <span class="experience">24 years</span>
-                    </div>
-                  </div>
-                </div>
-                <div class="rating-info">
-                  <div class="stars-display">
-                    <i class="bi bi-star-fill"></i>
-                    <i class="bi bi-star-fill"></i>
-                    <i class="bi bi-star-fill"></i>
-                    <i class="bi bi-star-fill"></i>
-                    <i class="bi bi-star-half"></i>
-                  </div>
-                  <span class="score">4.8</span>
-                  <small>(98 patients)</small>
-                </div>
-              </div>
-              <div class="quick-actions">
-                <a href="#" class="action-btn outline">Profile</a>
-                <a href="#" class="action-btn primary">Schedule</a>
-              </div>
-            </div>
-          </div>
-
-          <div class="specialist-card" data-aos="slide-up" data-aos-delay="300">
-            <div class="card-content">
-              <div class="specialist-info">
-                <div class="profile-section">
-                  <div class="profile-image">
-                    <img src="assets/img/health/staff-5.webp" alt="Dr. Sarah Thompson" class="img-fluid">
-                    <div class="online-status active"></div>
-                  </div>
-                  <div class="specialist-data">
-                    <h3>Dr. Sarah Thompson</h3>
-                    <p class="specialty">Pediatric Specialist</p>
-                    <div class="credentials">
-                      <span class="badge">MD, FAAP</span>
-                      <span class="experience">12 years</span>
-                    </div>
-                  </div>
-                </div>
-                <div class="rating-info">
-                  <div class="stars-display">
-                    <i class="bi bi-star-fill"></i>
-                    <i class="bi bi-star-fill"></i>
-                    <i class="bi bi-star-fill"></i>
-                    <i class="bi bi-star-fill"></i>
-                    <i class="bi bi-star-fill"></i>
-                  </div>
-                  <span class="score">5.0</span>
-                  <small>(156 patients)</small>
-                </div>
-              </div>
-              <div class="quick-actions">
-                <a href="#" class="action-btn outline">Profile</a>
-                <a href="#" class="action-btn primary">Book Now</a>
-              </div>
-            </div>
-          </div>
-
-          <div class="specialist-card" data-aos="slide-up" data-aos-delay="400">
-            <div class="card-content">
-              <div class="specialist-info">
-                <div class="profile-section">
-                  <div class="profile-image">
-                    <img src="assets/img/health/staff-7.webp" alt="Dr. Michael Rivera" class="img-fluid">
-                    <div class="online-status offline"></div>
-                  </div>
-                  <div class="specialist-data">
-                    <h3>Dr. Michael Rivera</h3>
-                    <p class="specialty">Orthopedic Surgeon</p>
-                    <div class="credentials">
-                      <span class="badge">MD, FAAOS</span>
-                      <span class="experience">20 years</span>
-                    </div>
-                  </div>
-                </div>
-                <div class="rating-info">
-                  <div class="stars-display">
-                    <i class="bi bi-star-fill"></i>
-                    <i class="bi bi-star-fill"></i>
-                    <i class="bi bi-star-fill"></i>
-                    <i class="bi bi-star-fill"></i>
-                    <i class="bi bi-star-half"></i>
-                  </div>
-                  <span class="score">4.7</span>
-                  <small>(134 patients)</small>
-                </div>
-              </div>
-              <div class="quick-actions">
-                <a href="#" class="action-btn outline">Profile</a>
-                <a href="#" class="action-btn primary">Request</a>
-              </div>
-            </div>
-          </div>
-
-          <div class="specialist-card" data-aos="slide-up" data-aos-delay="500">
-            <div class="card-content">
-              <div class="specialist-info">
-                <div class="profile-section">
-                  <div class="profile-image">
-                    <img src="assets/img/health/staff-9.webp" alt="Dr. Lisa Garcia" class="img-fluid">
-                    <div class="online-status active"></div>
-                  </div>
-                  <div class="specialist-data">
-                    <h3>Dr. Lisa Garcia</h3>
-                    <p class="specialty">Dermatologist</p>
-                    <div class="credentials">
-                      <span class="badge">MD, FAAD</span>
-                      <span class="experience">15 years</span>
-                    </div>
-                  </div>
-                </div>
-                <div class="rating-info">
-                  <div class="stars-display">
-                    <i class="bi bi-star-fill"></i>
-                    <i class="bi bi-star-fill"></i>
-                    <i class="bi bi-star-fill"></i>
-                    <i class="bi bi-star-fill"></i>
-                    <i class="bi bi-star"></i>
-                  </div>
-                  <span class="score">4.6</span>
-                  <small>(89 patients)</small>
-                </div>
-              </div>
-              <div class="quick-actions">
-                <a href="#" class="action-btn outline">Profile</a>
-                <a href="#" class="action-btn primary">Consult</a>
-              </div>
-            </div>
-          </div>
-
-          <div class="specialist-card" data-aos="slide-up" data-aos-delay="600">
-            <div class="card-content">
-              <div class="specialist-info">
-                <div class="profile-section">
-                  <div class="profile-image">
-                    <img src="assets/img/health/staff-12.webp" alt="Dr. Daniel Wong" class="img-fluid">
-                    <div class="online-status active"></div>
-                  </div>
-                  <div class="specialist-data">
-                    <h3>Dr. Daniel Wong</h3>
-                    <p class="specialty">Oncology Expert</p>
-                    <div class="credentials">
-                      <span class="badge">MD, FASCO</span>
-                      <span class="experience">21 years</span>
-                    </div>
-                  </div>
-                </div>
-                <div class="rating-info">
-                  <div class="stars-display">
-                    <i class="bi bi-star-fill"></i>
-                    <i class="bi bi-star-fill"></i>
-                    <i class="bi bi-star-fill"></i>
-                    <i class="bi bi-star-fill"></i>
-                    <i class="bi bi-star-fill"></i>
-                  </div>
-                  <span class="score">4.9</span>
-                  <small>(211 patients)</small>
-                </div>
-              </div>
-              <div class="quick-actions">
-                <a href="#" class="action-btn outline">Profile</a>
-                <a href="#" class="action-btn primary">Appointment</a>
-              </div>
-            </div>
-          </div>
-
-        </div>
-
-        <div class="text-center mt-5" data-aos="fade-up" data-aos-delay="700">
-          <a href="specialists.html" class="view-all-link">
-            Browse Complete Directory
-            <i class="bi bi-chevron-right"></i>
-          </a>
-        </div>
-
-      </div>
-
-    </section><!-- /Find A Doctor Section -->
-
-    <!-- Call To Action Section -->
-    <section id="call-to-action" class="call-to-action section light-background">
-
-      <div class="container" data-aos="fade-up" data-aos-delay="100">
-
-        <div class="hero-content" data-aos="fade-up" data-aos-delay="200">
+    <!-- App Section -->
+    <section class="app-section">
+      <div class="container">
+        <div class="app-content" data-aos="zoom-in">
           <div class="row align-items-center">
             <div class="col-lg-6">
-              <div class="content-wrapper">
-                <h2>Exceptional Care for Your Health Journey</h2>
-                <p>Discover comprehensive healthcare services delivered with compassion and expertise. Our dedicated team is committed to providing personalized medical care that puts you first.</p>
+              <h2 class="text-white mb-3">Baixe o nosso app</h2>
+              <p class="text-white-50 mb-4">Tenha a FarmaConnect sempre à mão. Peça seus medicamentos de onde estiver.</p>
+              
+              <div class="app-buttons">
+                <a href="#" class="app-button">
+                  <i class="bi bi-google-play"></i> Google Play
+                </a>
+                <a href="#" class="app-button">
+                  <i class="bi bi-apple"></i> App Store
+                </a>
+              </div>
 
-                <div class="action-buttons">
-                  <a href="appointment.html" class="primary-btn">Schedule Consultation</a>
-                  <a href="services.html" class="secondary-link">
-                    <span>Explore Services</span>
-                    <i class="fas fa-arrow-right"></i>
-                  </a>
+              <div class="mt-4">
+                <div class="d-flex gap-3">
+                  <div>
+                    <h4 class="text-white mb-0">5000+</h4>
+                    <small class="text-white-50">Downloads</small>
+                  </div>
+                  <div>
+                    <h4 class="text-white mb-0">4.8</h4>
+                    <small class="text-white-50">Avaliação</small>
+                  </div>
                 </div>
               </div>
             </div>
-            <div class="col-lg-6">
-              <div class="hero-image" data-aos="zoom-in" data-aos-delay="300">
-                <img src="assets/img/health/showcase-2.webp" alt="Healthcare Excellence" class="img-fluid">
-              </div>
+            <div class="col-lg-6 text-center">
+              <img src="https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=400&auto=format&fit=crop" 
+                   alt="App FarmaConnect" class="app-image img-fluid">
             </div>
           </div>
         </div>
-
-        <div class="stats-section" data-aos="fade-up" data-aos-delay="400">
-          <div class="row">
-            <div class="col-lg-3 col-md-6">
-              <div class="stat-item">
-                <div class="stat-number">25+</div>
-                <div class="stat-label">Years Experience</div>
-              </div>
-            </div>
-            <div class="col-lg-3 col-md-6">
-              <div class="stat-item">
-                <div class="stat-number">15K+</div>
-                <div class="stat-label">Happy Patients</div>
-              </div>
-            </div>
-            <div class="col-lg-3 col-md-6">
-              <div class="stat-item">
-                <div class="stat-number">50+</div>
-                <div class="stat-label">Medical Experts</div>
-              </div>
-            </div>
-            <div class="col-lg-3 col-md-6">
-              <div class="stat-item">
-                <div class="stat-number">24/7</div>
-                <div class="stat-label">Emergency Care</div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="services-grid" data-aos="fade-up" data-aos-delay="500">
-          <div class="row">
-
-            <div class="col-lg-4 col-md-6">
-              <div class="service-card" data-aos="fade-up" data-aos-delay="100">
-                <div class="service-icon">
-                  <i class="fas fa-heartbeat"></i>
-                </div>
-                <h4>Cardiology Excellence</h4>
-                <p>Advanced cardiac care with state-of-the-art diagnostic equipment and experienced cardiologists dedicated to heart health.</p>
-                <a href="#" class="service-link">Learn More</a>
-              </div>
-            </div>
-
-            <div class="col-lg-4 col-md-6">
-              <div class="service-card" data-aos="fade-up" data-aos-delay="200">
-                <div class="service-icon">
-                  <i class="fas fa-brain"></i>
-                </div>
-                <h4>Neurology Center</h4>
-                <p>Comprehensive neurological services including diagnosis and treatment of brain, spine, and nervous system conditions.</p>
-                <a href="#" class="service-link">Learn More</a>
-              </div>
-            </div>
-
-            <div class="col-lg-4 col-md-6">
-              <div class="service-card" data-aos="fade-up" data-aos-delay="300">
-                <div class="service-icon">
-                  <i class="fas fa-shield-alt"></i>
-                </div>
-                <h4>Preventive Care</h4>
-                <p>Proactive health screenings and wellness programs designed to prevent illness and maintain optimal health.</p>
-                <a href="#" class="service-link">Learn More</a>
-              </div>
-            </div>
-
-          </div>
-        </div>
-
-        <div class="contact-banner" data-aos="zoom-in" data-aos-delay="600">
-          <div class="banner-content">
-            <div class="contact-info">
-              <div class="contact-icon">
-                <i class="fas fa-phone"></i>
-              </div>
-              <div class="contact-text">
-                <h5>Need Immediate Assistance?</h5>
-                <p>Our medical team is available around the clock for urgent consultations and emergency support.</p>
-              </div>
-            </div>
-            <div class="contact-actions">
-              <a href="tel:+15551234567" class="call-btn">
-                <i class="fas fa-phone"></i>
-                (555) 123-4567
-              </a>
-              <a href="contact.html" class="contact-link">Get Directions</a>
-            </div>
-          </div>
-        </div>
-
       </div>
+    </section>
 
-    </section><!-- /Call To Action Section -->
+    <!-- Testimonials -->
+    <section class="py-5">
+      <div class="container">
+        <div class="section-title" data-aos="fade-up">
+          <h2>O que dizem nossos clientes</h2>
+          <p>Depoimentos de quem já usa a FarmaConnect</p>
+        </div>
 
+        <div class="row g-4">
+          <div class="col-lg-4" data-aos="fade-up" data-aos-delay="100">
+            <div class="card border-0 shadow-sm p-4 rounded-4">
+              <div class="d-flex gap-3 mb-3">
+                <img src="https://randomuser.me/api/portraits/women/44.jpg" 
+                     alt="Cliente" class="rounded-circle" width="50">
+                <div>
+                  <h5 class="mb-0">Maria Santos</h5>
+                  <small class="text-muted">Ingombotas</small>
+                </div>
+              </div>
+              <p class="mb-0">"Salvou minha mãe! Precisávamos de um medicamento urgente à noite e encontramos aberto."</p>
+              <div class="text-warning mt-2">
+                <i class="bi bi-star-fill"></i>
+                <i class="bi bi-star-fill"></i>
+                <i class="bi bi-star-fill"></i>
+                <i class="bi bi-star-fill"></i>
+                <i class="bi bi-star-fill"></i>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-4" data-aos="fade-up" data-aos-delay="200">
+            <div class="card border-0 shadow-sm p-4 rounded-4">
+              <div class="d-flex gap-3 mb-3">
+                <img src="https://randomuser.me/api/portraits/men/32.jpg" 
+                     alt="Cliente" class="rounded-circle" width="50">
+                <div>
+                  <h5 class="mb-0">João Ferreira</h5>
+                  <small class="text-muted">Kilamba</small>
+                </div>
+              </div>
+              <p class="mb-0">"Entrega super rápida! Pedi e em 25 minutos chegou. Muito confiável."</p>
+              <div class="text-warning mt-2">
+                <i class="bi bi-star-fill"></i>
+                <i class="bi bi-star-fill"></i>
+                <i class="bi bi-star-fill"></i>
+                <i class="bi bi-star-fill"></i>
+                <i class="bi bi-star-fill"></i>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-4" data-aos="fade-up" data-aos-delay="300">
+            <div class="card border-0 shadow-sm p-4 rounded-4">
+              <div class="d-flex gap-3 mb-3">
+                <img src="https://randomuser.me/api/portraits/women/68.jpg" 
+                     alt="Cliente" class="rounded-circle" width="50">
+                <div>
+                  <h5 class="mb-0">Ana Costa</h5>
+                  <small class="text-muted">Talatona</small>
+                </div>
+              </div>
+              <p class="mb-0">"Adoro poder comparar preços entre farmácias. Economizo sempre!"</p>
+              <div class="text-warning mt-2">
+                <i class="bi bi-star-fill"></i>
+                <i class="bi bi-star-fill"></i>
+                <i class="bi bi-star-fill"></i>
+                <i class="bi bi-star-fill"></i>
+                <i class="bi bi-star-fill"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
   </main>
 
-  <footer id="footer" class="footer position-relative">
-
-    <div class="container footer-top">
+  <!-- Footer -->
+  <footer id="contact" class="footer">
+    <div class="container">
       <div class="row gy-4">
-        <div class="col-lg-4 col-md-6 footer-about">
-          <a href="index.html" class="logo d-flex align-items-center">
-            <span class="sitename">MediNest</span>
-          </a>
-          <div class="footer-contact pt-3">
-            <p>A108 Adam Street</p>
-            <p>New York, NY 535022</p>
-            <p class="mt-3"><strong>Phone:</strong> <span>+1 5589 55488 55</span></p>
-            <p><strong>Email:</strong> <span>info@example.com</span></p>
-          </div>
-          <div class="social-links d-flex mt-4">
-            <a href=""><i class="bi bi-twitter-x"></i></a>
-            <a href=""><i class="bi bi-facebook"></i></a>
-            <a href=""><i class="bi bi-instagram"></i></a>
-            <a href=""><i class="bi bi-linkedin"></i></a>
+        <div class="col-lg-4">
+          <h3>FarmaConnect</h3>
+          <p class="text-white-50">Plataforma angolana de busca e entrega de medicamentos. Conectamos farmácias e clientes em Luanda e futuramente em todo o país.</p>
+          <div class="social-links mt-3">
+            <a href="#"><i class="bi bi-facebook"></i></a>
+            <a href="#"><i class="bi bi-instagram"></i></a>
+            <a href="#"><i class="bi bi-whatsapp"></i></a>
+            <a href="#"><i class="bi bi-linkedin"></i></a>
           </div>
         </div>
 
-        <div class="col-lg-2 col-md-3 footer-links">
-          <h4>Useful Links</h4>
-          <ul>
-            <li><a href="#">Home</a></li>
-            <li><a href="#">About us</a></li>
-            <li><a href="#">Services</a></li>
-            <li><a href="#">Terms of service</a></li>
-            <li><a href="#">Privacy policy</a></li>
+        <div class="col-lg-2 offset-lg-1">
+          <h4>Links</h4>
+          <ul class="list-unstyled">
+            <li><a href="#">Início</a></li>
+            <li><a href="#">Sobre nós</a></li>
+            <li><a href="">Farmácias</a></li>
+            <li><a href="#">Medicamentos</a></li>
+            <li><a href="#">Contacto</a></li>
           </ul>
         </div>
 
-        <div class="col-lg-2 col-md-3 footer-links">
-          <h4>Our Services</h4>
-          <ul>
-            <li><a href="#">Web Design</a></li>
-            <li><a href="#">Web Development</a></li>
-            <li><a href="#">Product Management</a></li>
-            <li><a href="#">Marketing</a></li>
-            <li><a href="#">Graphic Design</a></li>
+        <div class="col-lg-2">
+          <h4>Para farmácias</h4>
+          <ul class="list-unstyled">
+            <li><a href="#">Cadastrar farmácia</a></li>
+            <li><a href="#">Área do parceiro</a></li>
+            <li><a href="#">Planos</a></li>
+            <li><a href="#">Suporte</a></li>
           </ul>
         </div>
 
-        <div class="col-lg-2 col-md-3 footer-links">
-          <h4>Hic solutasetp</h4>
-          <ul>
-            <li><a href="#">Molestiae accusamus iure</a></li>
-            <li><a href="#">Excepturi dignissimos</a></li>
-            <li><a href="#">Suscipit distinctio</a></li>
-            <li><a href="#">Dilecta</a></li>
-            <li><a href="#">Sit quas consectetur</a></li>
+        <div class="col-lg-3">
+          <h4>Contacto</h4>
+          <ul class="list-unstyled contact-info">
+            <li><i class="bi bi-telephone"></i> +244 923 456 789</li>
+            <li><i class="bi bi-envelope"></i> geral@farmaconnect.ao</li>
+            <li><i class="bi bi-geo-alt"></i> Luanda, Angola</li>
+            <li><i class="bi bi-clock"></i> Seg-Sex: 08h-20h | Sáb: 09h-18h</li>
           </ul>
         </div>
+      </div>
 
-        <div class="col-lg-2 col-md-3 footer-links">
-          <h4>Nobis illum</h4>
-          <ul>
-            <li><a href="#">Ipsam</a></li>
-            <li><a href="#">Laudantium dolorum</a></li>
-            <li><a href="#">Dinera</a></li>
-            <li><a href="#">Trodelas</a></li>
-            <li><a href="#">Flexo</a></li>
-          </ul>
-        </div>
-
+      <div class="copyright">
+        <p>&copy; 2026 FarmaConnect. Todos os direitos reservados.</p>
       </div>
     </div>
-
-    <div class="container copyright text-center mt-4">
-      <p>© <span>Copyright</span> <strong>MediNest</strong>&nbsp;<span>All Rights Reserved</span></p>
-      <div class="credits">
-        <!-- All the links in the footer should remain intact. -->
-        <!-- You can delete the links only if you've purchased the pro version. -->
-        <!-- Licensing information: https://bootstrapmade.com/license/ -->
-        <!-- Purchase the pro version with working PHP/AJAX contact form: [buy-url] -->
-        Designed by <a href="https://bootstrapmade.com/">BootstrapMade</a> | <a href="https://bootstrapmade.com/tools/">DevTools</a>
-      </div>
-    </div>
-
   </footer>
 
   <!-- Scroll Top -->
-  <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+  <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center">
+    <i class="bi bi-arrow-up-short"></i>
+  </a>
 
-  <!-- Preloader -->
-  <div id="preloader"></div>
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // Smooth scroll para links internos
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+          });
+        }
+      });
+    });
 
-  <!-- Vendor JS Files -->
-  <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-  <script src="assets/vendor/php-email-form/validate.js"></script>
-  <script src="assets/vendor/aos/aos.js"></script>
-  <script src="assets/vendor/glightbox/js/glightbox.min.js"></script>
-  <script src="assets/vendor/purecounter/purecounter_vanilla.js"></script>
-  <script src="assets/vendor/imagesloaded/imagesloaded.pkgd.min.js"></script>
-  <script src="assets/vendor/isotope-layout/isotope.pkgd.min.js"></script>
-  <script src="assets/vendor/swiper/swiper-bundle.min.js"></script>
+    // Scroll to top button
+    const scrollTop = document.getElementById('scroll-top');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 300) {
+        scrollTop.style.display = 'flex';
+      } else {
+        scrollTop.style.display = 'none';
+      }
+    });
 
-  <!-- Main JS File -->
-  <script src="assets/js/main.js"></script>
+    scrollTop.addEventListener('click', (e) => {
+      e.preventDefault();
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    });
 
+    // Header scroll effect
+    const header = document.querySelector('.header');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 50) {
+        header.style.background = 'rgba(255, 255, 255, 0.98)';
+        header.style.boxShadow = '0 2px 20px rgba(9, 154, 167, 0.15)';
+      } else {
+        header.style.background = 'rgba(255, 255, 255, 0.95)';
+        header.style.boxShadow = '0 2px 20px rgba(9, 154, 167, 0.08)';
+      }
+    });
+
+    // Simulação de busca (apenas para demonstração)
+    document.querySelector('.search-submit').addEventListener('click', (e) => {
+      e.preventDefault();
+      const medicamento = document.getElementById('medicamento').value;
+      const bairro = document.getElementById('bairro').value;
+      
+      if (medicamento) {
+        alert(`🔍 Buscando por "${medicamento}" ${bairro ? 'em ' + bairro : 'em toda Luanda'}...\n(Simulação - funcionalidade em desenvolvimento)`);
+      } else {
+        alert('Por favor, digite o nome do medicamento');
+      }
+    });
+
+    // Animação simples ao scroll
+    const animateElements = document.querySelectorAll('[data-aos]');
+    
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('animate-fade-up');
+        }
+      });
+    });
+
+    animateElements.forEach(el => observer.observe(el));
+  </script>
+
+  <style>
+    /* Scroll to top button */
+    #scroll-top {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      width: 50px;
+      height: 50px;
+      background: var(--accent-color);
+      color: white;
+      border-radius: 50%;
+      text-decoration: none;
+      display: none;
+      z-index: 99;
+      transition: all 0.3s;
+    }
+
+    #scroll-top:hover {
+      background: #067e8a;
+      transform: translateY(-5px);
+    }
+
+    /* Background elements */
+    .bg-light {
+      background-color: var(--light-mint) !important;
+    }
+
+    /* Images */
+    .main-image {
+      border-radius: 40px;
+      width: 100%;
+      height: auto;
+      object-fit: cover;
+    }
+
+    .pharmacy-image {
+      width: 80px;
+      height: 80px;
+      object-fit: cover;
+    }
+
+    .app-image {
+      max-width: 300px;
+      border-radius: 40px;
+    }
+
+    /* Responsividade */
+    @media (max-width: 768px) {
+      .hero-title {
+        font-size: 2rem;
+      }
+      
+      .hero-description {
+        max-width: 100%;
+      }
+      
+      .floating-card {
+        display: none;
+      }
+      
+      .app-image {
+        margin-top: 2rem;
+        max-width: 250px;
+      }
+    }
+  </style>
 </body>
-
 </html>

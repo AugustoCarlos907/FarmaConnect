@@ -3,6 +3,7 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -10,7 +11,7 @@ use Illuminate\Notifications\Notifiable;
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable , MustVerifyEmail ;
 
     /**
      * The attributes that are mass assignable.
@@ -21,8 +22,11 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'email_verified_at',
         'phone',
         'endereco',
+        'data_nascimento',
+        'genero'
     ];
 
     /**
@@ -40,13 +44,13 @@ class User extends Authenticatable
     //  *
     //  * @return array<string, string>
     //  */
-    // protected function casts(): array
-    // {
-    //     return [
-    //         'email_verified_at' => 'datetime',
-    //         'password' => 'hashed',
-    //     ];
-    // }
+    protected function casts(): array
+    {
+        return [
+            'email_verified_at' => 'datetime',
+            'password' => 'hashed',
+        ];
+    }
 
     public function avaliacoes()
     {
@@ -58,4 +62,18 @@ class User extends Authenticatable
         return $this->hasMany(Pedido::class);
     }
 
+    public function enderecos(){
+        return $this->hasMany(Endereco::class);
+    }
+
+    public function farmacia(){
+        return $this->hasOne(Farmacia::class);
+    }
+    public function entregador(){
+        return $this->hasOne(Entregador::class);
+    }
+
+    public function companhia(){
+        return $this->hasOne(Companhia::class);
+    }
 }

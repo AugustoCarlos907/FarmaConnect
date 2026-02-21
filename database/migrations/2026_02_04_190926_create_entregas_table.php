@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('entregas', function (Blueprint $table) {
             $table->id();
+
             $table->foreignId('pedido_id')
                   ->constrained('pedidos')
                   ->cascadeOnDelete();
@@ -22,13 +23,15 @@ return new class extends Migration
                   ->constrained('entregadores')
                   ->nullOnDelete();            
                   
-            $table->foreignId('avaliacao_id')
-                  ->nullable()
-                  ->constrained('avaliacoes')
-                  ->nullOnDelete();
+            // $table->foreignId('avaliacao_id')
+            //       ->nullable()
+            //       ->constrained('avaliacoes')
+            //       ->nullOnDelete();
 
             $table->enum('status', ['pendente',  'em_transito', 'entregue', 'cancelada']);
             // ex: pendente, atribuida, em_transito, entregue, cancelada
+
+            $table->text('endereco_entrega')->nullable();
 
             $table->decimal('taxa_entrega', 10, 2)->default(0);
             $table->decimal('distancia_km', 8, 2)->nullable();

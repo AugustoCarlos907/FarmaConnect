@@ -4,13 +4,15 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Auth;
+use Event;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
 
 class AuthController extends Controller
 {
     public function create()
     {
-        return view('auth.register');
+        return view('clientes.auth.cadastro');
     }
 
     public function store(Request $request)
@@ -20,7 +22,13 @@ class AuthController extends Controller
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8|confirmed',
             'phone' => 'nullable|string|max:20',
+            'data_nascimento' => 'nullable|date |before_or_equal_today',
+            'genero' => 'nullable|string',
+            'last_name'=> 'required|string|max:255',
             'endereco' => 'nullable|string|max:500',
+            'latitude' => 'nullable|string',
+            'longitude' => 'nullable|string',
+
         ]);
 
 
@@ -28,34 +36,59 @@ class AuthController extends Controller
 
             $user = User::create($data);
 
-            Auth::login($user);
+            
+            Event::dispatch(new Registered($user));
 
-            return redirect()->route('home');
+            Auth::user()->login($user);
+
+            return redirect()->route('verification.notice');
         }
 
         return back()->withErrors(['msg' => 'Registration failed. Please try again.']);
     }
 
+    
     public function login()
     {
-        return view('auth.login');
+        return view('clientes.auth.login');
     }
 
-    public function authenticate(Request $request)
-    {
-        $credentials = $request->validate([
-            'email' => 'required|string|email',
-            'password' => 'required|string',
-        ]);
+   public function authenticate(Request $request)
+{
+    $credentials = $request->validate([
+        'email' => 'required|string|email',
+        'password' => 'required|string',
+    ]);
 
-        if (Auth::attempt($credentials)) {
+
+
+        if ($credentials && Auth::user()->attempt($credentials)) {
             $request->session()->regenerate();
 
-            return redirect()->intended('home');
+            if(Auth::user()->role == 'cliente'){
+
+                return redirect()->route('index');
+            }
+
+
+            if(Auth::user()->role == 'gestor_farmacia'){
+
+                return redirect()->route('index.farmacias');
+            }
+
+
+            if(Auth::user()->role == 'entregador'){
+
+                return redirect()->route('index.entregadores');
+            }            
+            
+            if(Auth::user()->role == 'admin'){
+
+                return redirect()->route('index.admin');
+            }
         }
 
-        return back()->withErrors([
-            'email' => 'The provided credentials do not match our records.',
-        ]);
-    }
-}
+    return back()->withErrors([
+        'email' => 'The provided credentials do not match our records.',
+    ]);
+}}

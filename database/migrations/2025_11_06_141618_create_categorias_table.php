@@ -16,11 +16,7 @@ return new class extends Migration
             $table->string('name');
             $table->text('descricao')->nullable();
             $table->string('imagem')->nullable();
-
-            $table->foreignId('stock_items_id')
-                  ->constrained('stock_items')
-                  ->onDelete('cascade');
-            
+             
             $table->timestamps();
         });
     }

@@ -36,25 +36,25 @@ return [
     */
 
     'guards' => [
-        // 'web' => [
-        //     'driver' => 'session',
-        //     'provider' => 'users',
-        // ],    
-        
-        'user' => [
+        'web' => [
             'driver' => 'session',
             'provider' => 'users',
-        ],        
+        ],    
         
-        'farmacia' => [
-            'driver' => 'session',
-            'provider' => 'farmacias',
-        ],        
+        // 'user' => [
+        //     'driver' => 'session',
+        //     'provider' => 'users',
+        // ],        
         
-        'entregador' => [
-            'driver' => 'session',
-            'provider' => 'entregadores',
-        ],
+        // 'farmacia' => [
+        //     'driver' => 'session',
+        //     'provider' => 'farmacias',
+        // ],        
+        
+        // 'entregador' => [
+        //     'driver' => 'session',
+        //     'provider' => 'entregadores',
+        // ],
     ],
 
     /*
@@ -75,25 +75,25 @@ return [
     */
 
     'providers' => [
-        'users' => [
-            'driver' => 'eloquent',
-            'model' => env('AUTH_MODEL', App\Models\User::class),
-        ],      
-        
-        'entregadores' => [
-            'driver' => 'eloquent',
-            'model' => env('AUTH_MODEL', App\Models\Entregador::class),
-        ],      
-        
-        'farmacias' => [
-            'driver' => 'eloquent',
-            'model' => env('AUTH_MODEL', App\Models\Farmacia::class),
-        ],
-
         // 'users' => [
-        //     'driver' => 'database',
-        //     'table' => 'users',
+        //     'driver' => 'eloquent',
+        //     'model' => env('AUTH_MODEL', App\Models\User::class),
+        // ],      
+        
+        // 'entregadores' => [
+        //     'driver' => 'eloquent',
+        //     'model' => env('AUTH_MODEL', App\Models\Entregador::class),
+        // ],      
+        
+        // 'farmacias' => [
+        //     'driver' => 'eloquent',
+        //     'model' => env('AUTH_MODEL', App\Models\Farmacia::class),
         // ],
+
+        'users' => [
+            'driver' => 'database',
+            'table' => 'users',
+        ],
     ],
 
     /*

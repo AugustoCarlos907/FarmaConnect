@@ -14,14 +14,27 @@ return new class extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('email')->unique();
-            // $table->timestamp('email_verified_at')->nullable();
+            $table->string('email');
+            $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->string('phone')->nullable();
-            $table->text('endereco')->nullable();
+            $table->date('data_nascimento')->nullable();
             
+            
+            $table->enum('genero' , ['M' , 'F'])->nullable();
+            
+            $table->text('endereco')->nullable();
             $table->decimal('latitude', 10, 8)->nullable();
             $table->decimal('longitude', 11, 8)->nullable();
+
+           $table->enum('role', [
+                'cliente',
+                'gestor_farmacia',
+                'entregador',
+                'admin'
+            ])->default('cliente');
+
+
 
             $table->timestamps();
         });

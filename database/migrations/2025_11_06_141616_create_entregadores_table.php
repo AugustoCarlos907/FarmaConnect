@@ -13,14 +13,16 @@ return new class extends Migration
     {
         Schema::create('entregadores', function (Blueprint $table) {
             $table->id();
-            $table->string('nome');
-            $table->string('email')->unique();
-            $table->string('telefone')->nullable();
+            // $table->string('name');
+            // $table->string('email')->unique();
+            // $table->string('telefone')->nullable();
             $table->string('descricao')->nullable();
             $table->string('numero_bi')->unique()->nullable();
             $table->string('matricula_veiculo')->nullable();
             $table->string('foto_perfil')->nullable();
-            $table->enum('status', ['Ativo', 'Inativo'])->default('Ativo');
+            $table->enum('status', ['Ativo', 'Ocupado'])->default('Ativo');
+            $table->boolean('disponivel' )->default(true);
+            
             $table->decimal('latitude', 10, 7)->nullable();
             $table->decimal('longitude', 10, 7)->nullable();
 
@@ -28,6 +30,10 @@ return new class extends Migration
                   ->constrained('farmacias')
                   ->onDelete('cascade');
 
+            $table->foreignId('user_id')
+                  ->constrained('users')
+                  ->onDelete('cascade');
+                       
             $table->timestamps();
         });
     }
@@ -37,6 +43,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('entregadors');
+        Schema::dropIfExists('entregadores');
     }
 };

@@ -13,16 +13,30 @@ return new class extends Migration
     {
         Schema::create('farmacias', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('email')->unique();
-            $table->string('telefone')->nullable();
+            // $table->string('name');
+            // $table->string('email');
+
             $table->string('descricao')->nullable();
+            $table->unsignedBigInteger('nif');
+            $table->string('alvara');  //imagem ou numero
+
 
             $table->string('endereco'); 
             $table->decimal('latitude', 10, 8)->nullable();
             $table->decimal('longitude', 10, 8)->nullable();
             
             $table->enum('status', ['Ativo', 'Desativado'])->default('Ativo');
+
+
+            $table->foreignId('companhia_id')
+                 ->constrained('companhias')
+                 ->onDelete('cascade');
+
+            $table->foreignId('user_id')
+                  ->constrained('users')
+                  ->onDelete('cascade');
+            
+            $table->timestamps();
         });
     }
 

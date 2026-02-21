@@ -21,8 +21,12 @@ return new class extends Migration
 
             $table->foreignId('medicamento_id')
                   ->constrained('medicamentos')
-                  ->onDelete('cascade');
+                                    ->onDelete('cascade');
                   
+            $table->foreignId('farmacia_id')
+                  ->constrained('farmacias')
+                  ->onDelete('cascade');
+
             $table->timestamps();
         });
     }

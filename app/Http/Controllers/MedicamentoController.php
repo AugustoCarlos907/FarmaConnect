@@ -18,4 +18,7 @@ class MedicamentoController extends Controller
         // return response()->json($medicamentos);
     }
 
+
+    //list medication comparation with prices in nearby pharmacies
+    
 }

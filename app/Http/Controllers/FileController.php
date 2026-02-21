@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreFileRequest;
-use App\Jobs\ParseStockCsvJob;
+use App\Jobs\ParsePharmacyStockCsvJob;
 use App\Services\FileService;
 use Auth;
 use Illuminate\Http\Request;
@@ -13,6 +13,7 @@ class FileController extends Controller
 {
     public function __construct(public FileService $service){}
 
+    
 
     public function uploadFile(StoreFileRequest $request){
         $request->validated();
@@ -30,7 +31,7 @@ class FileController extends Controller
                 'farmacia_id' => $farmaciaId,
             ]);
 
-            ParseStockCsvJob::dispatch($stockFile);
+            ParsePharmacyStockCsvJob::dispatch($stockFile);
 
             return response()->json([
                 'message' => 'File uploaded successfully',

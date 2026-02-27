@@ -66,14 +66,15 @@ class User extends Authenticatable
         return $this->hasMany(Endereco::class);
     }
 
-    public function farmacia(){
-        return $this->hasOne(Farmacia::class);
-    }
+
     public function entregador(){
         return $this->hasOne(Entregador::class);
     }
 
     public function companhia(){
-        return $this->hasOne(Companhia::class);
+        return $this->hasMany(Companhia::class);
+    }
+    public function farmacia(){
+        return $this->hasOne(Farmacia::class);
     }
 }

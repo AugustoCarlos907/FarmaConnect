@@ -13,9 +13,15 @@ class MedicamentoController extends Controller
     {
         $search = $request->input('search');
 
-        $this->service->SearchMedicamento($search, $perPage);
+        $medicamentos = $this->service->SearchMedicamento(
+            $request->$search, 
+            $perPage,
+            $request->user()->latitude,
+            $request->user()->longitude,
+            $request->min_price
+            );
 
-        // return response()->json($medicamentos);
+        return response()->json($medicamentos);
     }
 
 

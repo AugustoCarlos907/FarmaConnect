@@ -28,7 +28,7 @@ return new class extends Migration
             $table->date('data_fim');
             $table->integer('total_vendas')->default(0);
             $table->decimal('total_receita', 10, 2)->default(0);
-            $table->enum('tipo_relatorio', ['csv', 'pdf'])->default('csv');
+            $table->enum('tipo_relatorio', ['csv', 'pdf'])->default('pdf');
             $table->dateTime('data_geracao')->default(now());
             $table->timestamps();
         });

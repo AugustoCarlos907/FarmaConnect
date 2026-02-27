@@ -20,10 +20,11 @@ class Farmacia  extends Authenticatable
         'telefone',
         'descricao',
         'status',
-
         'endereco',
         'latitude',
         'longitude',
+        'iban',
+        'numero_express',
         // 'password'
     ];
 

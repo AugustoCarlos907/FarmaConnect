@@ -8,8 +8,13 @@ class MedicamentoService
 {
     public function __construct(public MedicamentoInterface $repository){}
 
-    public function SearchMedicamento($search , $perPage)
+    public function SearchMedicamento($search , $perPage , $latitude , $longitude, $min_price = null)
     {
-        return $this->repository->SearchMedicamento($search , $perPage);
+        return $this->repository->SearchMedicamento(
+            $search ,  
+            $perPage , 
+            $latitude , 
+            $longitude,
+            $min_price);
     }
 }

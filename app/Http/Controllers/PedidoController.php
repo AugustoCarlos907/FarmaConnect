@@ -14,19 +14,20 @@ class PedidoController extends Controller
     {
         $pedido = $this->service->criarPedido(
             auth()->id(),
-            $request->farmacia_id,
-            $request->items
-            
-            // $request->endereco_entrega
+            $request->items,
+            $request->endereco_entrega,
+            $request->latitude,
+            $request->longitude,
+            $request->metodo_pagamento
         );
 
-        // return response()->json($pedido, 201);
+        return response()->json($pedido, 201);
     }
 
     public function index($perPage = 10)
     {
-        $this->service->getAllPedidosByPharmacy($perPage);
+        $pedidos = $this->service->getAllPedidosByPharmacy($perPage);
 
-        // return response()->json($pedidos);
+        return response()->json($pedidos);
     }
 }

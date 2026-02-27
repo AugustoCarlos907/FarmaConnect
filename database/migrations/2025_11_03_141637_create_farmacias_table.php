@@ -27,14 +27,14 @@ return new class extends Migration
             
             $table->enum('status', ['Ativo', 'Desativado'])->default('Ativo');
 
+            $table->string('iban');
+            $table->string('numero_express');
 
             $table->foreignId('companhia_id')
                  ->constrained('companhias')
                  ->onDelete('cascade');
 
-            $table->foreignId('user_id')
-                  ->constrained('users')
-                  ->onDelete('cascade');
+         
             
             $table->timestamps();
         });

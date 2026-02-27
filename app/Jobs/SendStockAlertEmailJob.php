@@ -33,15 +33,16 @@ class SendStockAlertEmailJob implements ShouldQueue
         }
 
         $pharmacy = $firstItem->farmacia;
+        $gestorFarmacia = $pharmacy->user();
 
         if (!$pharmacy || empty($pharmacy->email)) {
             logger()->warning('Farmácia sem email configurado', [
-                'pharmacy_id' => $pharmacy?->id,
+                'pharmacy_id' => $pharmacy->id,
             ]);
             return;
         }
 
-        Mail::to($pharmacy->email)
+        Mail::to($gestorFarmacia->email)
             ->send(new LowStockItemsMail($this->items));
    }
 

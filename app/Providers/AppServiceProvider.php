@@ -2,7 +2,11 @@
 
 namespace App\Providers;
 
+use App\Repositories\AlertStockRepository;
+use App\Repositories\AvaliacaoRepository;
 use App\Repositories\FileRepository;
+use App\Repositories\Interfaces\AlertStockInterface;
+use App\Repositories\Interfaces\AvaliacaoInterface;
 use App\Repositories\Interfaces\FileInterface;
 use App\Repositories\Interfaces\MedicamentoInterface;
 use App\Repositories\Interfaces\PedidoInterface;
@@ -28,5 +32,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(FileInterface::class , FileRepository::class);
         $this->app->bind(MedicamentoInterface::class , MedicamentoRepository::class);
         $this->app->bind(PedidoInterface::class , PedidoRepository::class);
+        $this->app->bind(AlertStockInterface::class , AlertStockRepository::class);
+        $this->app->bind(AvaliacaoInterface::class , AvaliacaoRepository::class);
     }
 }

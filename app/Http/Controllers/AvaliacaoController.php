@@ -9,9 +9,12 @@ class AvaliacaoController extends Controller
     public function __construct(public \App\Services\AvaliacaoService $service){}
 
     public function create(Request $request){
-        $data = $request->validated();
+        $request->validate([
+            'classificacao' => 'required|integer|min:1|max:5',
+            'comentario' => 'nullable|string|max:255'
+        ]);
 
-        $this->service->createAvaliacao($data);
+        $this->service->createAvaliacao($request->classificacao,$request->comentario);
 
         return response()->json(['message' => 'Avaliação criada com sucesso!'], 201);
     }

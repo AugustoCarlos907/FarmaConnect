@@ -28,8 +28,8 @@ class Entrega extends Model
         return $this->belongsTo(Entregador::class);
     }
 
-    public function avaliacao()
-    {
-        return $this->belongsTo(Avaliacao::class);
-    }
+    // public function avaliacao()
+    // {
+    //     return $this->belongsTo(Avaliacao::class);
+    // }
 }

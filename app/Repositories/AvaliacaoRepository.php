@@ -11,7 +11,8 @@ class AvaliacaoRepository {
     }
 
     public function updateAvaliacao($id, $data) {
-        return Avaliacao::findOrFail($id)->update($data);
+        return Avaliacao::findOrFail($id)
+                        ->update($data);
     }
 
     public function deleteAvaliacao($id) {

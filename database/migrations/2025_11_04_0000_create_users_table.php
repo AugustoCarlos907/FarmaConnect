@@ -29,12 +29,22 @@ return new class extends Migration
 
            $table->enum('role', [
                 'cliente',
+                'gestor_companhia',
                 'gestor_farmacia',
                 'entregador',
                 'admin'
             ])->default('cliente');
 
 
+            $table->foreignId('companhia_id')
+                  ->nullable()
+                  ->constrained('companhias')
+                  ->onDelete('cascade');
+
+            $table->foreignId('farmacia_id')
+                  ->constrained('farmacias')
+                  ->onDelete('cascade');
+                 
 
             $table->timestamps();
         });

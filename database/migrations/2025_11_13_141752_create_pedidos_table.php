@@ -22,7 +22,7 @@ return new class extends Migration
                   ->constrained('farmacias')
                   ->onDelete('cascade');
 
-            $table->text('endereco')->nullable();
+            $table->string('endereco')->nullable();
             $table->decimal('latitude', 10, 8)->nullable();
             $table->decimal('longitude', 11, 8)->nullable();
 
@@ -30,9 +30,12 @@ return new class extends Migration
             [ 
                 'Pendente', 
                 'Aprovado',
+                'pago',
                 'Em Entrega',
                 'Concluído',
-                'Cancelado' ])->default('Pendente');
+                'Cancelado', 
+                'Rejeitado'
+                ])->default('Pendente');
 
             $table->dateTime('data_pedido')->default(now());
             // $table->foreignId('entregador_id')->nullable()->constrained('entregadores')->onDelete('set null');

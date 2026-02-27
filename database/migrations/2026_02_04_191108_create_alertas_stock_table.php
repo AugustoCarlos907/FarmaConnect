@@ -18,7 +18,7 @@ return new class extends Migration
                   ->constrained('stock_items')
                   ->onDelete('cascade');
                   
-            $table->enum('tipo', ['baixo_stock', 'validade_proxima']);
+            $table->enum('tipo', ['Baixo_Stock', 'validade_proxima']);
             $table->text('mensagem');
             // $table->boolean('lido')->default(false);
             $table->timestamps();

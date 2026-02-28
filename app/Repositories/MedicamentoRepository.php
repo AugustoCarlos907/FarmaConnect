@@ -45,5 +45,10 @@ public function searchMedicamento($search, $perPage, $userLat, $userLng , $min_p
 }
 
     
-   
+   public function getMedicamentoByCategoria($perPage)
+   {
+        return Medicamento::with('categoria')
+                            ->orderBy('name')
+                            ->paginate($perPage);
+   }
 }

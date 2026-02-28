@@ -9,11 +9,23 @@ class Medicamento extends Model
     protected $fillable = [
         'name',
         'descricao',
-        'principio_ativo',
+        // 'principio_ativo',
         'forma_farmaceutica',
         'dosagem',
-        'farmacia_id',
+        // 'farmacia_id',
+        'categoria_id'
     ];
 
 
+    public function stockItems()
+    {
+        return $this->hasMany(StockItem::class);
+    }
+
+
+    public function categoria()
+    {
+        return $this->belongsTo(Categoria::class);
+    }
+    
 }

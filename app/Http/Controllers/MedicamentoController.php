@@ -26,5 +26,42 @@ class MedicamentoController extends Controller
 
 
     //list medication comparation with prices in nearby pharmacies
+    public function listMedicamentosByCategoria($perPage = 10)
+    {
+        $medicamentos = $this->service->getMedicamentoByCategoria($perPage);
+
+        return response()->json($medicamentos);
+    }
+
+        public function create(Request $request)
+        {
+            $validatedData = $request->validate([
+                'name' => 'required|string|max:255',
+                'descricao' => 'required|string',
+                'forma_farmaceutica' => 'required|string',
+                'dosagem' => 'required|string',
+                // 'farmacia_id' => 'required|integer|exists:farmacias,id',
+                'categoria_id' => 'required|integer|exists:categorias,id',
+                'quantidade' => 'required|integer|min:1',
+                'preco' => 'required|numeric|min:0',
+                'data_validade' => 'required|date',
+                'lote' => 'nullable|string|max:255',
+                // 'ativo' => 'required|boolean'
+
+            ]);
     
+            $medicamento = $this->service->createMedicamento(
+                $validatedData['name'],
+                $validatedData['descricao'],
+                $validatedData['forma_farmaceutica'],
+                $validatedData['dosagem'],
+                $validatedData['categoria_id'],
+                $validatedData['quantidade'],
+                $validatedData['preco'],
+                $validatedData['data_validade'],
+                $validatedData['lote'] ?? null,
+            );
+    
+            return response()->json($medicamento, 201);
+        }
 }

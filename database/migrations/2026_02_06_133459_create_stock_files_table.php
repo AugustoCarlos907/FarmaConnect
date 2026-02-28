@@ -19,7 +19,7 @@ return new class extends Migration
             $table->foreignId('farmacia_id')
                   ->constrained('farmacias')
                   ->onDelete('cascade');
-                  
+            $table->enum('status', ['pendente', 'processando', 'concluido', 'erro'])->default('pendente');      
             $table->timestamps();
         });
     }

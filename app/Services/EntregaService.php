@@ -15,6 +15,7 @@ class EntregaService{
                         ->get();
     }
 
+    
     // Cálculo da taxa de entrega com base na distância
     public function calcularTaxaEntrega(float $distanciaKm): float
     {

@@ -11,6 +11,9 @@ class AvaliacaoService{
     
     public function __construct(public AvaliacaoInterface $repository, public Entrega $entrega){}
 
+    public function getAllAvaliacoes(){
+        return $this->repository->getAllAvaliacoes();
+    }
     // public function createAvaliacao($data){
     //     return $this->repository->createAvaliacao($data);
     // }

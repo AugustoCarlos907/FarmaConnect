@@ -123,13 +123,17 @@ class PedidoService
         });
     }
 
-    public function getAllPedidosByPharmacy( $perPage )
-    {
+    public function getAllPedidosByPharmacy( $perPage ){
         return $this->repository->getAllPedidosByPharmacy($perPage);
     }
 
-    private function encontrarFarmaciaComTodosItens(array $items, float $lat, float $lng)
-{
+    public function getPedidosDeHojeByPharmacy($perPage){
+        return $this->repository->getPedidosDeHojeByPharmacy($perPage);
+    }
+
+
+
+    private function encontrarFarmaciaComTodosItens(array $items, float $lat, float $lng){
     $stockIds = collect($items)->pluck('stockId');
 
     $farmacias = StockItem::whereIn('id', $stockIds)

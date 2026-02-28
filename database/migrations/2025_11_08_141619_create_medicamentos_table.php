@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('descricao');
-            $table->string('principio_ativo');
+            // $table->string('principio_ativo');
             $table->string('forma_farmaceutica'); //xarope , comprimido , pomada 
             $table->string('dosagem');
 

@@ -22,6 +22,10 @@ class StockItem extends Model
         return $this->belongsTo(Farmacia::class);
     }
 
+    public function medicamento()
+    {
+        return $this->belongsTo(Medicamento::class);
+    }
 
     public function temStock(int $quantidade): bool
     {

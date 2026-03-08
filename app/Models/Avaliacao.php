@@ -6,15 +6,18 @@ use Illuminate\Database\Eloquent\Model;
 
 class Avaliacao extends Model
 {
+    protected $table = 'avaliacoes';
     protected $fillable = [
 
-        'classificacao',
+        'classificacao'=>1,
         'comentario',
 
         'farmacia_id',
         'user_id'
         
     ];
+
+
 
     public function farmacia()
     {

@@ -6,7 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class Companhia extends Model
 {
-    //
+    protected $fillable = [
+        'nif',
+        'logo',
+
+    ];
 
 
     public function farmacias (){
@@ -14,10 +18,10 @@ class Companhia extends Model
     }
 
     public function users (){
-        return $this->belongsTo(User::class);
+        return $this->hasMany(User::class);
     }
 
-    public function telefones(){2
+    public function telefones(){
         return $this->hasMany(Telefone::class);
     }
 }

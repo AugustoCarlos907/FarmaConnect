@@ -55,4 +55,9 @@ class MedicamentoService
 
         return $medicamento;
     }
+
+    public function getMedicamentosByFarmacia($farmaciaId)
+    {
+        return $this->repository->getMedicamentosByFarmacia($farmaciaId);
+    }
 }

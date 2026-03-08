@@ -53,21 +53,20 @@ class AuthController extends Controller
         return view('clientes.auth.login');
     }
 
-   public function authenticate(Request $request)
-{
-    $credentials = $request->validate([
-        'email' => 'required|string|email',
-        'password' => 'required|string',
-    ]);
+   public function authenticate(Request $request){   
+        $credentials = $request->validate([
+            'email' => 'required|string|email',
+            'password' => 'required|string',
+        ]);
 
 
 
-        if ($credentials && Auth::user()->attempt($credentials)) {
+        if ($credentials && Auth::attempt($credentials)) {
             $request->session()->regenerate();
 
             if(Auth::user()->role == 'cliente'){
 
-                return redirect()->route('index');
+                return redirect()->route('index.clientes');
             }
 
 
@@ -91,4 +90,15 @@ class AuthController extends Controller
     return back()->withErrors([
         'email' => 'The provided credentials do not match our records.',
     ]);
-}}
+    }
+
+    public function logout($id)
+    {
+        $user = User::find($id);
+        if ($user && Auth::id() === $user->id) {
+            Auth::logout();
+            return redirect()->route('index');
+        }
+    }
+
+}

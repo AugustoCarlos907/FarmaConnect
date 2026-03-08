@@ -9,10 +9,50 @@ use DB;
 
 class EntregaService{
 
+    // Entregas concluídas
+    public function entregasConcluidasPorEntregador($entregadorId, $perPage = 10) {
+        return Entrega::where('status', 'concluída')
+            ->where('entregador_id', $entregadorId)
+            ->orderByDesc('id')
+            ->paginate($perPage);
+    }
+
+    public function entregasEmTransitoPorEntregador($entregadorId, $perPage = 10) {
+        return Entrega::where('status', 'em transito')
+            ->where('entregador_id', $entregadorId)
+            ->orderByDesc('id')
+            ->paginate($perPage);
+    }
+
+    public function entregasCanceladasPorEntregador($entregadorId, $perPage ) {
+        return Entrega::where('status', 'cancelada')
+            ->where('entregador_id', $entregadorId)
+            ->orderByDesc('id')
+            ->paginate($perPage);
+    }
+
+    // Entregas de hoje por entregador
+    public function getEntregasDeHojeByEntregador($entregadorId, $perPage ) {
+        return Entrega::where(function($query) use ($entregadorId) {
+                $query->where('entregador_id', $entregadorId)
+                      ->where('status', 'concluída');
+            })
+            ->whereDate('created_at', now()->toDateString())
+            ->orderByDesc('id')
+            ->paginate($perPage);
+    }
+
     public function getAllEntregasByEntregador($perPage){
         return Entrega::with('entregador')
                         ->orderByDesc('id')
                         ->get();
+    }
+
+    public function getLastEntregasByEntregador($entregadorId, $limit) {
+        return Entrega::where('entregador_id', $entregadorId)
+            ->orderByDesc('id')
+            ->limit($limit)
+            ->get();
     }
 
     

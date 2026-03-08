@@ -8,6 +8,37 @@ use Carbon\Carbon;
 
 class ReportService{
 
+    // Relatório de entregas por período e farmácia
+    public function relatorioEntregas($farmaciaId, $dataInicio, $dataFim)
+    {
+        $dataInicio = Carbon::parse($dataInicio)->startOfDay();
+        $dataFim    = Carbon::parse($dataFim)->endOfDay();
+        return \App\Models\Entrega::whereHas('pedido', function($q) use ($farmaciaId) {
+                $q->where('farmacia_id', $farmaciaId);
+            })
+            ->whereBetween('created_at', [$dataInicio, $dataFim])
+            ->get();
+    }
+
+    // Relatório de avaliações por período e farmácia
+    public function relatorioAvaliacoes($farmaciaId, $dataInicio, $dataFim)
+    {
+        $dataInicio = Carbon::parse($dataInicio)->startOfDay();
+        $dataFim    = Carbon::parse($dataFim)->endOfDay();
+        return \App\Models\Avaliacao::where('farmacia_id', $farmaciaId)
+            ->whereBetween('created_at', [$dataInicio, $dataFim])
+            ->get();
+    }
+
+    // Relatório de stock por farmácia (snapshot atual)
+    public function relatorioStock($farmaciaId)
+    {
+        return \App\Models\StockItem::whereHas('medicamento', function($q) use ($farmaciaId) {
+                $q->where('farmacia_id', $farmaciaId);
+            })
+            ->get();
+    }
+
 
     public function gerarRelatorioPoPeriodo($farmaciaId,$dataInicio,$dataFim,$tipoRelatorio ){
         $dataInicio = Carbon::parse($dataInicio)->startOfDay();
@@ -20,7 +51,7 @@ class ReportService{
                   ->get();
             
                     
-        $totalVendas = $pedidos->count();
+        $totalVendas = $pedidos->where('status', 'Concluido')->count();
         $totalReceitas = $pedidos->sum('total');
 
 

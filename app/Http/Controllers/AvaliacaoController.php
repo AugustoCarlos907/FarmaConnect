@@ -8,6 +8,18 @@ class AvaliacaoController extends Controller
 {
     public function __construct(public \App\Services\AvaliacaoService $service){}
 
+    public function index(){
+        $user = auth()->user();
+
+        if($user->role != 'gestor_farmacia'){ 
+            return response()->json(['message' => 'Acesso negado.'], 403);
+        }
+
+        $farmaciaId = $user->farmacia_id;
+        $avaliacoes = $this->service->getAllAvaliacoesByFarmacia($farmaciaId);
+
+        return response()->json($avaliacoes);
+    }
     public function create(Request $request){
         $request->validate([
             'classificacao' => 'required|integer|min:1|max:5',

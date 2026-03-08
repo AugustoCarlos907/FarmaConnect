@@ -1,8 +1,11 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ClientHomePageController;
 use App\Http\Controllers\CompanhiaController;
 use App\Http\Controllers\ComprovativoPagamentoController;
+use App\Http\Controllers\DashboardEntregadorController;
+use App\Http\Controllers\DashboardFarmaciaController;
 use App\Http\Controllers\EntregaController;
 use App\Http\Controllers\FarmaciaController;
 use App\Http\Controllers\PedidoController;
@@ -12,7 +15,7 @@ use Twilio\Rest\Client;
 
     
 
-Route::middleware(['guest'])->group(function(){
+// Route::middleware(['guest'])->group(function(){
 
     Route::get('/', function(){
         return view('index');
@@ -32,20 +35,34 @@ Route::middleware(['guest'])->group(function(){
     
     Route::get('/login', [AuthController::class, 'login'])->name('login');
     Route::post('/login', [AuthController::class, 'authenticate'])->name('authenticate');
-});
+// });
 
     //companhia
     Route::post('companhia/register', [CompanhiaController::class, 'register']);
+    Route::get('companhia/farmacia/create',function(){ 
+        Auth::loginUsingId(3);
+        return view('farmacias.auth.cadastro'); 
+    })->name('companhia.farmacia.create');
 
-    Route::post('companhia/register/farmacia', [CompanhiaController::class, 'registerFarmacia']);
+    Route::post('companhia/register/farmacia', [CompanhiaController::class, 'registerFarmacia'])->name('companhia.farmacia.register');
+
+    // Route::post('companhia/register/farmacia', [CompanhiaController::class, 'registerFarmacia']);
 
     //farmacias
-
-    Route::get('/dashboard', [FarmaciaController::class , 'dashboard'])->name('index.farmacias');
+    Route::get('farmacia/dashboard', [DashboardFarmaciaController::class , 'dashboard'])->name('index.farmacias');
     Route::get('/alert/stock/items', []);
     Route::post('/relatorios/gerar', [ReportController::class, 'gerarRelatorio']);
-    //entregadores
-    Route::get('entregas', [EntregaController::class , 'getAllEntregasByEntregador']);
+    Route::post('/logout/{id}' , [AuthController::class, 'logout'])->name('logout');
+    
+    
+    //Entregadores
+    Route::get('entregador/dashboard', [DashboardEntregadorController::class, 'dashboard'])->name('index.entregadores');
+    Route::get('entregas/concluidas/{entregadorId}', [EntregaController::class, 'concluidasPorEntregador']);
+    Route::get('entregas/em-transito/{entregadorId}', [EntregaController::class, 'emTransitoPorEntregador']);
+    Route::get('entregas/canceladas/{entregadorId}', [EntregaController::class, 'canceladasPorEntregador']);
+
+    Route::get('entregas/hoje/{entregadorId}', [EntregaController::class, 'deHojePorEntregador']);
+
 
     Route::get('/sms', function () {
 
@@ -73,8 +90,14 @@ Route::middleware(['guest'])->group(function(){
 });
 
     //clientes
+    Route::get('/home', function(){ 
+        Auth::loginUsingId(3);
+        return view('clientes.dashboard.index'); 
+    
+    })->name('index.clientes');
+    Route::get('/perfil' , [ClientHomePageController::class, 'perfil'])->name('perfil.clientes');
     Route::post('/pedidos', [PedidoController::class, 'store']);
-    Route::get('/pedidos', [PedidoController::class, 'index']);
+    Route::get('/pedidos', [ClientHomePageController::class, 'pedidos'])->name('pedidos.clientes');
     Route::post('/pedidos/{id}/cancelar', [PedidoController::class, 'cancelar']);
 
     Route::post('/upload/comprovativo/{id}', [ComprovativoPagamentoController::class, 'uploadComprovativo']);

@@ -3,11 +3,12 @@
 namespace App\Repositories;
 
 use App\Models\Avaliacao;
+use App\Repositories\Interfaces\AvaliacaoInterface;
 
-class AvaliacaoRepository {
+class AvaliacaoRepository implements AvaliacaoInterface {
 
-    public function getAllAvaliacoes() {
-        return Avaliacao::where('farmacia_id', auth()->user()->farmacia_id)
+    public function getAllAvaliacoesByFarmacia($farmaciaId) {
+        return Avaliacao::where('farmacia_id', $farmaciaId)
                         ->get();
     }
 

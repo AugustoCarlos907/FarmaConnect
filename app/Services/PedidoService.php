@@ -131,6 +131,13 @@ class PedidoService
         return $this->repository->getPedidosDeHojeByPharmacy($perPage);
     }
 
+    public function getLastPedidosByPharmacy(){
+        return Pedido::where('farmacia_id', auth()->user()->farmacia_id)
+                    ->orderBy('created_at', 'desc')
+                    ->limit(3)
+                    ->get();
+    }
+
 
 
     private function encontrarFarmaciaComTodosItens(array $items, float $lat, float $lng){

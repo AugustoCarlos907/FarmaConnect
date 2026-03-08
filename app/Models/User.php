@@ -26,7 +26,12 @@ class User extends Authenticatable
         'phone',
         'endereco',
         'data_nascimento',
-        'genero'
+        'genero',
+        'latitude',
+        'longitude',
+        'role',
+        'companhia_id',
+        'farmacia_id',
     ];
 
     /**
@@ -72,7 +77,7 @@ class User extends Authenticatable
     }
 
     public function companhia(){
-        return $this->hasMany(Companhia::class);
+        return $this->belongsTo(Companhia::class);
     }
     public function farmacia(){
         return $this->hasOne(Farmacia::class);

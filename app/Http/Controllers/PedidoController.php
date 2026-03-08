@@ -27,7 +27,11 @@ class PedidoController extends Controller
     public function index($perPage = 10)
     {
         $pedidos = $this->service->getAllPedidosByPharmacy($perPage);
+        $countPedidos = $pedidos->count();
 
-        return response()->json($pedidos);
+        return response()->json([
+            'pedidos' => $pedidos,
+            'count' => $countPedidos
+        ]);
     }
 }

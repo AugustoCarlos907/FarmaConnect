@@ -287,7 +287,7 @@
                 </div>
                 <div class="col-sm-6">
                   <label class="form-label fw-semibold">Sobrenome</label>
-                  <input type="text" class="form-control" name="last_name" placeholder="Sobrenome">
+                  <input type="text" class="form-control" name="last_name" id="sobrenome" placeholder="Sobrenome">
                 </div>
                 
                 <!-- E-mail e Telefone -->
@@ -319,6 +319,24 @@
                     <option value="M">Masculino</option>
                   </select>
                 </div>
+
+                <!-- Endereço -->
+                <div class="col-12 mb-3">
+                  <label class="form-label fw-semibold">Localização no mapa</label>
+                  <div id="map" style="height: 300px; border-radius: 18px; border: 1.5px solid #e0e9ea;"></div>
+                </div>
+                <div class="col-12">
+                  <label class="form-label fw-semibold">Endereço</label>
+                  <input type="text" class="form-control" name="endereco" id="endereco" placeholder="Endereço completo" readonly>
+                </div>
+                <div class="col-sm-6">
+                  <label class="form-label fw-semibold">Latitude</label>
+                  <input type="text" class="form-control" name="latitude" id="latitude" placeholder="Latitude" readonly>
+                </div>
+                <div class="col-sm-6">
+                  <label class="form-label fw-semibold">Longitude</label>
+                  <input type="text" class="form-control" name="longitude" id="longitude" placeholder="Longitude" readonly>
+                </div>
                 
                 <!-- Senha e Confirmar senha -->
                 <div class="col-sm-6">
@@ -332,7 +350,7 @@
                   <label class="form-label fw-semibold">Confirmar senha</label>
                   <div class="input-group">
                     <span class="input-group-text bg-white"><i class="bi bi-check2-circle"></i></span>
-                    <input type="password" class="form-control" name="password_confirmed" id="confirmSenha" placeholder="Confirmar senha">
+                    <input type="password" class="form-control" name="password_confirmation" id="confirmSenha" placeholder="Confirmar senha">
                   </div>
                 </div>
               </div> <!-- fim row -->
@@ -415,8 +433,55 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Leaflet.js para OpenStreetMap -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/esri-leaflet-geocoder/dist/esri-leaflet-geocoder.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/esri-leaflet-geocoder/dist/esri-leaflet-geocoder.css" />
   <script>
     (function() {
+          // --- MAPA OPENSTREETMAP ---
+          let map, marker;
+          const enderecoInput = document.getElementById('endereco');
+          const latitudeInput = document.getElementById('latitude');
+          const longitudeInput = document.getElementById('longitude');
+          // Coordenadas padrão (centro de Angola)
+          const defaultLat = -11.2027;
+          const defaultLng = 17.8739;
+          map = L.map('map').setView([defaultLat, defaultLng], 6);
+          L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '© OpenStreetMap'
+          }).addTo(map);
+          // Geocoder (busca endereço)
+          const geocoder = L.esri.Geocoding.geosearch({
+            providers: [L.esri.Geocoding.arcgisOnlineProvider()],
+            placeholder: 'Pesquisar endereço...'
+          }).addTo(map);
+          geocoder.on('results', function(data) {
+            if (data.results.length > 0) {
+              const result = data.results[0];
+              setMarker(result.latlng.lat, result.latlng.lng, result.text);
+            }
+          });
+          // Clique no mapa
+          map.on('click', function(e) {
+            const lat = e.latlng.lat;
+            const lng = e.latlng.lng;
+            // Reverse geocode para endereço
+            fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}`)
+              .then(res => res.json())
+              .then(data => {
+                setMarker(lat, lng, data.display_name || '');
+              });
+          });
+          function setMarker(lat, lng, address) {
+            if (marker) map.removeLayer(marker);
+            marker = L.marker([lat, lng]).addTo(map);
+            latitudeInput.value = lat;
+            longitudeInput.value = lng;
+            enderecoInput.value = address;
+          }
       "use strict";
 
       // Elementos principais

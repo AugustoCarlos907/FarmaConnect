@@ -51,4 +51,17 @@ public function searchMedicamento($search, $perPage, $userLat, $userLng , $min_p
                             ->orderBy('name')
                             ->paginate($perPage);
    }
+
+    public function getMedicamentosByFarmacia($farmaciaId)
+    {
+            return Medicamento::whereHas('stockItems', function ($query) use ($farmaciaId) {
+                $query->where('farmacia_id', $farmaciaId)
+                      ->where('quantidade', '>', 0)
+                      ->where('ativo', 1);
+            })->with(['stockItems' => function ($query) use ($farmaciaId) {
+                $query->where('farmacia_id', $farmaciaId)
+                      ->where('quantidade', '>', 0)
+                      ->where('ativo', 1);
+            }])->get();
+        }
 }

@@ -25,6 +25,12 @@ class Farmacia  extends Authenticatable
         'longitude',
         'iban',
         'numero_express',
+        'alvara',
+        'nif',
+        'companhia_id',
+        'rua',
+        'bairro',
+        'municipio'
         // 'password'
     ];
 

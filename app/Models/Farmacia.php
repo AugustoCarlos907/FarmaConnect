@@ -17,6 +17,7 @@ class Farmacia  extends Authenticatable
     protected $fillable = [
         'name',
         'email',
+        'logo',
         'telefone',
         'descricao',
         'status',
@@ -30,7 +31,9 @@ class Farmacia  extends Authenticatable
         'companhia_id',
         'rua',
         'bairro',
-        'municipio'
+        'municipio',
+        'horario_abertura',
+        'horario_fechamento'
         // 'password'
     ];
 

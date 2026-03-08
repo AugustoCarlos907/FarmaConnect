@@ -34,6 +34,20 @@ class ClientHomePageController extends Controller
         // $pedidos = $this->pedidoService->getPedidosByUser($user->id);
 
         return view('clientes.pedidos.index');
-}
+    }
+
+    public function farmacias()
+    {
+        // $farmacias = $this->medicamentoService->getAllFarmacias();
+
+        return view('clientes.dashboard.farmacias');
+    }
+
+    public function produtos()
+    {
+        // $medicamentos = $this->medicamentoService->getAllMedicamentos();
+
+        return view('clientes.dashboard.produtos');
+    }
 
 }

@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('farmacias', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->string('logo')->nullable();
             // $table->string('email');
 
             // $table->string('descricao')->nullable();
@@ -28,6 +29,9 @@ return new class extends Migration
             $table->decimal('longitude', 10, 8)->nullable();
             
             $table->enum('status', ['Ativo', 'Desativado'])->default('Ativo');
+
+            $table->date('horario_abertura')->nullable();
+            $table->date('horario_fechamento')->nullable();
 
             $table->string('iban');
             $table->string('numero_express');

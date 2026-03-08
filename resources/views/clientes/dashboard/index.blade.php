@@ -568,16 +568,16 @@
         <nav class="navmenu d-none d-lg-block flex-shrink-0">
           <ul>
             <li><a href="#hero" class="active"><i class="bi bi-house-door"></i> Início</a></li>
-            <li><a href="#pharmacies"><i class="bi bi-hospital"></i> Farmácias</a></li>
-            <li> <a href="#how"><i class="bi bi-box-seam"></i> Produtos</a></li>
-            <li> <a href="#how"><i class="bi bi-clock-history"></i> Histórico</a></li>
+            <li><a href="{{ route('farmacias.list') }}"><i class="bi bi-hospital"></i> Farmácias</a></li>
+            <li> <a href="{{ route('produtos.clientes') }}"><i class="bi bi-box-seam"></i> Produtos</a></li>
+            <li> <a href="{{ route('pedidos.clientes') }}"><i class="bi bi-clock-history"></i> Histórico</a></li>
           </ul>
         </nav>
 
         <!-- Actions -->
         <div class="d-flex align-items-center gap-3 flex-shrink-0 ms-auto ms-lg-0">
           <!-- Cart -->
-          <a href="#" class="header-cart d-none d-sm-inline-flex">
+          <a href="{{ route('carrinho.clientes') }}" class="header-cart d-none d-sm-inline-flex">
             <i class="bi bi-bag"></i>
             <span class="cart-badge">3</span>
           </a>

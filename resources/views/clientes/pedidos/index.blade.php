@@ -397,20 +397,16 @@
 
     <div class="summary-cards">
       <div class="sum-card">
-        {{-- <span class="sum-icon">📦</span> --}}
         <div><div class="sum-val">{{ Auth::user()->pedidos()->count() }}</div><div class="sum-lbl">Total pedidos</div></div>
       </div>
       <div class="sum-card">
-        {{-- <span class="sum-icon">🚚</span> --}}
-        <div><div class="sum-val">1</div><div class="sum-lbl">Em entrega</div></div>
+        <div><div class="sum-val">{{ Auth::user()->pedidos()->where('status', 'Em Entrega')->count() }}</div><div class="sum-lbl">Em entrega</div></div>
       </div>
       <div class="sum-card">
-        {{-- <span class="sum-icon">✅</span> --}}
-        <div><div class="sum-val">10</div><div class="sum-lbl">Entregues</div></div>
+        <div><div class="sum-val">{{ Auth::user()->pedidos()->where('status', 'Concluído')->count() }}</div><div class="sum-lbl">Entregues</div></div>
       </div>
       <div class="sum-card">
-        {{-- <span class="sum-icon">💰</span> --}}
-        <div><div class="sum-val">47 500 Kz</div><div class="sum-lbl">Total gasto</div></div>
+        <div><div class="sum-val">0</div><div class="sum-lbl">Total gasto</div></div>
       </div>
     </div>
   </div>
@@ -430,7 +426,7 @@
         <button class="ftab"        data-filter="cancelado" onclick="filterOrders(this,'cancelado')">Cancelados <span class="fbadge">0</span></button>
       </div>
       <div class="filter-right">
-        <input type="text" class="search-orders" placeholder="🔍  Pesquisar pedido..." id="searchOrders" oninput="searchOrder(this.value)">
+        <input type="text" class="search-orders" placeholder="  Pesquisar pedido..." id="searchOrders" oninput="searchOrder(this.value)">
         <select class="sort-select" onchange="sortOrders(this.value)">
           <option value="recent">Mais recentes</option>
           <option value="oldest">Mais antigos</option>

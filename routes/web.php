@@ -96,6 +96,9 @@ use Twilio\Rest\Client;
     
     })->name('index.clientes');
     Route::get('/perfil' , [ClientHomePageController::class, 'perfil'])->name('perfil.clientes');
+    Route::get('/farmacias', [ClientHomePageController::class, 'farmacias'])->name('farmacias.list');
+    Route::get('/produtos' , [ClientHomePageController::class, 'produtos'])->name('produtos.clientes');
+    Route::get('/carrinho', function(){ return view('clientes.dashboard.carrinho'); })->name('carrinho.clientes');
     Route::post('/pedidos', [PedidoController::class, 'store']);
     Route::get('/pedidos', [ClientHomePageController::class, 'pedidos'])->name('pedidos.clientes');
     Route::post('/pedidos/{id}/cancelar', [PedidoController::class, 'cancelar']);

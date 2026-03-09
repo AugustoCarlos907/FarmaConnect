@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Companhia;
 use App\Models\Entregador;
 use App\Models\User;
+use App\Services\FarmaService;
 use App\Services\MedicamentoService;
 use Auth;
 use DB;
@@ -15,7 +16,10 @@ class FarmaciaController extends Controller
 {
     //list all pharmacies next to me with all detaills (avaluations and etc)
     //by long and lat
-    public function __construct(public MedicamentoService $medicamentoService){}
+    public function __construct(
+        public MedicamentoService $medicamentoService,
+        public FarmaService $farmaService
+    ){}
 
     public function registerEntregadores(Request $request)
     {

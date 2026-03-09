@@ -317,13 +317,13 @@
       <nav class="navmenu d-none d-lg-block flex-shrink-0">
         <ul>
           <li><a href="{{ route('index.clientes') }}"><i class="bi bi-house-door"></i> Início</a></li>
-          <li><a href="#"><i class="bi bi-hospital"></i> Farmácias</a></li>
-          <li><a href="#" class="active"><i class="bi bi-box-seam"></i> Produtos</a></li>
-          <li><a href="#"><i class="bi bi-clock-history"></i> Histórico</a></li>
+          <li><a href="{{ route('farmacias.list') }}"><i class="bi bi-hospital"></i> Farmácias</a></li>
+          <li><a href="{{ route('produtos.clientes') }}" class="active"><i class="bi bi-box-seam"></i> Produtos</a></li>
+          <li><a href="{{ route('pedidos.clientes') }}"><i class="bi bi-clock-history"></i> Histórico</a></li>
         </ul>
       </nav>
       <div class="d-flex align-items-center gap-3 flex-shrink-0 ms-auto ms-lg-0">
-        <a href="#" class="hdr-icon d-none d-sm-inline-flex" onclick="openCart();return false;">
+        <a href="{{ route('carrinho.clientes') }}" class="hdr-icon d-none d-sm-inline-flex" onclick="openCart();return false;">
           <i class="bi bi-bag"></i>
           <span class="hdr-badge" id="cartBadge">0</span>
         </a>
@@ -333,11 +333,11 @@
             <span class="pname d-none d-md-inline">Ana Costa</span>
           </a>
           <ul class="dropdown-menu dropdown-menu-end">
-            <li><a class="dropdown-item" href="#"><i class="bi bi-person me-2"></i>Minha Conta</a></li>
-            <li><a class="dropdown-item" href="#"><i class="bi bi-bag me-2"></i>Pedidos</a></li>
+            <li><a class="dropdown-item" href="{{ route('perfil.clientes') }}"><i class="bi bi-person me-2"></i>Minha Conta</a></li>
+            <li><a class="dropdown-item" href="{{ route('pedidos.clientes') }}"><i class="bi bi-bag me-2"></i>Pedidos</a></li>
             <li><a class="dropdown-item" href="#"><i class="bi bi-heart me-2"></i>Favoritos</a></li>
             <li><hr class="dropdown-divider mx-2 my-1"></li>
-            <li><a class="dropdown-item text-danger" href="#"><i class="bi bi-box-arrow-right me-2"></i>Terminar Sessão</a></li>
+            <li><a class="dropdown-item text-danger" href="{{ route('logout' , ['id'=>Auth()->user()->id]) }}"><i class="bi bi-box-arrow-right me-2"></i>Terminar Sessão</a></li>
           </ul>
         </div>
       </div>
@@ -365,7 +365,7 @@
           <input type="text" id="prodSearch" placeholder="Nome do medicamento, princípio activo..." oninput="filterProducts()">
         </div>
         <div class="hs-sep d-none d-sm-block"></div>
-        <div class="hs-field">
+        {{-- <div class="hs-field">
           <i class="bi bi-hospital"></i>
           <select id="farmSel" onchange="filterProducts()">
             <option value="">Todas as farmácias</option>
@@ -374,10 +374,10 @@
             <option value="talatona">Farmácia Talatona</option>
             <option value="maianga">FarmaMaianga</option>
           </select>
-        </div>
+        </div> --}}
         <button class="hs-btn" onclick="filterProducts()"><i class="bi bi-search"></i> Pesquisar</button>
       </div>
-      <div class="hero-tags">
+      {{-- <div class="hero-tags">
         <span class="htag active" onclick="setHTag(this,'')">Todos</span>
         <span class="htag" onclick="setHTag(this,'analgesico')"> Analgésicos</span>
         <span class="htag" onclick="setHTag(this,'vitamina')"> Vitaminas</span>
@@ -385,7 +385,7 @@
         <span class="htag" onclick="setHTag(this,'cardiovascular')"> Cardiovascular</span>
         <span class="htag" onclick="setHTag(this,'dermatologia')"> Dermatologia</span>
         <span class="htag" onclick="setHTag(this,'pediatria')"> Pediatria</span>
-      </div>
+      </div> --}}
     </div>
   </div>
 </div>
@@ -517,18 +517,10 @@
       <!-- CONTENT -->
       <div class="col-lg-9" id="contentArea">
 
-        <!-- Promo banner -->
-        <div class="promo-banner">
-          <span class="promo-emoji">🏷️</span>
-          <div class="promo-text">
-            <strong>30% de desconto em Vitaminas e Suplementos</strong>
-            <span>Promoção válida até 15 de Março · Apenas nas farmácias parceiras</span>
-          </div>
-          <button class="promo-btn" onclick="setHTag(document.querySelector('.htag:nth-child(3)'),'vitamina')">Ver promoção</button>
-        </div>
+
 
         <!-- Category pills -->
-        <div class="cat-pills" id="catPills">
+        <div class="cat-pills mt-5" id="catPills">
           <button class="cat-pill active" onclick="filterByCatPill(this,'')"> Todos</button>
           <button class="cat-pill" onclick="filterByCatPill(this,'analgesico')"> Analgésicos</button>
           <button class="cat-pill" onclick="filterByCatPill(this,'vitamina')"> Vitaminas</button>

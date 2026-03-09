@@ -301,14 +301,14 @@
         <div class="dropdown">
           <a href="#" class="profile-toggle dropdown-toggle" id="pdrop" data-bs-toggle="dropdown">
             <img src="https://ui-avatars.com/api/?name=Ana+Costa&background=099aa7&color=fff&rounded=true&size=34" width="34" height="34" class="rounded-circle" alt="">
-            <span class="pname d-none d-md-inline">Ana Costa</span>
+            <span class="pname d-none d-md-inline">{{ auth()->user()->name }}</span>
           </a>
           <ul class="dropdown-menu dropdown-menu-end">
-            <li><a class="dropdown-item" href="#"><i class="bi bi-person me-2"></i>Minha Conta</a></li>
-            <li><a class="dropdown-item" href="#"><i class="bi bi-bag me-2"></i>Pedidos</a></li>
+            <li><a class="dropdown-item" href="{{ route('perfil.clientes') }}"><i class="bi bi-person me-2"></i>Minha Conta</a></li>
+            <li><a class="dropdown-item" href="{{ route('pedidos.clientes') }}"><i class="bi bi-bag me-2"></i>Pedidos</a></li>
             <li><a class="dropdown-item" href="#"><i class="bi bi-heart me-2"></i>Favoritos</a></li>
             <li><hr class="dropdown-divider mx-2 my-1"></li>
-            <li><a class="dropdown-item text-danger" href="#"><i class="bi bi-box-arrow-right me-2"></i>Terminar Sessão</a></li>
+            <li><a class="dropdown-item text-danger" href="{{ route('logout' , ['id'=>auth()->id()]) }}"><i class="bi bi-box-arrow-right me-2"></i>Terminar Sessão</a></li>
           </ul>
         </div>
       </div>
@@ -404,7 +404,7 @@
           <div class="dc-body">
             <div class="deliv-option selected" onclick="selectDeliv(this, 800)">
               <div class="deliv-badge">Recomendado</div>
-              <div class="deliv-icon">🚴</div>
+              {{-- <div class="deliv-icon">🚴</div> --}}
               <div>
                 <div class="deliv-name">Entrega Expresso</div>
                 <div class="deliv-sub">Entrega em ~25 min · Seg-Dom 08h–22h</div>
@@ -412,7 +412,7 @@
               <div class="deliv-price">800 Kz</div>
             </div>
             <div class="deliv-option" onclick="selectDeliv(this, 1500)">
-              <div class="deliv-icon">🚗</div>
+              {{-- <div class="deliv-icon">🚗</div> --}}
               <div>
                 <div class="deliv-name">Entrega Agendada</div>
                 <div class="deliv-sub">Escolha o horário que preferir</div>
@@ -420,7 +420,7 @@
               <div class="deliv-price">1 500 Kz</div>
             </div>
             <div class="deliv-option" onclick="selectDeliv(this, 0)">
-              <div class="deliv-icon">🏪</div>
+              {{-- <div class="deliv-icon">🏪</div> --}}
               <div>
                 <div class="deliv-name">Retirar na Farmácia</div>
                 <div class="deliv-sub">Pronto em ~15 min · Sem custo adicional</div>
@@ -446,35 +446,7 @@
               <input type="radio" class="pay-radio" name="pay" checked>
             </div>
 
-            <div class="pay-option" onclick="selectPay(this, 'card')">
-              <div class="pay-icon">💳</div>
-              <div>
-                <div class="pay-name">Cartão Bancário</div>
-                <div class="pay-sub">Visa, Mastercard ou BCI</div>
-              </div>
-              <input type="radio" class="pay-radio" name="pay">
-            </div>
-            <div class="card-form" id="cardForm">
-              <div class="fc-field" style="margin-bottom:.7rem;">
-                <label>Número do cartão</label>
-                <input type="text" class="fc-input" placeholder="0000 0000 0000 0000" maxlength="19" oninput="formatCard(this)">
-              </div>
-              <div class="form-row">
-                <div class="fc-field">
-                  <label>Validade</label>
-                  <input type="text" class="fc-input" placeholder="MM/AA" maxlength="5" oninput="formatExpiry(this)">
-                </div>
-                <div class="fc-field">
-                  <label>CVV</label>
-                  <input type="text" class="fc-input" placeholder="•••" maxlength="3" type="password">
-                </div>
-              </div>
-              <div class="fc-field" style="margin-top:.7rem;">
-                <label>Nome no cartão</label>
-                <input type="text" class="fc-input" placeholder="Como aparece no cartão">
-              </div>
-            </div>
-
+           
             <div class="pay-option" onclick="selectPay(this, 'cash')">
               <div class="pay-icon">💵</div>
               <div>

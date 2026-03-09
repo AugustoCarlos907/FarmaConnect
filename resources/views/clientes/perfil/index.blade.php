@@ -448,13 +448,13 @@
       <nav class="navmenu d-none d-lg-block flex-shrink-0">
         <ul>
           <li><a href="{{ route('index.clientes') }}"><i class="bi bi-house-door"></i> Início</a></li>
-          <li><a href="#"><i class="bi bi-hospital"></i> Farmácias</a></li>
-          <li><a href="#"><i class="bi bi-box-seam"></i> Produtos</a></li>
-          <li><a href="#"><i class="bi bi-clock-history"></i> Histórico</a></li>
+          <li><a href="{{route('farmacias.list')}}"><i class="bi bi-hospital"></i> Farmácias</a></li>
+          <li><a href="{{ route('produtos.clientes') }}"><i class="bi bi-box-seam"></i> Produtos</a></li>
+          <li><a href="{{ route('pedidos.clientes') }}"><i class="bi bi-clock-history"></i> Histórico</a></li>
         </ul>
       </nav>
       <div class="d-flex align-items-center gap-3 flex-shrink-0 ms-auto ms-lg-0">
-        <a href="#" class="header-cart d-none d-sm-inline-flex">
+        <a href="{{ route('carrinho.clientes') }}" class="header-cart d-none d-sm-inline-flex">
           <i class="bi bi-bag"></i>
           <span class="cart-badge">3</span>
         </a>
@@ -465,11 +465,11 @@
             <span class="pname d-none d-md-inline">{{ Auth::user()->name }}</span>
           </a>
           <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="pdrop">
-            <li><a class="dropdown-item active" href="#"><i class="bi bi-person me-2"></i>Minha Conta</a></li>
-            <li><a class="dropdown-item" href="#"><i class="bi bi-bag me-2"></i>Pedidos</a></li>
+            <li><a class="dropdown-item active" href="{{ route('perfil.clientes') }}"><i class="bi bi-person me-2"></i>Minha Conta</a></li>
+            <li><a class="dropdown-item" href="{{ route('pedidos.clientes') }}"><i class="bi bi-bag me-2"></i>Pedidos</a></li>
             <li><a class="dropdown-item" href="#"><i class="bi bi-heart me-2"></i>Favoritos</a></li>
             <li><hr class="dropdown-divider mx-2 my-1"></li>
-            <li><a class="dropdown-item text-danger" href="#"><i class="bi bi-box-arrow-right me-2"></i>Terminar Sessão</a></li>
+            <li><a class="dropdown-item text-danger" href="{{ route('logout' , ['id'=>auth()->user()->id]) }}"><i class="bi bi-box-arrow-right me-2"></i>Terminar Sessão</a></li>
           </ul>
         </div>
       </div>
@@ -540,7 +540,7 @@
               <i class="bi bi-heart-fill"></i> Favoritos
             </a>
             <div class="snav-divider"></div>
-            <a class="snav-item" href="#" style="color:#e74c3c;">
+            <a class="snav-item" href="{{ route('logout' , ['id'=>auth()->user()->id]) }}" style="color:#e74c3c;">
               <i class="bi bi-box-arrow-right" style="color:#e74c3c;"></i> Terminar Sessão
             </a>
           </div>

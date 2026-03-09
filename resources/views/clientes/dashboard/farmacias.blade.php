@@ -317,24 +317,27 @@
       <nav class="navmenu d-none d-lg-block flex-shrink-0">
         <ul>
           <li><a href="{{ route('index.clientes') }}"><i class="bi bi-house-door"></i> Início</a></li>
-          <li><a href="#" class="active"><i class="bi bi-hospital"></i> Farmácias</a></li>
-          <li><a href="#"><i class="bi bi-box-seam"></i> Produtos</a></li>
-          <li><a href="#"><i class="bi bi-clock-history"></i> Histórico</a></li>
+          <li><a class="active" href="{{ route('farmacias.list') }}"><i class="bi bi-hospital"></i> Farmácias</a></li>
+          <li><a href="{{ route('produtos.clientes') }}" ><i class="bi bi-box-seam"></i> Produtos</a></li>
+          <li><a href="{{ route('pedidos.clientes') }}"><i class="bi bi-clock-history"></i> Histórico</a></li>
         </ul>
       </nav>
       <div class="d-flex align-items-center gap-3 flex-shrink-0 ms-auto ms-lg-0">
-        <a href="#" class="hdr-icon d-none d-sm-inline-flex"><i class="bi bi-bag"></i><span class="hdr-badge">3</span></a>
+        <a href="{{ route('carrinho.clientes') }}" class="hdr-icon d-none d-sm-inline-flex" onclick="openCart();return false;">
+          <i class="bi bi-bag"></i>
+          <span class="hdr-badge" id="cartBadge">0</span>
+        </a>        
         <div class="dropdown">
           <a href="#" class="profile-toggle dropdown-toggle" id="pdrop" data-bs-toggle="dropdown">
             <img src="https://ui-avatars.com/api/?name=Ana+Costa&background=099aa7&color=fff&rounded=true&size=34" width="34" height="34" class="rounded-circle" alt="">
             <span class="pname d-none d-md-inline">Ana Costa</span>
           </a>
           <ul class="dropdown-menu dropdown-menu-end">
-            <li><a class="dropdown-item" href="#"><i class="bi bi-person me-2"></i>Minha Conta</a></li>
-            <li><a class="dropdown-item" href="#"><i class="bi bi-bag me-2"></i>Pedidos</a></li>
+            <li><a class="dropdown-item" href="{{ route('perfil.clientes') }}"><i class="bi bi-person me-2"></i>Minha Conta</a></li>
+            <li><a class="dropdown-item" href="{{ route('pedidos.clientes') }}"><i class="bi bi-bag me-2"></i>Pedidos</a></li>
             <li><a class="dropdown-item" href="#"><i class="bi bi-heart me-2"></i>Favoritos</a></li>
             <li><hr class="dropdown-divider mx-2 my-1"></li>
-            <li><a class="dropdown-item text-danger" href="#"><i class="bi bi-box-arrow-right me-2"></i>Terminar Sessão</a></li>
+            <li><a class="dropdown-item text-danger" href="{{ route('logout' , ['id'=>Auth()->user()->id]) }}"><i class="bi bi-box-arrow-right me-2"></i>Terminar Sessão</a></li>
           </ul>
         </div>
       </div>
@@ -363,20 +366,6 @@
           <input type="text" id="searchPharm" placeholder="Nome da farmácia " oninput="filterPharmacies()">
         </div>
         <div class="ts-sep d-none d-md-block"></div>
-        <div class="ts-field">
-          <i class="bi bi-geo-alt-fill"></i>
-          <select id="filterBairro" onchange="filterPharmacies()">
-            <option value="">Todos os bairros</option>
-            <option value="ingombotas">Ingombotas</option>
-            <option value="maianga">Maianga</option>
-            <option value="alvalade">Alvalade</option>
-            <option value="kilamba">Kilamba</option>
-            <option value="talatona">Talatona</option>
-            <option value="benfica">Benfica</option>
-            <option value="viana">Viana</option>
-            <option value="cacuaco">Cacuaco</option>
-          </select>
-        </div>
         <div class="ts-sep d-none d-md-block"></div>
         <div class="ts-field">
           <i class="bi bi-clock"></i>
@@ -392,7 +381,7 @@
         <span class="qf-tag active" onclick="quickFilter(this,'')"> Todas</span>
         <span class="qf-tag" onclick="quickFilter(this,'open')">Abertas agora</span>
         <span class="qf-tag" onclick="quickFilter(this,'24h')"> 24 horas</span>
-        <span class="qf-tag" onclick="quickFilter(this,'new')"> Recentes</span>
+        {{-- <span class="qf-tag" onclick="quickFilter(this,'new')"> Recentes</span> --}}
         <span class="qf-tag" onclick="quickFilter(this,'fav')"> Favoritas</span>
       </div>
     </div>
@@ -415,10 +404,10 @@
         <div class="stat-icon"><i class="bi bi-moon-stars"></i></div>
         <div><div class="stat-val">8</div><div class="stat-lbl">Abertas 24h</div></div>
       </div>
-      <div class="stat-item d-none d-md-flex">
+      {{-- <div class="stat-item d-none d-md-flex">
         <div class="stat-icon"><i class="bi bi-truck"></i></div>
         <div><div class="stat-val">30 min</div><div class="stat-lbl">Entrega média</div></div>
-      </div>
+      </div> --}}
       <div class="stat-item d-none d-lg-flex">
         <div class="stat-icon"><i class="bi bi-capsule-pill"></i></div>
         <div><div class="stat-val">5 000+</div><div class="stat-lbl">Medicamentos</div></div>
@@ -469,7 +458,7 @@
           </div>
 
           <!-- Bairro filter -->
-          <div class="fbox">
+          {{-- <div class="fbox">
             <div class="fbox-header">
               <h6><i class="bi bi-geo-alt me-1" style="color:var(--accent);"></i>Bairro</h6>
               <button class="fbox-clear" onclick="clearFilter('bairro')">Limpar</button>
@@ -485,7 +474,7 @@
                 <label class="fcheck-item"><div class="fcheck-left"><input type="checkbox"> <label>Viana</label></div><span class="fcheck-count">3</span></label>
               </div>
             </div>
-          </div>
+          </div> --}}
 
           <!-- Avaliação -->
           <div class="fbox">
@@ -610,7 +599,7 @@
                 <div class="ph-delivery"><i class="bi bi-clock"></i> Seg-Dom: <strong>08h00 — 22h00</strong></div>
                 <div class="ph-actions">
                   <button class="ph-btn ph-view" onclick="openModal('central')"><i class="bi bi-eye"></i> Ver</button>
-                  <button class="ph-btn ph-order"><i class="bi bi-bag-plus"></i> Pedir</button>
+                  {{-- <button class="ph-btn ph-order"><i class="bi bi-bag-plus"></i> Pedir</button> --}}
                 </div>
               </div>
             </div>
@@ -643,7 +632,7 @@
                 <div class="ph-delivery"><i class="bi bi-clock"></i> <strong>Aberta 24 horas</strong></div>
                 <div class="ph-actions">
                   <button class="ph-btn ph-view" onclick="openModal('kilamba')"><i class="bi bi-eye"></i> Ver</button>
-                  <button class="ph-btn ph-order"><i class="bi bi-bag-plus"></i> Pedir</button>
+                  {{-- <button class="ph-btn ph-order"><i class="bi bi-bag-plus"></i> Pedir</button> --}}
                 </div>
               </div>
             </div>
@@ -675,7 +664,7 @@
                 <div class="ph-delivery"><i class="bi bi-clock"></i> Seg-Dom: <strong>08h00 — 23h00</strong></div>
                 <div class="ph-actions">
                   <button class="ph-btn ph-view" onclick="openModal('talatona')"><i class="bi bi-eye"></i> Ver</button>
-                  <button class="ph-btn ph-order"><i class="bi bi-bag-plus"></i> Pedir</button>
+                  {{-- <button class="ph-btn ph-order"><i class="bi bi-bag-plus"></i> Pedir</button> --}}
                 </div>
               </div>
             </div>
@@ -708,7 +697,7 @@
                 <div class="ph-delivery"><i class="bi bi-clock"></i> <strong>Aberta 24 horas</strong></div>
                 <div class="ph-actions">
                   <button class="ph-btn ph-view"><i class="bi bi-eye"></i> Ver</button>
-                  <button class="ph-btn ph-order"><i class="bi bi-bag-plus"></i> Pedir</button>
+                  {{-- <button class="ph-btn ph-order"><i class="bi bi-bag-plus"></i> Pedir</button> --}}
                 </div>
               </div>
             </div>
@@ -741,7 +730,7 @@
                 <div class="ph-delivery"><i class="bi bi-clock"></i> Seg-Sáb: <strong>08h00 — 21h00</strong></div>
                 <div class="ph-actions">
                   <button class="ph-btn ph-view"><i class="bi bi-eye"></i> Ver</button>
-                  <button class="ph-btn ph-order"><i class="bi bi-bag-plus"></i> Pedir</button>
+                  {{-- <button class="ph-btn ph-order"><i class="bi bi-bag-plus"></i> Pedir</button> --}}
                 </div>
               </div>
             </div>
@@ -754,7 +743,7 @@
                 <img src="https://images.unsplash.com/photo-1471864190281-a93a3070b6de?w=500&auto=format&fit=crop" alt="">
                 <div class="ph-img-overlay"></div>
                 <div class="ph-badge-top">
-                  <span class="ph-badge ph-closed"><i class="bi bi-circle-fill" style="font-size:.45rem;"></i> Fechada</span>
+                  {{-- <span class="ph-badge ph-closed"><i class="bi bi-circle-fill" style="font-size:.45rem;"></i> Fechada</span> --}}
                 </div>
                 <button class="ph-fav-btn" onclick="toggleFav(this)"><i class="bi bi-heart"></i></button>
                 <div class="ph-dist"><i class="bi bi-geo-alt"></i> 12.4 km</div>
@@ -773,7 +762,7 @@
                 <div class="ph-delivery"><i class="bi bi-clock"></i> Abre amanhã: <strong>08h00</strong></div>
                 <div class="ph-actions">
                   <button class="ph-btn ph-view"><i class="bi bi-eye"></i> Ver</button>
-                  <button class="ph-btn ph-order" style="opacity:.5;cursor:not-allowed;" disabled><i class="bi bi-bag-plus"></i> Fechada</button>
+                  {{-- <button class="ph-btn ph-order" style="opacity:.5;cursor:not-allowed;" disabled><i class="bi bi-bag-plus"></i> Fechada</button> --}}
                 </div>
               </div>
             </div>
@@ -799,7 +788,7 @@
             </div>
             <div class="ph-list-actions">
               <button class="ph-btn ph-view" style="width:100%;" onclick="openModal('central')"><i class="bi bi-eye"></i> Ver</button>
-              <button class="ph-btn ph-order" style="width:100%;"><i class="bi bi-bag-plus"></i> Pedir</button>
+              {{-- <button class="ph-btn ph-order" style="width:100%;"><i class="bi bi-bag-plus"></i> Pedir</button> --}}
             </div>
           </div>
 
@@ -819,7 +808,7 @@
             </div>
             <div class="ph-list-actions">
               <button class="ph-btn ph-view" style="width:100%;" onclick="openModal('kilamba')"><i class="bi bi-eye"></i> Ver</button>
-              <button class="ph-btn ph-order" style="width:100%;"><i class="bi bi-bag-plus"></i> Pedir</button>
+              {{-- <button class="ph-btn ph-order" style="width:100%;"><i class="bi bi-bag-plus"></i> Pedir</button> --}}
             </div>
           </div>
 
@@ -839,7 +828,7 @@
             </div>
             <div class="ph-list-actions">
               <button class="ph-btn ph-view" style="width:100%;" onclick="openModal('talatona')"><i class="bi bi-eye"></i> Ver</button>
-              <button class="ph-btn ph-order" style="width:100%;"><i class="bi bi-bag-plus"></i> Pedir</button>
+              {{-- <button class="ph-btn ph-order" style="width:100%;"><i class="bi bi-bag-plus"></i> Pedir</button> --}}
             </div>
           </div>
         </div>
@@ -899,7 +888,7 @@
         </div>
       </div>
       <div class="modal-footer gap-2">
-        <button type="button" class="btn-close-fc" data-bs-dismiss="modal" style="background:var(--soft);color:var(--accent);border:none;border-radius:50px;padding:.5rem 1.2rem;font-size:.85rem;font-weight:700;cursor:pointer;">Fechar</button>
+        {{-- <button type="button" class="btn-close-fc" data-bs-dismiss="modal" style="background:var(--soft);color:var(--accent);border:none;border-radius:50px;padding:.5rem 1.2rem;font-size:.85rem;font-weight:700;cursor:pointer;">Fechar</button> --}}
         <button class="ph-btn ph-order" style="max-width:180px;display:inline-flex;" data-bs-dismiss="modal" onclick="showToast('Farmácia seleccionada!','Escolha os seus medicamentos.')"><i class="bi bi-bag-plus"></i> Fazer pedido</button>
       </div>
     </div>

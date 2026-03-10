@@ -99,8 +99,12 @@ use Twilio\Rest\Client;
     Route::get('/farmacias', [ClientHomePageController::class, 'farmacias'])->name('farmacias.list');
     Route::get('/produtos' , [ClientHomePageController::class, 'produtos'])->name('produtos.clientes');
     Route::get('/carrinho', function(){ return view('clientes.dashboard.carrinho'); })->name('carrinho.clientes');
+
     Route::post('/pedidos', [PedidoController::class, 'store']);
     Route::get('/pedidos', [ClientHomePageController::class, 'pedidos'])->name('pedidos.clientes');
     Route::post('/pedidos/{id}/cancelar', [PedidoController::class, 'cancelar']);
+
+    Route::get('/categorias', [ClientHomePageController::class, 'searchCategorias'])->name('categorias');
+    Route::get('categorias/produtos/{id}', [ClientHomePageController::class, 'produtosPorCategoria'])->name('produtos.categoria');
 
     Route::post('/upload/comprovativo/{id}', [ComprovativoPagamentoController::class, 'uploadComprovativo']);

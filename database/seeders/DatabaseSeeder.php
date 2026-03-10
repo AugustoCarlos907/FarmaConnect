@@ -6,12 +6,15 @@ use App\Models\Avaliacao;
 use App\Models\Companhia;
 use App\Models\Entregador;
 use App\Models\Farmacia;
+use App\Models\Medicamento;
+use App\Models\StockItem;
 use App\Models\User;
 use Carbon\Carbon;
 use DB;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
+use Str;
 
 class DatabaseSeeder extends Seeder
 {
@@ -31,19 +34,19 @@ class DatabaseSeeder extends Seeder
         //     'updated_at' => Carbon::now(),
         // ]);
 
-        User::create([
-            'name' => ' Gestor da Companhia',
-            'email' => 'augusto12@gmail.com',
-            'phone'=>'931334499',
-            'endereco' => 'Luanda , Angola',
-            'password' => Hash::make('123456'),
-            'role'=>'entregador',
-            'companhia_id' => 1,
-            'farmacia_id' => 1,
+        // User::create([
+        //     'name' => ' Gestor da Companhia',
+        //     'email' => 'augusto12@gmail.com',
+        //     'phone'=>'931334499',
+        //     'endereco' => 'Luanda , Angola',
+        //     'password' => Hash::make('123456'),
+        //     'role'=>'entregador',
+        //     'companhia_id' => 1,
+        //     'farmacia_id' => 1,
            
-            'created_at' => Carbon::now(),
-            'updated_at' => Carbon::now(),
-        ]);
+        //     'created_at' => Carbon::now(),
+        //     'updated_at' => Carbon::now(),
+        // ]);
 
         // Avaliacao::create([
         //     'user_id'=>1,
@@ -154,10 +157,36 @@ class DatabaseSeeder extends Seeder
 
         // foreach ($categorias as $categoria) {
         //     DB::table('categorias')->insert([
-        //         'name' => $categoria,
-        //         'created_at' => Carbon::now(),
-        //         'updated_at' => Carbon::now(),
+        //         'name'       => $categoria,
+        //         'descricao'  => fake()->paragraph(),
+        //         'imagem' => 'https://idec.org.br/noticia/o-que-e-um-medicamento-e-quais-tipos-temos-por-ai-0',
+        //         'created_at' => now(),
+        //         'updated_at' => now(),
         //     ]);
         // }
+
+        Medicamento::create([
+            'name' => 'Paracetamol',
+            'descricao' => 'Analgésico e antitérmico utilizado para aliviar dores e reduzir febre.',
+            'dosagem' => 100 .'mg',
+            'forma_farmaceutica' => 'Comprimido',
+            'categoria_id' => 1, // Analgésicos e Antitérmicos
+            // 'farmacia_id' => 1,
+            'created_at' => Carbon::now(),
+            'updated_at' => Carbon::now(),
+
+        ]);
+
+        StockItem::create([
+                'medicamento_id' => 1,
+                'farmacia_id' => 1,
+                'quantidade' => 100,
+                'preco' => 5.99,
+                'data_validade' => Carbon::now()->addMonths(6),
+                'lote' => Str::upper(Str::random(10)),
+                'ativo' => true,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+        ]);
     }
 }

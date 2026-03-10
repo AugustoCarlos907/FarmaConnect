@@ -13,7 +13,8 @@ class StockItem extends Model
         'data_validade',
         'lote',
         'ativo',
-        'medicamento_id'
+        'medicamento_id',
+        'farmacia_id'
         
     ];
 

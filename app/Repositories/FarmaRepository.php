@@ -11,4 +11,5 @@ class FarmaRepository implements FarmaInterface{
                                     ->paginate($perPage);
     }
 
+
 }

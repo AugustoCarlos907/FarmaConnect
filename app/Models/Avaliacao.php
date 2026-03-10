@@ -9,7 +9,7 @@ class Avaliacao extends Model
     protected $table = 'avaliacoes';
     protected $fillable = [
 
-        'classificacao'=>1,
+        'classificacao',
         'comentario',
 
         'farmacia_id',

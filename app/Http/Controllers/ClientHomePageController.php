@@ -2,8 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Categoria;
+use App\Models\Farmacia;
 use App\Services\AvaliacaoService;
+use App\Services\CategoriaService;
 use App\Services\EntregaService;
+use App\Services\FarmaService;
 use App\Services\MedicamentoService;
 use App\Services\PedidoService;
 use Illuminate\Http\Request;
@@ -14,7 +18,10 @@ class ClientHomePageController extends Controller
         public MedicamentoService $medicamentoService,
         public PedidoService $pedidoService,
         public EntregaService $entregaService,
-        public AvaliacaoService $avaliacaoService
+        public AvaliacaoService $avaliacaoService,
+        public FarmaService $farmaService,
+        public CategoriaService $categoriaService
+
     ){}
 
 
@@ -36,18 +43,44 @@ class ClientHomePageController extends Controller
         return view('clientes.pedidos.index');
     }
 
-    public function farmacias()
+    public function farmacias($perPage = 6)
     {
-        // $farmacias = $this->medicamentoService->getAllFarmacias();
 
-        return view('clientes.dashboard.farmacias');
+        $farmacias = $this->farmaService->getAllFarmacias($perPage );
+
+        $farmaDestaque = Farmacia::withAvg('avaliacoes', 'classificacao')
+            ->having('avaliacoes_avg_classificacao', '>', 2.5)
+            ->get();
+                                    
+        return view('clientes.dashboard.farmacias', [
+            'farmacias' => $farmacias,
+            'farmaDestaque' => $farmaDestaque
+        ]);
     }
 
     public function produtos()
     {
-        // $medicamentos = $this->medicamentoService->getAllMedicamentos();
+        $categorias = Categoria::with('medicamentos')->paginate(12);
 
-        return view('clientes.dashboard.produtos');
+        return view('clientes.dashboard.produtos' , ['categorias'=>$categorias]);
+    }
+
+    public function produtosPorCategoria($id)
+    {
+        $categoria = Categoria::with('medicamentos')->findOrFail($id);
+
+        // if($categoria){
+        //     dd('ok');
+        // }
+        return view('clientes.dashboard.produtos_categoria', ['categoria' => $categoria]);
+    }
+
+    public function searchCategorias(Request $request)
+    {
+            $query = $request->input('query');
+            $categorias = $this->categoriaService->searchCategoria($query);
+    
+            return view('clientes.dashboard.produtos' , ['categorias'=>$categorias]);
     }
 
 }

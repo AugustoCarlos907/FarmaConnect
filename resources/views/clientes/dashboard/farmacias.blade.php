@@ -330,7 +330,7 @@
         <div class="dropdown">
           <a href="#" class="profile-toggle dropdown-toggle" id="pdrop" data-bs-toggle="dropdown">
             <img src="https://ui-avatars.com/api/?name=Ana+Costa&background=099aa7&color=fff&rounded=true&size=34" width="34" height="34" class="rounded-circle" alt="">
-            <span class="pname d-none d-md-inline">Ana Costa</span>
+            <span class="pname d-none d-md-inline">{{ Auth::user()->name }}</span>
           </a>
           <ul class="dropdown-menu dropdown-menu-end">
             <li><a class="dropdown-item" href="{{ route('perfil.clientes') }}"><i class="bi bi-person me-2"></i>Minha Conta</a></li>
@@ -360,10 +360,12 @@
 
     <!-- Search box -->
     <div class="topbar-search">
+      <form action="{{ route('farmacias.list') }}" method="get">
+        @csrf
       <div class="ts-box">
         <div class="ts-field" style="flex:2;">
           <i class="bi bi-hospital"></i>
-          <input type="text" id="searchPharm" placeholder="Nome da farmácia " oninput="filterPharmacies()">
+          <input type="text" id="searchPharm" name="query" placeholder="Nome da farmácia " oninput="filterPharmacies()" value="{{ old('query') }}">
         </div>
         <div class="ts-sep d-none d-md-block"></div>
         <div class="ts-sep d-none d-md-block"></div>
@@ -375,7 +377,7 @@
             <option value="24h">Abertas 24h</option>
           </select>
         </div>
-        <button class="ts-btn" onclick="filterPharmacies()"><i class="bi bi-search"></i> Pesquisar</button>
+        <button type="submit" class="ts-btn" onclick="filterPharmacies()"><i class="bi bi-search"></i> Pesquisar</button>
       </div>
       <div class="quick-filters" id="quickFilters">
         <span class="qf-tag active" onclick="quickFilter(this,'')"> Todas</span>
@@ -384,6 +386,8 @@
         {{-- <span class="qf-tag" onclick="quickFilter(this,'new')"> Recentes</span> --}}
         <span class="qf-tag" onclick="quickFilter(this,'fav')"> Favoritas</span>
       </div>
+      
+    </form>
     </div>
   </div>
 </div>
@@ -531,33 +535,21 @@
         <!-- Featured / Destaque -->
         <div class="featured-section">
           <h6><i class="bi bi-lightning-charge-fill" style="color:#f59e0b;"></i> Farmácias em destaque</h6>
+          @foreach ($farmaDestaque as $farma )
+          
           <div class="featured-scroll">
             <div class="feat-card" onclick="openModal('central')">
               <img src="https://images.unsplash.com/photo-1587854692152-cbe660dbde88?w=88&auto=format&fit=crop" class="feat-img" alt="">
-              <div><div class="feat-name">Farmácia Central</div><div class="feat-meta">Ingombotas · 4.9★ <span class="feat-badge">Patrocinado</span></div></div>
-            </div>
-            <div class="feat-card" onclick="openModal('kilamba')">
-              <img src="https://images.unsplash.com/photo-1576671081837-49000212a370?w=88&auto=format&fit=crop" class="feat-img" alt="">
-              <div><div class="feat-name">Farmácia Kilamba</div><div class="feat-meta">Kilamba · 4.7★ <span class="feat-badge">Popular</span></div></div>
-            </div>
-            <div class="feat-card" onclick="openModal('talatona')">
-              <img src="https://images.unsplash.com/photo-1631549916768-4119b2e5f926?w=88&auto=format&fit=crop" class="feat-img" alt="">
-              <div><div class="feat-name">Farmácia Talatona</div><div class="feat-meta">Talatona · 4.9★ <span class="feat-badge">Top rated</span></div></div>
-            </div>
-            <div class="feat-card">
-              <img src="https://images.unsplash.com/photo-1559757175-5700dde675bc?w=88&auto=format&fit=crop" class="feat-img" alt="">
-              <div><div class="feat-name">FarmaMaianga</div><div class="feat-meta">Maianga · 4.5★ <span class="feat-badge">24h</span></div></div>
-            </div>
-            <div class="feat-card">
-              <img src="https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=88&auto=format&fit=crop" class="feat-img" alt="">
-              <div><div class="feat-name">Farmácia Benfica</div><div class="feat-meta">Benfica · 4.6★ <span class="feat-badge">Novo</span></div></div>
+              <div><div class="feat-name">{{ $farma->name }}</div><div class="feat-meta">{{$farma->bairro}}· {{ number_format($farma->avaliacoes_avg_classificacao, 1) }}★ </div></div>
             </div>
           </div>
+          @endforeach
+
         </div>
 
         <!-- Toolbar -->
         <div class="results-toolbar">
-          <span class="results-count">Mostrando <strong id="countVisible">6</strong> de <strong>50</strong> farmácias</span>
+          <span class="results-count">Mostrando <strong id="countVisible">6</strong> de <strong>{{ $farmacias->count() }}</strong> farmácias</span>
           <select class="sort-sel" onchange="sortPharmacies(this.value)">
             <option value="relevance">Relevância</option>
             <option value="rating">Melhor avaliação</option>
@@ -572,7 +564,9 @@
 
         <!-- GRID VIEW -->
         <div class="row g-4" id="gridContainer">
-
+          @if ($farmacias->count()!=0)
+          @foreach ($farmacias as $farmacia )
+          
           <!-- Card 1 -->
           <div class="col-md-6 col-xl-4 ph-grid-item" data-name="farmácia central" data-bairro="ingombotas" data-status="open" data-fav="false">
             <div class="ph-card">
@@ -583,20 +577,20 @@
                   <span class="ph-badge ph-open"><i class="bi bi-circle-fill" style="font-size:.45rem;"></i> Aberta</span>
                 </div>
                 <button class="ph-fav-btn" onclick="toggleFav(this)"><i class="bi bi-heart"></i></button>
-                <div class="ph-dist"><i class="bi bi-geo-alt"></i> 1.2 km</div>
+                {{-- <div class="ph-dist"><i class="bi bi-geo-alt"></i> {{ $farmacia-> }} km</div> --}}
               </div>
               <div class="ph-body">
-                <div class="ph-name">Farmácia Central</div>
-                <div class="ph-loc"><i class="bi bi-geo-alt-fill"></i> Ingombotas, Rua Ho Chi Min</div>
+                <div class="ph-name">{{ $farmacia->name }}</div>
+                <div class="ph-loc"><i class="bi bi-geo-alt-fill"></i>{{ $farmacia->bairro }}</div>
                 <div class="ph-meta">
-                  <div class="ph-rating"><i class="bi bi-star-fill"></i> 4.9 <span class="ph-reviews">(312)</span></div>
-                  <span class="ph-tag"><i class="bi bi-truck"></i> 25 min</span>
-                  <span class="ph-tag">Entrega 800 Kz</span>
+                  <div class="ph-rating"><i class="bi bi-star-fill">{{ $farmacia->avaliacoes()->sum('classificacao') / ($farmacia->avaliacoes->count() ?? 1) }}</i> <span class="ph-reviews">({{ $farmacia->avaliacoes->count() ?? 0 }})</span></div>
+                  {{-- <span class="ph-tag"><i class="bi bi-truck"></i> 25 min</span> --}}
+                  {{-- <span class="ph-tag">Entrega 800 Kz</span> --}}
                 </div>
-                <div class="ph-specs">
+                {{-- <div class="ph-specs">
                   <span class="ph-spec">Geral</span><span class="ph-spec">Derma</span><span class="ph-spec">Pediátrico</span>
-                </div>
-                <div class="ph-delivery"><i class="bi bi-clock"></i> Seg-Dom: <strong>08h00 — 22h00</strong></div>
+                </div> --}}
+                <div class="ph-delivery"><i class="bi bi-clock"></i> Seg-Dom: <strong>{{$farmacia->horario_abertura}} - {{ $farmacia->horario_fechamento }}</strong></div>
                 <div class="ph-actions">
                   <button class="ph-btn ph-view" onclick="openModal('central')"><i class="bi bi-eye"></i> Ver</button>
                   {{-- <button class="ph-btn ph-order"><i class="bi bi-bag-plus"></i> Pedir</button> --}}
@@ -604,169 +598,17 @@
               </div>
             </div>
           </div>
-
-          <!-- Card 2 -->
-          <div class="col-md-6 col-xl-4 ph-grid-item" data-name="farmácia kilamba" data-bairro="kilamba" data-status="open" data-fav="false">
-            <div class="ph-card">
-              <div class="ph-img-wrap">
-                <img src="https://images.unsplash.com/photo-1576671081837-49000212a370?w=500&auto=format&fit=crop" alt="">
-                <div class="ph-img-overlay"></div>
-                <div class="ph-badge-top">
-                  <span class="ph-badge ph-open"><i class="bi bi-circle-fill" style="font-size:.45rem;"></i> Aberta</span>
-                  <span class="ph-badge ph-24h">24h</span>
-                </div>
-                <button class="ph-fav-btn active" onclick="toggleFav(this)"><i class="bi bi-heart-fill"></i></button>
-                <div class="ph-dist"><i class="bi bi-geo-alt"></i> 3.8 km</div>
-              </div>
-              <div class="ph-body">
-                <div class="ph-name">Farmácia Kilamba</div>
-                <div class="ph-loc"><i class="bi bi-geo-alt-fill"></i> Kilamba, Rua dos Combates</div>
-                <div class="ph-meta">
-                  <div class="ph-rating"><i class="bi bi-star-fill"></i> 4.7 <span class="ph-reviews">(198)</span></div>
-                  <span class="ph-tag"><i class="bi bi-truck"></i> 30 min</span>
-                  <span class="ph-tag">Entrega 1 000 Kz</span>
-                </div>
-                <div class="ph-specs">
-                  <span class="ph-spec">Geral</span><span class="ph-spec">Cardiovascular</span>
-                </div>
-                <div class="ph-delivery"><i class="bi bi-clock"></i> <strong>Aberta 24 horas</strong></div>
-                <div class="ph-actions">
-                  <button class="ph-btn ph-view" onclick="openModal('kilamba')"><i class="bi bi-eye"></i> Ver</button>
-                  {{-- <button class="ph-btn ph-order"><i class="bi bi-bag-plus"></i> Pedir</button> --}}
-                </div>
-              </div>
+          @endforeach
+          @else
+            <div class="empty-ph" id="emptyState">
+              <i class="bi bi-hospital"></i>
+              <h5>Nenhuma farmácia encontrada</h5>
+              <p>Tente ajustar os filtros ou pesquisar por outro bairro.</p>
+              <button class="ph-btn ph-order" style="display:inline-flex;max-width:180px;" onclick="resetAll()">Ver todas as farmácias</button>
             </div>
-          </div>
+          @endif
 
-          <!-- Card 3 -->
-          <div class="col-md-6 col-xl-4 ph-grid-item" data-name="farmácia talatona" data-bairro="talatona" data-status="open" data-fav="false">
-            <div class="ph-card">
-              <div class="ph-img-wrap">
-                <img src="https://images.unsplash.com/photo-1631549916768-4119b2e5f926?w=500&auto=format&fit=crop" alt="">
-                <div class="ph-img-overlay"></div>
-                <div class="ph-badge-top">
-                  <span class="ph-badge ph-open"><i class="bi bi-circle-fill" style="font-size:.45rem;"></i> Aberta</span>
-                </div>
-                <button class="ph-fav-btn" onclick="toggleFav(this)"><i class="bi bi-heart"></i></button>
-                <div class="ph-dist"><i class="bi bi-geo-alt"></i> 7.1 km</div>
-              </div>
-              <div class="ph-body">
-                <div class="ph-name">Farmácia Talatona</div>
-                <div class="ph-loc"><i class="bi bi-geo-alt-fill"></i> Talatona, Belas Shopping</div>
-                <div class="ph-meta">
-                  <div class="ph-rating"><i class="bi bi-star-fill"></i> 4.9 <span class="ph-reviews">(421)</span></div>
-                  <span class="ph-tag"><i class="bi bi-truck"></i> 35 min</span>
-                  <span class="ph-tag">Entrega 1 200 Kz</span>
-                </div>
-                <div class="ph-specs">
-                  <span class="ph-spec">Geral</span><span class="ph-spec">Ortopedia</span><span class="ph-spec">Derma</span>
-                </div>
-                <div class="ph-delivery"><i class="bi bi-clock"></i> Seg-Dom: <strong>08h00 — 23h00</strong></div>
-                <div class="ph-actions">
-                  <button class="ph-btn ph-view" onclick="openModal('talatona')"><i class="bi bi-eye"></i> Ver</button>
-                  {{-- <button class="ph-btn ph-order"><i class="bi bi-bag-plus"></i> Pedir</button> --}}
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Card 4 -->
-          <div class="col-md-6 col-xl-4 ph-grid-item" data-name="farma maianga" data-bairro="maianga" data-status="24h" data-fav="false">
-            <div class="ph-card">
-              <div class="ph-img-wrap">
-                <img src="https://images.unsplash.com/photo-1559757175-5700dde675bc?w=500&auto=format&fit=crop" alt="">
-                <div class="ph-img-overlay"></div>
-                <div class="ph-badge-top">
-                  <span class="ph-badge ph-open"><i class="bi bi-circle-fill" style="font-size:.45rem;"></i> Aberta</span>
-                  <span class="ph-badge ph-24h">24h</span>
-                </div>
-                <button class="ph-fav-btn" onclick="toggleFav(this)"><i class="bi bi-heart"></i></button>
-                <div class="ph-dist"><i class="bi bi-geo-alt"></i> 2.5 km</div>
-              </div>
-              <div class="ph-body">
-                <div class="ph-name">FarmaMaianga</div>
-                <div class="ph-loc"><i class="bi bi-geo-alt-fill"></i> Maianga, Av. 4 de Fevereiro</div>
-                <div class="ph-meta">
-                  <div class="ph-rating"><i class="bi bi-star-fill"></i> 4.5 <span class="ph-reviews">(156)</span></div>
-                  <span class="ph-tag"><i class="bi bi-truck"></i> 28 min</span>
-                  <span class="ph-tag">Entrega 900 Kz</span>
-                </div>
-                <div class="ph-specs">
-                  <span class="ph-spec">Geral</span><span class="ph-spec">Pediatria</span>
-                </div>
-                <div class="ph-delivery"><i class="bi bi-clock"></i> <strong>Aberta 24 horas</strong></div>
-                <div class="ph-actions">
-                  <button class="ph-btn ph-view"><i class="bi bi-eye"></i> Ver</button>
-                  {{-- <button class="ph-btn ph-order"><i class="bi bi-bag-plus"></i> Pedir</button> --}}
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Card 5 -->
-          <div class="col-md-6 col-xl-4 ph-grid-item" data-name="farmácia benfica" data-bairro="benfica" data-status="open" data-new="true" data-fav="false">
-            <div class="ph-card">
-              <div class="ph-img-wrap">
-                <img src="https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=500&auto=format&fit=crop" alt="">
-                <div class="ph-img-overlay"></div>
-                <div class="ph-badge-top">
-                  <span class="ph-badge ph-open"><i class="bi bi-circle-fill" style="font-size:.45rem;"></i> Aberta</span>
-                  <span class="ph-badge ph-new">Novo</span>
-                </div>
-                <button class="ph-fav-btn" onclick="toggleFav(this)"><i class="bi bi-heart"></i></button>
-                <div class="ph-dist"><i class="bi bi-geo-alt"></i> 5.3 km</div>
-              </div>
-              <div class="ph-body">
-                <div class="ph-name">Farmácia Benfica</div>
-                <div class="ph-loc"><i class="bi bi-geo-alt-fill"></i> Benfica, Estrada de Catete</div>
-                <div class="ph-meta">
-                  <div class="ph-rating"><i class="bi bi-star-fill"></i> 4.6 <span class="ph-reviews">(43)</span></div>
-                  <span class="ph-tag"><i class="bi bi-truck"></i> 40 min</span>
-                  <span class="ph-tag">Entrega 1 000 Kz</span>
-                </div>
-                <div class="ph-specs">
-                  <span class="ph-spec">Geral</span><span class="ph-spec">Cardiovascular</span>
-                </div>
-                <div class="ph-delivery"><i class="bi bi-clock"></i> Seg-Sáb: <strong>08h00 — 21h00</strong></div>
-                <div class="ph-actions">
-                  <button class="ph-btn ph-view"><i class="bi bi-eye"></i> Ver</button>
-                  {{-- <button class="ph-btn ph-order"><i class="bi bi-bag-plus"></i> Pedir</button> --}}
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Card 6 -->
-          <div class="col-md-6 col-xl-4 ph-grid-item" data-name="farmácia viana" data-bairro="viana" data-status="closed" data-fav="false">
-            <div class="ph-card">
-              <div class="ph-img-wrap">
-                <img src="https://images.unsplash.com/photo-1471864190281-a93a3070b6de?w=500&auto=format&fit=crop" alt="">
-                <div class="ph-img-overlay"></div>
-                <div class="ph-badge-top">
-                  {{-- <span class="ph-badge ph-closed"><i class="bi bi-circle-fill" style="font-size:.45rem;"></i> Fechada</span> --}}
-                </div>
-                <button class="ph-fav-btn" onclick="toggleFav(this)"><i class="bi bi-heart"></i></button>
-                <div class="ph-dist"><i class="bi bi-geo-alt"></i> 12.4 km</div>
-              </div>
-              <div class="ph-body">
-                <div class="ph-name">Farmácia Viana</div>
-                <div class="ph-loc"><i class="bi bi-geo-alt-fill"></i> Viana, Centralidade do Kilamba</div>
-                <div class="ph-meta">
-                  <div class="ph-rating"><i class="bi bi-star-fill"></i> 4.4 <span class="ph-reviews">(89)</span></div>
-                  <span class="ph-tag"><i class="bi bi-truck"></i> 50 min</span>
-                  <span class="ph-tag">Entrega 1 500 Kz</span>
-                </div>
-                <div class="ph-specs">
-                  <span class="ph-spec">Geral</span><span class="ph-spec">Ortopedia</span>
-                </div>
-                <div class="ph-delivery"><i class="bi bi-clock"></i> Abre amanhã: <strong>08h00</strong></div>
-                <div class="ph-actions">
-                  <button class="ph-btn ph-view"><i class="bi bi-eye"></i> Ver</button>
-                  {{-- <button class="ph-btn ph-order" style="opacity:.5;cursor:not-allowed;" disabled><i class="bi bi-bag-plus"></i> Fechada</button> --}}
-                </div>
-              </div>
-            </div>
-          </div>
+          
 
         </div><!-- /gridContainer -->
 
@@ -833,25 +675,16 @@
           </div>
         </div>
 
-        <!-- Empty state -->
-        <div class="empty-ph" id="emptyState">
-          <i class="bi bi-hospital"></i>
-          <h5>Nenhuma farmácia encontrada</h5>
-          <p>Tente ajustar os filtros ou pesquisar por outro bairro.</p>
-          <button class="ph-btn ph-order" style="display:inline-flex;max-width:180px;" onclick="resetAll()">Ver todas as farmácias</button>
-        </div>
+
 
         <!-- Pagination -->
         <div class="pagination-fc" id="paginationBar">
-          <button class="pg-btn" disabled><i class="bi bi-chevron-left"></i></button>
-          <button class="pg-btn active">1</button>
-          <button class="pg-btn">2</button>
-          <button class="pg-btn">3</button>
-          <button class="pg-btn">4</button>
-          <button class="pg-btn">5</button>
-          <button class="pg-btn"><i class="bi bi-chevron-right"></i></button>
+          {{ $farmacias->links() }}
+          <a href="{{ $farmacias->nextPageUrl() }}" class="pg-btn">
+            <i class="bi bi-chevron-right"></i>
+          </a>
         </div>
-      </div><!-- /col-lg-9 -->
+      </div>
     </div>
   </div>
 </div>

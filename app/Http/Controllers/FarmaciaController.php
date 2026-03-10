@@ -17,8 +17,7 @@ class FarmaciaController extends Controller
     //list all pharmacies next to me with all detaills (avaluations and etc)
     //by long and lat
     public function __construct(
-        public MedicamentoService $medicamentoService,
-        public FarmaService $farmaService
+        public MedicamentoService $medicamentoService
     ){}
 
     public function registerEntregadores(Request $request)
@@ -91,7 +90,8 @@ class FarmaciaController extends Controller
         }
     }
 
-    
+       
+
     public function dashboard(){
         return view('farmacias.dashboard.index');
     }

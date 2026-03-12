@@ -9,6 +9,7 @@ class Medicamento extends Model
     protected $fillable = [
         'name',
         'descricao',
+        'preco',
         // 'principio_ativo',
         'forma_farmaceutica',
         'dosagem',
@@ -27,5 +28,9 @@ class Medicamento extends Model
     {
         return $this->belongsTo(Categoria::class);
     }
+
+    // public function farmacia(){
+    //     return $this->belongsTo(Farmacia::class);
+    // }
     
 }

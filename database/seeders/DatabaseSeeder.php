@@ -7,6 +7,7 @@ use App\Models\Companhia;
 use App\Models\Entregador;
 use App\Models\Farmacia;
 use App\Models\Medicamento;
+use App\Models\Pedido;
 use App\Models\StockItem;
 use App\Models\User;
 use Carbon\Carbon;
@@ -50,26 +51,45 @@ class DatabaseSeeder extends Seeder
 
         // Avaliacao::create([
         //     'user_id'=>1,
-        //     'classificacao' => 1,
+        //     'classificacao' => 5,
         //     'comentario' => 'Ótimo serviço!',
-        //     'farmacia_id' => 2,
+        //     'farmacia_id' => 3,
         //     'created_at' => Carbon::now(),
         //     'updated_at' => Carbon::now(),
         // ]);
 
         
         // Farmacia::create([
-        //     'name' => 'Farmacia Central',
-        //     'email' => 'farmacia@gmail.com',
-        //     'password' => Hash::make('123456'),
-        //     'telefone' => '1234567890',
+        //     'name' => 'Farmacia Mecofarma',
+        //     // 'email' => 'mecofarma@gmail.com',
+        //     // 'telefone' => '1234567890',
         //     'descricao' => 'Farmacia central da cidade',
         //     'endereco' => 'Rua das Flores, 123',
         //     'latitude' => -23.5505,
         //     'longitude' => -46.6333,
         //     'status' => 'Ativo',
+        //     // 'horario_abertura' => '08:00:00',
+        //     // 'horario_fechamento' => '20:00:00',
         //     'created_at' => Carbon::now(),
         //     'updated_at' => Carbon::now(),
+        // ]);
+
+        // Farmacia::create([
+        //      'name' => fake()->company() . ' Pharmacy',
+        //     // 'logo' => 'logos/default.png',
+        //     'descricao' => fake()->sentence(),
+        //     'status' => fake()->randomElement(['Ativo', 'Desativado']),
+        //     'endereco' => fake()->address(),
+        //     'latitude' => fake()->latitude(),
+        //     'longitude' => fake()->longitude(),
+        //     'iban' => fake()->iban('AO'), // 'AO' para Angola, se aplicável
+        //     'numero_express' => fake()->phoneNumber(),
+        //     'alvara' => fake()->numerify('ALV-#####'),
+        //     'nif' => fake()->unique()->numerify('#########'),
+        //     'companhia_id' => 1, // Ou \App\Models\Companhia::factory()
+        //     'rua' => fake()->streetName(),
+        //     'bairro' => fake()->city(),
+        //     'municipio' => fake()->city()
         // ]);
 
 
@@ -165,28 +185,57 @@ class DatabaseSeeder extends Seeder
         //     ]);
         // }
 
-        Medicamento::create([
-            'name' => 'Paracetamol',
-            'descricao' => 'Analgésico e antitérmico utilizado para aliviar dores e reduzir febre.',
-            'dosagem' => 100 .'mg',
-            'forma_farmaceutica' => 'Comprimido',
-            'categoria_id' => 1, // Analgésicos e Antitérmicos
-            // 'farmacia_id' => 1,
+        // Medicamento::create([
+        //     'name' => 'Diclofenac',
+        //     'preco' => 400.00,
+        //     'descricao' => 'Antibiotico oral para tratamento de dores e inflamações',
+        //     'dosagem' => 200 .'mg',
+        //     'forma_farmaceutica' => 'Comprimido',
+        //     'categoria_id' => 2,
+        //     // 'farmacia_id' => 1,
+        //     'created_at' => Carbon::now(),
+        //     'updated_at' => Carbon::now(),
+
+        // ]);
+
+        // StockItem::create([
+        //         'medicamento_id' => 2,
+        //         'farmacia_id' => 1,
+        //         'quantidade' => 4,
+        //         'preco' => 400.00,
+        //         'data_validade' => Carbon::now()->addMonths(6),
+        //         'lote' => Str::upper(Str::random(10)),
+        //         'ativo' => true,
+        //         'created_at' => Carbon::now(),
+        //         'updated_at' => Carbon::now(),
+        // ]);
+
+        Pedido::create([
+            'user_id' => 3,
+            'farmacia_id' => 1,
+            // 'total' => 800.00,
+            // 'endereco_entrega' => 'Rua das Flores, 123',
+            // 'latitude' => -23.5505,
+            // 'longitude' => -46.6333,
+            // 'metodo_pagamento' => 'Cartão de Crédito',
+            'status' => 'Concluído',
+            'data_pedido' => Carbon::now(),
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),
-
         ]);
 
-        StockItem::create([
-                'medicamento_id' => 1,
-                'farmacia_id' => 1,
-                'quantidade' => 100,
-                'preco' => 5.99,
-                'data_validade' => Carbon::now()->addMonths(6),
-                'lote' => Str::upper(Str::random(10)),
-                'ativo' => true,
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now(),
-        ]);
+         // Pedido::create([
+         //    'user_id' => 3,
+         //    'farmacia_id' => 1,
+         //    'total' => 800.00,
+         //    'endereco_entrega' => 'Rua das Flores, 123',
+         //    'latitude' => -23.5505,
+         //    'longitude' => -46.6333,
+         //    'metodo_pagamento' => 'Cartão de Crédito',
+         //    'status' => 'em_entrega',
+         //    'data_pedido' => Carbon::now(),
+         //    'created_at' => Carbon::now(),
+         //    'updated_at' => Carbon::now(),
+         // ]);
     }
 }

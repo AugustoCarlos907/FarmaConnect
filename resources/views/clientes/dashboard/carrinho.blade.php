@@ -329,7 +329,7 @@
       <span class="cur">Carrinho</span>
     </div>
     <h2>O meu carrinho</h2>
-    <p id="topbarSub">3 itens · Farmácia Central</p>
+    <p id="topbarSub">4 itens · Farmácia Central</p>
 
     <!-- Steps -->
     <div class="checkout-steps">
@@ -365,137 +365,279 @@
       <div class="col-lg-8">
 
         <!-- ── CART ITEMS ── -->
-        <div class="cart-card" id="cartCard">
+        <div class="cart-card mt-5" id="cartCard">
           <div class="cc-head">
-            <h6><i class="bi bi-bag-heart"></i> Itens no carrinho <span id="itemCount" style="background:var(--soft);color:var(--accent);border-radius:50px;padding:.08rem .55rem;font-size:.75rem;">3</span></h6>
-            <button class="cc-clear" onclick="clearCart()"><i class="bi bi-trash3"></i> Limpar tudo</button>
-          </div>
-          <div id="cartItemsContainer"></div>
-        </div>
+           <h6><i class="bi bi-bag-heart"></i> Itens no carrinho
+            <span style="background:var(--soft);color:var(--accent);border-radius:50px;padding:.08rem .55rem;font-size:.75rem;">
+              {{ $itens->count() }}
+            </span>
+          </h6>
 
-        <!-- ── ADDRESS ── -->
-        <div class="address-card">
-          <div class="ac-head">
-            <h6><i class="bi bi-geo-alt-fill"></i> Endereço de entrega</h6>
-            <button class="ac-edit">Gerir endereços</button>
-          </div>
-          <div class="ac-body">
-            <div class="addr-option selected" onclick="selectAddr(this)">
-              <div class="ao-label">Casa</div>
-              <div class="ao-addr">Rua da Missão, Nº 47, Apt. 3B</div>
-              <div class="ao-sub"><i class="bi bi-geo-alt" style="font-size:.72rem;"></i> Ingombotas, Luanda · 1.2 km da farmácia</div>
-            </div>
-            <div class="addr-option" onclick="selectAddr(this)">
-              <div class="ao-label">Trabalho</div>
-              <div class="ao-addr">Av. 4 de Fevereiro, Edifício Tower, 8º Andar</div>
-              <div class="ao-sub"><i class="bi bi-geo-alt" style="font-size:.72rem;"></i> Marginal, Luanda · 3.8 km da farmácia</div>
-            </div>
-            <button class="add-addr-btn" onclick="showToast('Em breve','Funcionalidade de novo endereço disponível em breve.')">
-              <i class="bi bi-plus-circle" style="color:var(--accent);"></i> Adicionar novo endereço
+          {{-- Limpar tudo --}}
+          <form action="{{ route('carrinho.limpar') }}" method="POST">
+            @csrf
+            @method('DELETE')
+            <button type="submit" class="cc-clear"
+                    onclick="return confirm('Deseja remover todos os itens?')">
+              <i class="bi bi-trash3"></i> Limpar tudo
             </button>
-          </div>
+          </form>          </div>
+          <div id="cartItemsContainer" >
+
+              @forelse($itens as $item)
+                @php
+                  $med   = $item->stockItem->medicamento;
+                  $farm  = $item->stockItem->farmacia;
+                  $linha = $med->preco * $item->quantidade;
+                @endphp
+
+                <div class="cart-item" id="ci-{{ $item->id }}">
+
+                  {{-- Imagem --}}
+                  @if($med->imagem ?? false)
+                    <img class="ci-img"
+                        src="{{ asset('storage/'.$med->imagem) }}"
+                        alt="{{ $med->name }}">
+                  @else
+                    <div class="ci-img d-flex align-items-center justify-content-center"
+                        style="font-size:2rem;">💊</div>
+                  @endif
+
+                  {{-- Info --}}
+                  <div class="ci-info">
+                    <div class="ci-cat">{{ $med->categoria->nome ?? '—' }}</div>
+                    <div class="ci-name">{{ $med->name }}</div>
+                    <div class="ci-meta">
+                      @if($med->forma_farmaceutica)
+                        <span><i class="bi bi-box"></i> {{ $med->forma_farmaceutica }}
+                          {{ $med->dosagem ? '· '.$med->dosagem : '' }}
+                        </span>
+                      @endif
+                      @if($farm)
+                        <span><i class="bi bi-hospital"></i> {{ $farm->name }}</span>
+                      @endif
+                    </div>
+
+                    {{-- Controlo de quantidade --}}
+                    <div class="qty-ctrl">
+
+                      {{-- Diminuir --}}
+                      <form action="{{ route('carrinho.actualizar', $item) }}" method="POST">
+                        @csrf @method('PATCH')
+                        <input type="hidden" name="quantidade" value="{{ $item->quantidade - 1 }}">
+                        <button type="submit"
+                                class="qty-btn minus"
+                                {{ $item->quantidade <= 1 ? 'disabled' : '' }}>
+                          <i class="bi bi-dash"></i>
+                        </button>
+                      </form>
+
+                      <span class="qty-num">{{ $item->quantidade }}</span>
+
+                      {{-- Aumentar --}}
+                      <form action="{{ route('carrinho.actualizar', $item) }}" method="POST">
+                        @csrf @method('PATCH')
+                        <input type="hidden" name="quantidade" value="{{ $item->quantidade + 1 }}">
+                        <button type="submit"
+                                class="qty-btn"
+                                {{-- desabilita se não houver stock suficiente --}}
+                                {{ $item->quantidade >= $item->stockItem->quantidade ? 'disabled' : '' }}>
+                          <i class="bi bi-plus"></i>
+                        </button>
+                      </form>
+
+                      <span style="font-size:.75rem;color:var(--muted);margin-left:.3rem;">un.</span>
+                    </div>
+                  </div>
+
+                  {{-- Preço + remover --}}
+                  <div class="ci-right">
+                    <div>
+                      <div class="ci-price">{{ number_format($linha, 0, ',', ' ') }} Kz</div>
+                      <div class="ci-old" style="font-size:.75rem;color:var(--muted);">
+                        {{ number_format($med->preco, 0, ',', ' ') }} Kz / un.
+                      </div>
+                    </div>
+
+                    {{-- Remover --}}
+                    <form action="{{ route('carrinho.remover', $item) }}" method="POST">
+                      @csrf @method('DELETE')
+                      <button type="submit" class="ci-remove" title="Remover">
+                        <i class="bi bi-trash3"></i>
+                      </button>
+                    </form>
+                  </div>
+                
+                </div>{{-- /cart-item --}}
+
+
+              @empty
+                <div class="empty-cart" style="border-radius:0;box-shadow:none;">
+                  <span class="ec-icon">🛒</span>
+                  <h4>O seu carrinho está vazio</h4>
+                  <p>Adicione medicamentos para continuar o seu pedido.</p>
+                  <a href="{{ route('produtos.clientes') }}" class="btn-go-shop">
+                    <i class="bi bi-box-seam"></i> Ver produtos
+                  </a>
+                </div>
+              @endforelse
+
+            </div>
         </div>
 
-        <!-- ── DELIVERY OPTIONS ── -->
-        <div class="delivery-card">
-          <div class="ac-head">
-            <h6><i class="bi bi-truck"></i> Tipo de entrega</h6>
-          </div>
-          <div class="dc-body">
-            <div class="deliv-option selected" onclick="selectDeliv(this, 800)">
-              <div class="deliv-badge">Recomendado</div>
-              {{-- <div class="deliv-icon">🚴</div> --}}
-              <div>
-                <div class="deliv-name">Entrega Expresso</div>
-                <div class="deliv-sub">Entrega em ~25 min · Seg-Dom 08h–22h</div>
-              </div>
-              <div class="deliv-price">800 Kz</div>
-            </div>
-            <div class="deliv-option" onclick="selectDeliv(this, 1500)">
-              {{-- <div class="deliv-icon">🚗</div> --}}
-              <div>
-                <div class="deliv-name">Entrega Agendada</div>
-                <div class="deliv-sub">Escolha o horário que preferir</div>
-              </div>
-              <div class="deliv-price">1 500 Kz</div>
-            </div>
-            <div class="deliv-option" onclick="selectDeliv(this, 0)">
-              {{-- <div class="deliv-icon">🏪</div> --}}
-              <div>
-                <div class="deliv-name">Retirar na Farmácia</div>
-                <div class="deliv-sub">Pronto em ~15 min · Sem custo adicional</div>
-              </div>
-              <div class="deliv-price free">Grátis</div>
-            </div>
-          </div>
-        </div>
+                  <!-- ── ADDRESS ── -->
+                  <div class="address-card">
+                    <div class="ac-head">
+                      <h6><i class="bi bi-geo-alt-fill"></i> Endereço de entrega</h6>
+                      <button class="ac-edit">Gerir endereços</button>
+                    </div>
+                    <div class="ac-body">
+                      <div class="addr-option selected" onclick="selectAddr(this)">
+                        <div class="ao-label">Casa</div>
+                        <div class="ao-addr">Rua da Missão, Nº 47, Apt. 3B</div>
+                        <div class="ao-sub"><i class="bi bi-geo-alt" style="font-size:.72rem;"></i> Ingombotas, Luanda · 1.2 km da farmácia</div>
+                      </div>
+                      <div class="addr-option" onclick="selectAddr(this)">
+                        <div class="ao-label">Trabalho</div>
+                        <div class="ao-addr">Av. 4 de Fevereiro, Edifício Tower, 8º Andar</div>
+                        <div class="ao-sub"><i class="bi bi-geo-alt" style="font-size:.72rem;"></i> Marginal, Luanda · 3.8 km da farmácia</div>
+                      </div>
+                      <button class="add-addr-btn" onclick="showToast('Em breve','Funcionalidade de novo endereço disponível em breve.')">
+                        <i class="bi bi-plus-circle" style="color:var(--accent);"></i> Adicionar novo endereço
+                      </button>
+                    </div>
+                  </div>
 
-        <!-- ── PAYMENT ── -->
-        <div class="payment-card">
-          <div class="ac-head">
-            <h6><i class="bi bi-credit-card-2-front"></i> Método de pagamento</h6>
-          </div>
-          <div class="pay-body">
+                  <!-- ── DELIVERY OPTIONS ── -->
+                  <div class="delivery-card">
+                    <div class="ac-head">
+                      <h6><i class="bi bi-truck"></i> Tipo de entrega</h6>
+                    </div>
+                    <div class="dc-body">
+                      <div class="deliv-option selected" onclick="selectDeliv(this, 800)">
+                        <div class="deliv-badge">Recomendado</div>
+                        {{-- <div class="deliv-icon">🚴</div> --}}
+                        <div>
+                          <div class="deliv-name">Entrega Expresso</div>
+                          <div class="deliv-sub">Entrega em ~25 min · Seg-Dom 08h–22h</div>
+                        </div>
+                        <div class="deliv-price">800 Kz</div>
+                      </div>
+                      <div class="deliv-option" onclick="selectDeliv(this, 1500)">
+                        {{-- <div class="deliv-icon">🚗</div> --}}
+                        <div>
+                          <div class="deliv-name">Entrega Agendada</div>
+                          <div class="deliv-sub">Escolha o horário que preferir</div>
+                        </div>
+                        <div class="deliv-price">1 500 Kz</div>
+                      </div>
+                      <div class="deliv-option" onclick="selectDeliv(this, 0)">
+                        {{-- <div class="deliv-icon">🏪</div> --}}
+                        <div>
+                          <div class="deliv-name">Retirar na Farmácia</div>
+                          <div class="deliv-sub">Pronto em ~15 min · Sem custo adicional</div>
+                        </div>
+                        <div class="deliv-price free">Grátis</div>
+                      </div>
+                    </div>
+                  </div>
 
-            <div class="pay-option selected" onclick="selectPay(this, 'multicaixa')">
-              <div class="pay-icon">📱</div>
-              <div>
-                <div class="pay-name">Multicaixa Express</div>
-                <div class="pay-sub">Pagamento rápido via app do banco</div>
-              </div>
-              <input type="radio" class="pay-radio" name="pay" checked>
-            </div>
+                  <!-- ── PAYMENT ── -->
+                  <div class="payment-card">
+                    <div class="ac-head">
+                      <h6><i class="bi bi-credit-card-2-front"></i> Método de pagamento</h6>
+                    </div>
+                    <div class="pay-body">
 
-           
-            <div class="pay-option" onclick="selectPay(this, 'cash')">
-              <div class="pay-icon">💵</div>
-              <div>
-                <div class="pay-name">Pagamento em Numerário</div>
-                <div class="pay-sub">Pague ao entregador na entrega</div>
-              </div>
-              <input type="radio" class="pay-radio" name="pay">
-            </div>
+                      <div class="pay-option selected" onclick="selectPay(this, 'multicaixa')">
+                        <div class="pay-icon">📱</div>
+                        <div>
+                          <div class="pay-name">Multicaixa Express</div>
+                          <div class="pay-sub">Pagamento rápido via app do banco</div>
+                        </div>
+                        <input type="radio" class="pay-radio" name="pay" checked>
+                      </div>
 
-            <!-- Voucher -->
-            <div style="margin-top:1rem; border-top:1px solid var(--border); padding-top:1rem;">
-              <div style="font-size:.8rem; font-weight:700; color:var(--heading); margin-bottom:.4rem; display:flex; align-items:center; gap:.4rem;"><i class="bi bi-ticket-perforated" style="color:var(--accent);"></i> Voucher / Código Promocional</div>
-              <div class="voucher-row">
-                <input type="text" class="voucher-input" id="voucherInput" placeholder="Insira o código aqui..." oninput="this.value=this.value.toUpperCase()">
-                <button class="voucher-btn" onclick="applyVoucher()">Aplicar</button>
-              </div>
-              <div id="voucherMsg" style="font-size:.76rem; margin-top:.4rem; display:none;"></div>
-            </div>
-          </div>
-        </div>
+                    
+                      <div class="pay-option" onclick="selectPay(this, 'cash')">
+                        <div class="pay-icon">💵</div>
+                        <div>
+                          <div class="pay-name">Pagamento em Numerário</div>
+                          <div class="pay-sub">Pague ao entregador na entrega</div>
+                        </div>
+                        <input type="radio" class="pay-radio" name="pay">
+                      </div>
 
-        <!-- ── NOTES ── -->
-        <div class="cart-card">
-          <div class="cc-head"><h6><i class="bi bi-chat-text"></i> Observações para a farmácia</h6></div>
-          <div style="padding:1rem 1.4rem;">
-            <textarea class="fc-input" rows="3" style="resize:none;border-radius:14px;" placeholder="Ex: Toque suave no intercomunicador, 3º andar direito..."></textarea>
-            <div style="font-size:.73rem;color:var(--muted);margin-top:.4rem;">Opcional · Max. 200 caracteres</div>
-          </div>
-        </div>
+                      <!-- Voucher -->
+                      <div style="margin-top:1rem; border-top:1px solid var(--border); padding-top:1rem;">
+                        <div style="font-size:.8rem; font-weight:700; color:var(--heading); margin-bottom:.4rem; display:flex; align-items:center; gap:.4rem;"><i class="bi bi-ticket-perforated" style="color:var(--accent);"></i> Voucher / Código Promocional</div>
+                        <div class="voucher-row">
+                          <input type="text" class="voucher-input" id="voucherInput" placeholder="Insira o código aqui..." oninput="this.value=this.value.toUpperCase()">
+                          <button class="voucher-btn" onclick="applyVoucher()">Aplicar</button>
+                        </div>
+                        <div id="voucherMsg" style="font-size:.76rem; margin-top:.4rem; display:none;"></div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- ── NOTES ── -->
+                  {{-- <div class="cart-card">
+                    <div class="cc-head"><h6><i class="bi bi-chat-text"></i> Observações para a farmácia</h6></div>
+                    <div style="padding:1rem 1.4rem;">
+                      <textarea class="fc-input" rows="3" style="resize:none;border-radius:14px;" placeholder="Ex: Toque suave no intercomunicador, 3º andar direito..."></textarea>
+                      <div style="font-size:.73rem;color:var(--muted);margin-top:.4rem;">Opcional · Max. 200 caracteres</div>
+                    </div>
+                  </div> --}}
+
 
       </div><!-- /left col -->
 
       <!-- RIGHT COL – SUMMARY -->
-      <div class="col-lg-4">
+      <div class="col-lg-4 mt-5">
         <div class="summary-card">
           <div class="sc-head">
             <h6><i class="bi bi-receipt"></i> Resumo do pedido</h6>
           </div>
           <div class="sc-body">
 
-            <!-- Mini items -->
-            <div id="summaryItems"></div>
+            {{-- Mini lista de itens no resumo --}}
+            <div id="summaryItems">
+              @foreach($itens as $item)
+                @php $med = $item->stockItem->medicamento; @endphp
+                <div class="sum-item">
+
+                  @if($med->imagem ?? false)
+                    <img class="sum-item-img"
+                        src="{{ asset('storage/'.$med->imagem) }}"
+                        alt="{{ $med->name }}">
+                  @else
+                    <div class="sum-item-img d-flex align-items-center justify-content-center"
+                        style="font-size:1.3rem;">💊</div>
+                  @endif
+
+                  <div class="sum-item-name">{{ $med->name }}</div>
+                  <div class="sum-item-qty">×{{ $item->quantidade }}</div>
+                  <div class="sum-item-price">
+                    {{ number_format($med->preco * $item->quantidade, 0, ',', ' ') }} Kz
+                  </div>
+                </div>
+              @endforeach
+            </div>
+
             <div class="tot-divider"></div>
 
-            <!-- Totals -->
-            <div class="tot-row"><span>Subtotal</span><span id="sumSubtotal">—</span></div>
-            <div class="tot-row"><span>Taxa de entrega</span><span id="sumDelivery">800 Kz</span></div>
-            <div class="tot-row" id="discountRow" style="display:none;"><span>Desconto voucher</span><span class="green" id="sumDiscount">— 0 Kz</span></div>
-            <div class="tot-row bold"><span>Total</span><span id="sumTotal">—</span></div>
+            <div class="tot-row">
+              <span>Subtotal</span>
+              <span>{{ number_format($total, 0, ',', ' ') }} Kz</span>
+            </div>
+            <div class="tot-row">
+              <span>Taxa de entrega</span>
+              <span id="sumDelivery">800 Kz</span>  {{-- actualizada pelo JS ao escolher entrega --}}
+            </div>
+            <div class="tot-row bold">
+              <span>Total</span>
+              <span id="sumTotal">{{ number_format($total + 800, 0, ',', ' ') }} Kz</span>
+            </div>
 
             <div style="background:var(--mint);border-radius:12px;padding:.75rem 1rem;margin:1rem 0;font-size:.78rem;color:var(--muted);display:flex;align-items:center;gap:.5rem;">
               <i class="bi bi-info-circle-fill" style="color:var(--accent);flex-shrink:0;"></i>

@@ -10,8 +10,8 @@ class Pedido extends Model
     protected $fillable = [
         'user_id',
         'farmacia_id',
+        // 'total',
         'status',
-        'total',
         'data_pedido',
         // 'endereco_entrega',
     ];

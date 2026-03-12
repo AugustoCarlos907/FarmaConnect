@@ -9,7 +9,6 @@ class StockItem extends Model
     
     protected $fillable = [
         'quantidade',
-        'preco',
         'data_validade',
         'lote',
         'ativo',

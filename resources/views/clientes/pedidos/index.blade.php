@@ -417,306 +417,269 @@
   <div class="container-xl">
 
     <!-- FILTER BAR -->
-    <div class="filter-bar">
-      <div class="filter-tabs" id="filterTabs">
-        <button class="ftab active" data-filter="todos"    onclick="filterOrders(this,'todos')">    Todos <span class="fbadge">12</span></button>
-        <button class="ftab"        data-filter="pendente" onclick="filterOrders(this,'pendente')"> Pendente <span class="fbadge">1</span></button>
-        <button class="ftab"        data-filter="em_entrega" onclick="filterOrders(this,'em_entrega')">Em entrega <span class="fbadge">1</span></button>
-        <button class="ftab"        data-filter="entregue" onclick="filterOrders(this,'entregue')"> Entregues <span class="fbadge">10</span></button>
-        <button class="ftab"        data-filter="cancelado" onclick="filterOrders(this,'cancelado')">Cancelados <span class="fbadge">0</span></button>
-      </div>
-      <div class="filter-right">
-        <input type="text" class="search-orders" placeholder="  Pesquisar pedido..." id="searchOrders" oninput="searchOrder(this.value)">
-        <select class="sort-select" onchange="sortOrders(this.value)">
-          <option value="recent">Mais recentes</option>
-          <option value="oldest">Mais antigos</option>
-          <option value="value_desc">Maior valor</option>
-          <option value="value_asc">Menor valor</option>
-        </select>
-      </div>
-    </div>
+<div class="filter-tabs mb-2" id="filterTabs">
+  <button class="ftab active" data-filter="todos" onclick="filterOrders(this,'todos')">
+    Todos <span class="fbadge">{{ $totalPedidos }}</span>
+  </button>
+  <button class="ftab" data-filter="pendente" onclick="filterOrders(this,'pendente')">
+    Pendente <span class="fbadge">{{ $pedidos->where('status','pendente')->count() }}</span>
+  </button>
+  <button class="ftab" data-filter="em_entrega" onclick="filterOrders(this,'em_entrega')">
+    Em entrega <span class="fbadge">{{ $emEntrega }}</span>
+  </button>
+  <button class="ftab" data-filter="entregue" onclick="filterOrders(this,'entregue')">
+    Entregues <span class="fbadge">{{ $entregues }}</span>
+  </button>
+  <button class="ftab" data-filter="cancelado" onclick="filterOrders(this,'cancelado')">
+    Cancelados <span class="fbadge">{{ $pedidos->where('status','cancelado')->count() }}</span>
+  </button>
+</div>
 
     <!-- ORDERS LIST -->
-    <div id="ordersList">
+<div id="ordersList">
 
-      <!-- ===== PEDIDO 1 — Em entrega (aberto por default) ===== -->
-      <div class="order-card open" data-status="em_entrega" data-num="FC-2026-0012" data-val="8500">
-        <div class="oc-header" onclick="toggleCard(this)">
+  @forelse($pedidos as $pedido)
+    @php
+      $st        = $pedido->status; // pendente|confirmado|preparando|em_entrega|entregue|cancelado
+      $numItens  = $pedido->items->count();
+      $dataPedido = \Carbon\Carbon::parse($pedido->data_pedido)->format('d M Y, H:i');
+
+      // Mapeamento status → label PT e classe CSS
+      $statusMap = [
+        'pendente'   => ['label' => 'Pendente',   'css' => 'sb-pendente'],
+        'confirmado' => ['label' => 'Confirmado', 'css' => 'sb-confirmado'],
+        'preparando' => ['label' => 'Preparando', 'css' => 'sb-preparando'],
+        'em_entrega' => ['label' => 'Em entrega', 'css' => 'sb-em_entrega'],
+        'entregue'   => ['label' => 'Entregue',   'css' => 'sb-entregue'],
+        'cancelado'  => ['label' => 'Cancelado',  'css' => 'sb-cancelado'],
+      ];
+      $statusInfo = $statusMap[$st] ?? ['label' => ucfirst($st), 'css' => 'sb-pendente'];
+
+      // Steps do progresso
+      $steps = ['pendente','confirmado','preparando','em_entrega','entregue'];
+      $currentIdx = array_search($st, $steps);
+    @endphp
+
+    <div class="order-card {{ $st === 'em_entrega' ? 'open' : '' }}"
+         data-status="{{ $st }}"
+         data-num="{{ $pedido->id }}"
+         data-val="{{ $pedido->total }}">
+
+      {{-- ── CABEÇALHO ── --}}
+      <div class="oc-header" onclick="toggleCard(this)">
+        <div>
+          <div class="oc-num">Pedido <strong>#FC-{{ str_pad($pedido->id, 4, '0', STR_PAD_LEFT) }}</strong></div>
+          <div class="oc-date"><i class="bi bi-calendar3"></i> {{ $dataPedido }}</div>
+        </div>
+
+        <div class="oc-farm">
+          <div class="oc-farm-icon"><i class="bi bi-hospital"></i></div>
           <div>
-            <div class="oc-num">Pedido <strong>#FC-2026-0012</strong></div>
-            <div class="oc-date"><i class="bi bi-calendar3"></i> 08 Mar 2026, 14:32</div>
-          </div>
-          <div class="oc-farm">
-            <div class="oc-farm-icon"><i class="bi bi-hospital"></i></div>
-            <div>
-              <div class="oc-farm-name">Farmácia Central</div>
-              <div class="oc-farm-loc"><i class="bi bi-geo-alt"></i> Ingombotas</div>
+            <div class="oc-farm-name">{{ $pedido->farmacia->name ?? '—' }}</div>
+            <div class="oc-farm-loc">
+              <i class="bi bi-geo-alt"></i>
+              {{ $pedido->farmacia->municipio ?? $pedido->farmacia->bairro ?? '' }}
             </div>
           </div>
-          <span class="status-badge sb-em_entrega">Em entrega</span>
-          <div class="oc-total">8 500 Kz<small>3 itens</small></div>
-          <i class="bi bi-chevron-down oc-toggle"></i>
         </div>
-        <div class="oc-body">
 
-          <!-- Live tracking banner -->
+        <span class="status-badge {{ $statusInfo['css'] }}">{{ $statusInfo['label'] }}</span>
+
+        <div class="oc-total">
+          {{ number_format($pedido->total, 0, ',', ' ') }} Kz
+          <small>{{ $numItens }} {{ $numItens === 1 ? 'item' : 'itens' }}</small>
+        </div>
+
+        <i class="bi bi-chevron-down oc-toggle"></i>
+      </div>
+
+      {{-- ── BODY ── --}}
+      <div class="oc-body">
+
+        {{-- Banner de rastreio (só em entrega) --}}
+        @if($st === 'em_entrega')
           <div class="tracking-banner">
             <span class="tb-dot"></span>
             <div class="tb-text">
               <strong>O seu entregador está a caminho!</strong>
-              <span>Carlos Mendes · Honda CG 150 · Previsão: ~12 min</span>
+              <span>Previsão de entrega em breve</span>
             </div>
             <a href="#" class="tb-link"><i class="bi bi-map me-1"></i> Acompanhar</a>
           </div>
+        @endif
 
-          <!-- Progress -->
-          <div class="progress-track">
-            <h6>Estado do pedido</h6>
-            <div class="steps-row">
+        {{-- ── PROGRESSO ── --}}
+        <div class="progress-track">
+          <h6>Estado do pedido</h6>
+          <div class="steps-row">
+
+            @if($st === 'cancelado')
+              {{-- Estado cancelado: steps diferentes --}}
               <div class="pstep done">
                 <div class="pstep-dot"><i class="bi bi-check2"></i></div>
-                <div class="pstep-label">Confirmado</div>
-                <div class="pstep-time">14:33</div>
+                <div class="pstep-label">Criado</div>
+                <div class="pstep-time">{{ \Carbon\Carbon::parse($pedido->data_pedido)->format('H:i') }}</div>
               </div>
-              <div class="pstep done">
-                <div class="pstep-dot"><i class="bi bi-check2"></i></div>
-                <div class="pstep-label">Preparando</div>
-                <div class="pstep-time">14:38</div>
-              </div>
+              <div class="pstep pending"><div class="pstep-dot"><i class="bi bi-bag-check"></i></div><div class="pstep-label">Confirmado</div><div class="pstep-time">—</div></div>
+              <div class="pstep pending"><div class="pstep-dot"><i class="bi bi-truck"></i></div><div class="pstep-label">Em entrega</div><div class="pstep-time">—</div></div>
               <div class="pstep active">
-                <div class="pstep-dot"><i class="bi bi-truck"></i></div>
-                <div class="pstep-label">Em entrega</div>
-                <div class="pstep-time">14:52</div>
-              </div>
-              <div class="pstep pending">
-                <div class="pstep-dot"><i class="bi bi-house"></i></div>
-                <div class="pstep-label">Entregue</div>
+                <div class="pstep-dot" style="background:#fde8e8;border-color:#e74c3c;color:#e74c3c;">
+                  <i class="bi bi-x-lg"></i>
+                </div>
+                <div class="pstep-label" style="color:#e74c3c;">Cancelado</div>
                 <div class="pstep-time">—</div>
               </div>
-            </div>
-          </div>
 
-          <!-- Items -->
-          <div class="oc-items">
-            <h6>Itens do pedido</h6>
-            <div class="item-row">
-              <img src="https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=96&auto=format&fit=crop" class="item-img" alt="">
-              <div class="item-info">
-                <div class="item-name">Paracetamol 500mg</div>
-                <div class="item-cat">Analgésico · Embalagem c/ 20 comp.</div>
-              </div>
-              <div class="item-qty">x2</div>
-              <div class="item-price">1 700 Kz</div>
-            </div>
-            <div class="item-row">
-              <img src="https://images.unsplash.com/photo-1471864190281-a93a3070b6de?w=96&auto=format&fit=crop" class="item-img" alt="">
-              <div class="item-info">
-                <div class="item-name">Vitamina C 1000mg</div>
-                <div class="item-cat">Vitamina · Frasco c/ 30 comp.</div>
-              </div>
-              <div class="item-qty">x1</div>
-              <div class="item-price">3 200 Kz</div>
-            </div>
-            <div class="item-row">
-              <img src="https://images.unsplash.com/photo-1576671081837-49000212a370?w=96&auto=format&fit=crop" class="item-img" alt="">
-              <div class="item-info">
-                <div class="item-name">Ibuprofeno 400mg</div>
-                <div class="item-cat">Anti-inflamatório · Embalagem c/ 20 comp.</div>
-              </div>
-              <div class="item-qty">x1</div>
-              <div class="item-price">2 400 Kz</div>
-            </div>
-          </div>
+            @else
+              {{-- Steps normais --}}
+              @php
+                $stepDefs = [
+                  ['key'=>'pendente',   'icon'=>'bi-hourglass-split', 'label'=>'Pendente'],
+                  ['key'=>'confirmado', 'icon'=>'bi-bag-check',       'label'=>'Confirmado'],
+                  ['key'=>'em_entrega', 'icon'=>'bi-truck',           'label'=>'Em entrega'],
+                  ['key'=>'entregue',   'icon'=>'bi-house',           'label'=>'Entregue'],
+                ];
+              @endphp
 
-          <!-- Totals -->
-          <div class="oc-totals">
-            <div class="tot-row"><span>Subtotal</span><span>7 300 Kz</span></div>
-            <div class="tot-row"><span>Taxa de entrega</span><span>1 200 Kz</span></div>
-            <div class="tot-row"><span>Desconto</span><span style="color:#22c55e;">— 0 Kz</span></div>
-            <div class="tot-row bold"><span>Total pago</span><span>8 500 Kz</span></div>
-          </div>
+              @foreach($stepDefs as $i => $step)
+                @php
+                  $isDone   = $currentIdx > $i;
+                  $isActive = $currentIdx === $i;
+                  $cls      = $isDone ? 'done' : ($isActive ? 'active' : 'pending');
+                @endphp
+                <div class="pstep {{ $cls }}">
+                  <div class="pstep-dot">
+                    @if($isDone)
+                      <i class="bi bi-check2"></i>
+                    @else
+                      <i class="bi {{ $step['icon'] }}"></i>
+                    @endif
+                  </div>
+                  <div class="pstep-label">{{ $step['label'] }}</div>
+                  <div class="pstep-time">
+                    @if($isDone || $isActive)
+                      {{ \Carbon\Carbon::parse($pedido->data_pedido)->addMinutes($i * 10)->format('H:i') }}
+                    @else
+                      —
+                    @endif
+                  </div>
+                </div>
+              @endforeach
+            @endif
 
-          <!-- Actions -->
-          <div class="oc-actions">
+          </div>
+        </div>
+
+        {{-- ── ITENS ── --}}
+        <div class="oc-items">
+          <h6>Itens do pedido</h6>
+
+          @foreach($pedido->items as $item)
+            @php $med = $item->stockItem->medicamento ?? null; @endphp
+            <div class="item-row">
+
+              {{-- Imagem --}}
+              @if($med && ($med->imagem ?? false))
+                <img src="{{ asset('storage/'.$med->imagem) }}"
+                     class="item-img" alt="{{ $med->name }}">
+              @else
+                <div class="item-img d-flex align-items-center justify-content-center"
+                     style="font-size:1.5rem;">💊</div>
+              @endif
+
+              <div class="item-info">
+                <div class="item-name">{{ $med->name ?? '—' }}</div>
+                <div class="item-cat">
+                  {{ $med->categoria->nome ?? '' }}
+                  @if($med && $med->forma_farmaceutica)
+                    · {{ $med->forma_farmaceutica }}
+                  @endif
+                </div>
+              </div>
+
+              <div class="item-qty">x{{ $item->quantidade }}</div>
+              <div class="item-price">
+                {{ number_format(($med->preco ?? 0) * $item->quantidade, 0, ',', ' ') }} Kz
+              </div>
+
+            </div>
+          @endforeach
+
+        </div>
+
+        {{-- ── TOTAIS ── --}}
+        <div class="oc-totals">
+          <div class="tot-row">
+            <span>Subtotal</span>
+            <span>{{ number_format($pedido->total, 0, ',', ' ') }} Kz</span>
+          </div>
+          {{-- Taxa de entrega e desconto: adiciona ao fillable quando tiveres --}}
+          {{-- <div class="tot-row"><span>Taxa de entrega</span><span>{{ $pedido->taxa_entrega }} Kz</span></div> --}}
+          {{-- <div class="tot-row"><span>Desconto</span><span style="color:#22c55e;">— {{ $pedido->desconto }} Kz</span></div> --}}
+          <div class="tot-row bold">
+            <span>Total {{ $st === 'entregue' ? 'pago' : 'a pagar' }}</span>
+            <span>{{ number_format($pedido->total, 0, ',', ' ') }} Kz</span>
+          </div>
+        </div>
+
+        {{-- ── ACÇÕES (variam por status) ── --}}
+        <div class="oc-actions">
+
+          @if($st === 'em_entrega')
             <button class="oa-btn oa-primary"><i class="bi bi-map"></i> Rastrear entrega</button>
             <button class="oa-btn oa-outline"><i class="bi bi-telephone"></i> Ligar ao entregador</button>
             <button class="oa-btn oa-ghost"><i class="bi bi-receipt"></i> Ver factura</button>
-          </div>
 
-        </div>
-      </div>
-
-      <!-- ===== PEDIDO 2 — Entregue ===== -->
-      <div class="order-card" data-status="entregue" data-num="FC-2026-0011" data-val="5200">
-        <div class="oc-header" onclick="toggleCard(this)">
-          <div>
-            <div class="oc-num">Pedido <strong>#FC-2026-0011</strong></div>
-            <div class="oc-date"><i class="bi bi-calendar3"></i> 05 Mar 2026, 10:15</div>
-          </div>
-          <div class="oc-farm">
-            <div class="oc-farm-icon"><i class="bi bi-hospital"></i></div>
-            <div>
-              <div class="oc-farm-name">Farmácia Kilamba</div>
-              <div class="oc-farm-loc"><i class="bi bi-geo-alt"></i> Kilamba</div>
-            </div>
-          </div>
-          <span class="status-badge sb-entregue">Entregue</span>
-          <div class="oc-total">5 200 Kz<small>2 itens</small></div>
-          <i class="bi bi-chevron-down oc-toggle"></i>
-        </div>
-        <div class="oc-body">
-          <!-- Progress -->
-          <div class="progress-track">
-            <h6>Estado do pedido</h6>
-            <div class="steps-row">
-              <div class="pstep done"><div class="pstep-dot"><i class="bi bi-check2"></i></div><div class="pstep-label">Confirmado</div><div class="pstep-time">10:16</div></div>
-              <div class="pstep done"><div class="pstep-dot"><i class="bi bi-check2"></i></div><div class="pstep-label">Preparando</div><div class="pstep-time">10:22</div></div>
-              <div class="pstep done"><div class="pstep-dot"><i class="bi bi-check2"></i></div><div class="pstep-label">Em entrega</div><div class="pstep-time">10:35</div></div>
-              <div class="pstep done"><div class="pstep-dot"><i class="bi bi-check2"></i></div><div class="pstep-label">Entregue</div><div class="pstep-time">11:02</div></div>
-            </div>
-          </div>
-          <!-- Items -->
-          <div class="oc-items">
-            <h6>Itens do pedido</h6>
-            <div class="item-row">
-              <img src="https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=96&auto=format&fit=crop" class="item-img" alt="">
-              <div class="item-info"><div class="item-name">Amoxicilina 500mg</div><div class="item-cat">Antibiótico · Caixa c/ 14 cáps.</div></div>
-              <div class="item-qty">x1</div>
-              <div class="item-price">2 400 Kz</div>
-            </div>
-            <div class="item-row">
-              <img src="https://images.unsplash.com/photo-1559757175-5700dde675bc?w=96&auto=format&fit=crop" class="item-img" alt="">
-              <div class="item-info"><div class="item-name">Omeprazol 20mg</div><div class="item-cat">Gastroenterologia · Caixa c/ 28 comp.</div></div>
-              <div class="item-qty">x2</div>
-              <div class="item-price">2 800 Kz</div>
-            </div>
-          </div>
-          <!-- Totals -->
-          <div class="oc-totals">
-            <div class="tot-row"><span>Subtotal</span><span>5 200 Kz</span></div>
-            <div class="tot-row"><span>Taxa de entrega</span><span>800 Kz</span></div>
-            <div class="tot-row"><span>Desconto (10% 1ª compra)</span><span style="color:#22c55e;">— 600 Kz</span></div>
-            <div class="tot-row bold"><span>Total pago</span><span>5 400 Kz</span></div>
-          </div>
-          <!-- Actions -->
-          <div class="oc-actions">
-            <button class="oa-btn oa-primary" onclick="openRatingModal()"><i class="bi bi-star"></i> Avaliar pedido</button>
-            <button class="oa-btn oa-outline" onclick="reorder()"><i class="bi bi-arrow-repeat"></i> Repetir pedido</button>
+          @elseif($st === 'entregue')
+            <button class="oa-btn oa-primary" onclick="openRatingModal()">
+              <i class="bi bi-star"></i> Avaliar pedido
+            </button>
+            <button class="oa-btn oa-outline" onclick="reorder()">
+              <i class="bi bi-arrow-repeat"></i> Repetir pedido
+            </button>
             <button class="oa-btn oa-ghost"><i class="bi bi-receipt"></i> Ver factura</button>
             <button class="oa-btn oa-ghost"><i class="bi bi-download"></i> Baixar PDF</button>
-          </div>
-        </div>
-      </div>
 
-      <!-- ===== PEDIDO 3 — Pendente ===== -->
-      <div class="order-card" data-status="pendente" data-num="FC-2026-0013" data-val="3200">
-        <div class="oc-header" onclick="toggleCard(this)">
-          <div>
-            <div class="oc-num">Pedido <strong>#FC-2026-0013</strong></div>
-            <div class="oc-date"><i class="bi bi-calendar3"></i> 08 Mar 2026, 16:45</div>
-          </div>
-          <div class="oc-farm">
-            <div class="oc-farm-icon"><i class="bi bi-hospital"></i></div>
-            <div>
-              <div class="oc-farm-name">Farmácia Talatona</div>
-              <div class="oc-farm-loc"><i class="bi bi-geo-alt"></i> Talatona</div>
-            </div>
-          </div>
-          <span class="status-badge sb-pendente">Pendente</span>
-          <div class="oc-total">3 200 Kz<small>1 item</small></div>
-          <i class="bi bi-chevron-down oc-toggle"></i>
-        </div>
-        <div class="oc-body">
-          <div class="progress-track">
-            <h6>Estado do pedido</h6>
-            <div class="steps-row">
-              <div class="pstep active"><div class="pstep-dot"><i class="bi bi-hourglass-split"></i></div><div class="pstep-label">Pendente</div><div class="pstep-time">16:45</div></div>
-              <div class="pstep pending"><div class="pstep-dot"><i class="bi bi-bag-check"></i></div><div class="pstep-label">Confirmado</div><div class="pstep-time">—</div></div>
-              <div class="pstep pending"><div class="pstep-dot"><i class="bi bi-truck"></i></div><div class="pstep-label">Em entrega</div><div class="pstep-time">—</div></div>
-              <div class="pstep pending"><div class="pstep-dot"><i class="bi bi-house"></i></div><div class="pstep-label">Entregue</div><div class="pstep-time">—</div></div>
-            </div>
-          </div>
-          <div class="oc-items">
-            <h6>Itens do pedido</h6>
-            <div class="item-row">
-              <img src="https://images.unsplash.com/photo-1471864190281-a93a3070b6de?w=96&auto=format&fit=crop" class="item-img" alt="">
-              <div class="item-info"><div class="item-name">Vitamina C 1000mg</div><div class="item-cat">Vitamina · Frasco c/ 30 comp.</div></div>
-              <div class="item-qty">x1</div>
-              <div class="item-price">3 200 Kz</div>
-            </div>
-          </div>
-          <div class="oc-totals">
-            <div class="tot-row"><span>Subtotal</span><span>3 200 Kz</span></div>
-            <div class="tot-row"><span>Taxa de entrega</span><span>1 000 Kz</span></div>
-            <div class="tot-row bold"><span>Total a pagar</span><span>4 200 Kz</span></div>
-          </div>
-          <div class="oc-actions">
+          @elseif($st === 'pendente')
             <button class="oa-btn oa-ghost"><i class="bi bi-receipt"></i> Ver detalhes</button>
-            <button class="oa-btn oa-danger" onclick="cancelOrder(this)"><i class="bi bi-x-circle"></i> Cancelar pedido</button>
-          </div>
-        </div>
-      </div>
+            {{-- Cancelar via POST --}}
+            <form action="{{ route('pedidos.cancelar', $pedido) }}" method="POST"
+                  onsubmit="return confirm('Tem a certeza que deseja cancelar este pedido?')">
+              @csrf
+              @method('PATCH')
+              <button type="submit" class="oa-btn oa-danger">
+                <i class="bi bi-x-circle"></i> Cancelar pedido
+              </button>
+            </form>
 
-      <!-- ===== PEDIDO 4 — Entregue ===== -->
-      <div class="order-card" data-status="entregue" data-num="FC-2026-0010" data-val="12800">
-        <div class="oc-header" onclick="toggleCard(this)">
-          <div>
-            <div class="oc-num">Pedido <strong>#FC-2026-0010</strong></div>
-            <div class="oc-date"><i class="bi bi-calendar3"></i> 28 Fev 2026, 09:20</div>
-          </div>
-          <div class="oc-farm">
-            <div class="oc-farm-icon"><i class="bi bi-hospital"></i></div>
-            <div>
-              <div class="oc-farm-name">Farmácia Central</div>
-              <div class="oc-farm-loc"><i class="bi bi-geo-alt"></i> Ingombotas</div>
-            </div>
-          </div>
-          <span class="status-badge sb-entregue">Entregue</span>
-          <div class="oc-total">12 800 Kz<small>5 itens</small></div>
-          <i class="bi bi-chevron-down oc-toggle"></i>
-        </div>
-        <div class="oc-body">
-          <div class="progress-track">
-            <h6>Estado do pedido</h6>
-            <div class="steps-row">
-              <div class="pstep done"><div class="pstep-dot"><i class="bi bi-check2"></i></div><div class="pstep-label">Confirmado</div><div class="pstep-time">09:21</div></div>
-              <div class="pstep done"><div class="pstep-dot"><i class="bi bi-check2"></i></div><div class="pstep-label">Preparando</div><div class="pstep-time">09:30</div></div>
-              <div class="pstep done"><div class="pstep-dot"><i class="bi bi-check2"></i></div><div class="pstep-label">Em entrega</div><div class="pstep-time">09:48</div></div>
-              <div class="pstep done"><div class="pstep-dot"><i class="bi bi-check2"></i></div><div class="pstep-label">Entregue</div><div class="pstep-time">10:22</div></div>
-            </div>
-          </div>
-          <div class="oc-items">
-            <h6>Itens do pedido</h6>
-            <div class="item-row">
-              <img src="https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=96&auto=format&fit=crop" class="item-img" alt="">
-              <div class="item-info"><div class="item-name">Paracetamol 500mg</div><div class="item-cat">Analgésico</div></div>
-              <div class="item-qty">x3</div><div class="item-price">2 550 Kz</div>
-            </div>
-            <div class="item-row">
-              <img src="https://images.unsplash.com/photo-1576671081837-49000212a370?w=96&auto=format&fit=crop" class="item-img" alt="">
-              <div class="item-info"><div class="item-name">Losartana 50mg</div><div class="item-cat">Cardiovascular</div></div>
-              <div class="item-qty">x2</div><div class="item-price">4 800 Kz</div>
-            </div>
-            <div class="item-row">
-              <img src="https://images.unsplash.com/photo-1559757175-5700dde675bc?w=96&auto=format&fit=crop" class="item-img" alt="">
-              <div class="item-info"><div class="item-name">Dipirona 500mg</div><div class="item-cat">Analgésico</div></div>
-              <div class="item-qty">x1</div><div class="item-price">1 200 Kz</div>
-            </div>
-          </div>
-          <div class="oc-totals">
-            <div class="tot-row"><span>Subtotal</span><span>8 550 Kz</span></div>
-            <div class="tot-row"><span>Taxa de entrega</span><span>1 200 Kz</span></div>
-            <div class="tot-row bold"><span>Total pago</span><span>9 750 Kz</span></div>
-          </div>
-          <div class="oc-actions">
-            <button class="oa-btn oa-primary" onclick="openRatingModal()"><i class="bi bi-star"></i> Avaliar</button>
-            <button class="oa-btn oa-outline" onclick="reorder()"><i class="bi bi-arrow-repeat"></i> Repetir pedido</button>
-            <button class="oa-btn oa-ghost"><i class="bi bi-receipt"></i> Ver factura</button>
-          </div>
-        </div>
-      </div>
+          @elseif($st === 'cancelado')
+            <button class="oa-btn oa-ghost"><i class="bi bi-receipt"></i> Ver detalhes</button>
+            <button class="oa-btn oa-outline" onclick="reorder()">
+              <i class="bi bi-arrow-repeat"></i> Repetir pedido
+            </button>
 
-    </div><!-- /ordersList -->
+          @else
+            {{-- confirmado / preparando --}}
+            <button class="oa-btn oa-ghost"><i class="bi bi-receipt"></i> Ver detalhes</button>
+          @endif
+
+        </div>
+
+      </div>{{-- /oc-body --}}
+    </div>{{-- /order-card --}}
+
+  @empty
+    <div class="empty-state" style="display:block;">
+      <div class="empty-icon"><i class="bi bi-bag-x"></i></div>
+      <h5>Ainda não tem pedidos</h5>
+      <p>Explore as nossas farmácias e faça o seu primeiro pedido.</p>
+      <a href="{{ route('produtos.clientes') }}" class="oa-btn oa-outline text-decoration-none">
+        <i class="bi bi-box-seam"></i> Ver produtos
+      </a>
+    </div>
+  @endforelse
+
+</div>
 
     <!-- Empty state -->
     <div class="empty-state" id="emptyState">

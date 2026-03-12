@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('stock_items', function (Blueprint $table) {
             $table->id();
             $table->integer('quantidade')->default(0);
-            $table->decimal('preco', 10, 2); 
+            // $table->decimal('preco', 10, 2); 
             $table->date('data_validade');
             $table->string('lote');
             $table->boolean('ativo')->default(true);

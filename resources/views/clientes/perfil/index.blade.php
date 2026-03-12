@@ -609,7 +609,7 @@
                     <div class="fc-input-icon">
                       <i class="bi bi-person"></i>
                       <input type="text" class="fc-input" name="name" id="iName"
-                             placeholder="Ex: Ana" value="Ana" required>
+                             placeholder="Ex: Ana" value="{{ $user->name }}" required>
                     </div>
                     <div class="fc-error" id="err-name">Por favor, insira o primeiro nome.</div>
                   </div>
@@ -620,7 +620,7 @@
                     <div class="fc-input-icon">
                       <i class="bi bi-person"></i>
                       <input type="text" class="fc-input" name="last_name" id="iLastName"
-                             placeholder="Ex: Costa" value="Costa" required>
+                             placeholder="Ex: Costa" value="{{ $user->last_name }}" required>
                     </div>
                     <div class="fc-error" id="err-last_name">Por favor, insira o apelido.</div>
                   </div>
@@ -631,7 +631,7 @@
                     <div class="fc-input-icon">
                       <i class="bi bi-envelope"></i>
                       <input type="email" class="fc-input" name="email" id="iEmail"
-                             placeholder="exemplo@email.com" value="ana.costa@email.com" required>
+                             placeholder="exemplo@email.com" value="{{ $user->email }}" required>
                     </div>
                     <div class="fc-hint"><i class="bi bi-info-circle"></i> Usado para login e notificações</div>
                     <div class="fc-error" id="err-email">Insira um email válido.</div>
@@ -643,7 +643,7 @@
                     <div class="fc-input-icon">
                       <i class="bi bi-telephone"></i>
                       <input type="tel" class="fc-input" name="phone" id="iPhone"
-                             placeholder="+244 9XX XXX XXX" value="+244 912 345 678">
+                             placeholder="+244 9XX XXX XXX" value="{{ $user->phone }}">
                     </div>
                     <div class="fc-hint"><i class="bi bi-info-circle"></i> Para confirmação de entrega</div>
                   </div>
@@ -654,7 +654,7 @@
                     <div class="fc-input-icon">
                       <i class="bi bi-calendar3"></i>
                       <input type="date" class="fc-input" name="data_nascimento" id="iDob"
-                             value="1995-07-14" max="">
+                             value="{{ $user->data_nascimento }}" max="">
                     </div>
                     <div class="fc-hint"><i class="bi bi-info-circle"></i> Não pode ser uma data futura</div>
                   </div>
@@ -664,11 +664,10 @@
                     <label class="fc-label"><i class="bi bi-gender-ambiguous"></i> Género</label>
                     <div class="fc-input-icon">
                       <i class="bi bi-gender-ambiguous"></i>
-                      <select class="fc-input" name="genero" id="iGenero">
-                        <option value="">Prefiro não especificar</option>
-                        <option value="masculino">Masculino</option>
-                        <option value="feminino" selected>Feminino</option>
-                        <option value="outro">Outro</option>
+                      <select class="fc-input" name="genero" id="iGenero" >
+                        <option value="masculino" {{ $user->genero === 'masculino' ? 'selected' : '' }}>Masculino</option>
+                        <option value="feminino" {{ $user->genero === 'feminino' ? 'selected' : '' }}>Feminino</option>
+                        <option value="outro" {{ $user->genero === 'outro' ? 'selected' : '' }}>Outro</option>
                       </select>
                     </div>
                   </div>

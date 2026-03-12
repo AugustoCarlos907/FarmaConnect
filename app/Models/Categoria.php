@@ -10,7 +10,7 @@ class Categoria extends Model
         'name',
         'descricao',
         'imagem',
-        'stock_items_id',
+        // 'stock_items_id',
     ];
 
     public function medicamentos()

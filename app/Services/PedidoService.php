@@ -71,6 +71,8 @@ class PedidoService
                     'quantidade' => $item['quantidade'],
                     'preco_unitario' => $stock->preco,
                     'subtotal' => $subtotal,
+                    'pedido_id' => $pedido->id
+                    // 'medicamento_id' => $farmacia->medicamentos->id
                 ]); 
 
                 // $pedido->update(['status' => 'Aprovado']);

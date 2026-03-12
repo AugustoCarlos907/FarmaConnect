@@ -35,13 +35,6 @@ class ClientHomePageController extends Controller
         return view('clientes.perfil.index', ['user' => $user]);
     }
 
-    public function pedidos()
-    {
-        $user = auth()->user();
-        // $pedidos = $this->pedidoService->getPedidosByUser($user->id);
-
-        return view('clientes.pedidos.index');
-    }
 
     public function farmacias($perPage = 6)
     {
@@ -67,12 +60,12 @@ class ClientHomePageController extends Controller
 
     public function produtosPorCategoria($id)
     {
-        $categoria = Categoria::with('medicamentos')->findOrFail($id);
+           $categoria = Categoria::with(['medicamentos.stockItems.farmacia' ])
+                                 ->findOrFail($id);
 
-        // if($categoria){
-        //     dd('ok');
-        // }
-        return view('clientes.dashboard.produtos_categoria', ['categoria' => $categoria]);
+            return view('clientes.dashboard.produtos_categoria', [
+                'categoria' => $categoria
+            ]);    
     }
 
     public function searchCategorias(Request $request)

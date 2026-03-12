@@ -535,16 +535,18 @@
         <!-- Featured / Destaque -->
         <div class="featured-section">
           <h6><i class="bi bi-lightning-charge-fill" style="color:#f59e0b;"></i> Farmácias em destaque</h6>
-          @foreach ($farmaDestaque as $farma )
           
           <div class="featured-scroll">
+            @foreach ($farmaDestaque as $farma )
             <div class="feat-card" onclick="openModal('central')">
               <img src="https://images.unsplash.com/photo-1587854692152-cbe660dbde88?w=88&auto=format&fit=crop" class="feat-img" alt="">
-              <div><div class="feat-name">{{ $farma->name }}</div><div class="feat-meta">{{$farma->bairro}}· {{ number_format($farma->avaliacoes_avg_classificacao, 1) }}★ </div></div>
+              <div>
+                <div class="feat-name">{{ $farma->name }}</div>
+                <div class="feat-meta">{{$farma->bairro}}· {{ number_format($farma->avaliacoes_avg_classificacao, 1) }}★ </div>
+              </div>
             </div>
+            @endforeach
           </div>
-          @endforeach
-
         </div>
 
         <!-- Toolbar -->
@@ -583,7 +585,8 @@
                 <div class="ph-name">{{ $farmacia->name }}</div>
                 <div class="ph-loc"><i class="bi bi-geo-alt-fill"></i>{{ $farmacia->bairro }}</div>
                 <div class="ph-meta">
-                  <div class="ph-rating"><i class="bi bi-star-fill">{{ $farmacia->avaliacoes()->sum('classificacao') / ($farmacia->avaliacoes->count() ?? 1) }}</i> <span class="ph-reviews">({{ $farmacia->avaliacoes->count() ?? 0 }})</span></div>
+                  <div class="ph-rating"><i class="bi bi-star-fill"> {{-- Calcula a média ou retorna 0 se não houver avaliações --}}
+            {{ number_format($farmacia->avaliacoes->avg('classificacao') ?? 0, 1) }}</i> <span class="ph-reviews">({{ $farmacia->avaliacoes->count() ?? 0 }})</span></div>
                   {{-- <span class="ph-tag"><i class="bi bi-truck"></i> 25 min</span> --}}
                   {{-- <span class="ph-tag">Entrega 800 Kz</span> --}}
                 </div>

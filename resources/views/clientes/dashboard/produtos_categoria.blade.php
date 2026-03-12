@@ -455,64 +455,80 @@
 
             
             @foreach($categoria->medicamentos as $med)
-            <div class="prod-card">
-              <div class="pc-img">
-                @if($med->imagem)
-                  <img src="{{ asset('storage/'.$med->imagem) }}" alt="{{ $med->name }}" loading="lazy">
-                @else
-                  <div class="pc-img-placeholder">💊</div>
-                @endif
 
-                {{-- <div class="pc-badges">
-                  @if($med->preco_desconto && $med->preco_desconto < $med->preco)
-                    <span class="badge-fc badge-desc">
-                      -{{ round((1 - $med->preco_desconto / $med->preco) * 100) }}%
-                    </span>
-                  @endif
-                  @if($med->novo ?? false)
-                    <span class="badge-fc badge-novo">Novo</span>
-                  @endif
-                  @if($med->receita ?? false)
-                    <span class="badge-fc badge-rec">Receita</span>
-                  @endif
-                  @if(($med->stock ?? 99) <= 5)
-                    <span class="badge-fc badge-stock">Stock baixo</span>
-                  @endif
-                </div> --}}
+    @php
+        // {{-- Pega o primeiro StockItem activo com quantidade > 0 --}}
+        $stock = $med->stockItems
+                     ->where('ativo', 1)
+                     ->where('quantidade', '>', 0)
+                     ->first();
+    @endphp
 
-                <button class="pc-fav" title="Favoritos"><i class="bi bi-heart"></i></button>
-              </div>
+    <div class="prod-card">
 
-              <div class="pc-body">
-                <div class="pc-cat">{{ $categoria->name }}</div>
-                <div class="pc-name">{{ $med->name }}</div>
-                @if($med->descricao ?? false)
-                  <div class="pc-sub">{{ Str::limit($med->descricao, 50) }}</div>
-                @endif
-                @if($med->farmacia ?? false)
-                  <div class="pc-farm">
+        {{-- IMAGEM --}}
+        <div class="pc-img">
+            @if($med->imagem ?? false)
+                <img src="{{ asset('storage/'.$med->imagem) }}" alt="{{ $med->name }}" loading="lazy">
+            @else
+                <div class="pc-img-placeholder">💊</div>
+            @endif
+            <button class="pc-fav" title="Favoritos"><i class="bi bi-heart"></i></button>
+        </div>
+
+        {{-- CORPO --}}
+        <div class="pc-body">
+            <div class="pc-cat">{{ $categoria->nome }}</div>
+            <div class="pc-name">{{ $med->name }}</div>
+
+            @if($med->forma_farmaceutica)
+                <div class="pc-sub">{{ $med->forma_farmaceutica }} · {{ $med->dosagem }}</div>
+            @endif
+
+            {{-- Farmácia vem do StockItem --}}
+            @if($stock && $stock->farmacia)
+                <div class="pc-farm">
                     <i class="bi bi-hospital" style="font-size:.7rem;"></i>
-                    {{ $med->farmacia->name }}
-                  </div>
-                @endif
-              </div>
+                    {{ $stock->farmacia->name }}
+                </div>
+            @endif
+        </div>
 
-              <div class="pc-footer">
-                {{-- <div class="pc-price-wrap">
-                  @if($med->preco_desconto && $med->preco_desconto < $med->preco)
-                    <span class="pc-price-old">{{ number_format($med->preco, 0, ',', ' ') }} Kz</span>
-                    <span class="pc-price">{{ number_format($med->preco_desconto, 0, ',', ' ') }} <span class="cur">Kz</span></span>
-                  @else
-                    <span class="pc-price">{{ number_format($med->preco, 0, ',', ' ') }} <span class="cur">Kz</span></span>
-                  @endif
-                </div> --}}
-                <button class="btn-cart" onclick="addCart(this)" data-id="{{ $med->id }}">
-                  <i class="bi bi-bag-plus"></i> Adicionar
-                </button>
-              </div>
+        {{-- FOOTER COM PREÇO --}}
+        <div class="pc-footer">
+            <div class="pc-price-wrap">
+                @if($stock)
+                    <span class="pc-price">
+                        {{ number_format($med->preco, 0, ',', ' ') }} <span class="cur">Kz</span>
+                    </span>
+                    <span style="font-size:.72rem; color:#22c55e; font-weight:600;">
+                        {{ $stock->quantidade }} em stock
+                    </span>
+                @else
+                    <span style="font-size:.8rem; color:#ef4444; font-weight:700;">Sem stock</span>
+                @endif
             </div>
-            @endforeach
-           
+
+            {{-- Botão só activo se houver stock --}}
+            @if($stock)
+                <form action="{{ route('carrinho.adicionar') }}" method="POST">
+                    @csrf
+                    <input type="hidden" name="stock_item_id" value="{{ $stock->id }}">
+                    <input type="hidden" name="quantidade"    value="1">
+                    <button type="submit" class="btn-cart">
+                        <i class="bi bi-bag-plus"></i> Adicionar
+                    </button>
+                </form>
+            @else
+                <button class="btn-cart" disabled style="background:#e0e0e0;color:#aaa;cursor:not-allowed;">
+                    Esgotado
+                </button>
+            @endif
+        </div>
+
+    </div>
+
+@endforeach
 
           </div>
 

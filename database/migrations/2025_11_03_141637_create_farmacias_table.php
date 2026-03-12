@@ -13,7 +13,6 @@ return new class extends Migration
     {
         Schema::create('farmacias', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
             $table->string('logo')->nullable();
             // $table->string('email');
 

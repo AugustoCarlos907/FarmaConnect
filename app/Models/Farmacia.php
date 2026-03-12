@@ -16,9 +16,9 @@ class Farmacia  extends Authenticatable
 
     protected $fillable = [
         'name',
-        'email',
+        // 'email',
         'logo',
-        'telefone',
+        // 'telefone',
         'descricao',
         'status',
         'endereco',
@@ -32,18 +32,23 @@ class Farmacia  extends Authenticatable
         'rua',
         'bairro',
         'municipio',
-        'horario_abertura',
-        'horario_fechamento'
+        // 'horario_abertura',
+        // 'horario_fechamento'
         // 'password'
     ];
 
-    public function stock_item()
+    // public function medicamentos()
+    // {
+    //     return $this->hasMany(Medicamento::class);
+    // }
+
+    public function stockItems()
     {
         return $this->hasMany(StockItem::class);
     }
 
-    public function avaliacoes() { 
-        return $this->hasMany(Avaliacao::class); 
+    public function avaliacoes() {
+        return $this->hasMany(Avaliacao::class);
     }
 
     public function relatorios (){
@@ -59,8 +64,8 @@ class Farmacia  extends Authenticatable
          return $this->hasMany(Pedido::class);
     }
 
-    public function stock_files() { 
-        return $this->hasMany(StockFile::class); 
+    public function stock_files() {
+        return $this->hasMany(StockFile::class);
     }
 
     public function users(){

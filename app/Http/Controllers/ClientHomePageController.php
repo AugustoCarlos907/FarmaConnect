@@ -26,16 +26,6 @@ class ClientHomePageController extends Controller
 
 
 
-
-
-    public function perfil()
-    {
-        $user = auth()->user();
-
-        return view('clientes.perfil.index', ['user' => $user]);
-    }
-
-
     public function farmacias($perPage = 6)
     {
 

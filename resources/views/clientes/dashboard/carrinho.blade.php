@@ -492,19 +492,18 @@
                       <button class="ac-edit">Gerir endereços</button>
                     </div>
                     <div class="ac-body">
-                      <div class="addr-option selected" onclick="selectAddr(this)">
-                        <div class="ao-label">Casa</div>
-                        <div class="ao-addr">Rua da Missão, Nº 47, Apt. 3B</div>
-                        <div class="ao-sub"><i class="bi bi-geo-alt" style="font-size:.72rem;"></i> Ingombotas, Luanda · 1.2 km da farmácia</div>
+                      @foreach ($enderecos as $endereco)
+                    
+                      <div class="addr-option " onclick="selectAddr(this)">
+                        <div class="ao-label">{{ $endereco->name }}</div>
+                        <div class="ao-addr">{{ $endereco->endereco }}</div>
+                        {{-- <div class="ao-sub"><i class="bi bi-geo-alt" style="font-size:.72rem;"></i> Ingombotas, Luanda · 1.2 km da farmácia</div> --}}
                       </div>
-                      <div class="addr-option" onclick="selectAddr(this)">
-                        <div class="ao-label">Trabalho</div>
-                        <div class="ao-addr">Av. 4 de Fevereiro, Edifício Tower, 8º Andar</div>
-                        <div class="ao-sub"><i class="bi bi-geo-alt" style="font-size:.72rem;"></i> Marginal, Luanda · 3.8 km da farmácia</div>
-                      </div>
+                   
                       <button class="add-addr-btn" onclick="showToast('Em breve','Funcionalidade de novo endereço disponível em breve.')">
                         <i class="bi bi-plus-circle" style="color:var(--accent);"></i> Adicionar novo endereço
                       </button>
+                      @endforeach
                     </div>
                   </div>
 

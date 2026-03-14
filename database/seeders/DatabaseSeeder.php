@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\Avaliacao;
 use App\Models\Companhia;
+use App\Models\Endereco;
 use App\Models\Entregador;
 use App\Models\Farmacia;
 use App\Models\Medicamento;
@@ -210,19 +211,19 @@ class DatabaseSeeder extends Seeder
         //         'updated_at' => Carbon::now(),
         // ]);
 
-        Pedido::create([
-            'user_id' => 3,
-            'farmacia_id' => 1,
-            // 'total' => 800.00,
-            // 'endereco_entrega' => 'Rua das Flores, 123',
-            // 'latitude' => -23.5505,
-            // 'longitude' => -46.6333,
-            // 'metodo_pagamento' => 'Cartão de Crédito',
-            'status' => 'Concluído',
-            'data_pedido' => Carbon::now(),
-            'created_at' => Carbon::now(),
-            'updated_at' => Carbon::now(),
-        ]);
+        // Pedido::create([
+        //     'user_id' => 3,
+        //     'farmacia_id' => 1,
+        //     // 'total' => 800.00,
+        //     // 'endereco_entrega' => 'Rua das Flores, 123',
+        //     // 'latitude' => -23.5505,
+        //     // 'longitude' => -46.6333,
+        //     // 'metodo_pagamento' => 'Cartão de Crédito',
+        //     'status' => 'Concluído',
+        //     'data_pedido' => Carbon::now(),
+        //     'created_at' => Carbon::now(),
+        //     'updated_at' => Carbon::now(),
+        // ]);
 
          // Pedido::create([
          //    'user_id' => 3,
@@ -237,5 +238,13 @@ class DatabaseSeeder extends Seeder
          //    'created_at' => Carbon::now(),
          //    'updated_at' => Carbon::now(),
          // ]);
+
+         Endereco::create([
+            'user_id' => 3,
+            'name'=>'casa',
+            'endereco' => 'IngombotA ',
+            'latitude' => -23.5505,
+            'longitude' => -46.6333,
+         ]);
     }
 }

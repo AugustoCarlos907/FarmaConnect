@@ -763,7 +763,7 @@
                 <div class="fc-divider"></div>
 
                 <!-- Sessões activas -->
-                <div class="mb-3">
+                {{-- <div class="mb-3">
                   <h6 style="font-weight:700;color:var(--heading);margin-bottom:1rem;">Sessões Activas</h6>
                   <div style="display:flex;flex-direction:column;gap:.75rem;">
                     <div style="display:flex;align-items:center;gap:1rem;padding:.9rem 1.1rem;background:var(--mint);border-radius:14px;">
@@ -777,7 +777,7 @@
                       <button type="button" style="background:#fde8e8;color:#c0392b;border:none;border-radius:50px;padding:.28rem .75rem;font-size:.75rem;font-weight:700;cursor:pointer;">Encerrar</button>
                     </div>
                   </div>
-                </div>
+                </div> --}}
 
                 <div class="fc-divider"></div>
                 <div class="d-flex align-items-center gap-3 flex-wrap">
@@ -854,7 +854,7 @@
                       <i class="bi bi-house"></i>
                       <input type="text" class="fc-input" name="endereco" id="iEndereco"
                              placeholder="Rua, número, bairro, município..."
-                             value="Rua Ho Chi Min, Nº 45, Ingombotas">
+                             value="{{ $endereco->name }}">
                     </div>
                     <div class="fc-hint"><i class="bi bi-info-circle"></i> Máximo 500 caracteres</div>
                   </div>
@@ -865,7 +865,7 @@
                     <div class="fc-input-icon">
                       <i class="bi bi-compass"></i>
                       <input type="text" class="fc-input" name="latitude" id="iLat"
-                             placeholder="-8.8367" value="-8.8367"
+                             placeholder="-8.8367" value="-{{$endereco->latitude}}"
                              pattern="^-?([0-9]{1,2})(\.[0-9]+)?$">
                     </div>
                   </div>
@@ -875,7 +875,7 @@
                     <label class="fc-label"><i class="bi bi-compass-fill"></i> Longitude</label>
                     <div class="fc-input-icon">
                       <i class="bi bi-compass-fill"></i>
-                      <input type="text" class="fc-input" name="longitude" id="iLng"
+                      <input type="text" class="fc-input" name="{{$endereco->longitude}}" id="iLng"
                              placeholder="13.2344" value="13.2344"
                              pattern="^-?([0-9]{1,3})(\.[0-9]+)?$">
                     </div>

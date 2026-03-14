@@ -10,14 +10,14 @@ use App\Http\Controllers\DashboardFarmaciaController;
 use App\Http\Controllers\EntregaController;
 use App\Http\Controllers\FarmaciaController;
 use App\Http\Controllers\PedidoController;
+use App\Http\Controllers\PerfilController;
 use App\Http\Controllers\ReportController;
 use Illuminate\Support\Facades\Route;
 use Twilio\Rest\Client;
 
     
 
-// Route::middleware(['guest'])->group(function(){
-
+Route::middleware(['guest'])->group(function(){
     Route::get('/', function(){
         return view('index');
     })->name('index');
@@ -36,7 +36,8 @@ use Twilio\Rest\Client;
     
     Route::get('/login', [AuthController::class, 'login'])->name('login');
     Route::post('/login', [AuthController::class, 'authenticate'])->name('authenticate');
-// });
+});
+
 
     //companhia
     Route::post('companhia/register', [CompanhiaController::class, 'register']);
@@ -90,13 +91,14 @@ use Twilio\Rest\Client;
 
 });
 
+Route::middleware(['auth'])->group(function(){
     //clientes
     Route::get('/home', function(){ 
         Auth::loginUsingId(3);
         return view('clientes.dashboard.index'); 
     
     })->name('index.clientes');
-    Route::get('/perfil' , [ClientHomePageController::class, 'perfil'])->name('perfil.clientes');
+    Route::get('/perfil' , [PerfilController::class, 'UserProfile'])->name('perfil.clientes');
     Route::get('/farmacias', [ClientHomePageController::class, 'farmacias'])->name('farmacias.list');
     Route::get('/produtos' , [ClientHomePageController::class, 'produtos'])->name('produtos.clientes');
     Route::get('/carrinho', function(){ return view('clientes.dashboard.carrinho'); })->name('carrinho.clientes');
@@ -117,3 +119,5 @@ use Twilio\Rest\Client;
     });
     
     Route::post('/upload/comprovativo/{id}', [ComprovativoPagamentoController::class, 'uploadComprovativo']);
+
+});

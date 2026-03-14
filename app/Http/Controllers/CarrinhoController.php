@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Carrinho;
+use App\Models\Endereco;
 use App\Models\StockItem;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -24,8 +26,8 @@ class CarrinhoController extends Controller
     {
         $itens = $this->carrinhoDoUser();
         $total = $itens->sum(fn($item) => $item->subtotal);
-
-        return view('clientes.dashboard.carrinho', compact('itens', 'total'));
+        $enderecos = Endereco::where('user_id', Auth()->user()->id)->get();
+        return view('clientes.dashboard.carrinho', compact('itens', 'total' , 'enderecos'));
     }
 
     public function adicionar(Request $request)
@@ -51,10 +53,8 @@ class CarrinhoController extends Controller
         }
 
         if ($itemExistente) {
-            // Apenas actualiza a quantidade
             $itemExistente->update(['quantidade' => $novaQty]);
         } else {
-            // Cria novo registo
             Carrinho::create([
                 'user_id'       => Auth::id(),
                 'stock_item_id' => $stockItem->id,
@@ -67,7 +67,6 @@ class CarrinhoController extends Controller
 
     public function actualizar(Request $request, Carrinho $carrinho)
     {
-        // Garante que o carrinho pertence ao user autenticado
         abort_if($carrinho->user_id !== Auth::id(), 403);
 
         $request->validate(['quantidade' => 'required|integer|min:1']);

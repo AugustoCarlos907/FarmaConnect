@@ -27,14 +27,16 @@ class AvaliacaoService{
         return $this->repository->deleteAvaliacao($id);
     }
 
-    public function createAvaliacao($classificacao, $comentario){
-        if($this->entrega->status == 'entregue'){
+    public function createAvaliacao($id, $classificacao, $comentario){
+        $entrega =  $this->entrega = Entrega::find($id);
+
+        if($entrega->status == 'entregue'){
             
             $avaliacao = Avaliacao::create([
                 'classificacao' => $classificacao,
                 'comentario' => $comentario,
-                'farmacia_id' => $this->entrega->pedido->farmacia_id,
-                'user_id' => $this->entrega->pedido->user_id
+                'farmacia_id' => $entrega->pedido->farmacia_id,
+                'user_id' => auth()->id()
             ]);
 
         return $avaliacao;

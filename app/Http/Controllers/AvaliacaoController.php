@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class AvaliacaoController extends Controller
 {
@@ -12,21 +13,27 @@ class AvaliacaoController extends Controller
         $user = auth()->user();
 
         if($user->role != 'gestor_farmacia'){ 
-            return response()->json(['message' => 'Acesso negado.'], 403);
+            abort(403, 'Acesso negado.');
         }
 
         $farmaciaId = $user->farmacia_id;
         $avaliacoes = $this->service->getAllAvaliacoesByFarmacia($farmaciaId);
 
-        return response()->json($avaliacoes);
+        return view('farmacias.dashboard.avaliacoes', compact('avaliacoes'));
     }
+
     public function create(Request $request){
         $request->validate([
             'classificacao' => 'required|integer|min:1|max:5',
             'comentario' => 'nullable|string|max:255'
         ]);
 
-        $this->service->createAvaliacao($request->classificacao,$request->comentario);
+        $pedido = Auth::user()->pedidos()->latest()->first();
+        $this->service->createAvaliacao(
+            $pedido->entrega->id,
+            $request->classificacao,
+            $request->comentario
+        );
 
         return response()->json(['message' => 'Avaliação criada com sucesso!'], 201);
     }

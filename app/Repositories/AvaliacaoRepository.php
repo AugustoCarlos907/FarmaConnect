@@ -8,8 +8,10 @@ use App\Repositories\Interfaces\AvaliacaoInterface;
 class AvaliacaoRepository implements AvaliacaoInterface {
 
     public function getAllAvaliacoesByFarmacia($farmaciaId) {
-        return Avaliacao::where('farmacia_id', $farmaciaId)
-                        ->get();
+        return Avaliacao::with('user')
+                        ->where('farmacia_id', $farmaciaId)
+                        ->orderBy('created_at', 'desc')
+                        ->paginate(10);
     }
 
     public function createAvaliacao($data) {

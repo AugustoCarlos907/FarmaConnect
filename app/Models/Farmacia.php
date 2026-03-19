@@ -32,8 +32,8 @@ class Farmacia  extends Authenticatable
         'rua',
         'bairro',
         'municipio',
-        // 'horario_abertura',
-        // 'horario_fechamento'
+        'horario_abertura',
+        'horario_fechamento'
         // 'password'
     ];
 
@@ -69,7 +69,7 @@ class Farmacia  extends Authenticatable
     }
 
     public function users(){
-        return $this->hasMany(User::class);
+        return $this->hasOne(User::class , );
     }
 
     public function companhia(){

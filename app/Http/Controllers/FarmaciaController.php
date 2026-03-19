@@ -7,6 +7,7 @@ use App\Models\Entregador;
 use App\Models\User;
 use App\Services\FarmaService;
 use App\Services\MedicamentoService;
+use App\Services\PedidoService;
 use Auth;
 use DB;
 use Illuminate\Http\Request;
@@ -17,7 +18,9 @@ class FarmaciaController extends Controller
     //list all pharmacies next to me with all detaills (avaluations and etc)
     //by long and lat
     public function __construct(
-        public MedicamentoService $medicamentoService
+        public MedicamentoService $medicamentoService,
+        public FarmaService $farmaService,
+        public PedidoService $pedidoService
     ){}
 
     public function registerEntregadores(Request $request)
@@ -92,32 +95,10 @@ class FarmaciaController extends Controller
 
        
 
-    public function dashboard(){
-        return view('farmacias.dashboard.index');
-    }
-
-
-    public function EntregadorByFarmacia()
-    {
-        $user = Auth::user();
-        if ($user->role !== 'gestor_farmacia') {
-            abort(403, 'Sem permissão');
-        }
-        $entregadores = Entregador::where('farmacia_id', $user->farmacia_id)
-                                    ->get();
-
-        $countEntregadores = $entregadores->count();
-
-        return response()->json([
-            'entregadores' => $entregadores,
-            'count' => $countEntregadores
-        ]);
-    }
-
     //stock
     public function listMedicamentos(){
-        $medicamentos = $this->medicamentoService->getMedicamentosByFarmacia(Auth::user()->farmacia_id);
-        return view('farmacias.medicamentos.index', compact('medicamentos'));
+        $medicamentos = $this->farmaService->listMedicamentosByPharmacy(Auth::user()->farmacia_id, 10);
+        return view('farmacias.dashboard.medicamentos', compact('medicamentos'));
     }
 
     public function addMedicamento(){
@@ -131,19 +112,45 @@ class FarmaciaController extends Controller
 
     //pedidos
 
+    public function pedidos($perPage = 10)
+    {
+        $pedidos = $this->pedidoService->getAllPedidosByPharmacy($perPage);
+        $pedidosHoje = $this->pedidoService->getPedidosDeHojeByPharmacy($perPage);
+        $countPedidos = $pedidos->count();
 
+        return view('farmacias.dashboard.pedidos', compact('pedidos', 'countPedidos', 'pedidosHoje'));
+    }
 
     //Entregadores
+    public function entregadores($perPage = 10){
 
+        $farmaId = Auth::user()->farmacia_id;
+        $entregadores = $this->farmaService->entregadoresByPharmacy($farmaId, $perPage);
+        return view('farmacias.dashboard.entregadores', compact('entregadores'));
+    }
+
+    //Clientes
+    public function clientes(){
+        $clientes = $this->farmaService->getClientes();
+
+        return view('farmacias.dashboard.clientes' , compact('clientes'));
+    }
+    
+    //avaliacoes
+    // public function avaliacoes(){
+    //     return view('farmacias.dashboard.avaliacoes');
+    // }
+
+    //documentos
+    public function documentos(){
+        return view('farmacias.dashboard.documentos');
+    }
 
     //Relatorios
     public function relatorios(){
         return view('farmacias.relatorios.index');
     }
 
-    public function avaliacoes(){
-        return view('farmacias.avaliacoes.index');
-    }
 
     
 }

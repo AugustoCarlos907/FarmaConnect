@@ -854,7 +854,7 @@
         </div>
 
         <div class="text-center mt-5">
-          <a href="#" class="btn-outline">Ver todas as farmácias <i class="bi bi-arrow-right"></i></a>
+          <a href="{{ route('farmacias.list')}}" class="btn-outline">Ver todas as farmácias <i class="bi bi-arrow-right"></i></a>
         </div>
       </div>
     </section>

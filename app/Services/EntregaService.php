@@ -67,7 +67,7 @@ class EntregaService{
 
 
 
-    public function criarEntrega(Pedido $pedido): Entrega
+    public function criarEntrega(Pedido $pedido)
     {
         return DB::transaction(function () use ($pedido) {
 

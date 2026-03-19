@@ -10,13 +10,18 @@ class Pedido extends Model
     protected $fillable = [
         'user_id',
         'farmacia_id',
-        // 'total',
+        'total',
         'status',
         'data_pedido',
-        // 'endereco_entrega',
+        'endereco',
     ];
 
-    public function usuario()
+
+    protected $casts = [
+        'data_pedido' => 'datetime',
+    ];
+    
+    public function user()
     {
         return $this->belongsTo(User::class);
     }

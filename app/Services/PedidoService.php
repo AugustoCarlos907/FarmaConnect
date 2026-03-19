@@ -136,9 +136,27 @@ class PedidoService
     public function getLastPedidosByPharmacy(){
         return Pedido::where('farmacia_id', auth()->user()->farmacia_id)
                     ->orderBy('created_at', 'desc')
-                    ->limit(3)
+                    ->limit(6)
                     ->get();
     }
+
+    public function getPedidosPast7days(){
+        return Pedido::where('farmacia_id', auth()->user()->farmacia_id)
+                    ->where('created_at', '>=', now()->subDays(7))
+                    ->orderBy('created_at', 'desc')
+                    ->get();
+    }
+
+    public function getOrigemPedidoByPharmacy($farmaciaId){
+        return Pedido::where('farmacia_id', $farmaciaId)
+                    ->select('endereco as endereco_entrega')
+                    ->selectRaw('COUNT(*) as total')
+                    ->groupBy('endereco_entrega')
+                    ->orderByDesc('total')
+                    ->get();
+    }
+
+
 
 
 

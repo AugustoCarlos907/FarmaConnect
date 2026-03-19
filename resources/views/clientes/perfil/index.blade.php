@@ -854,7 +854,7 @@
                       <i class="bi bi-house"></i>
                       <input type="text" class="fc-input" name="endereco" id="iEndereco"
                              placeholder="Rua, número, bairro, município..."
-                             value="{{ $endereco->name }}">
+                             value="{{ $endereco->name ?? 'UNDEFINED' }}">
                     </div>
                     <div class="fc-hint"><i class="bi bi-info-circle"></i> Máximo 500 caracteres</div>
                   </div>
@@ -865,7 +865,7 @@
                     <div class="fc-input-icon">
                       <i class="bi bi-compass"></i>
                       <input type="text" class="fc-input" name="latitude" id="iLat"
-                             placeholder="-8.8367" value="-{{$endereco->latitude}}"
+                             placeholder="-8." value="{{$endereco->latitude ?? 'UNDEFINED'}}"
                              pattern="^-?([0-9]{1,2})(\.[0-9]+)?$">
                     </div>
                   </div>
@@ -875,8 +875,8 @@
                     <label class="fc-label"><i class="bi bi-compass-fill"></i> Longitude</label>
                     <div class="fc-input-icon">
                       <i class="bi bi-compass-fill"></i>
-                      <input type="text" class="fc-input" name="{{$endereco->longitude}}" id="iLng"
-                             placeholder="13.2344" value="13.2344"
+                      <input type="text" class="fc-input" name="longitude" id="iLng"
+                             placeholder="13.2344" value="{{$endereco->longitude ?? 'UNDEFINED'}}"
                              pattern="^-?([0-9]{1,3})(\.[0-9]+)?$">
                     </div>
                   </div>

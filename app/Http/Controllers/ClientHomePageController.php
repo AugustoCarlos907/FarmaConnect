@@ -66,4 +66,6 @@ class ClientHomePageController extends Controller
             return view('clientes.dashboard.produtos' , ['categorias'=>$categorias]);
     }
 
+    
+
 }

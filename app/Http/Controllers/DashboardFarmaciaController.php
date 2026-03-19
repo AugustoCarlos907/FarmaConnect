@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Services\AvaliacaoService;
 use App\Services\EntregaService;
+use App\Services\FarmaService;
 use App\Services\PedidoService;
 use App\Services\ReportService;
 use App\Services\StockService;
@@ -16,7 +17,8 @@ class DashboardFarmaciaController extends Controller
         public AvaliacaoService $avaliacaoService,
         public EntregaService $entregaService,
         public ReportService  $reportService,
-        public StockService $stockService
+        public StockService $stockService,
+        public FarmaService $farmaService
 
     ){}
 
@@ -30,14 +32,17 @@ class DashboardFarmaciaController extends Controller
         $data = [
             'pedidos_hoje' => $this->pedidoService->getPedidosDeHojeByPharmacy(10),
             'ultimos_pedidos' => $this->pedidoService->getLastPedidosByPharmacy(),
-            // 'pedidos_por_status' => $this->pedidoService->getPedidosPorStatus(),
-            'ultimas_avaliacoes' => $this->avaliacaoService->latestAvaliacoes(3),
             'todas_avaliacoes' => $this->avaliacaoService->allAvaliacoesByFarmacia($user->farmacia_id),
             'media_avaliacoes' => $mediaAvaliacoes,
+            'produtoStock' => $this->farmaService->itemStockByPharmacy($user->farmacia_id)->count(),
+            'pedidoPastSevenDays' => $this->pedidoService->getPedidosPast7days(),
+            'origemPedidos' => $this->pedidoService->getOrigemPedidoByPharmacy($user->farmacia_id),
             // 'entregas' => $this->entregaService->getEntregasRecentes(),
             // 'relatorios' => $this->reportService->getRelatoriosRecentes(),
             // 'stock_alerts' => $this->stockService->getStockAlerts(),
-        ];
+            // 'pedidos_por_status' => $this->pedidoService->getPedidosPorStatus(),
+            // 'ultimas_avaliacoes' => $this->avaliacaoService->latestAvaliacoes(3),
+            ];
 
         return view('farmacias.dashboard.index', compact('data'));
     }

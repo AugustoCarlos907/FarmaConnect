@@ -17,7 +17,9 @@ class Medicamento extends Model
         'categoria_id'
     ];
 
+    
 
+    
     public function stockItems()
     {
         return $this->hasMany(StockItem::class);

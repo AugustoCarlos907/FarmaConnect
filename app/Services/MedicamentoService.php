@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Medicamento;
 use App\Repositories\Interfaces\MedicamentoInterface;
+use Illuminate\Support\Facades\Auth;
 
 class MedicamentoService
 {
@@ -34,11 +35,12 @@ class MedicamentoService
         $preco,
         $dataValidade,
         $lote
-        )
-    {
+        ){
+
         $medicamento =  Medicamento::create([
             'name' => $name,
             'descricao' => $descricao,
+            'preco' => $preco,
             'forma_farmaceutica' => $forma_farmaceutica,
             'dosagem' => $dosagem,
             'categoria_id' => $categoria_id
@@ -48,9 +50,10 @@ class MedicamentoService
             'quantidade' => $quantitade,
             'preco' => $preco,
             'data_validade' => $dataValidade,
-            'lote' => $lote,
-            'ativo' => 1,
-            'medicamento_id' => $medicamento->id
+            'lote' => $lote ?? 'UNKNOWN',
+            'medicamento_id' => $medicamento->id,
+            'farmacia_id' => Auth::user()->farmacia_id
+            // 'ativo' => 1,
         ]);
 
         return $medicamento;

@@ -140,21 +140,101 @@ class PedidoService
                     ->get();
     }
 
-    public function getPedidosPast7days(){
-        return Pedido::where('farmacia_id', auth()->user()->farmacia_id)
-                    ->where('created_at', '>=', now()->subDays(7))
-                    ->orderBy('created_at', 'desc')
-                    ->get();
+    public function getPedidosPast7days()
+    {
+        $farmaciaId = auth()->user()->farmacia_id;
+        
+        // Gerar os últimos 7 dias com seus respectivos nomes
+        $diasSemana = [];
+        $datas = [];
+        
+        for ($i = 6; $i >= 0; $i--) {
+            $data = now()->subDays($i);
+            $datas[] = $data->format('Y-m-d');
+            $diasSemana[] = $data->format('D'); // Seg, Ter, Qua, etc.
+        }
+        
+        // Buscar pedidos agrupados por data
+        $pedidos = Pedido::where('farmacia_id', $farmaciaId)
+            ->where('created_at', '>=', now()->subDays(6)->startOfDay())
+            ->selectRaw('DATE(created_at) as data, COUNT(*) as total')
+            ->groupBy('data')
+            ->pluck('total', 'data');
+        
+        // Mapear valores
+        $valores = [];
+        foreach ($datas as $data) {
+            $valores[] = $pedidos[$data] ?? 0;
+        }
+        
+        return [
+            'labels' => $diasSemana,
+            'values' => $valores
+        ];
     }
 
-    public function getOrigemPedidoByPharmacy($farmaciaId){
-        return Pedido::where('farmacia_id', $farmaciaId)
-                    ->select('endereco as endereco_entrega')
-                    ->selectRaw('COUNT(*) as total')
-                    ->groupBy('endereco_entrega')
-                    ->orderByDesc('total')
-                    ->get();
-    }
+        public function getOrigemPedidosByPharmacy($farmaciaId)
+        {
+            return Pedido::where('farmacia_id', $farmaciaId)
+                ->whereNotNull('endereco')
+                ->selectRaw('endereco, COUNT(*) as total')
+                ->groupBy('endereco')
+                ->having('total', '>', 0)
+                ->orderBy('total', 'desc')
+                ->get()
+                ->mapWithKeys(function ($item) {
+                    // Limitar tamanho do texto para exibição no gráfico
+                    $endereco = strlen($item->endereco) > 30 
+                        ? substr($item->endereco, 0, 27) . '...' 
+                        : $item->endereco;
+                    return [$endereco => $item->total];
+                })
+                ->toArray();
+        }
+
+    // public function getOrigemPedidosByPharmacy($farmaciaId)
+    // {
+    //     try {
+    //         // Query mais simples
+    //         $pedidos = Pedido::where('farmacia_id', $farmaciaId)
+    //             ->whereNotNull('endereco')
+    //             ->get(['endereco']);
+            
+    //         if ($pedidos->isEmpty()) {
+    //             return [];
+    //         }
+            
+    //         $result = [];
+    //         foreach ($pedidos as $pedido) {
+    //             $endereco = $pedido->endereco;
+    //             if (!isset($result[$endereco])) {
+    //                 $result[$endereco] = 0;
+    //             }
+    //             $result[$endereco]++;
+    //         }
+            
+    //         // Ordenar
+    //         arsort($result);
+            
+    //         // Limitar e formatar
+    //         $final = [];
+    //         $count = 0;
+    //         foreach ($result as $endereco => $total) {
+    //             if ($count >= 8) break;
+    //             $enderecoFormatado = strlen($endereco) > 30 
+    //                 ? substr($endereco, 0, 27) . '...' 
+    //                 : $endereco;
+    //             $final[$enderecoFormatado] = $total;
+    //             $count++;
+    //         }
+            
+    //         return $final;
+            
+    //     } catch (\Exception $e) {
+    //         \Log::error('Erro em getOrigemPedidosByPharmacy: ' . $e->getMessage());
+    //         return [];
+    //     }
+    // }
 
 
 

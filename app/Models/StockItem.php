@@ -11,6 +11,7 @@ class StockItem extends Model
         'quantidade',
         'data_validade',
         'lote',
+        'preco',
         'ativo',
         'medicamento_id',
         'farmacia_id'

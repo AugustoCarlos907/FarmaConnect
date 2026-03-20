@@ -26,17 +26,23 @@ class DashboardFarmaciaController extends Controller
     public function dashboard()
     {
         $user = auth()->user();
+
         $avaliacoes = $this->avaliacaoService->allAvaliacoesByFarmacia($user->farmacia_id);
         $totalAvaliacoes = $avaliacoes->count();
         $mediaAvaliacoes = $totalAvaliacoes > 0 ? $avaliacoes->sum('classificacao') / $totalAvaliacoes : 0;
+
+        $pedidosData = $this->pedidoService->getPedidosPast7days();
         $data = [
             'pedidos_hoje' => $this->pedidoService->getPedidosDeHojeByPharmacy(10),
             'ultimos_pedidos' => $this->pedidoService->getLastPedidosByPharmacy(),
             'todas_avaliacoes' => $this->avaliacaoService->allAvaliacoesByFarmacia($user->farmacia_id),
             'media_avaliacoes' => $mediaAvaliacoes,
             'produtoStock' => $this->farmaService->itemStockByPharmacy($user->farmacia_id)->count(),
-            'pedidoPastSevenDays' => $this->pedidoService->getPedidosPast7days(),
-            'origemPedidos' => $this->pedidoService->getOrigemPedidoByPharmacy($user->farmacia_id),
+            'pedidosLabels' => $pedidosData['labels'], // ['Seg', 'Ter', 'Qua', ...]
+            'pedidosValues' => $pedidosData['values'], // [12, 19, 15, 17, 24, 23, 10]
+
+            'origemPedidos' => $this->pedidoService->getOrigemPedidosByPharmacy($user->farmacia_id),
+            'stock' => $this->stockService->statusStocks()
             // 'entregas' => $this->entregaService->getEntregasRecentes(),
             // 'relatorios' => $this->reportService->getRelatoriosRecentes(),
             // 'stock_alerts' => $this->stockService->getStockAlerts(),

@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Medicamento;
 use App\Models\User;
+use App\Models\Farmacia;
 use App\Repositories\Interfaces\FarmaInterface;
 
 class FarmaService{
@@ -44,5 +45,10 @@ class FarmaService{
                 $q2->where('id', auth()->user()->farmacia->id);
             });
         })->paginate(10);
+    }
+
+    public function getPharmacyDocs(){
+        return Farmacia::where('id', auth()->user()->farmacia->id)
+                        ->first(['alvara', 'nif' ]);
     }
 }

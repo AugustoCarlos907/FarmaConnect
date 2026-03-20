@@ -13,14 +13,11 @@ return new class extends Migration
     {
         Schema::create('entregadores', function (Blueprint $table) {
             $table->id();
-            // $table->string('name');
-            // $table->string('email')->unique();
-            // $table->string('telefone')->nullable();
             $table->string('descricao')->nullable();
+            $table->enum('status', ['Ativo', 'Ocupado'])->default('Ativo');
             $table->string('numero_bi')->unique()->nullable();
             $table->string('matricula_veiculo')->nullable();
             $table->string('foto_perfil')->nullable();
-            $table->enum('status', ['Ativo', 'Ocupado'])->default('Ativo');
             $table->boolean('disponivel' )->default(true);
             
             $table->decimal('latitude', 10, 7)->nullable();

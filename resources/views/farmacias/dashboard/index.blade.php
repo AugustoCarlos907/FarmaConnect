@@ -106,6 +106,30 @@
     .has-sub.open .chevron { transform: rotate(180deg); }
     .nav-divider { height: 1px; background: var(--border); margin: 6px 12px; }
 
+
+    /* Logout button */
+    .logout-form {
+        margin-top: 12px;
+    }
+
+    .logout-btn {
+        color: var(--danger);
+    }
+
+    .logout-btn i {
+        color: var(--danger);
+    }
+
+    .logout-btn:hover {
+        background: var(--danger-light);
+        color: var(--danger);
+    }
+
+    .logout-btn:hover i {
+        color: var(--danger);
+    }
+
+
     .sidebar-footer { flex-shrink: 0; padding: 8px; border-top: 1px solid var(--border); }
     .ph-card { padding: 10px 11px; background: var(--accent-light); border-radius: var(--r-lg); }
     .ph-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 5px; }
@@ -336,106 +360,129 @@
 <div class="layout">
 
   <!-- ══ SIDEBAR ══════════════════════════════════ -->
-  <aside class="sidebar">
+<aside class="sidebar">
     <div class="sidebar-header">
-      <a href="#" class="logo">
-        <div class="logo-mark">
-          <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 13v-2H9v-2h2V9h2v2h2v2h-2v2h-2z"/></svg>
-        </div>
-        <span class="logo-text"><span class="f">Farma</span><span class="c">Connect</span></span>
-      </a>
+        <a href="#" class="logo">
+            <div class="logo-mark">
+                <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 13v-2H9v-2h2V9h2v2h2v2h-2v2h-2z"/></svg>
+            </div>
+            <span class="logo-text"><span class="f">Farma</span><span class="c">Connect</span></span>
+        </a>
     </div>
 
     <div class="sidebar-body">
-      <div class="nav-section">
-        <span class="nav-label">Principal</span>
-        <button class="nav-item active" onclick="setActive(this)">
-          <i class="bi bi-grid-1x2"></i> Dashboard
-        </button>
-        <div class="has-sub" id="sub-stock">
-          <button class="nav-item" onclick="toggleSub('sub-stock')">
-            <i class="bi bi-archive"></i> Stock
-            {{-- <span class="nav-badge nb-amber">3</span> --}}
-            <i class="bi bi-chevron-down chevron"></i>
-          </button>
-          <div class="sub">
-            <div class="sub-item"><i class="bi bi-list-ul"></i><a class="text-decoration-none" href="{{ route('medicamentos.farmacias') }}"> Lista de produtos</a></div>
-            <div class="sub-item"><i class="bi bi-exclamation-triangle"></i> Stock baixo <span class="nav-badge nb-red" style="margin-left:4px"></span></div>
-          </div>
-        </div>
-        <button class="nav-item" onclick="setActive(this)">
-          <i class="bi bi-truck"></i><a href="{{route('pedidos.farmacias')}}"> Pedidos</a>
-          {{-- <span class="nav-badge nb-red">{{ $data['pedidos_hoje']->count() }}</span> --}}
-        </button>
-        <button class="nav-item" onclick="setActive(this)">
-          <i class="bi bi-person-badge"></i> <a href="{{route('entregadores.farmacias')}}"> Entregadores </a>
-          {{-- <span class="nav-badge nb-teal">4</span> --}}
-        </button>
-        <button class="nav-item" onclick="setActive(this)">
-          <i class="bi bi-people"></i> <a href="{{route('clientes.farmacias')}}">Clientes</a> 
-        </button>
+        <div class="nav-section">
+            <span class="nav-label">Principal</span>
+            
+            <!-- Dashboard -->
+            <a href="{{ route('index.farmacias') }}" class="nav-item {{ request()->routeIs('index.farmacias') ? 'active' : '' }}">
+                <i class="bi bi-grid-1x2"></i>
+                <span>Dashboard</span>
+            </a>
 
-        {{-- <span class="nav-label">Análise</span>
-        <div class="has-sub" id="sub-rel">
-          <button class="nav-item" onclick="toggleSub('sub-rel')">
-            <i class="bi bi-bar-chart-line"></i> Relatórios
-            <i class="bi bi-chevron-down chevron"></i>
-          </button>
-          <div class="sub">
-            <div class="sub-item"><i class="bi bi-cash-stack"></i> Vendas</div>
-            <div class="sub-item"><i class="bi bi-archive"></i> Stock</div>
-            <div class="sub-item"><i class="bi bi-truck"></i> Entregas</div>
-            <div class="sub-item"><i class="bi bi-star"></i> Avaliações</div>
-          </div>
-        </div> --}}
-        
-        <button class="nav-item" onclick="setActive(this)">
-          <i class="bi bi-star"></i> <a href="{{route('avaliacoes.farmacias')}}"> Avaliações</a>
-          {{-- <span class="nav-badge nb-amber">{{ $data['todas_avaliacoes']->count() }}</span> --}}
-        </button>
+            <!-- Stock com submenu -->
+            <div class="has-sub {{ request()->routeIs('medicamentos.farmacias') ? 'open' : '' }}" id="sub-stock">
+                <div class="nav-item" onclick="toggleSub('sub-stock')">
+                    <i class="bi bi-archive"></i>
+                    <span>Stock</span>
+                    <i class="bi bi-chevron-down chevron"></i>
+                </div>
+                <div class="sub">
+                    <a href="{{ route('medicamentos.farmacias') }}" class="sub-item {{ request()->routeIs('medicamentos.farmacias') ? 'active-sub' : '' }}">
+                        <i class="bi bi-list-ul"></i>
+                        <span>Lista de produtos</span>
+                    </a>
+                    <div class="sub-item">
+                        <i class="bi bi-exclamation-triangle"></i>
+                        <span>Stock baixo</span>
+                    </div>
+                </div>
+            </div>
 
-        <span class="nav-label">Gestão</span>
-        <button class="nav-item" onclick="setActive(this)">
-          <i class="bi bi-file-earmark-text"></i> <a href="{{route('documentos.farmacias') }}">Documentos</a> 
-          {{-- <span class="nav-badge nb-slate">2</span> --}}
-        </button>
-        <div class="has-sub" id="sub-cfg">
-          <button class="nav-item" onclick="toggleSub('sub-cfg')">
-            <i class="bi bi-gear"></i> Configurações
-            <i class="bi bi-chevron-down chevron"></i>
-          </button>
-          <div class="sub">
-            <div class="sub-item"><i class="bi bi-person"></i> Perfil</div>
-            <div class="sub-item"><i class="bi bi-shop"></i> Farmácia</div>
-            <div class="sub-item"><i class="bi bi-clock"></i> Horário</div>
-            {{-- <div class="sub-item"><i class="bi bi-bell"></i> Notificações</div> --}}
-          </div>
+            <!-- Pedidos -->
+            <a href="{{ route('pedidos.farmacias') }}" class="nav-item {{ request()->routeIs('pedidos.farmacias') ? 'active' : '' }}">
+                <i class="bi bi-truck"></i>
+                <span>Pedidos</span>
+
+            </a>
+
+            <!-- Entregadores -->
+            <a href="{{ route('entregadores.farmacias') }}" class="nav-item {{ request()->routeIs('entregadores.farmacias') ? 'active' : '' }}">
+                <i class="bi bi-person-badge"></i>
+                <span>Entregadores</span>
+
+            </a>
+
+            <!-- Clientes -->
+            <a href="{{ route('clientes.farmacias') }}" class="nav-item {{ request()->routeIs('clientes.farmacias') ? 'active' : '' }}">
+                <i class="bi bi-people"></i>
+                <span>Clientes</span>
+            </a>
+
+            <!-- Avaliações -->
+            <a href="{{ route('avaliacoes.farmacias') }}" class="nav-item {{ request()->routeIs('avaliacoes.farmacias') ? 'active' : '' }}">
+                <i class="bi bi-star"></i>
+                <span>Avaliações</span>
+
+            </a>
+
+            <span class="nav-label">Gestão</span>
+
+            <!-- Documentos -->
+            <a href="{{ route('documentos.farmacias') }}" class="nav-item {{ request()->routeIs('documentos.farmacias') ? 'active' : '' }}">
+                <i class="bi bi-file-earmark-text"></i>
+                <span>Documentos</span>
+            </a>
+
+            <!-- Configurações com submenu -->
+            <div class="has-sub" id="sub-cfg">
+                <div class="nav-item" onclick="toggleSub('sub-cfg')">
+                    <i class="bi bi-gear"></i>
+                    <span>Configurações</span>
+                    <i class="bi bi-chevron-down chevron"></i>
+                </div>
+                <div class="sub">
+                    <div class="sub-item">
+                        <i class="bi bi-person"></i>
+                        <span>Perfil</span>
+                    </div>
+                    <div class="sub-item">
+                        <i class="bi bi-shop"></i>
+                        <span>Farmácia</span>
+                    </div>
+                    <div class="sub-item">
+                        <i class="bi bi-clock"></i>
+                        <span>Horário</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sair -->
+            <form action="{{ route('logout', ['id'=>Auth::user()->id]) }}" method="post" class="logout-form">
+                @csrf
+                <button type="submit" class="nav-item logout-btn">
+                    <i class="bi bi-box-arrow-right"></i>
+                    <span>Sair</span>
+                </button>
+            </form>
         </div>
-        <div class="nav-divider"></div>
-        <form action="{{ route('logout', ['id'=>Auth::user()->id]) }}" method="post">
-          @csrf
-          <button type="submit" class="nav-item" style="color:var(--danger)">
-            <i class="bi bi-box-arrow-right" style="color:var(--danger)"></i> Sair
-          </button>
-        </form>
-      </div>
     </div>
 
-   <div class="sidebar-footer">
-      @php
-        $farmacia = Auth::user()->farmacia;
-      @endphp
-      <div class="ph-card">
-        <div class="ph-row">
-          <span class="ph-name">{{ $farmacia->name ?? 'FC' }}</span>
-          <span class="ph-pill pill-open">{{ $farmacia->status  }}</span>
+    <div class="sidebar-footer">
+        @php
+            $farmacia = Auth::user()->farmacia;
+        @endphp
+        <div class="ph-card">
+            <div class="ph-row">
+                <span class="ph-name">{{ $farmacia->name ?? 'Farmácia' }}</span>
+                <span class="ph-pill pill-open">{{ $farmacia->status ?? 'Aberta' }}</span>
+            </div>
+            <p class="ph-meta"><i class="bi bi-geo-alt"></i> {{ $farmacia->endereco ?? '—' }}</p>
+            <p class="ph-meta"><i class="bi bi-clock"></i> {{ $farmacia->horario_abertura ?? '08:00' }} - {{ $farmacia->horario_fechamento ?? '22:00' }}</p>
+            <p class="ph-meta" style="opacity:.55;font-size:.65rem;margin-top:2px"><i class="bi bi-building"></i> {{ $farmacia->company ?? 'FarmaConnect' }}</p>
         </div>
-        <p class="ph-meta"><i class="bi bi-geo-alt"></i> {{ $farmacia->endereco  }}</p>
-        <p class="ph-meta"><i class="bi bi-clock"></i> {{ $farmacia->horario_abertura ?? '08:00 ' }} - {{ $farmacia->horario_fechamento ?? '22:00' }}</p>
-        <p class="ph-meta" style="opacity:.55;font-size:.65rem;margin-top:2px"><i class="bi bi-building"></i> {{ $farmacia->company ?? 'UNKNOWN' }}</p>
-      </div>
     </div>
-  </aside>
+</aside>
 
   <!-- ══ MAIN ══════════════════════════════════════ -->
   <div class="main">
@@ -460,14 +507,7 @@
 
     <div class="content">
 
-      <!-- Action bar -->
-      <div class="action-bar">
-        <div class="ab-left">
-          <button class="btn btn-primary" onclick="document.getElementById('modal-rel').classList.add('open')">
-            <i class="bi bi-file-earmark-arrow-down"></i> Gerar Relatório
-          </button>
-        </div>
-      </div>
+
 
       @php
         $pedidosHoje = $data['pedidos_hoje'];
@@ -562,7 +602,7 @@
               <thead>
                 <tr>
                   <th>Cliente</th>
-                  <th>Medicamento</th>
+                  {{-- <th>Medicamento</th> --}}
                   <th>Hora</th>
                   <th>Estado</th>
                 </tr>
@@ -570,9 +610,9 @@
               <tbody id="orders-body">
                 @forelse($data['ultimos_pedidos'] as $pedido)
                   @php
-                    $cliente = $pedido->usuario;
+                    $cliente = $pedido->user;
                     $primeiroItem = $pedido->items->first();
-                    $medicamento = $primeiroItem ? ($primeiroItem->medicamento->nome ?? $primeiroItem->produto ?? 'Medicamento') : 'Medicamento';
+                    // $medicamento = $primeiroItem ? ($primeiroItem->medicamento->nome ?? $primeiroItem->produto ?? 'Medicamento') : 'Medicamento';
                     $iniciais = $cliente ? implode('', array_map(function($n) { return $n[0] ?? ''; }, explode(' ', $cliente->name))) : '--';
                     
                     $statusMap = [
@@ -594,7 +634,7 @@
                         <span class="row-name">{{ $cliente->name ?? 'Cliente' }}</span>
                       </div>
                     </td>
-                    <td style="color:var(--text-3)">{{ $medicamento }}</td>
+                    {{-- <td style="color:var(--text-3)">{{ $medicamento }}</td> --}}
                     <td style="color:var(--text-4)">{{ $pedido->data_pedido->format('H:i') }}</td>
                     <td><span class="tag {{ $statusClass }}">{{ $statusLabel }}</span></td>
                   </tr>
@@ -695,244 +735,263 @@
   </div><!-- /main -->
 </div><!-- /layout -->
 
-<!-- ══ MODAL ════════════════════════════════════════ -->
-<div class="overlay" id="modal-rel">
-  <div class="modal-box">
-    <div class="modal-head">
-      <h3>Gerar Relatório</h3>
-      <button class="modal-close" onclick="document.getElementById('modal-rel').classList.remove('open')">
-        <i class="bi bi-x-lg"></i>
-      </button>
-    </div>
-    <div class="form-grp">
-      <label>Período</label>
-      <div class="radio-row">
-        <label class="radio-opt"><input type="radio" name="periodo" value="hoje" checked> Hoje</label>
-        <label class="radio-opt"><input type="radio" name="periodo" value="semana"> 7 dias</label>
-        <label class="radio-opt"><input type="radio" name="periodo" value="mes"> 30 dias</label>
-        <label class="radio-opt"><input type="radio" name="periodo" value="custom"> Personalizado</label>
-      </div>
-    </div>
-    <div id="custom-dates" style="display:none">
-      <div class="form-grp">
-        <label>Data inicial</label>
-        <input type="date" class="form-input" id=Stock"dt-ini">
-      </div>
-      <div class="form-grp">
-        <label>Data final</label>
-        <input type="date" class="form-input" id="dt-fim">
-      </div>
-    </div>
-    <div class="form-grp">
-      <label>Formato</label>
-      <div class="radio-row">
-        <label class="radio-opt"><input type="radio" name="formato" value="pdf" checked> PDF</label>
-        <label class="radio-opt"><input type="radio" name="formato" value="excel"> Excel</label>
-      </div>
-    </div>
-    <div class="form-grp">
-      <label>Secções a incluir</label>
-      <div class="check-grid">
-        <label class="check-opt"><input type="checkbox" checked> Pedidos</label>
-        <label class="check-opt"><input type="checkbox" checked> Faturação</label>
-        <label class="check-opt"><input type="checkbox" checked> Stock</label>
-        <label class="check-opt"><input type="checkbox" checked> Entregadores</label>
-        <label class="check-opt"><input type="checkbox" checked> Avaliações</label>
-        <label class="check-opt"><input type="checkbox"> Comparação de preços</label>
-      </div>
-    </div>
-    <div class="modal-foot">
-      <button class="btn btn-outline" onclick="document.getElementById('modal-rel').classList.remove('open')">Cancelar</button>
-      <button class="btn btn-primary" onclick="gerarRelatorio()"><i class="bi bi-download"></i> Gerar</button>
-    </div>
-  </div>
-</div>
+
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
-const DIAS  = ['Domingo','Segunda-feira','Terça-feira','Quarta-feira','Quinta-feira','Sexta-feira','Sábado'];
-const MESES = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
-const now = new Date();
-document.getElementById('topbar-date').textContent =
-  `${DIAS[now.getDay()]}, ${now.getDate()} de ${MESES[now.getMonth()]} de ${now.getFullYear()}`;
-
-// Configuração base
-const baseOptions = {
-  responsive: true,
-  maintainAspectRatio: false
-};
-
-// Dados do gráfico de pedidos - passando como JSON seguro
-const pedidosData = {!! json_encode($data['pedidoPastSevenDays'] ?? [12,19,15,17,24,23,10]) !!};
-
-// Gráfico de pedidos
-new Chart(document.getElementById('chartPedidos'), {
-  type: 'line',
-  data: {
-    labels: ['Seg','Ter','Qua','Qui','Sex','Sáb','Dom'],
-    datasets: [{ 
-      data: pedidosData, 
-      borderColor:'#0899a6', 
-      backgroundColor:'rgba(8,153,166,.06)', 
-      tension:0.4, 
-      fill:true, 
-      pointBackgroundColor:'#0899a6', 
-      pointRadius:3, 
-      pointHoverRadius:5, 
-      borderWidth:2 
-    }]
-  },
-  options: {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: { 
-      legend: { display: false }, 
-      tooltip: { mode: 'index', intersect: false } 
-    },
-    scales: {
-      x: { 
-        grid: { display: false }, 
-        ticks: { 
-          font: { family: 'DM Sans', size: 10 }, 
-          color: '#94a3b8' 
-        } 
-      },
-      y: { 
-        grid: { color: '#f1f5f9' }, 
-        ticks: { 
-          font: { family: 'DM Sans', size: 10 }, 
-          color: '#94a3b8' 
-        }, 
-        beginAtZero: true 
-      }
+document.addEventListener('DOMContentLoaded', function() {
+    const DIAS  = ['Domingo','Segunda-feira','Terça-feira','Quarta-feira','Quinta-feira','Sexta-feira','Sábado'];
+    const MESES = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+    const now = new Date();
+    
+    const topbarDate = document.getElementById('topbar-date');
+    if (topbarDate) {
+        topbarDate.textContent = `${DIAS[now.getDay()]}, ${now.getDate()} de ${MESES[now.getMonth()]} de ${now.getFullYear()}`;
     }
-  }
+    
+    // Configuração base
+    const baseOptions = {
+        responsive: true,
+        maintainAspectRatio: false
+    };
+    
+    // ========== GRÁFICO DE PEDIDOS ==========
+    const chartPedidosElement = document.getElementById('chartPedidos');
+    if (chartPedidosElement) {
+        const pedidosLabels = {!! json_encode($data['pedidosLabels'] ?? ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom']) !!};
+        const pedidosValues = {!! json_encode($data['pedidosValues'] ?? [0, 0, 0, 0, 0, 0, 0]) !!};
+        
+        console.log('Pedidos Data:', { pedidosLabels, pedidosValues });
+        
+        new Chart(chartPedidosElement, {
+            type: 'line',
+            data: {
+                labels: pedidosLabels,
+                datasets: [{ 
+                    data: pedidosValues, 
+                    borderColor: '#0899a6', 
+                    backgroundColor: 'rgba(8,153,166,.06)', 
+                    tension: 0.4, 
+                    fill: true, 
+                    pointBackgroundColor: '#0899a6', 
+                    pointRadius: 3, 
+                    pointHoverRadius: 5, 
+                    borderWidth: 2 
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { 
+                    legend: { display: false }, 
+                    tooltip: { 
+                        mode: 'index', 
+                        intersect: false,
+                        callbacks: {
+                            label: function(context) {
+                                return `${context.raw} pedidos`;
+                            }
+                        }
+                    } 
+                },
+                scales: {
+                    x: { 
+                        grid: { display: false }, 
+                        ticks: { 
+                            font: { family: 'DM Sans', size: 10 }, 
+                            color: '#94a3b8' 
+                        } 
+                    },
+                    y: { 
+                        grid: { color: '#f1f5f9' }, 
+                        ticks: { 
+                            font: { family: 'DM Sans', size: 10 }, 
+                            color: '#94a3b8',
+                            stepSize: 1,
+                            callback: function(value) {
+                                return value + ' pedidos';
+                            }
+                        }, 
+                        beginAtZero: true 
+                    }
+                }
+            }
+        });
+        console.log(' Gráfico de pedidos criado');
+    } else {
+        console.error(' Elemento chartPedidos não encontrado');
+    }
+    
+    // ========== GRÁFICO DE STOCK ==========
+    const chartStockElement = document.getElementById('chartStock');
+    if (chartStockElement) {
+        const stockData = @json($data['stock'] ?? ['normal' => 0, 'baixo' => 0, 'critico' => 0]);
+        console.log('Stock Data:', stockData);
+        
+        if (stockData.normal > 0 || stockData.baixo > 0 || stockData.critico > 0) {
+            new Chart(chartStockElement, {
+                type: 'doughnut',
+                data: { 
+                    labels: ['Normal', 'Baixo', 'Crítico'], 
+                    datasets: [{ 
+                        data: [stockData.normal, stockData.baixo, stockData.critico],  
+                        backgroundColor: ['#16a34a', '#d97706', '#d94040'], 
+                        borderWidth: 2, 
+                        borderColor: '#fff', 
+                        hoverOffset: 4 
+                    }] 
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '66%',
+                    plugins: { 
+                        legend: { 
+                            display: true, 
+                            position: 'bottom', 
+                            labels: { 
+                                font: { family: 'DM Sans', size: 10 }, 
+                                boxWidth: 8, 
+                                boxHeight: 8, 
+                                padding: 10, 
+                                color: '#64748b' 
+                            } 
+                        } 
+                    } 
+                }
+            });
+            console.log(' Gráfico de stock criado');
+        } else {
+            console.log('Sem dados de stock');
+            chartStockElement.parentElement.innerHTML = '<div class="text-center text-muted p-5">Sem dados de stock disponíveis</div>';
+        }
+    } else {
+        console.error(' Elemento chartStock não encontrado');
+    }
+    
+
+    // ========== GRÁFICO DE ORIGEM ==========
+    const chartOrigemElement = document.getElementById('chartOrigem');
+    if (chartOrigemElement) {
+        // Recebe os dados do PHP
+        const origemDados = @json($data['origemPedidos'] ?? []);
+        
+        console.log('Origem Dados brutos:', origemDados);
+        
+        const origemLabels = [];
+        const origemValues = [];
+        
+        // Processa os dados corretamente
+        if (typeof origemDados === 'object' && origemDados !== null && Object.keys(origemDados).length > 0) {
+            for (const [endereco, total] of Object.entries(origemDados)) {
+                // Verifica se total é um número válido
+                if (typeof total === 'number' && total > 0) {
+                    let label = endereco;
+                    if (label.length > 25) {
+                        label = label.substring(0, 22) + '...';
+                    }
+                    origemLabels.push(label);
+                    origemValues.push(total);
+                }
+            }
+        }
+        
+        console.log('Origem Labels processados:', origemLabels);
+        console.log('Origem Values processados:', origemValues);
+        
+        if (origemValues.length > 0 && origemValues.some(v => v > 0)) {
+            try {
+                // Cores para o gráfico
+                const cores = ['#0899a6', '#4ec3b0', '#2c7a78', '#0f4e5a', '#94a3b8', '#f59e0b', '#ef4444', '#8b5cf6'];
+                
+                new Chart(chartOrigemElement, {
+                    type: 'pie',
+                    data: { 
+                        labels: origemLabels, 
+                        datasets: [{ 
+                            data: origemValues, 
+                            backgroundColor: cores.slice(0, origemValues.length), 
+                            borderWidth: 2, 
+                            borderColor: '#fff', 
+                            hoverOffset: 4 
+                        }] 
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { 
+                            legend: { 
+                                display: true, 
+                                position: 'right', 
+                                labels: { 
+                                    font: { family: 'DM Sans', size: 10 }, 
+                                    boxWidth: 8, 
+                                    boxHeight: 8, 
+                                    padding: 8, 
+                                    color: '#64748b' 
+                                } 
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        const label = context.label || '';
+                                        const value = context.raw || 0;
+                                        const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                        const percentage = total > 0 ? Math.round((value / total) * 100) : 0;
+                                        return `${label}: ${value} pedido${value !== 1 ? 's' : ''} (${percentage}%)`;
+                                    }
+                                }
+                            }
+                        } 
+                    }
+                });
+                console.log('Gráfico de origem criado com sucesso!');
+            } catch (error) {
+                console.error(' Erro ao criar gráfico de origem:', error);
+                if (chartOrigemElement.parentElement) {
+                    chartOrigemElement.parentElement.innerHTML = '<div class="text-center text-muted p-5">Erro ao carregar dados de origem</div>';
+                }
+            }
+        } else {
+            console.log(' Sem dados de origem para exibir');
+            if (chartOrigemElement.parentElement) {
+                chartOrigemElement.parentElement.innerHTML = '<div class="text-center text-muted p-5">Sem dados de origem disponíveis</div>';
+            }
+        }
+    } else {
+        console.error(' Elemento chartOrigem não encontrado');
+    }
 });
 
-// Gráfico de stock
-new Chart(document.getElementById('chartStock'), {
-  type: 'doughnut',
-  data: { 
-    labels:['Normal','Baixo','Crítico'], 
-    datasets:[{ 
-      data:[65,25,10], 
-      backgroundColor:['#16a34a','#d97706','#d94040'], 
-      borderWidth:2, 
-      borderColor:'#fff', 
-      hoverOffset:4 
-    }] 
-  },
-  options: {
-    responsive: true,
-    maintainAspectRatio: false,
-    cutout: '66%',
-    plugins: { 
-      legend: { 
-        display: true, 
-        position: 'bottom', 
-        labels: { 
-          font: { family: 'DM Sans', size: 10 }, 
-          boxWidth: 8, 
-          boxHeight: 8, 
-          padding: 10, 
-          color: '#64748b' 
-        } 
-      } 
-    } 
-  }
-});
 
-// Gráfico de origem dos pedidos
-const origemLabels = [];
-const origemData = [];
-
-@if(!empty($data['origemPedidos']) && is_array($data['origemPedidos']))
-  @foreach($data['origemPedidos'] as $bairro => $total)
-    origemLabels.push('{{ $bairro }}');
-    origemData.push({{ $total }});
-  @endforeach
-@else
-  // Dados de exemplo caso não existam
-  origemLabels.push('Ingombotas', 'Maianga', 'Alvalade', 'Kilamba', 'Talatona');
-  origemData.push(42, 38, 51, 27, 33);
-@endif
-
-new Chart(document.getElementById('chartOrigem'), {
-  type: 'pie',
-  data: { 
-    labels: origemLabels, 
-    datasets:[{ 
-      data: origemData, 
-      backgroundColor:['#0899a6','#4ec3b0','#2c7a78','#0f4e5a','#94a3b8'], 
-      borderWidth:2, 
-      borderColor:'#fff', 
-      hoverOffset:4 
-    }] 
-  },
-  options: {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: { 
-      legend: { 
-        display: true, 
-        position: 'right', 
-        labels: { 
-          font: { family: 'DM Sans', size: 10 }, 
-          boxWidth: 8, 
-          boxHeight: 8, 
-          padding: 8, 
-          color: '#64748b' 
-        } 
-      } 
-    } 
-  }
-});
-
+// Funções do sidebar
 function setActive(el) {
-  document.querySelectorAll('.nav-item.active').forEach(i => i.classList.remove('active'));
-  el.classList.add('active');
+    document.querySelectorAll('.nav-item.active').forEach(i => i.classList.remove('active'));
+    el.classList.add('active');
 }
 
 function toggleSub(id) { 
-  document.getElementById(id).classList.toggle('open'); 
+    const element = document.getElementById(id);
+    if (element) element.classList.toggle('open'); 
+}
+
+// Eventos do modal
+const modalRel = document.getElementById('modal-rel');
+if (modalRel) {
+    modalRel.addEventListener('click', function(e) {
+        if (e.target === this) this.classList.remove('open');
+    });
 }
 
 document.querySelectorAll('input[name="periodo"]').forEach(r =>
-  r.addEventListener('change', function() {
-    document.getElementById('custom-dates').style.display = this.value === 'custom' ? 'block' : 'none';
-  })
+    r.addEventListener('change', function() {
+        const customDates = document.getElementById('custom-dates');
+        if (customDates) {
+            customDates.style.display = this.value === 'custom' ? 'block' : 'none';
+        }
+    })
 );
-
-document.getElementById('modal-rel').addEventListener('click', function(e) {
-  if (e.target === this) this.classList.remove('open');
-});
-
-function gerarRelatorio() {
-  const periodo = document.querySelector('input[name="periodo"]:checked').value;
-  const formato = document.querySelector('input[name="formato"]:checked').value;
-  
-  if (periodo === 'custom') {
-    const i = document.getElementById('dt-ini').value;
-    const f = document.getElementById('dt-fim').value;
-    if (!i || !f) { 
-      alert('Selecione as datas de início e fim.'); 
-      return; 
-    }
-  }
-  
-  // Coletar seções selecionadas
-  const secoesSelecionadas = Array.from(document.querySelectorAll('.check-opt input:checked')).map(cb => {
-    // Pega o texto do label (ignora o input)
-    const label = cb.closest('.check-opt');
-    return label ? label.textContent.trim() : '';
-  });
-  
-  // Aqui você faria uma requisição para gerar o relatório
-
-  
-  document.getElementById('modal-rel').classList.remove('open');
-}
 </script>
 </body>
 </html>

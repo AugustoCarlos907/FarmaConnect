@@ -18,7 +18,7 @@ return new class extends Migration
 
             // $table->string('descricao')->nullable();
             $table->unsignedBigInteger('nif');
-            $table->string('alvara');  //imagem ou numero
+            $table->string('alvara');  //imagem 
 
             $table->string('endereco'); 
             $table->string('rua')->nullable();

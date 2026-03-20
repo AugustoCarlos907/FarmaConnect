@@ -10,11 +10,11 @@ class Medicamento extends Model
         'name',
         'descricao',
         'preco',
-        // 'principio_ativo',
         'forma_farmaceutica',
         'dosagem',
-        // 'farmacia_id',
         'categoria_id'
+        // 'farmacia_id',
+        // 'principio_ativo',
     ];
 
     

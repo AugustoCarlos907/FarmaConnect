@@ -13,21 +13,20 @@ class Entregador extends Authenticatable
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable , MustVerifyEmail ;
 
-    protected $table = 'entregadores'; // Ou o nome real da sua tabela
+    protected $table = 'entregadores'; 
 
     protected $fillable = [
-        'name',
-        'email',
-        'telefone',
+       
         'descricao',
         'status',
         'numero_bi',    
         'matricula_veiculo',
         'foto_perfil',
+        'disponivel',
         'latitude',
         'longitude',
         'farmacia_id',
-        'password'
+        'user_id'
     ];
 
     public function entregas()

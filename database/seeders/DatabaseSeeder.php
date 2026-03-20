@@ -113,18 +113,17 @@ class DatabaseSeeder extends Seeder
 
         
         // DB::table('entregadores')->insert([
-        //     'name' => 'Entregador Central',
-        //     'email' => 'entregador@gmail.com',
-        //     'password' => Hash::make('123456'),
-        //     'telefone' => '1234567890',
-        //     'descricao' => 'Entregador central da cidade',
-        //     'numero_bi' => '1234567890123',
-        //     'matricula_veiculo' => 'ABC-1234',
-        //     'foto_perfil' => 'perfil.jpg',
+        //     'descricao' => 'Entregador Seguro',
         //     'status' => 'Ativo',
+        //     'numero_bi' => '1234567890123',
+
+        //     'matricula_veiculo' => 'ABC-1234',
+        //     // 'foto_perfil' => 'p', 
+        //     // 'disponivel' =>true
         //     'latitude' => -23.5505,
         //     'longitude' => -46.6333,
         //     'farmacia_id' => 1,
+        //     'user_id' => 6,
         //     'created_at' => Carbon::now(),
         //     'updated_at' => Carbon::now(),
         // ]);
@@ -211,19 +210,19 @@ class DatabaseSeeder extends Seeder
         //         'updated_at' => Carbon::now(),
         // ]);
 
-        // Pedido::create([
-        //     'user_id' => 3,
-        //     'farmacia_id' => 1,
-        //     // 'total' => 800.00,
-        //     // 'endereco_entrega' => 'Rua das Flores, 123',
-        //     // 'latitude' => -23.5505,
-        //     // 'longitude' => -46.6333,
-        //     // 'metodo_pagamento' => 'Cartão de Crédito',
-        //     'status' => 'Concluído',
-        //     'data_pedido' => Carbon::now(),
-        //     'created_at' => Carbon::now(),
-        //     'updated_at' => Carbon::now(),
-        // ]);
+        Pedido::create([
+            'user_id' => 3,
+            'farmacia_id' => 1,
+            // 'total' => 800.00,
+            'endereco' => 'Rua das Flores, 123',
+            'latitude' => -23.5505,
+            'longitude' => -46.6333,
+            // 'metodo_pagamento' => 'Cartão de Crédito',
+            'status' => 'Concluído',
+            'data_pedido' => Carbon::now(),
+            'created_at' => Carbon::now(),
+            'updated_at' => Carbon::now(),
+        ]);
 
          // Pedido::create([
          //    'user_id' => 3,
@@ -239,12 +238,12 @@ class DatabaseSeeder extends Seeder
          //    'updated_at' => Carbon::now(),
          // ]);
 
-         Endereco::create([
-            'user_id' => 3,
-            'name'=>'casa',
-            'endereco' => 'IngombotA ',
-            'latitude' => -23.5505,
-            'longitude' => -46.6333,
-         ]);
+        //  Endereco::create([
+        //     'user_id' => 3,
+        //     'name'=>'casa',
+        //     'endereco' => 'IngombotA ',
+        //     'latitude' => -23.5505,
+        //     'longitude' => -46.6333,
+        //  ]);
     }
 }

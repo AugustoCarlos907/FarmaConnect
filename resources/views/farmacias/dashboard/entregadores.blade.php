@@ -82,6 +82,28 @@
     .pill-open { background: #dcfce7; color: #15803d; }
     .ph-meta { font-size: 0.7rem; color: var(--accent-2); opacity: .8; display: flex; align-items: center; gap: 4px; margin-bottom: 2px; }
 
+        /* Logout button */
+    .logout-form {
+        margin-top: 12px;
+    }
+
+    .logout-btn {
+        color: var(--danger);
+    }
+
+    .logout-btn i {
+        color: var(--danger);
+    }
+
+    .logout-btn:hover {
+        background: var(--danger-light);
+        color: var(--danger);
+    }
+
+    .logout-btn:hover i {
+        color: var(--danger);
+    }
+    
     /* ─── MAIN ────────────────────────────── */
     .main { flex: 1; margin-left: 220px; display: flex; flex-direction: column; min-height: 100vh; }
     .topbar { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0 22px; height: var(--topbar-h); display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; flex-shrink: 0; }
@@ -348,104 +370,129 @@
 <div class="layout">
 
   <!-- ══ SIDEBAR ══════════════════════════════════ -->
-  <aside class="sidebar">
+<aside class="sidebar">
     <div class="sidebar-header">
-      <a href="#" class="logo">
-        <div class="logo-mark">
-          <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 13v-2H9v-2h2V9h2v2h2v2h-2v2h-2z"/></svg>
-        </div>
-        <span class="logo-text"><span class="f">Farma</span><span class="c">Connect</span></span>
-      </a>
+        <a href="#" class="logo">
+            <div class="logo-mark">
+                <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 13v-2H9v-2h2V9h2v2h2v2h-2v2h-2z"/></svg>
+            </div>
+            <span class="logo-text"><span class="f">Farma</span><span class="c">Connect</span></span>
+        </a>
     </div>
 
     <div class="sidebar-body">
-      <div class="nav-section">
-        <span class="nav-label">Principal</span>
-        <button class="nav-item" onclick="setActive(this)"><i class="bi bi-grid-1x2"></i><a class="text-decoration-none" href="{{ route('index.farmacias') }}"> Dashboard</a></button>
+        <div class="nav-section">
+            <span class="nav-label">Principal</span>
+            
+            <!-- Dashboard -->
+            <a href="{{ route('index.farmacias') }}" class="nav-item {{ request()->routeIs('index.farmacias') ? 'active' : '' }}">
+                <i class="bi bi-grid-1x2"></i>
+                <span>Dashboard</span>
+            </a>
 
-        <div class="has-sub" id="sub-stock">
-          <button class="nav-item" onclick="toggleSub('sub-stock')">
-            <i class="bi bi-archive"></i> Stock
-            {{-- <span class="nav-badge nb-amber">3</span> --}}
-            <i class="bi bi-chevron-down chevron"></i>
-          </button>
-          <div class="sub">
-            <div class="sub-item"><i class="bi bi-list-ul"></i><a class="text-decoration-none"  href="{{ route('medicamentos.farmacias') }}"> Lista de produtos</a></div>
-           <div class="sub-item"><i class="bi bi-exclamation-triangle"></i> Stock baixo <span class="nav-badge nb-red" style="margin-left:4px"></span></div>
-          </div>
+            <!-- Stock com submenu -->
+            <div class="has-sub {{ request()->routeIs('medicamentos.farmacias') ? 'open' : '' }}" id="sub-stock">
+                <div class="nav-item" onclick="toggleSub('sub-stock')">
+                    <i class="bi bi-archive"></i>
+                    <span>Stock</span>
+                    <i class="bi bi-chevron-down chevron"></i>
+                </div>
+                <div class="sub">
+                    <a href="{{ route('medicamentos.farmacias') }}" class="sub-item {{ request()->routeIs('medicamentos.farmacias') ? 'active-sub' : '' }}">
+                        <i class="bi bi-list-ul"></i>
+                        <span>Lista de produtos</span>
+                    </a>
+                    <div class="sub-item">
+                        <i class="bi bi-exclamation-triangle"></i>
+                        <span>Stock baixo</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pedidos -->
+            <a href="{{ route('pedidos.farmacias') }}" class="nav-item {{ request()->routeIs('pedidos.farmacias') ? 'active' : '' }}">
+                <i class="bi bi-truck"></i>
+                <span>Pedidos</span>
+
+            </a>
+
+            <!-- Entregadores -->
+            <a href="{{ route('entregadores.farmacias') }}" class="nav-item {{ request()->routeIs('entregadores.farmacias') ? 'active' : '' }}">
+                <i class="bi bi-person-badge"></i>
+                <span>Entregadores</span>
+
+            </a>
+
+            <!-- Clientes -->
+            <a href="{{ route('clientes.farmacias') }}" class="nav-item {{ request()->routeIs('clientes.farmacias') ? 'active' : '' }}">
+                <i class="bi bi-people"></i>
+                <span>Clientes</span>
+            </a>
+
+            <!-- Avaliações -->
+            <a href="{{ route('avaliacoes.farmacias') }}" class="nav-item {{ request()->routeIs('avaliacoes.farmacias') ? 'active' : '' }}">
+                <i class="bi bi-star"></i>
+                <span>Avaliações</span>
+
+            </a>
+
+            <span class="nav-label">Gestão</span>
+
+            <!-- Documentos -->
+            <a href="{{ route('documentos.farmacias') }}" class="nav-item {{ request()->routeIs('documentos.farmacias') ? 'active' : '' }}">
+                <i class="bi bi-file-earmark-text"></i>
+                <span>Documentos</span>
+            </a>
+
+            <!-- Configurações com submenu -->
+            <div class="has-sub" id="sub-cfg">
+                <div class="nav-item" onclick="toggleSub('sub-cfg')">
+                    <i class="bi bi-gear"></i>
+                    <span>Configurações</span>
+                    <i class="bi bi-chevron-down chevron"></i>
+                </div>
+                <div class="sub">
+                    <div class="sub-item">
+                        <i class="bi bi-person"></i>
+                        <span>Perfil</span>
+                    </div>
+                    <div class="sub-item">
+                        <i class="bi bi-shop"></i>
+                        <span>Farmácia</span>
+                    </div>
+                    <div class="sub-item">
+                        <i class="bi bi-clock"></i>
+                        <span>Horário</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sair -->
+            <form action="{{ route('logout', ['id'=>Auth::user()->id]) }}" method="post" class="logout-form">
+                @csrf
+                <button type="submit" class="nav-item logout-btn">
+                    <i class="bi bi-box-arrow-right"></i>
+                    <span>Sair</span>
+                </button>
+            </form>
         </div>
-        <button class="nav-item" onclick="setActive(this)">
-          <i class="bi bi-truck"></i><a href="{{route('pedidos.farmacias')}}"> Pedidos</a>
-          {{-- <span class="nav-badge nb-red">12</span> --}}
-        </button>
-        <button class="nav-item active" onclick="setActive(this)">
-          <i class="bi bi-person-badge"></i> <a href="{{route('entregadores.farmacias')}}">  Entregadores </a>
-          {{-- <span class="nav-badge nb-teal">{{ $entregadores->total() }}</span> --}}
-        </button>
-        <button class="nav-item" onclick="setActive(this)">
-          <i class="bi bi-people"></i> <a href="{{route('clientes.farmacias')}}">Clientes</a> 
-        </button>
-
-        {{-- <span class="nav-label">Análise</span>
-        <div class="has-sub" id="sub-rel">
-          <button class="nav-item" onclick="toggleSub('sub-rel')">
-            <i class="bi bi-bar-chart-line"></i> Relatórios
-            <i class="bi bi-chevron-down chevron"></i>
-          </button>
-          <div class="sub">
-            <div class="sub-item"><i class="bi bi-cash-stack"></i> Vendas</div>
-            <div class="sub-item"><i class="bi bi-archive"></i> Stock</div>
-            <div class="sub-item"><i class="bi bi-truck"></i> Entregas</div>
-            <div class="sub-item"><i class="bi bi-star"></i> Avaliações</div>
-          </div>
-        </div> --}}
-        
-        <button class="nav-item" onclick="setActive(this)">
-          <i class="bi bi-star"></i> <a href="{{route('avaliacoes.farmacias')}}"> Avaliações</a>
-          {{-- <span class="nav-badge nb-amber">{{ $data['todas_avaliacoes']->count() }}</span> --}}
-        </button>
-
-
-        <span class="nav-label">Gestão</span>
-        <button class="nav-item" onclick="setActive(this)">
-          <i class="bi bi-file-earmark-text"></i> <a href="{{route('documentos.farmacias') }}">Documentos</a> 
-
-          {{-- <span class="nav-badge nb-slate">2</span> --}}
-        </button>
-        <div class="has-sub" id="sub-cfg">
-          <button class="nav-item" onclick="toggleSub('sub-cfg')">
-            <i class="bi bi-gear"></i> Configurações
-            <i class="bi bi-chevron-down chevron"></i>
-          </button>
-          <div class="sub">
-            <div class="sub-item"><i class="bi bi-person"></i> Perfil</div>
-            <div class="sub-item"><i class="bi bi-shop"></i> Farmácia</div>
-            <div class="sub-item"><i class="bi bi-clock"></i> Horário</div>
-            {{-- <div class="sub-item"><i class="bi bi-bell"></i> Notificações</div> --}}
-          </div>
-        </div>
-        <div class="nav-divider"></div>
-        <button class="nav-item" style="color:var(--danger)">
-          <i class="bi bi-box-arrow-right" style="color:var(--danger)"></i> Sair
-        </button>
-      </div>
     </div>
 
-   <div class="sidebar-footer">
-      @php
-        $farmacia = Auth::user()->farmacia;
-      @endphp
-      <div class="ph-card">
-        <div class="ph-row">
-          <span class="ph-name">{{ $farmacia->name ?? 'FC' }}</span>
-          <span class="ph-pill pill-open">{{ $farmacia->status  }}</span>
+    <div class="sidebar-footer">
+        @php
+            $farmacia = Auth::user()->farmacia;
+        @endphp
+        <div class="ph-card">
+            <div class="ph-row">
+                <span class="ph-name">{{ $farmacia->name ?? 'Farmácia' }}</span>
+                <span class="ph-pill pill-open">{{ $farmacia->status ?? 'Aberta' }}</span>
+            </div>
+            <p class="ph-meta"><i class="bi bi-geo-alt"></i> {{ $farmacia->endereco ?? '—' }}</p>
+            <p class="ph-meta"><i class="bi bi-clock"></i> {{ $farmacia->horario_abertura ?? '08:00' }} - {{ $farmacia->horario_fechamento ?? '22:00' }}</p>
+            <p class="ph-meta" style="opacity:.55;font-size:.65rem;margin-top:2px"><i class="bi bi-building"></i> {{ $farmacia->company ?? 'FarmaConnect' }}</p>
         </div>
-        <p class="ph-meta"><i class="bi bi-geo-alt"></i> {{ $farmacia->endereco  }}</p>
-        <p class="ph-meta"><i class="bi bi-clock"></i> {{ $farmacia->horario_abertura ?? '08:00 ' }} - {{ $farmacia->horario_fechamento ?? '22:00' }}</p>
-        <p class="ph-meta" style="opacity:.55;font-size:.65rem;margin-top:2px"><i class="bi bi-building"></i> {{ $farmacia->company ?? 'UNKNOWN' }}</p>
-      </div>
     </div>
-  </aside>
+</aside>
 
   <!-- ══ MAIN ══════════════════════════════════════ -->
   <div class="main">
@@ -537,33 +584,34 @@
               'offline' => ['label'=>'Offline', 'class'=>'s-offline', 'ring'=>'sr-offline', 'tag'=>'st-offline', 'dot'=>'std-offline'],
             ];
             $status = $statusInfo[$entregador->status] ?? $statusInfo['offline'];
-            $initials = $entregador->name ? implode('', array_map(function($n) { return $n[0] ?? ''; }, explode(' ', $entregador->name))) : '--';
-            $bgColor = '#' . substr(md5($entregador->name ?? $entregador->id), 0, 6);
+            $initials = $entregador->user->name ? implode('', array_map(function($n) { return $n[0] ?? ''; }, explode(' ', $entregador->user->name))) : '--';
+            $bgColor = '#' . substr(md5($entregador->user->name ?? $entregador->id), 0, 6);
             $textColor = 'white';
           @endphp
           <div class="del-card {{ $status['class'] }}" onclick="openDrawer({{ $entregador->id }})">
             <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px">
               <div class="del-avatar-wrap">
                 <div class="del-avatar" style="background:{{ $bgColor }};color:{{ $textColor }}">{{ $initials }}</div>
-                <div class="status-ring {{ $status['ring'] }}"></div>
+                <div class="status-ring {{ $entregador->status }}"></div>
               </div>
               <div class="del-card-actions" onclick="event.stopPropagation()">
-                <button class="ca-btn" title="Atribuir pedido" onclick="alert('Atribuir pedido a {{ $entregador->name }}')"><i class="bi bi-truck"></i></button>
-                <button class="ca-btn" title="Contactar" onclick="alert('Contactar {{ $entregador->telefone ?? $entregador->tel ?? '--' }}')"><i class="bi bi-telephone"></i></button>
+                <button class="ca-btn" title="Atribuir pedido" onclick="alert('Atribuir pedido a {{ $entregador->user->name }}')"><i class="bi bi-truck"></i></button>
+                <button class="ca-btn" title="Contactar" onclick="alert('Contactar {{ $entregador->user->telefone ?? $entregador->user->phone ?? '--' }}')"><i class="bi bi-telephone"></i></button>
                 <button class="ca-btn d" title="Remover" onclick="openRemove({{ $entregador->id }})"><i class="bi bi-person-dash"></i></button>
               </div>
             </div>
-            <div class="del-card-name">{{ $entregador->name }}</div>
+            <div class="del-card-name">{{ $entregador->user->name }}</div>
             <div class="del-card-role">
               <i class="bi {{ $entregador->veiculo == 'mota' ? 'bi-scooter' : ($entregador->veiculo == 'carro' ? 'bi-car-front' : ($entregador->veiculo == 'bicicleta' ? 'bi-bicycle' : 'bi-person-walking')) }}"></i> 
-              {{ ucfirst($entregador->veiculo ?? 'não definido') }} &nbsp;·&nbsp; {{ $entregador->zona ?? 'N/A' }}
+              matricula_veiculo : <b>{{ ucfirst($entregador->matricula_veiculo ?? 'não definido') }} </b>&nbsp;·&nbsp; 
             </div>
 
             @if($entregador->pedido_atual)
               <div class="current-order"><i class="bi bi-bicycle"></i><span class="co-text">A entregar <span class="co-id">{{ $entregador->pedido_atual }}</span></span></div>
             @endif
-
+            
             <div class="del-stats">
+              <div class="ds-item"><div class="ds-val">{{ $entregador->status }}</div><div class="ds-lbl">Estado</div></div>
               <div class="ds-item"><div class="ds-val">{{ $entregador->entregas_hoje ?? 0 }}</div><div class="ds-lbl">Hoje</div></div>
               <div class="ds-item"><div class="ds-val">{{ $entregador->entregas_mes ?? 0 }}</div><div class="ds-lbl">Mês</div></div>
               <div class="ds-item"><div class="ds-val">{{ $entregador->taxa_entrega ?? 100 }}%</div><div class="ds-lbl">Taxa</div></div>
@@ -572,7 +620,6 @@
             @php $barPct = min(100, ($entregador->entregas_hoje ?? 0) / 20 * 100); @endphp
             <div class="del-bar-wrap" style="margin-top:8px"><div class="del-bar" style="width:{{ $barPct }}%"></div></div>
             <div style="display:flex;justify-content:space-between;font-size:.62rem;color:var(--text-4);margin-top:3px">
-              <span>{{ $entregador->entregas_hoje ?? 0 }} entregas</span><span>meta 20</span>
             </div>
           </div>
         @empty
@@ -595,9 +642,6 @@
                 <th onclick="sortCol('entregas')">Entregas hoje <i class="bi bi-arrow-up-down si"></i></th>
                 <th onclick="sortCol('total')">Total mês <i class="bi bi-arrow-up-down si"></i></th>
                 <th onclick="sortCol('taxa')">Taxa entrega <i class="bi bi-arrow-up-down si"></i></th>
-                <th onclick="sortCol('rating')">Avaliação <i class="bi bi-arrow-up-down si"></i></th>
-                <th class="ns">Pedido actual</th>
-                <th class="ns">Zona</th>
                 <th class="ns"></th>
               </tr>
             </thead>
@@ -610,8 +654,8 @@
                     'offline' => ['label'=>'Offline', 'tag'=>'st-offline', 'dot'=>'std-offline', 'ring'=>'sr-offline'],
                   ];
                   $status = $statusInfo[$entregador->status] ?? $statusInfo['offline'];
-                  $initials = $entregador->name ? implode('', array_map(function($n) { return $n[0] ?? ''; }, explode(' ', $entregador->name))) : '--';
-                  $bgColor = '#' . substr(md5($entregador->name ?? $entregador->id), 0, 6);
+                  $initials = $entregador->user->name ? implode('', array_map(function($n) { return $n[0] ?? ''; }, explode(' ', $entregador->user->name))) : '--';
+                  $bgColor = '#' . substr(md5($entregador->user->name ?? $entregador->id), 0, 6);
                   $textColor = 'white';
                   $barPct = min(100, $entregador->taxa_entrega ?? 100);
                   $barCol = ($entregador->taxa_entrega ?? 100) >= 95 ? 'var(--success)' : (($entregador->taxa_entrega ?? 100) >= 80 ? 'var(--warning)' : 'var(--danger)');
@@ -621,15 +665,15 @@
                     <div class="del-name-cell">
                       <div class="tav" style="background:{{ $bgColor }};color:{{ $textColor }}">
                         {{ $initials }}
-                        <div class="tring {{ $status['ring'] }}"></div>
+                        <div class="tring {{ $entregador->status }}"></div>
                       </div>
                       <div>
-                        <div class="dn-name">{{ $entregador->name }}</div>
-                        <div class="dn-phone">{{ $entregador->telefone ?? $entregador->tel ?? '--' }}</div>
+                        <div class="dn-name">{{ $entregador->user->name }}</div>
+                        <div class="dn-phone">{{ $entregador->user->phone ?? '--' }}</div>
                       </div>
                     </div>
                   </td>
-                  <td><span class="status-tag {{ $status['tag'] }}"><div class="st-dot {{ $status['dot'] }}"></div>{{ $status['label'] }}</span></td>
+                  <td><span class="status-tag {{ $entregador->status }}"><div class="st-dot"></div>{{$entregador->status }}</span></td>
                   <td><span style="font-family:'Sora',sans-serif;font-weight:700;font-size:.88rem">{{ $entregador->entregas_hoje ?? 0 }}</span></td>
                   <td>{{ $entregador->entregas_mes ?? 0 }}</td>
                   <td>
@@ -637,20 +681,13 @@
                     <div class="perf-bar-wrap"><div class="perf-bar" style="width:{{ $barPct }}%;background:{{ $barCol }}"></div></div>
                   </td>
                   <td>
-                    <div class="rating-stars">
-                      @for($i = 1; $i <= 5; $i++)
-                        <i class="bi bi-star{{ $i <= round($entregador->avaliacao ?? 5) ? '-fill' : '' }} star{{ $i <= round($entregador->avaliacao ?? 5) ? '' : ' empty' }}"></i>
-                      @endfor
-                      <span class="rating-val">{{ number_format($entregador->avaliacao ?? 5, 1) }}</span>
-                    </div>
+                    
                   </td>
-                  <td>@if($entregador->pedido_atual)<span style="font-family:'Sora',sans-serif;font-weight:600;font-size:.78rem;color:var(--accent-2)">{{ $entregador->pedido_atual }}</span>@else<span style="color:var(--text-4)">—</span>@endif</td>
-                  <td style="color:var(--text-3);font-size:.77rem">{{ $entregador->zona ?? 'N/A' }}</td>
                   <td onclick="event.stopPropagation()">
                     <div class="row-actions">
                       <button class="act-btn" title="Ver perfil" onclick="openDrawer({{ $entregador->id }})"><i class="bi bi-eye"></i></button>
-                      <button class="act-btn" title="Atribuir pedido" onclick="alert('Atribuir pedido a {{ $entregador->name }}')"><i class="bi bi-truck"></i></button>
-                      <button class="act-btn" title="Contactar" onclick="alert('Contactar: {{ $entregador->telefone ?? $entregador->tel ?? '--' }}')"><i class="bi bi-telephone"></i></button>
+                      <button class="act-btn" title="Atribuir pedido" onclick="alert('Atribuir pedido a {{ $entregador->user->name }}')"><i class="bi bi-truck"></i></button>
+                      <button class="act-btn" title="Contactar" onclick="alert('Contactar: {{ $entregador->user->phone ?? $entregador->tel ?? '--' }}')"><i class="bi bi-telephone"></i></button>
                       <button class="act-btn d" title="Remover" onclick="openRemove({{ $entregador->id }})"><i class="bi bi-person-dash"></i></button>
                     </div>
                   </td>
@@ -689,88 +726,42 @@
       <button class="d-tab" onclick="switchTab(this,'desempenho')">Desempenho</button>
       <button class="d-tab" onclick="switchTab(this,'pedidos')">Pedidos</button>
     </div>
-    <div id="tabPerfil">
-      <div class="d-section">
-        <div class="d-section-title">Informação pessoal</div>
-        <div class="form-row">
-          <div class="form-group"><label>Nome completo *</label><input type="text" class="form-input" id="fNome" placeholder="ex. João Augusto"></div>
-          <div class="form-group"><label>BI / NIF</label><input type="text" class="form-input" id="fBI" placeholder="00000000LA0000"></div>
-        </div>
-        <div class="form-row">
-          <div class="form-group"><label>Telefone *</label><input type="text" class="form-input" id="fTel" placeholder="+244 9xx xxx xxx"></div>
-          <div class="form-group"><label>Telefone alternativo</label><input type="text" class="form-input" id="fTel2" placeholder="+244 9xx xxx xxx"></div>
-        </div>
-        <div class="form-row single">
-          <div class="form-group"><label>Email</label><input type="email" class="form-input" id="fEmail" placeholder="entregador@email.com"></div>
-        </div>
-      </div>
-      <div class="d-section">
-        <div class="d-section-title">Veículo & Zona</div>
-        <div class="form-row">
-          <div class="form-group">
-            <label>Tipo de veículo</label>
-            <select class="form-select" id="fVeiculo">
-              <option value="bicicleta">Bicicleta</option>
-              <option value="mota">Motociclo</option>
-              <option value="carro">Automóvel</option>
-              <option value="a_pe">A pé</option>
-            </select>
+      <form  method="POST" action="">
+      @csrf
+        <div id="tabPerfil">
+          <div class="d-section">
+            <div class="d-section-title">Informação pessoal</div>
+            <div class="form-row">
+              <div class="form-group"><label>Nome completo *</label><input type="text" name="name" class="form-input" id="fNome" placeholder="ex. João Augusto"></div>
+              <div class="form-group"><label>Email</label><input type="email" name="email" class="form-input" id="fBI" placeholder="00000000LA0000"></div>
+            </div>
+            <div class="form-row">
+              <div class="form-group"><label>Password *</label><input type="password" name="password" class="form-input" id="fTel" placeholder="+244 9xx xxx xxx"></div>
+              <div class="form-group"><label>Descrição</label><input type="text" name="descricao" class="form-input" id="fTel2" placeholder="+244 9xx xxx xxx"></div>
+            </div>
+            <div class="form-row single">
+              <div class="form-group"><label>Nº BI </label><input type="text" name="numero_bi" class="form-input" id="fEmail" placeholder="entregador@email.com"></div>
+            </div>
           </div>
-          <div class="form-group"><label>Matrícula</label><input type="text" class="form-input" id="fMatricula" placeholder="LD-00-00-AA"></div>
-        </div>
-        <div class="form-row single">
-          <div class="form-group">
-            <label>Zona de cobertura</label>
-            <select class="form-select" id="fZona">
-              <option>Ingombotas</option>
-              <option>Maianga</option>
-              <option>Alvalade</option>
-              <option>Kilamba Kiaxi</option>
-              <option>Talatona</option>
-              <option>Viana</option>
-              <option>Cacuaco</option>
-              <option>Todas as zonas</option>
-            </select>
+          <div class="d-section">
+            <div class="d-section-title">Veículo & Zona</div>
+            <div class="form-row">
+              <div class="form-group"><label>Matrícula Veículo</label><input type="text" name="matricula_veiculo" class="form-input" id="fMatricula" placeholder="LD-00-00-AA"></div>
+              <div class="form-group"><label>Latitude</label><input type="text" name="latitude" class="form-input"  placeholder="-189432"></div>
+              <div class="form-group"><label>Longitude</label><input type="text" name="longitude" class="form-input"  placeholder="120379"></div>
+            </div>       
           </div>
+                
         </div>
-      </div>
-      <div class="d-section">
-        <div class="d-section-title">Estado & Disponibilidade</div>
-        <div class="form-row">
-          <div class="form-group">
-            <label>Estado actual</label>
-            <select class="form-select" id="fStatus">
-              <option value="online">Livre / Disponível</option>
-              <option value="busy">Em entrega</option>
-              <option value="offline">Offline / Folga</option>
-            </select>
-          </div>
-          <div class="form-group"><label>Data de entrada</label><input type="date" class="form-input" id="fData"></div>
-        </div>
-      </div>
-    </div>
-    <div id="tabDesempenho" style="display:none">
-      <div class="d-stat-grid" id="dStatGrid"></div>
-      <div class="d-section">
-        <div class="d-section-title">Entregas por dia (últimos 7 dias)</div>
-        <div class="d-chart"><canvas id="dChart"></canvas></div>
-      </div>
-      <div class="d-section">
-        <div class="d-section-title">Métricas</div>
-        <div id="dMetrics"></div>
-      </div>
-    </div>
-    <div id="tabPedidos" style="display:none">
-      <div class="d-section">
-        <div class="d-section-title">Pedidos recentes</div>
-        <div id="dOrders"></div>
-      </div>
-    </div>
+
+  </div>
+
   </div>
   <div class="drawer-footer">
     <button class="btn btn-outline" onclick="closeDrawer()">Cancelar</button>
     <button class="btn btn-primary" onclick="saveDeliverer()"><i class="bi bi-check-lg"></i> Guardar</button>
   </div>
+</form>
 </div>
 
 <!-- ══ MODAL REMOVER ═════════════════════════════ -->
@@ -799,7 +790,6 @@ let allDel = entregadoresBackend.map((d, i) => {
     tel: d.telefone || d.tel || '',
     status: d.status || 'offline',
     veiculo: d.veiculo || 'bicicleta',
-    zona: d.zona || 'N/A',
     initials: initials || '--',
     palBg: '#' + (d.cor_fundo || Math.floor(Math.random()*16777215).toString(16).padStart(6, '0')),
     palText: 'white',

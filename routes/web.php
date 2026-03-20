@@ -10,6 +10,7 @@ use App\Http\Controllers\DashboardEntregadorController;
 use App\Http\Controllers\DashboardFarmaciaController;
 use App\Http\Controllers\EntregaController;
 use App\Http\Controllers\FarmaciaController;
+use App\Http\Controllers\MedicamentoController;
 use App\Http\Controllers\PedidoController;
 use App\Http\Controllers\PerfilController;
 use App\Http\Controllers\ReportController;
@@ -54,6 +55,7 @@ Route::middleware(['guest'])->group(function(){
         //farmacias
         Route::get('farmacia/dashboard', [DashboardFarmaciaController::class , 'dashboard'])->name('index.farmacias');
         Route::get('/farmacia/medicamentos', [FarmaciaController::class, 'listMedicamentos'])->name('medicamentos.farmacias');
+        Route::post('/farmacia/create-medicamento' , [MedicamentoController::class , 'create'])->name('medicamentos.store');
         Route::get('farmacia/pedidos', [FarmaciaController::class, 'pedidos'])->name('pedidos.farmacias');
         Route::get('farmacia/entregadores', [FarmaciaController::class, 'entregadores'])->name('entregadores.farmacias');
         Route::get('/farmacia/clientes' , [FarmaciaController::class, 'clientes'])->name('clientes.farmacias');

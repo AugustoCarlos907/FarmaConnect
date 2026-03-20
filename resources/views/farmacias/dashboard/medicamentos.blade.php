@@ -98,6 +98,27 @@
     .pill-open { background: #dcfce7; color: #15803d; }
     .ph-meta { font-size: 0.7rem; color: var(--accent-2); opacity: .8; display: flex; align-items: center; gap: 4px; margin-bottom: 2px; }
 
+        /* Logout button */
+    .logout-form {
+        margin-top: 12px;
+    }
+
+    .logout-btn {
+        color: var(--danger);
+    }
+
+    .logout-btn i {
+        color: var(--danger);
+    }
+
+    .logout-btn:hover {
+        background: var(--danger-light);
+        color: var(--danger);
+    }
+
+    .logout-btn:hover i {
+        color: var(--danger);
+    }
     /* ─── MAIN ────────────────────────────── */
     .main { flex: 1; margin-left: 220px; display: flex; flex-direction: column; min-height: 100vh; }
 
@@ -433,103 +454,129 @@
 <div class="layout">
 
   <!-- ══ SIDEBAR ══════════════════════════════════ -->
-  <aside class="sidebar">
+<aside class="sidebar">
     <div class="sidebar-header">
-      <a href="#" class="logo">
-        <div class="logo-mark">
-          <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 13v-2H9v-2h2V9h2v2h2v2h-2v2h-2z"/></svg>
-        </div>
-        <span class="logo-text"><span class="f">Farma</span><span class="c">Connect</span></span>
-      </a>
+        <a href="#" class="logo">
+            <div class="logo-mark">
+                <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 13v-2H9v-2h2V9h2v2h2v2h-2v2h-2z"/></svg>
+            </div>
+            <span class="logo-text"><span class="f">Farma</span><span class="c">Connect</span></span>
+        </a>
     </div>
 
     <div class="sidebar-body">
-      <div class="nav-section">
-        <span class="nav-label">Principal</span>
-        <button class="nav-item" onclick="setActive(this)"><i class="bi bi-grid-1x2"></i><a class="text-decoration-none" href="{{ route('index.farmacias') }}"> Dashboard</a></button>
+        <div class="nav-section">
+            <span class="nav-label">Principal</span>
+            
+            <!-- Dashboard -->
+            <a href="{{ route('index.farmacias') }}" class="nav-item {{ request()->routeIs('index.farmacias') ? 'active' : '' }}">
+                <i class="bi bi-grid-1x2"></i>
+                <span>Dashboard</span>
+            </a>
 
-        <div class="has-sub open" id="sub-stock">
-          <button class="nav-item active" onclick="toggleSub('sub-stock')">
-            <i class="bi bi-archive"></i> Stock
-            <span class="nav-badge nb-amber">{{ $medicamentos->where('status', 'low')->count() }}</span>
-            <i class="bi bi-chevron-down chevron"></i>
-          </button>
-          <div class="sub" style="display: block;">
-            <div class="sub-item active-sub"><i class="bi bi-list-ul"></i> Lista de produtos</div>
-            <div class="sub-item"><i class="bi bi-exclamation-triangle"></i> Stock baixo <span class="nav-badge nb-red" style="margin-left:4px">{{ $medicamentos->where('status', 'low')->count() }}</span></div>
-          </div>
+            <!-- Stock com submenu -->
+            <div class="has-sub {{ request()->routeIs('medicamentos.farmacias') ? 'open' : '' }}" id="sub-stock">
+                <div class="nav-item" onclick="toggleSub('sub-stock')">
+                    <i class="bi bi-archive"></i>
+                    <span>Stock</span>
+                    <i class="bi bi-chevron-down chevron"></i>
+                </div>
+                <div class="sub">
+                    <a href="{{ route('medicamentos.farmacias') }}" class="sub-item {{ request()->routeIs('medicamentos.farmacias') ? 'active-sub' : '' }}">
+                        <i class="bi bi-list-ul"></i>
+                        <span>Lista de produtos</span>
+                    </a>
+                    <div class="sub-item">
+                        <i class="bi bi-exclamation-triangle"></i>
+                        <span>Stock baixo</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pedidos -->
+            <a href="{{ route('pedidos.farmacias') }}" class="nav-item {{ request()->routeIs('pedidos.farmacias') ? 'active' : '' }}">
+                <i class="bi bi-truck"></i>
+                <span>Pedidos</span>
+
+            </a>
+
+            <!-- Entregadores -->
+            <a href="{{ route('entregadores.farmacias') }}" class="nav-item {{ request()->routeIs('entregadores.farmacias') ? 'active' : '' }}">
+                <i class="bi bi-person-badge"></i>
+                <span>Entregadores</span>
+
+            </a>
+
+            <!-- Clientes -->
+            <a href="{{ route('clientes.farmacias') }}" class="nav-item {{ request()->routeIs('clientes.farmacias') ? 'active' : '' }}">
+                <i class="bi bi-people"></i>
+                <span>Clientes</span>
+            </a>
+
+            <!-- Avaliações -->
+            <a href="{{ route('avaliacoes.farmacias') }}" class="nav-item {{ request()->routeIs('avaliacoes.farmacias') ? 'active' : '' }}">
+                <i class="bi bi-star"></i>
+                <span>Avaliações</span>
+
+            </a>
+
+            <span class="nav-label">Gestão</span>
+
+            <!-- Documentos -->
+            <a href="{{ route('documentos.farmacias') }}" class="nav-item {{ request()->routeIs('documentos.farmacias') ? 'active' : '' }}">
+                <i class="bi bi-file-earmark-text"></i>
+                <span>Documentos</span>
+            </a>
+
+            <!-- Configurações com submenu -->
+            <div class="has-sub" id="sub-cfg">
+                <div class="nav-item" onclick="toggleSub('sub-cfg')">
+                    <i class="bi bi-gear"></i>
+                    <span>Configurações</span>
+                    <i class="bi bi-chevron-down chevron"></i>
+                </div>
+                <div class="sub">
+                    <div class="sub-item">
+                        <i class="bi bi-person"></i>
+                        <span>Perfil</span>
+                    </div>
+                    <div class="sub-item">
+                        <i class="bi bi-shop"></i>
+                        <span>Farmácia</span>
+                    </div>
+                    <div class="sub-item">
+                        <i class="bi bi-clock"></i>
+                        <span>Horário</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sair -->
+            <form action="{{ route('logout', ['id'=>Auth::user()->id]) }}" method="post" class="logout-form">
+                @csrf
+                <button type="submit" class="nav-item logout-btn">
+                    <i class="bi bi-box-arrow-right"></i>
+                    <span>Sair</span>
+                </button>
+            </form>
         </div>
-        <button class="nav-item" onclick="setActive(this)">
-          <i class="bi bi-truck"></i><a href="{{route('pedidos.farmacias')}}"> Pedidos</a>
-          <span class="nav-badge nb-red">12</span>
-        </button>
-        <button class="nav-item" onclick="setActive(this)">
-          <i class="bi bi-person-badge"></i> <a href="{{route('entregadores.farmacias')}}"> Entregadores </a>
-          <span class="nav-badge nb-teal">4</span>
-        </button>
-        <button class="nav-item" onclick="setActive(this)">
-          <i class="bi bi-people"></i> <a href="{{route('clientes.farmacias')}}">Clientes</a> 
-        </button>
-
-        {{-- <span class="nav-label">Análise</span>
-        <div class="has-sub" id="sub-rel">
-          <button class="nav-item" onclick="toggleSub('sub-rel')">
-            <i class="bi bi-bar-chart-line"></i> Relatórios
-            <i class="bi bi-chevron-down chevron"></i>
-          </button>
-          <div class="sub">
-            <div class="sub-item"><i class="bi bi-cash-stack"></i> Vendas</div>
-            <div class="sub-item"><i class="bi bi-archive"></i> Stock</div>
-            <div class="sub-item"><i class="bi bi-truck"></i> Entregas</div>
-            <div class="sub-item"><i class="bi bi-star"></i> Avaliações</div>
-          </div>
-        </div> --}}
-        
-        <button class="nav-item" onclick="setActive(this)">
-          <i class="bi bi-star"></i> <a href="{{route('avaliacoes.farmacias')}}"> Avaliações</a>
-          {{-- <span class="nav-badge nb-amber">{{ $data['todas_avaliacoes']->count() }}</span> --}}
-        </button>
-
-
-        <span class="nav-label">Gestão</span>
-        <button class="nav-item" onclick="setActive(this)">
-          <i class="bi bi-file-earmark-text"></i> <a href="{{route('documentos.farmacias')}}">Documentos</a> 
-          <span class="nav-badge nb-slate">2</span>
-        </button>
-        <div class="has-sub" id="sub-cfg">
-          <button class="nav-item" onclick="toggleSub('sub-cfg')">
-            <i class="bi bi-gear"></i> Configurações
-            <i class="bi bi-chevron-down chevron"></i>
-          </button>
-          <div class="sub">
-            <div class="sub-item"><i class="bi bi-person"></i> Perfil</div>
-            <div class="sub-item"><i class="bi bi-shop"></i> Farmácia</div>
-            <div class="sub-item"><i class="bi bi-clock"></i> Horário</div>
-            {{-- <div class="sub-item"><i class="bi bi-bell"></i> Notificações</div> --}}
-          </div>
-        </div>
-        <div class="nav-divider"></div>
-        <button class="nav-item" style="color:var(--danger)">
-          <i class="bi bi-box-arrow-right" style="color:var(--danger)"></i> Sair
-        </button>
-      </div>
     </div>
 
-   <div class="sidebar-footer">
-      @php
-        $farmacia = Auth::user()->farmacia;
-      @endphp
-      <div class="ph-card">
-        <div class="ph-row">
-          <span class="ph-name">{{ $farmacia->name ?? 'FC' }}</span>
-          <span class="ph-pill pill-open">{{ $farmacia->status  }}</span>
+    <div class="sidebar-footer">
+        @php
+            $farmacia = Auth::user()->farmacia;
+        @endphp
+        <div class="ph-card">
+            <div class="ph-row">
+                <span class="ph-name">{{ $farmacia->name ?? 'Farmácia' }}</span>
+                <span class="ph-pill pill-open">{{ $farmacia->status ?? 'Aberta' }}</span>
+            </div>
+            <p class="ph-meta"><i class="bi bi-geo-alt"></i> {{ $farmacia->endereco ?? '—' }}</p>
+            <p class="ph-meta"><i class="bi bi-clock"></i> {{ $farmacia->horario_abertura ?? '08:00' }} - {{ $farmacia->horario_fechamento ?? '22:00' }}</p>
+            <p class="ph-meta" style="opacity:.55;font-size:.65rem;margin-top:2px"><i class="bi bi-building"></i> {{ $farmacia->company ?? 'FarmaConnect' }}</p>
         </div>
-        <p class="ph-meta"><i class="bi bi-geo-alt"></i> {{ $farmacia->endereco  }}</p>
-        <p class="ph-meta"><i class="bi bi-clock"></i> {{ $farmacia->horario_abertura ?? '08:00 ' }} - {{ $farmacia->horario_fechamento ?? '22:00' }}</p>
-        <p class="ph-meta" style="opacity:.55;font-size:.65rem;margin-top:2px"><i class="bi bi-building"></i> {{ $farmacia->company ?? 'UNKNOWN' }}</p>
-      </div>
     </div>
-  </aside>
+</aside>
 
   <!-- ══ MAIN ══════════════════════════════════════ -->
   <div class="main">
@@ -565,7 +612,7 @@
           <div class="filter-chips" id="catChips">
             <span class="chip active" data-cat="all" onclick="filterCat(this, 'all')">Todos</span>
             @php
-              $categorias = $medicamentos->pluck('categoria.nome')->unique()->filter();
+              $categorias = $medicamentos->pluck('categoria.name')->unique()->filter();
             @endphp
             @foreach($categorias as $categoria)
               <span class="chip" data-cat="{{ strtolower($categoria) }}" onclick="filterCat(this, '{{ strtolower($categoria) }}')">
@@ -812,135 +859,81 @@
     <button class="drawer-close" onclick="closeDrawer()"><i class="bi bi-x-lg"></i></button>
   </div>
   <div class="drawer-body" id="drawerBody">
+    <form id="productForm" method="POST" action="{{ route('medicamentos.store') }}">
+      @csrf
+      <input type="hidden" name="_method" id="formMethod" value="POST">
+      
+      <div class="field-group-title">Identificação</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Nome comercial *</label>
+          <input type="text" name="name" id="fNome" class="form-input" placeholder="ex. Paracetamol" required>
+        </div>
 
-    <div class="field-group-title">Identificação</div>
-    <div class="form-row">
-      <div class="form-group">
-        <label>Nome comercial *</label>
-        <input type="text" class="form-input" id="fNome" placeholder="ex. Paracetamol 500mg">
-      </div>
-      <div class="form-group">
-        <label>Princípio activo</label>
-        <input type="text" class="form-input" id="fPrincipio" placeholder="ex. Paracetamol">
-      </div>
-    </div>
-    <div class="form-row">
-      <div class="form-group">
-        <label>SKU / Código</label>
-        <input type="text" class="form-input" id="fSku" placeholder="FC-0001">
-        <span class="form-hint">Deixe em branco para gerar automaticamente</span>
-      </div>
-      <div class="form-group">
-        <label>Código de barras</label>
-        <input type="text" class="form-input" id="fBarcode" placeholder="EAN-13">
-      </div>
-    </div>
-    <div class="form-row">
-      <div class="form-group">
-        <label>Categoria *</label>
-        <select class="form-select" id="fCat">
-          <option value="">Selecionar categoria</option>
-          @foreach($categorias as $categoria)
-            <option value="{{ strtolower($categoria) }}">{{ $categoria }}</option>
-          @endforeach
-        </select>
-      </div>
-      <div class="form-group">
-        <label>Forma farmacêutica</label>
-        <select class="form-select" id="fForma">
-          <option>Comprimido</option>
-          <option>Cápsula</option>
-          <option>Xarope</option>
-          <option>Injectável</option>
-          <option>Pomada / Gel</option>
-          <option>Gotas</option>
-          <option>Supositório</option>
-          <option>Inalador</option>
-          <option>Outro</option>
-        </select>
-      </div>
-    </div>
-    <div class="form-row single">
-      <div class="form-group">
-        <label>Fabricante / Laboratório</label>
-        <input type="text" class="form-input" id="fFabricante" placeholder="ex. Bayer">
-      </div>
-    </div>
+        <div class="form-group">
+          <label>Descrição</label>
+          <input type="text" name="descricao" id="fDescricao" class="form-input" placeholder="ex. Antibiótico oral">
+        </div>
 
-    <div class="field-group-title">Stock & Validade</div>
-    <div class="form-row">
-      <div class="form-group">
-        <label>Quantidade em stock *</label>
-        <input type="number" class="form-input" id="fQty" min="0" placeholder="0">
       </div>
-      <div class="form-group">
-        <label>Stock mínimo (alerta)</label>
-        <input type="number" class="form-input" id="fMinStock" min="0" placeholder="10">
-        <span class="form-hint">Abaixo deste valor → alerta de stock baixo</span>
-      </div>
-    </div>
-    <div class="form-row">
-      <div class="form-group">
-        <label>Localização (prateleira)</label>
-        <input type="text" class="form-input" id="fLocation" placeholder="ex. A3-02">
-      </div>
-      <div class="form-group">
-        <label>Data de validade</label>
-        <input type="date" class="form-input" id="fValidade">
-      </div>
-    </div>
-    <div class="form-row single">
-      <div class="form-group">
-        <label>Estado de stock</label>
-        <div class="stock-indicator">
-          <div class="si-item selected" onclick="selectSI(this, 'ok')"><i class="bi bi-check-circle" style="color:var(--success);font-size:1rem"></i><span>Normal</span></div>
-          <div class="si-item" onclick="selectSI(this, 'low')"><i class="bi bi-exclamation-circle" style="color:var(--warning);font-size:1rem"></i><span>Baixo</span></div>
-          <div class="si-item" onclick="selectSI(this, 'critical')"><i class="bi bi-x-circle" style="color:var(--danger);font-size:1rem"></i><span>Crítico</span></div>
-          <div class="si-item" onclick="selectSI(this, 'out')"><i class="bi bi-dash-circle" style="color:var(--text-4);font-size:1rem"></i><span>Esgotado</span></div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Preço (Kz) *</label>
+          <input type="number" name="preco" id="fPreco" class="form-input" min="0" step="0.01" placeholder="1000" required>
+        </div>
+
+        <div class="form-group">
+          <label>Dosagem</label>
+          <input type="text" name="dosagem" id="fDosagem" class="form-input" placeholder="ex. 200 mg">
         </div>
       </div>
-    </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Categoria *</label>
+          <select class="form-select" name="categoria_id" id="fCat" required>
+            <option value="">Selecionar categoria</option>
+            @foreach($medicamentos as $medicamento)
+              <option value="{{ $medicamento->categoria->id }}">{{ $medicamento->categoria->name }}</option>
+            @endforeach
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Forma farmacêutica</label>
+          <select class="form-select" name="forma_farmaceutica" id="fForma">
+            <option value="Comprimido">Comprimido</option>
+            <option value="Cápsula">Cápsula</option>
+            <option value="Xarope">Xarope</option>
+            <option value="Injectável">Injectável</option>
+            <option value="Pomada / Gel">Pomada / Gel</option>
+            <option value="Gotas">Gotas</option>
+            <option value="Outro">Outro</option>
+          </select>
+        </div>
+      </div>
 
-    <div class="field-group-title">Preços</div>
-    <div class="form-row">
-      <div class="form-group">
-        <label>Preço de custo (Kz)</label>
-        <input type="number" class="form-input" id="fCusto" min="0" placeholder="0.00">
+      <div class="field-group-title">Stock & Validade</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Quantidade em stock *</label>
+          <input type="number" name="quantidade" id="fQuantidade" class="form-input" min="0" placeholder="0" required>
+        </div>
       </div>
-      <div class="form-group">
-        <label>Preço de venda (Kz) *</label>
-        <input type="number" class="form-input" id="fVenda" min="0" placeholder="0.00">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Data de validade</label>
+          <input type="date" name="data_validade" id="fDataValidade" class="form-input">
+        </div>
+        <div class="form-group">
+          <label>Lote</label>
+          <input type="text" name="lote" id="fLote" class="form-input" placeholder="ex. LOTE001">
+        </div>
       </div>
-    </div>
-
-    <div class="field-group-title">Prescrição & Observações</div>
-    <div class="form-row">
-      <div class="form-group">
-        <label>Requer receita médica</label>
-        <select class="form-select" id="fReceita">
-          <option value="0">Não</option>
-          <option value="1">Sim</option>
-        </select>
+      <div class="drawer-footer">
+        <button class="btn btn-outline" onclick="closeDrawer()">Cancelar</button>
+        <button class="btn btn-primary" type="submit"><i class="bi bi-check-lg"></i> Guardar produto</button>
       </div>
-      <div class="form-group">
-        <label>Substância controlada</label>
-        <select class="form-select" id="fControlado">
-          <option value="0">Não</option>
-          <option value="1">Sim</option>
-        </select>
-      </div>
-    </div>
-    <div class="form-row single">
-      <div class="form-group">
-        <label>Observações</label>
-        <textarea class="form-textarea" id="fObs" placeholder="Notas internas sobre o produto…"></textarea>
-      </div>
-    </div>
-
-  </div>
-  <div class="drawer-footer">
-    <button class="btn btn-outline" onclick="closeDrawer()">Cancelar</button>
-    <button class="btn btn-primary" onclick="saveProduct()"><i class="bi bi-check-lg"></i> Guardar produto</button>
+    </form>
   </div>
 </div>
 
@@ -965,16 +958,18 @@
 /* ══ DADOS DO BACKEND ═══════════════════════════ */
 let allProducts = @json($medicamentos->items()).map(m => ({
   id: m.id,
-  sku: 'FC-' + String(m.id).padStart(4, '0'),
   name: m.name,
-  principle: m.principle || '',
+  descricao: m.descricao || '',
   cat: m.categoria?.name || 'Outro',
-  price: m.preco,
+  catId: m.categoria_id,
+  price: m.preco || 0,
   stock: m.total_stock || 0,
   expiry: m.validade_proxima ? m.validade_proxima.substring(0, 7) : null,
-  minStock: 10,
+  data_validade: m.data_validade || '',
+  lote: m.lote || '',
+  dosagem: m.dosagem || '',
+  forma_farmaceutica: m.forma_farmaceutica || 'Comprimido',
   status: m.total_stock === 0 ? 'out' : m.total_stock < 8 ? 'critical' : m.total_stock < 20 ? 'low' : 'ok',
-  location: '',
 }));
 
 /* ══ STATE ══════════════════════════════════════════ */
@@ -997,14 +992,20 @@ function render() {
   const slice = filtered.slice(start, start + rpp);
 
   const tbody = document.getElementById('prodBody');
+  if (!tbody) return;
+  
   tbody.innerHTML = '';
 
   if (slice.length === 0) {
-    document.getElementById('emptyState').style.display = 'flex';
-    document.querySelector('.table-scroll').style.display = 'none';
+    const emptyState = document.getElementById('emptyState');
+    if (emptyState) emptyState.style.display = 'flex';
+    const tableScroll = document.querySelector('.table-scroll');
+    if (tableScroll) tableScroll.style.display = 'none';
   } else {
-    document.getElementById('emptyState').style.display = 'none';
-    document.querySelector('.table-scroll').style.display = '';
+    const emptyState = document.getElementById('emptyState');
+    if (emptyState) emptyState.style.display = 'none';
+    const tableScroll = document.querySelector('.table-scroll');
+    if (tableScroll) tableScroll.style.display = '';
   }
 
   slice.forEach(p => {
@@ -1041,7 +1042,7 @@ function render() {
             </div>
             <div>
               <div class="prod-name">${p.name}</div>
-              <div class="prod-sku">${p.sku}</div>
+              ${p.dosagem ? `<div class="prod-sku">${p.dosagem}</div>` : ''}
             </div>
           </div>
         </td>
@@ -1059,14 +1060,12 @@ function render() {
         <td><span class="tag ${tagMap[p.status]}">${lblMap[p.status]}</span></td>
         <td>
           <div class="price-val">${p.price.toLocaleString('pt-AO')} Kz</div>
-          <span class="price-unit">por unidade</span>
         </td>
         <td>${expiryHtml}</td>
         <td>
           <div class="row-actions">
             <button class="act-btn" title="Editar" onclick="openDrawer(${p.id})"><i class="bi bi-pencil"></i></button>
             <button class="act-btn" title="Repor stock" onclick="alert('Repor stock de ${p.name}')"><i class="bi bi-bag-plus"></i></button>
-            <button class="act-btn" title="Ver histórico" onclick="alert('Histórico de movimentos')"><i class="bi bi-clock-history"></i></button>
             <button class="act-btn danger" title="Eliminar" onclick="openConfirmSingle(${p.id})"><i class="bi bi-trash"></i></button>
           </div>
         </td>
@@ -1074,16 +1073,24 @@ function render() {
   });
 
   // Stats bar
-  document.getElementById('statNormal').textContent   = allProducts.filter(p => p.status === 'ok').length;
-  document.getElementById('statLow').textContent      = allProducts.filter(p => p.status === 'low').length;
-  document.getElementById('statCritical').textContent = allProducts.filter(p => p.status === 'critical').length;
-  document.getElementById('statOut').textContent      = allProducts.filter(p => p.status === 'out').length;
+  const statNormal = document.getElementById('statNormal');
+  const statLow = document.getElementById('statLow');
+  const statCritical = document.getElementById('statCritical');
+  const statOut = document.getElementById('statOut');
+  
+  if (statNormal) statNormal.textContent = allProducts.filter(p => p.status === 'ok').length;
+  if (statLow) statLow.textContent = allProducts.filter(p => p.status === 'low').length;
+  if (statCritical) statCritical.textContent = allProducts.filter(p => p.status === 'critical').length;
+  if (statOut) statOut.textContent = allProducts.filter(p => p.status === 'out').length;
 
   // Page info
   const end = Math.min(start + rpp, total);
-  document.getElementById('pageInfo').textContent = total === 0
-    ? '0 resultados'
-    : `${start+1}–${end} de ${total}`;
+  const pageInfo = document.getElementById('pageInfo');
+  if (pageInfo) {
+    pageInfo.textContent = total === 0
+      ? '0 resultados'
+      : `${start+1}–${end} de ${total}`;
+  }
 
   renderPagination(pages);
   updateSelectAll();
@@ -1091,6 +1098,8 @@ function render() {
 
 function renderPagination(pages) {
   const pg = document.getElementById('pagination');
+  if (!pg) return;
+  
   pg.innerHTML = '';
   const add = (label, page, disabled, active) => {
     const b = document.createElement('button');
@@ -1113,11 +1122,15 @@ function renderPagination(pages) {
 
 /* ══ FILTER & SORT ══════════════════════════════════ */
 function applyFilters() {
-  const q      = document.getElementById('searchInput').value.trim().toLowerCase();
-  const sf     = document.getElementById('stockFilter').value;
+  const searchInput = document.getElementById('searchInput');
+  const stockFilter = document.getElementById('stockFilter');
+  
+  const q = searchInput ? searchInput.value.trim().toLowerCase() : '';
+  const sf = stockFilter ? stockFilter.value : 'all';
+  
   filtered = allProducts.filter(p => {
-    const matchQ   = !q || p.name.toLowerCase().includes(q) || p.sku.toLowerCase().includes(q);
-    const matchCat = currentCat === 'all' || p.cat.toLowerCase().includes(currentCat);
+    const matchQ   = !q || p.name.toLowerCase().includes(q);
+    const matchCat = currentCat === 'all' || (p.cat && p.cat.toLowerCase().includes(currentCat));
     const matchS   = sf === 'all' || p.status === sf;
     return matchQ && matchCat && matchS;
   });
@@ -1128,7 +1141,14 @@ function applySort() {
   const { key, dir } = currentSort;
   filtered.sort((a, b) => {
     let va = a[key], vb = b[key];
-    if (key === 'name') { va = va.toLowerCase(); vb = vb.toLowerCase(); }
+    if (key === 'name') { 
+      va = va ? va.toLowerCase() : '';
+      vb = vb ? vb.toLowerCase() : '';
+    }
+    if (key === 'price' || key === 'stock') {
+      va = Number(va) || 0;
+      vb = Number(vb) || 0;
+    }
     if (va < vb) return dir === 'asc' ? -1 : 1;
     if (va > vb) return dir === 'asc' ? 1 : -1;
     return 0;
@@ -1147,15 +1167,11 @@ function filterCat(el, cat) {
 }
 
 function sortTable() {
-  const v = document.getElementById('sortSelect').value.split('-');
+  const sortSelect = document.getElementById('sortSelect');
+  if (!sortSelect) return;
+  
+  const v = sortSelect.value.split('-');
   currentSort = { key: v[0], dir: v[1] };
-  applySort();
-}
-
-function sortBy(key) {
-  if (currentSort.key === key) currentSort.dir = currentSort.dir === 'asc' ? 'desc' : 'asc';
-  else currentSort = { key, dir: 'asc' };
-  document.querySelectorAll('th').forEach(th => th.classList.remove('sorted'));
   applySort();
 }
 
@@ -1164,7 +1180,8 @@ function changePage(p) { currentPage = p; render(); }
 /* ══ SELECTION ══════════════════════════════════════ */
 function toggleRow(id, cb) {
   if (cb.checked) selected.add(id); else selected.delete(id);
-  document.querySelector(`tr[data-id="${id}"]`).classList.toggle('selected', cb.checked);
+  const row = document.querySelector(`tr[data-id="${id}"]`);
+  if (row) row.classList.toggle('selected', cb.checked);
   updateBulkBar(); updateSelectAll();
 }
 
@@ -1182,15 +1199,21 @@ function updateSelectAll() {
   const start = (currentPage - 1) * rpp;
   const slice = filtered.slice(start, start + rpp);
   const allSel = slice.length > 0 && slice.every(p => selected.has(p.id));
-  document.getElementById('selectAll').checked = allSel;
-  document.getElementById('selectAll').indeterminate = !allSel && slice.some(p => selected.has(p.id));
+  const selectAll = document.getElementById('selectAll');
+  if (selectAll) {
+    selectAll.checked = allSel;
+    selectAll.indeterminate = !allSel && slice.some(p => selected.has(p.id));
+  }
 }
 
 function updateBulkBar() {
   const bar = document.getElementById('bulkBar');
+  if (!bar) return;
+  
   if (selected.size > 0) {
     bar.classList.add('show');
-    document.getElementById('bulkCount').textContent = selected.size;
+    const bulkCount = document.getElementById('bulkCount');
+    if (bulkCount) bulkCount.textContent = selected.size;
   } else {
     bar.classList.remove('show');
   }
@@ -1205,23 +1228,43 @@ function clearSelection() {
 /* ══ DRAWER ════════════════════════════════════════ */
 function openDrawer(id) {
   editingId = id;
-  document.getElementById('drawerTitle').textContent = id ? 'Editar produto' : 'Novo produto';
+  const title = document.getElementById('drawerTitle');
+  const formMethod = document.getElementById('formMethod');
+  const productForm = document.getElementById('productForm');
+  
+  if (title) title.textContent = id ? 'Editar produto' : 'Novo produto';
+  
+  if (formMethod) {
+    formMethod.value = id ? 'PUT' : 'POST';
+  }
+  
+
   if (id) {
     const p = allProducts.find(x => x.id === id);
     if (p) {
-      document.getElementById('fNome').value      = p.name;
-      document.getElementById('fPrincipio').value = p.principle;
-      document.getElementById('fSku').value       = p.sku;
-      document.getElementById('fCat').value       = p.cat;
-      document.getElementById('fQty').value       = p.stock;
-      document.getElementById('fVenda').value     = p.price;
-      document.getElementById('fValidade').value  = p.expiry ? p.expiry + '-01' : '';
+      document.getElementById('fNome')?.setAttribute('value', p.name || '');
+      document.getElementById('fDescricao')?.setAttribute('value', p.descricao || '');
+      document.getElementById('fPreco')?.setAttribute('value', p.price || '');
+      document.getElementById('fCat')?.setAttribute('value', p.catId || '');
+      document.getElementById('fForma')?.setAttribute('value', p.forma_farmaceutica || 'Comprimido');
+      document.getElementById('fDosagem')?.setAttribute('value', p.dosagem || '');
+      document.getElementById('fQuantidade')?.setAttribute('value', p.stock || '');
+      document.getElementById('fDataValidade')?.setAttribute('value', p.data_validade || '');
+      document.getElementById('fLote')?.setAttribute('value', p.lote || '');
     }
   } else {
-    document.getElementById('fNome').value = document.getElementById('fPrincipio').value =
-    document.getElementById('fSku').value  = document.getElementById('fQty').value =
-    document.getElementById('fVenda').value= document.getElementById('fValidade').value = '';
+    // Limpar formulário para novo produto
+    document.getElementById('fNome')?.setAttribute('value', '');
+    document.getElementById('fDescricao')?.setAttribute('value', '');
+    document.getElementById('fPreco')?.setAttribute('value', '');
+    document.getElementById('fCat')?.setAttribute('value', '');
+    document.getElementById('fForma')?.setAttribute('value', 'Comprimido');
+    document.getElementById('fDosagem')?.setAttribute('value', '');
+    document.getElementById('fQuantidade')?.setAttribute('value', '');
+    document.getElementById('fDataValidade')?.setAttribute('value', '');
+    document.getElementById('fLote')?.setAttribute('value', '');
   }
+
   document.getElementById('drawerOverlay').classList.add('open');
   document.getElementById('drawer').classList.add('open');
 }
@@ -1229,42 +1272,43 @@ function openDrawer(id) {
 function closeDrawer() {
   document.getElementById('drawerOverlay').classList.remove('open');
   document.getElementById('drawer').classList.remove('open');
+  editingId = null;
 }
 
-function saveProduct() {
-  const name = document.getElementById('fNome').value.trim();
-  if (!name) { document.getElementById('fNome').focus(); return; }
+function submitProductForm() {
+  const form = document.getElementById('productForm');
   
-  // Aqui você faria uma requisição POST para salvar no backend
-  alert('Produto guardado com sucesso! (Integrar com API Laravel)');
+  // Validação básica
+  const nome = document.getElementById('fNome')?.value.trim();
+  const preco = document.getElementById('fPreco')?.value.trim();
+  const cat = document.getElementById('fCat')?.value;
+  const quantidade = document.getElementById('fQuantidade')?.value.trim();
   
-  if (editingId) {
-    const p = allProducts.find(x => x.id === editingId);
-    if (p) {
-      p.name      = name;
-      p.principle = document.getElementById('fPrincipio').value;
-      p.cat       = document.getElementById('fCat').value || p.cat;
-      p.stock     = parseInt(document.getElementById('fQty').value) || 0;
-      p.price     = parseFloat(document.getElementById('fVenda').value) || p.price;
-      p.status    = p.stock === 0 ? 'out' : p.stock < 8 ? 'critical' : p.stock < 20 ? 'low' : 'ok';
-    }
-  } else {
-    const newId = allProducts.length + 1;
-    allProducts.push({
-      id: newId, sku: `FC-${String(newId).padStart(4,'0')}`,
-      name: name,
-      principle: document.getElementById('fPrincipio').value,
-      cat:   document.getElementById('fCat').value || 'Outro',
-      stock: parseInt(document.getElementById('fQty').value) || 0,
-      price: parseFloat(document.getElementById('fVenda').value) || 0,
-      expiry: document.getElementById('fValidade').value ? document.getElementById('fValidade').value.substring(0,7) : null,
-      minStock: parseInt(document.getElementById('fMinStock').value) || 10,
-      location: document.getElementById('fLocation').value || '',
-      status: 'ok',
-    });
+  if (!nome) {
+    alert('Por favor, preencha o nome do produto.');
+    document.getElementById('fNome')?.focus();
+    return false;
   }
-  applyFilters();
-  closeDrawer();
+  
+  if (!preco) {
+    alert('Por favor, preencha o preço do produto.');
+    document.getElementById('fPreco')?.focus();
+    return false;
+  }
+  
+  if (!cat) {
+    alert('Por favor, selecione uma categoria.');
+    document.getElementById('fCat')?.focus();
+    return false;
+  }
+  
+  if (!quantidade) {
+    alert('Por favor, preencha a quantidade em stock.');
+    document.getElementById('fQuantidade')?.focus();
+    return false;
+  }
+  
+  form.submit();
 }
 
 /* ══ DELETE ════════════════════════════════════════ */
@@ -1273,30 +1317,23 @@ let deleteSingleId = null;
 function openConfirmSingle(id) {
   deleteSingleId = id;
   const p = allProducts.find(x => x.id === id);
-  document.getElementById('confirmText').textContent = `Tem a certeza que quer eliminar "${p?.name}"? Esta acção não pode ser revertida.`;
+  const confirmText = document.getElementById('confirmText');
+  if (confirmText) {
+    confirmText.textContent = `Tem a certeza que quer eliminar "${p?.name}"? Esta acção não pode ser revertida.`;
+  }
   document.getElementById('confirmModal').classList.add('open');
 }
 
 function openConfirmModal() {
   deleteSingleId = null;
-  document.getElementById('confirmText').textContent = `Vai eliminar ${selected.size} produto(s). Esta acção é permanente e não pode ser revertida.`;
+  const confirmText = document.getElementById('confirmText');
+  if (confirmText) {
+    confirmText.textContent = `Vai eliminar ${selected.size} produto(s). Esta acção é permanente e não pode ser revertida.`;
+  }
   document.getElementById('confirmModal').classList.add('open');
 }
 
 function confirmDelete() {
-  // Aqui você faria uma requisição DELETE para o backend
-  alert('Produto(s) eliminado(s) com sucesso! (Integrar com API Laravel)');
-  
-  if (deleteSingleId) {
-    allProducts = allProducts.filter(p => p.id !== deleteSingleId);
-    selected.delete(deleteSingleId);
-  } else {
-    allProducts = allProducts.filter(p => !selected.has(p.id));
-    selected.clear();
-  }
-  document.getElementById('confirmModal').classList.remove('open');
-  updateBulkBar();
-  applyFilters();
 }
 
 document.getElementById('confirmModal').addEventListener('click', function(e) {
@@ -1305,15 +1342,11 @@ document.getElementById('confirmModal').addEventListener('click', function(e) {
 
 /* ══ VIEW TOGGLE ═══════════════════════════════════ */
 function setView(v) {
-  document.getElementById('viewTable').classList.toggle('active', v === 'table');
-  document.getElementById('viewGrid').classList.toggle('active', v === 'grid');
-  // Grid view: implementar se necessário
-}
-
-/* ══ DRAWER STOCK INDICATOR ════════════════════════ */
-function selectSI(el, val) {
-  document.querySelectorAll('.si-item').forEach(i => i.classList.remove('selected'));
-  el.classList.add('selected');
+  const viewTable = document.getElementById('viewTable');
+  const viewGrid = document.getElementById('viewGrid');
+  
+  if (viewTable) viewTable.classList.toggle('active', v === 'table');
+  if (viewGrid) viewGrid.classList.toggle('active', v === 'grid');
 }
 
 /* ══ SIDEBAR ═══════════════════════════════════════ */
@@ -1321,10 +1354,18 @@ function setActive(el) {
   document.querySelectorAll('.nav-item.active').forEach(i => i.classList.remove('active'));
   el.classList.add('active');
 }
-function toggleSub(id) { document.getElementById(id).classList.toggle('open'); }
+
+function toggleSub(id) { 
+  const element = document.getElementById(id);
+  if (element) element.classList.toggle('open'); 
+}
 
 /* ══ INIT ══════════════════════════════════════════ */
-applyFilters();
+document.addEventListener('DOMContentLoaded', function() {
+  if (typeof allProducts !== 'undefined' && allProducts.length > 0) {
+    applyFilters();
+  }
+});
 </script>
 </body>
 </html>

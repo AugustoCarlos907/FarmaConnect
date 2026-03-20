@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>FarmaConnect · Documentos</title>
+  <title>FarmaConnect · Documentos da Farmácia</title>
 
   <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
@@ -78,6 +78,28 @@
     .pill-open { background: #dcfce7; color: #15803d; }
     .ph-meta { font-size: 0.7rem; color: var(--accent-2); opacity: .8; display: flex; align-items: center; gap: 4px; margin-bottom: 2px; }
 
+        /* Logout button */
+    .logout-form {
+        margin-top: 12px;
+    }
+
+    .logout-btn {
+        color: var(--danger);
+    }
+
+    .logout-btn i {
+        color: var(--danger);
+    }
+
+    .logout-btn:hover {
+        background: var(--danger-light);
+        color: var(--danger);
+    }
+
+    .logout-btn:hover i {
+        color: var(--danger);
+    }
+    
     /* ─── MAIN ────────────────────────────── */
     .main { flex: 1; margin-left: 220px; display: flex; flex-direction: column; min-height: 100vh; }
     .topbar { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0 22px; height: var(--topbar-h); display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; flex-shrink: 0; }
@@ -95,144 +117,313 @@
     .u-role { font-size: 0.67rem; color: var(--text-3); display: block; }
 
     /* ─── CONTENT ─────────────────────────── */
-    .content { padding: 18px 22px; flex: 1; }
-
-    /* ─── GRID DE DOCUMENTOS ─────────────── */
-    .docs-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-      gap: 16px;
-      max-width: 900px;
+    .content { 
+      padding: 18px 22px; 
+      flex: 1; 
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
     }
 
-    /* ─── CARD DOCUMENTO ──────────────────── */
-    .doc-card {
+    /* ─── CARD ÚNICO ──────────────────────── */
+    .document-card {
+      max-width: 650px;
+      width: 100%;
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: var(--r-xl);
       overflow: hidden;
-      transition: border-color .15s, box-shadow .15s;
+      box-shadow: var(--shadow-md);
+      transition: transform 0.2s, box-shadow 0.2s;
+      margin: 0 auto;
     }
-    .doc-card:hover { border-color: var(--accent-mid); box-shadow: var(--shadow-md); }
+    
+    .document-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 30px rgba(8,153,166,0.15);
+    }
 
-    /* Cabeçalho do card */
-    .doc-card-head {
-      padding: 14px 16px;
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    .doc-icon {
-      width: 34px; height: 34px;
-      border-radius: var(--r-md);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 0.92rem;
-      flex-shrink: 0;
-    }
-    .doc-icon.teal   { background: var(--accent-light); color: var(--accent); }
-    .doc-icon.amber  { background: var(--warning-light); color: var(--warning); }
-    .doc-title { font-family: 'Sora', sans-serif; font-size: 0.85rem; font-weight: 600; color: var(--text); }
-    .doc-subtitle { font-size: 0.7rem; color: var(--text-4); margin-top: 1px; }
-
-    /* Badge de validade */
-    .doc-badge {
-      margin-left: auto;
-      font-size: 0.62rem;
-      font-weight: 700;
-      padding: 2px 8px;
-      border-radius: 20px;
-      flex-shrink: 0;
-    }
-    .badge-valid   { background: var(--success-light); color: #15803d; }
-    .badge-warning { background: var(--warning-light); color: #854f0b; }
-    .badge-expired { background: var(--danger-light); color: var(--danger); }
-
-    /* Área da imagem */
-    .doc-img-wrap {
+    /* Cabeçalho do card com gradiente */
+    .doc-header {
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-2) 100%);
+      padding: 24px 24px 20px;
+      color: white;
       position: relative;
-      background: var(--surface-2);
-      border-bottom: 1px solid var(--border);
-      min-height: 200px;
+      overflow: hidden;
+    }
+    
+    .doc-header::before {
+      content: '';
+      position: absolute;
+      top: -30px;
+      right: -30px;
+      width: 120px;
+      height: 120px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 50%;
+    }
+    
+    .doc-header::after {
+      content: '';
+      position: absolute;
+      bottom: -30px;
+      left: -30px;
+      width: 150px;
+      height: 150px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 50%;
+    }
+    
+    .doc-header-content {
+      position: relative;
+      z-index: 2;
+    }
+    
+    .doc-header-icon {
+      width: 60px;
+      height: 60px;
+      background: rgba(255,255,255,0.2);
+      border-radius: 20px;
       display: flex;
       align-items: center;
       justify-content: center;
+      font-size: 2rem;
+      margin-bottom: 16px;
+      backdrop-filter: blur(4px);
+      border: 1px solid rgba(255,255,255,0.3);
+    }
+    
+    .doc-header-title {
+      font-family: 'Sora', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    
+    .doc-header-sub {
+      font-size: 0.9rem;
+      opacity: 0.9;
+    }
+
+    /* Corpo do card */
+    .doc-body {
+      padding: 24px;
+    }
+
+    /* Seções de documento */
+    .doc-section {
+      margin-bottom: 28px;
+    }
+    
+    .doc-section:last-child {
+      margin-bottom: 0;
+    }
+    
+    .doc-section-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--text-2);
+      margin-bottom: 16px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+    }
+    
+    .doc-section-title i {
+      font-size: 1rem;
+      color: var(--accent);
+    }
+
+    /* Grid de informações */
+    .info-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    
+    .info-item {
+      background: var(--surface-2);
+      border-radius: var(--r-lg);
+      padding: 14px;
+      border: 1px solid var(--border);
+      transition: border-color 0.2s;
+    }
+    
+    .info-item:hover {
+      border-color: var(--accent-mid);
+    }
+    
+    .info-label {
+      font-size: 0.7rem;
+      color: var(--text-3);
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+      margin-bottom: 6px;
+    }
+    
+    .info-value {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text);
+      font-family: 'Sora', sans-serif;
+    }
+    
+    .info-value.mono {
+      font-family: 'DM Mono', 'Courier New', monospace;
+      font-size: 1rem;
+    }
+    
+    .info-value.small {
+      font-size: 0.9rem;
+    }
+
+    /* Container de imagens */
+    .images-container {
+      display: flex;
+      gap: 20px;
+      margin-top: 16px;
+    }
+    
+    .image-card {
+      flex: 1;
+      background: var(--surface-2);
+      border-radius: var(--r-lg);
+      border: 1px solid var(--border);
       overflow: hidden;
+      transition: all 0.2s;
       cursor: pointer;
     }
-    .doc-img-wrap img {
-      width: 100%;
-      height: 220px;
-      object-fit: cover;
-      display: block;
-      transition: transform .2s;
+    
+    .image-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(8,153,166,0.1);
     }
-    .doc-img-wrap:hover img { transform: scale(1.02); }
+    
+    .image-preview {
+      height: 150px;
+      background-size: cover;
+      background-position: center;
+      position: relative;
+    }
+    
+    .image-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+    
+    .image-card:hover .image-overlay {
+      opacity: 1;
+    }
+    
+    .image-overlay i {
+      color: white;
+      font-size: 2rem;
+      background: rgba(0,0,0,0.3);
+      border-radius: 50%;
+      padding: 10px;
+    }
+    
+    .image-label {
+      padding: 10px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-2);
+      text-align: center;
+      background: white;
+      border-top: 1px solid var(--border);
+    }
 
-    /* Placeholder quando sem imagem */
-    .doc-placeholder {
+    /* Placeholder de imagem */
+    .image-placeholder {
+      height: 150px;
+      background: var(--surface-2);
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       gap: 8px;
-      padding: 32px;
       color: var(--text-4);
-      height: 200px;
     }
-    .doc-placeholder i { font-size: 2rem; }
-    .doc-placeholder span { font-size: 0.77rem; text-align: center; }
+    
+    .image-placeholder i {
+      font-size: 2.5rem;
+    }
+    
+    .image-placeholder span {
+      font-size: 0.75rem;
+      text-align: center;
+      padding: 0 10px;
+    }
 
-    /* Overlay de zoom */
-    .doc-zoom-btn {
-      position: absolute;
-      bottom: 10px;
-      right: 10px;
-      width: 30px;
-      height: 30px;
-      border-radius: var(--r-sm);
-      background: rgba(255,255,255,.9);
-      border: 1px solid var(--border);
-      display: flex;
+    /* Badge de status */
+    .status-badge {
+      display: inline-flex;
       align-items: center;
-      justify-content: center;
-      font-size: 0.82rem;
-      color: var(--text-3);
-      cursor: pointer;
-      transition: all .1s;
-      opacity: 0;
-      transition: opacity .15s;
+      gap: 4px;
+      padding: 4px 12px;
+      border-radius: 30px;
+      font-size: 0.75rem;
+      font-weight: 600;
     }
-    .doc-img-wrap:hover .doc-zoom-btn { opacity: 1; }
-    .doc-zoom-btn:hover { background: var(--surface); color: var(--accent); }
+    
+    .status-valid {
+      background: var(--success-light);
+      color: #15803d;
+    }
+    
+    .status-warning {
+      background: var(--warning-light);
+      color: #854f0b;
+    }
 
     /* Rodapé do card */
-    .doc-card-body { padding: 14px 16px; }
+    .doc-footer {
+      padding: 20px 24px;
+      border-top: 1px solid var(--border);
+      background: var(--surface-2);
+      display: flex;
+      gap: 12px;
+      justify-content: flex-end;
+    }
 
-    .doc-field { display: flex; align-items: center; gap: 8px; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 0.8rem; }
-    .doc-field:last-child { border-bottom: none; padding-bottom: 0; }
-    .doc-field-lbl { font-size: 0.72rem; color: var(--text-3); width: 110px; flex-shrink: 0; }
-    .doc-field-val { flex: 1; font-weight: 600; color: var(--text-2); }
-    .doc-field-val.mono { font-family: 'DM Mono', 'Courier New', monospace; font-size: 0.88rem; letter-spacing: .04em; color: var(--text); }
-
-    /* Acções */
-    .doc-card-footer { padding: 12px 16px; border-top: 1px solid var(--border); display: flex; gap: 7px; }
-    .btn { display: inline-flex; align-items: center; gap: 5px; padding: 5px 12px; border-radius: var(--r-md); font-size: 0.78rem; font-weight: 600; cursor: pointer; transition: all .1s; border: 1px solid; font-family: 'DM Sans', sans-serif; }
-    .btn i { font-size: 0.8rem; }
+    /* Botões */
+    .btn { 
+      display: inline-flex; 
+      align-items: center; 
+      gap: 6px; 
+      padding: 8px 18px; 
+      border-radius: var(--r-md); 
+      font-size: 0.8rem; 
+      font-weight: 600; 
+      cursor: pointer; 
+      transition: all 0.15s; 
+      border: 1px solid; 
+      font-family: 'DM Sans', sans-serif; 
+      text-decoration: none;
+    }
+    .btn i { font-size: 0.9rem; }
     .btn-primary { background: var(--accent); color: #fff; border-color: var(--accent); }
-    .btn-primary:hover { background: var(--accent-2); }
-    .btn-outline { background: var(--surface); color: var(--text-2); border-color: var(--border); }
-    .btn-outline:hover { background: var(--surface-2); border-color: var(--border-strong); }
-    .btn-icon { padding: 5px 8px; }
+    .btn-primary:hover { background: var(--accent-2); border-color: var(--accent-2); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(8,153,166,0.2); }
+    .btn-outline { background: transparent; color: var(--accent); border-color: var(--accent); }
+    .btn-outline:hover { background: var(--accent-light); transform: translateY(-2px); }
 
     /* ─── LIGHTBOX ────────────────────────── */
-    .lightbox { display: none; position: fixed; inset: 0; background: rgba(15,23,42,.88); z-index: 1000; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(4px); }
+    .lightbox { display: none; position: fixed; inset: 0; background: rgba(15,23,42,.95); z-index: 1000; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(8px); }
     .lightbox.open { display: flex; }
     .lightbox-inner { position: relative; max-width: 90vw; max-height: 90vh; }
-    .lightbox-inner img { max-width: 100%; max-height: 85vh; border-radius: var(--r-lg); box-shadow: 0 24px 64px rgba(0,0,0,.5); display: block; }
-    .lightbox-close { position: absolute; top: -14px; right: -14px; width: 32px; height: 32px; border-radius: 50%; background: var(--surface); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 0.88rem; color: var(--text-2); transition: all .1s; }
+    .lightbox-inner img { max-width: 100%; max-height: 85vh; border-radius: var(--r-lg); box-shadow: 0 24px 64px rgba(0,0,0,.5); display: block; border: 3px solid white; }
+    .lightbox-close { position: absolute; top: -16px; right: -16px; width: 36px; height: 36px; border-radius: 50%; background: var(--surface); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 1rem; color: var(--text-2); transition: all .1s; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
     .lightbox-close:hover { background: var(--danger-light); color: var(--danger); }
-    .lightbox-label { text-align: center; color: rgba(255,255,255,.6); font-size: 0.77rem; margin-top: 10px; }
+    .lightbox-label { text-align: center; color: rgba(255,255,255,.7); font-size: 0.85rem; margin-top: 16px; font-weight: 500; }
 
     /* ─── SCROLL ──────────────────────────── */
     ::-webkit-scrollbar { width: 4px; height: 4px; }
@@ -243,7 +434,10 @@
     @media (max-width: 768px) {
       .sidebar { transform: translateX(-100%); }
       .main { margin-left: 0; }
-      .docs-grid { grid-template-columns: 1fr; }
+      .info-grid { grid-template-columns: 1fr; }
+      .images-container { flex-direction: column; }
+      .doc-footer { flex-direction: column; }
+      .doc-footer .btn { width: 100%; justify-content: center; }
     }
   </style>
 </head>
@@ -251,106 +445,129 @@
 <div class="layout">
 
   <!-- ══ SIDEBAR ══════════════════════════════════ -->
-  <aside class="sidebar">
+<aside class="sidebar">
     <div class="sidebar-header">
-      <a href="#" class="logo">
-        <div class="logo-mark">
-          <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 13v-2H9v-2h2V9h2v2h2v2h-2v2h-2z"/></svg>
-        </div>
-        <span class="logo-text"><span class="f">Farma</span><span class="c">Connect</span></span>
-      </a>
+        <a href="#" class="logo">
+            <div class="logo-mark">
+                <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 13v-2H9v-2h2V9h2v2h2v2h-2v2h-2z"/></svg>
+            </div>
+            <span class="logo-text"><span class="f">Farma</span><span class="c">Connect</span></span>
+        </a>
     </div>
 
     <div class="sidebar-body">
-      <div class="nav-section">
-        <span class="nav-label">Principal</span>
-        <button class="nav-item " onclick="setActive(this)">
-          <i class="bi bi-grid-1x2"></i> <a href="{{route('index.farmacias')}}">Dashboard</a> 
-        </button>
-        <div class="has-sub" id="sub-stock">
-          <button class="nav-item" onclick="toggleSub('sub-stock')">
-            <i class="bi bi-archive"></i> Stock
-            {{-- <span class="nav-badge nb-amber">3</span> --}}
-            <i class="bi bi-chevron-down chevron"></i>
-          </button>
-          <div class="sub">
-            <div class="sub-item"><i class="bi bi-list-ul"></i><a class="text-decoration-none" href="{{ route('medicamentos.farmacias') }}"> Lista de produtos</a></div>
-            <div class="sub-item"><i class="bi bi-exclamation-triangle"></i> Stock baixo <span class="nav-badge nb-red" style="margin-left:4px"></span></div>
-          </div>
-        </div>
-        <button class="nav-item" onclick="setActive(this)">
-          <i class="bi bi-truck"></i><a href="{{route('pedidos.farmacias')}}"> Pedidos</a>
-          {{-- <span class="nav-badge nb-red">{{ $data['pedidos_hoje']->count() }}</span> --}}
-        </button>
-        <button class="nav-item" onclick="setActive(this)">
-          <i class="bi bi-person-badge"></i> <a href="{{route('entregadores.farmacias')}}"> Entregadores </a>
-          {{-- <span class="nav-badge nb-teal">4</span> --}}
-        </button>
-        <button class="nav-item" onclick="setActive(this)">
-          <i class="bi bi-people"></i> <a href="{{route('clientes.farmacias')}}">Clientes</a> 
-        </button>
+        <div class="nav-section">
+            <span class="nav-label">Principal</span>
+            
+            <!-- Dashboard -->
+            <a href="{{ route('index.farmacias') }}" class="nav-item {{ request()->routeIs('index.farmacias') ? 'active' : '' }}">
+                <i class="bi bi-grid-1x2"></i>
+                <span>Dashboard</span>
+            </a>
 
-        {{-- <span class="nav-label">Análise</span>
-        <div class="has-sub" id="sub-rel">
-          <button class="nav-item" onclick="toggleSub('sub-rel')">
-            <i class="bi bi-bar-chart-line"></i> Relatórios
-            <i class="bi bi-chevron-down chevron"></i>
-          </button>
-          <div class="sub">
-            <div class="sub-item"><i class="bi bi-cash-stack"></i> Vendas</div>
-            <div class="sub-item"><i class="bi bi-archive"></i> Stock</div>
-            <div class="sub-item"><i class="bi bi-truck"></i> Entregas</div>
-            <div class="sub-item"><i class="bi bi-star"></i> Avaliações</div>
-          </div>
-        </div> --}}
-        
-        <button class="nav-item" onclick="setActive(this)">
-          <i class="bi bi-star"></i> <a href="{{route('avaliacoes.farmacias')}}"> Avaliações</a>
-          {{-- <span class="nav-badge nb-amber">{{ $data['todas_avaliacoes']->count() }}</span> --}}
-        </button>
+            <!-- Stock com submenu -->
+            <div class="has-sub {{ request()->routeIs('medicamentos.farmacias') ? 'open' : '' }}" id="sub-stock">
+                <div class="nav-item" onclick="toggleSub('sub-stock')">
+                    <i class="bi bi-archive"></i>
+                    <span>Stock</span>
+                    <i class="bi bi-chevron-down chevron"></i>
+                </div>
+                <div class="sub">
+                    <a href="{{ route('medicamentos.farmacias') }}" class="sub-item {{ request()->routeIs('medicamentos.farmacias') ? 'active-sub' : '' }}">
+                        <i class="bi bi-list-ul"></i>
+                        <span>Lista de produtos</span>
+                    </a>
+                    <div class="sub-item">
+                        <i class="bi bi-exclamation-triangle"></i>
+                        <span>Stock baixo</span>
+                    </div>
+                </div>
+            </div>
 
-        <span class="nav-label">Gestão</span>
-        <button class="nav-item active" onclick="setActive(this)">
-          <i class="bi bi-file-earmark-text"></i> <a href="{{route('documentos.farmacias') }}">Documentos</a> 
-          {{-- <span class="nav-badge nb-slate">2</span> --}}
-        </button>
-        <div class="has-sub" id="sub-cfg">
-          <button class="nav-item" onclick="toggleSub('sub-cfg')">
-            <i class="bi bi-gear"></i> Configurações
-            <i class="bi bi-chevron-down chevron"></i>
-          </button>
-          <div class="sub">
-            <div class="sub-item"><i class="bi bi-person"></i> Perfil</div>
-            <div class="sub-item"><i class="bi bi-shop"></i> Farmácia</div>
-            <div class="sub-item"><i class="bi bi-clock"></i> Horário</div>
-            {{-- <div class="sub-item"><i class="bi bi-bell"></i> Notificações</div> --}}
-          </div>
+            <!-- Pedidos -->
+            <a href="{{ route('pedidos.farmacias') }}" class="nav-item {{ request()->routeIs('pedidos.farmacias') ? 'active' : '' }}">
+                <i class="bi bi-truck"></i>
+                <span>Pedidos</span>
+
+            </a>
+
+            <!-- Entregadores -->
+            <a href="{{ route('entregadores.farmacias') }}" class="nav-item {{ request()->routeIs('entregadores.farmacias') ? 'active' : '' }}">
+                <i class="bi bi-person-badge"></i>
+                <span>Entregadores</span>
+
+            </a>
+
+            <!-- Clientes -->
+            <a href="{{ route('clientes.farmacias') }}" class="nav-item {{ request()->routeIs('clientes.farmacias') ? 'active' : '' }}">
+                <i class="bi bi-people"></i>
+                <span>Clientes</span>
+            </a>
+
+            <!-- Avaliações -->
+            <a href="{{ route('avaliacoes.farmacias') }}" class="nav-item {{ request()->routeIs('avaliacoes.farmacias') ? 'active' : '' }}">
+                <i class="bi bi-star"></i>
+                <span>Avaliações</span>
+
+            </a>
+
+            <span class="nav-label">Gestão</span>
+
+            <!-- Documentos -->
+            <a href="{{ route('documentos.farmacias') }}" class="nav-item {{ request()->routeIs('documentos.farmacias') ? 'active' : '' }}">
+                <i class="bi bi-file-earmark-text"></i>
+                <span>Documentos</span>
+            </a>
+
+            <!-- Configurações com submenu -->
+            <div class="has-sub" id="sub-cfg">
+                <div class="nav-item" onclick="toggleSub('sub-cfg')">
+                    <i class="bi bi-gear"></i>
+                    <span>Configurações</span>
+                    <i class="bi bi-chevron-down chevron"></i>
+                </div>
+                <div class="sub">
+                    <div class="sub-item">
+                        <i class="bi bi-person"></i>
+                        <span>Perfil</span>
+                    </div>
+                    <div class="sub-item">
+                        <i class="bi bi-shop"></i>
+                        <span>Farmácia</span>
+                    </div>
+                    <div class="sub-item">
+                        <i class="bi bi-clock"></i>
+                        <span>Horário</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sair -->
+            <form action="{{ route('logout', ['id'=>Auth::user()->id]) }}" method="post" class="logout-form">
+                @csrf
+                <button type="submit" class="nav-item logout-btn">
+                    <i class="bi bi-box-arrow-right"></i>
+                    <span>Sair</span>
+                </button>
+            </form>
         </div>
-        <div class="nav-divider"></div>
-        <form action="{{ route('logout', ['id'=>Auth::user()->id]) }}" method="post">
-          @csrf
-          <button type="submit" class="nav-item" style="color:var(--danger)">
-            <i class="bi bi-box-arrow-right" style="color:var(--danger)"></i> Sair
-          </button>
-        </form>
-      </div>
     </div>
 
-   <div class="sidebar-footer">
-      @php
-        $farmacia = Auth::user()->farmacia;
-      @endphp
-      <div class="ph-card">
-        <div class="ph-row">
-          <span class="ph-name">{{ $farmacia->name ?? 'FC' }}</span>
-          <span class="ph-pill pill-open">{{ $farmacia->status  }}</span>
+    <div class="sidebar-footer">
+        @php
+            $farmacia = Auth::user()->farmacia;
+        @endphp
+        <div class="ph-card">
+            <div class="ph-row">
+                <span class="ph-name">{{ $farmacia->name ?? 'Farmácia' }}</span>
+                <span class="ph-pill pill-open">{{ $farmacia->status ?? 'Aberta' }}</span>
+            </div>
+            <p class="ph-meta"><i class="bi bi-geo-alt"></i> {{ $farmacia->endereco ?? '—' }}</p>
+            <p class="ph-meta"><i class="bi bi-clock"></i> {{ $farmacia->horario_abertura ?? '08:00' }} - {{ $farmacia->horario_fechamento ?? '22:00' }}</p>
+            <p class="ph-meta" style="opacity:.55;font-size:.65rem;margin-top:2px"><i class="bi bi-building"></i> {{ $farmacia->company ?? 'FarmaConnect' }}</p>
         </div>
-        <p class="ph-meta"><i class="bi bi-geo-alt"></i> {{ $farmacia->endereco  }}</p>
-        <p class="ph-meta"><i class="bi bi-clock"></i> {{ $farmacia->horario_abertura ?? '08:00 ' }} - {{ $farmacia->horario_fechamento ?? '22:00' }}</p>
-        <p class="ph-meta" style="opacity:.55;font-size:.65rem;margin-top:2px"><i class="bi bi-building"></i> {{ $farmacia->company ?? 'UNKNOWN' }}</p>
-      </div>
     </div>
-  </aside>
+</aside>
 
   <!-- ══ MAIN ══════════════════════════════════════ -->
   <div class="main">
@@ -358,136 +575,151 @@
       <div class="tb-left">
         <h1>Documentos</h1>
         <span class="tb-sep">/</span>
-        <span class="tb-sub">Farmácia Central</span>
+        <span class="tb-sub">{{ $farmacia->name ?? 'Farmácia' }}</span>
       </div>
       <div class="tb-right">
         <div class="ib"><i class="bi bi-search"></i></div>
         <div class="ib"><i class="bi bi-bell"></i><span class="ib-dot"></span></div>
         <div class="user-chip">
           <div class="u-av">FC</div>
-            <div><span class="u-name">{{ Auth::user()->farmacia->name ?? 'UNKNOWN'  }}</span><span class="u-role">{{ Auth::user()->name ?? 'Dr. António Silva' }}</span></div>
+          <div>
+            <span class="u-name">{{ $farmacia->name ?? 'Farmácia' }}</span>
+            <span class="u-role">{{ Auth::user()->name ?? 'Farmacêutico' }}</span>
+          </div>
         </div>
       </div>
     </header>
 
     <div class="content">
-
-      <div class="docs-grid">
-
-        <!-- ── CARD ALVARÁ ──────────────────── -->
-        <div class="doc-card">
-          <div class="doc-card-head">
-            <div class="doc-icon teal"><i class="bi bi-patch-check"></i></div>
-            <div>
-              <div class="doc-title">Alvará de Funcionamento</div>
-              <div class="doc-subtitle">Licença de operação farmacêutica</div>
+      
+      <!-- Card Único de Documentos -->
+      <div class="document-card">
+        
+        <!-- Cabeçalho com gradiente -->
+        <div class="doc-header">
+          <div class="doc-header-content">
+            <div class="doc-header-icon">
+              <i class="bi bi-file-earmark-text"></i>
             </div>
-            <span class="doc-badge badge-valid">Válido</span>
-          </div>
-
-          <!-- Imagem do alvará -->
-          <div class="doc-img-wrap" onclick="openLightbox('alv')">
-            {{-- Substituir src por {{ asset('storage/' . $farmacia->alvara_path) }} --}}
-            <img id="alvaraImg"
-                 src="https://placehold.co/600x400/e6f7f8/0899a6?text=Alvará+de+Funcionamento"
-                 alt="Alvará de Funcionamento — Farmácia Central"
-                 onerror="this.parentElement.innerHTML=noImgHtml('Alvará não carregado')">
-            <button class="doc-zoom-btn" title="Ampliar">
-              <i class="bi bi-zoom-in"></i>
-            </button>
-          </div>
-
-          <!-- Campos -->
-          <div class="doc-card-body">
-            <div class="doc-field">
-              <span class="doc-field-lbl">Número</span>
-              {{-- <span class="doc-field-val mono">{{ $farmacia->alvara_numero ?? '—' }}</span> --}}
-              <span class="doc-field-val mono">ALV-2021-004872</span>
-            </div>
-            <div class="doc-field">
-              <span class="doc-field-lbl">Emitido por</span>
-              <span class="doc-field-val">MINSA — Angola</span>
-            </div>
-            <div class="doc-field">
-              <span class="doc-field-lbl">Data de emissão</span>
-              <span class="doc-field-val">12 de Janeiro de 2021</span>
-            </div>
-            <div class="doc-field">
-              <span class="doc-field-lbl">Validade</span>
-              <span class="doc-field-val" style="color:var(--success);font-weight:700">31 de Dezembro de 2025</span>
-            </div>
-          </div>
-
-          <div class="doc-card-footer">
-            <a href="#" class="btn btn-primary" onclick="openLightbox('alv');return false">
-              <i class="bi bi-eye"></i> Ver documento
-            </a>
-            <a href="#" class="btn btn-outline" download>
-              <i class="bi bi-download"></i> Descarregar
-            </a>
+            <div class="doc-header-title">{{ $farmacia->name ?? 'Farmácia Central' }}</div>
+            <div class="doc-header-sub">Documentos de identificação e licenciamento</div>
           </div>
         </div>
-
-        <!-- ── CARD NIF ─────────────────────── -->
-        <div class="doc-card">
-          <div class="doc-card-head">
-            <div class="doc-icon amber"><i class="bi bi-card-text"></i></div>
-            <div>
-              <div class="doc-title">Número de Identificação Fiscal</div>
-              <div class="doc-subtitle">Comprovativo NIF da farmácia</div>
+        
+        <!-- Corpo do card -->
+        <div class="doc-body">
+          
+          <!-- Seção de Identificação Fiscal -->
+          <div class="doc-section">
+            <div class="doc-section-title">
+              <i class="bi bi-card-text"></i>
+              <span>Identificação Fiscal</span>
+              <span class="status-badge status-valid" style="margin-left: auto;">
+                <i class="bi bi-check-circle-fill"></i> Válido
+              </span>
             </div>
-            <span class="doc-badge badge-valid">Válido</span>
-          </div>
-
-          <!-- Imagem do NIF -->
-          <div class="doc-img-wrap" onclick="openLightbox('nif')">
-            {{-- Substituir src por {{ asset('storage/' . $farmacia->nif_path) }} --}}
-            <img id="nifImg"
-                 src="https://placehold.co/600x400/fef3c7/d97706?text=Comprovativo+NIF"
-                 alt="Comprovativo NIF — Farmácia Central"
-                 onerror="this.parentElement.innerHTML=noImgHtml('NIF não carregado')">
-            <button class="doc-zoom-btn" title="Ampliar">
-              <i class="bi bi-zoom-in"></i>
-            </button>
-          </div>
-
-          <!-- Campos -->
-          <div class="doc-card-body">
-            <div class="doc-field">
-              <span class="doc-field-lbl">NIF</span>
-              {{-- <span class="doc-field-val mono">{{ $farmacia->nif ?? '—' }}</span> --}}
-              <span class="doc-field-val mono">5 000 412 731</span>
-            </div>
-            <div class="doc-field">
-              <span class="doc-field-lbl">Denominação</span>
-              <span class="doc-field-val">Farmácia Central, Lda.</span>
-            </div>
-            <div class="doc-field">
-              <span class="doc-field-lbl">Data de registo</span>
-              <span class="doc-field-val">03 de Março de 2019</span>
-            </div>
-            <div class="doc-field">
-              <span class="doc-field-lbl">Estado</span>
-              <span class="doc-field-val" style="color:var(--success);font-weight:700">Activo</span>
+            
+            <div class="info-grid">
+              <div class="info-item">
+                <div class="info-label">NIF</div>
+                <div class="info-value mono">{{ $documentos->nif ?? 'Não disponível' }}</div>
+              </div>
+              <div class="info-item">
+                <div class="info-label">Denominação Social</div>
+                <div class="info-value small">{{ $farmacia->name ?? 'Farmácia Central, Lda.' }}</div>
+              </div>
             </div>
           </div>
-
-          <div class="doc-card-footer">
-            <a href="#" class="btn btn-primary" onclick="openLightbox('nif');return false">
-              <i class="bi bi-eye"></i> Ver documento
-            </a>
-            <a href="#" class="btn btn-outline" download>
-              <i class="bi bi-download"></i> Descarregar
-            </a>
+          
+          <!-- Seção de Licenciamento -->
+          <div class="doc-section">
+            <div class="doc-section-title">
+              <i class="bi bi-patch-check"></i>
+              <span>Licenciamento</span>
+              <span class="status-badge status-valid" style="margin-left: auto;">
+                <i class="bi bi-check-circle-fill"></i> Válido
+              </span>
+            </div>
+            
+            <div class="info-grid">
+              <div class="info-item">
+                <div class="info-label">Tipo de Licença</div>
+                <div class="info-value small">Alvará de Funcionamento</div>
+              </div>
+              {{-- <div class="info-item">
+                <div class="info-label">Entidade Emissora</div>
+                <div class="info-value small">MINSA — Angola</div>
+              </div> --}}
+              {{-- <div class="info-item">
+                <div class="info-label">Data de Emissão</div>
+                <div class="info-value small">12 de Janeiro de 2021</div>
+              </div>
+              <div class="info-item">
+                <div class="info-label">Validade</div>
+                <div class="info-value small" style="color: var(--success);">31 de Dezembro de 2025</div>
+              </div>
+            </div> --}}
           </div>
+          
+          <!-- Seção de Documentos Digitalizados -->
+          <div class="doc-section ">
+            <div class="doc-section-title ">
+              <i class="bi bi-images"></i>
+              <span>Documentos Digitalizados</span>
+            </div>
+            
+            <div class="images-container">
+              <!-- Alvará -->
+              <div class="image-card" onclick="openLightbox('alvara')">
+                @if($documentos->alvara)
+                  <div class="image-preview" style="background-image: url('{{ asset('storage/' . $documentos->alvara) }}');">
+                    <div class="image-overlay">
+                      <i class="bi bi-zoom-in"></i>
+                    </div>
+                  </div>
+                @else
+                  <div class="image-placeholder">
+                    <i class="bi bi-file-earmark-pdf"></i>
+                    <span>Alvará não carregado</span>
+                  </div>
+                @endif
+                <div class="image-label">
+                  <i class="bi bi-patch-check" style="color: var(--success);"></i> Alvará de Funcionamento
+                </div>
+              </div>
+              
+              <!-- NIF (se houver imagem) -->
+              @if($documentos->nif && file_exists(storage_path('app/public/' . $documentos->nif)))
+              <div class="image-card" onclick="openLightbox('nif')">
+                <div class="image-preview" style="background-image: url('{{ asset('storage/' . $documentos->nif) }}');">
+                  <div class="image-overlay">
+                    <i class="bi bi-zoom-in"></i>
+                  </div>
+                </div>
+                <div class="image-label">
+                  <i class="bi bi-check-circle" style="color: var(--success);"></i> Comprovativo NIF
+                </div>
+              </div>
+              @endif
+            </div>
+          </div>
+          
         </div>
-
-      </div>{{-- /docs-grid --}}
-
-    </div>{{-- /content --}}
-  </div>{{-- /main --}}
-</div>{{-- /layout --}}
-
+        
+        <!-- Rodapé com ações -->
+        <div class="doc-footer">
+          <a href="#" class="btn btn-outline" onclick="window.print(); return false;">
+            <i class="bi bi-printer"></i> Imprimir
+          </a>
+          <a href="{{ $documentos->alvara ? asset('storage/' . $documentos->alvara) : '#' }}" class="btn btn-primary" download>
+            <i class="bi bi-download"></i> Descarregar Documentos
+          </a>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+</div>
 
 <!-- ══ LIGHTBOX ══════════════════════════════════ -->
 <div class="lightbox" id="lightbox" onclick="closeLightbox()">
@@ -501,18 +733,26 @@
 <script>
 /* ══ LIGHTBOX ════════════════════════════════════ */
 function openLightbox(doc) {
-  const img   = document.getElementById('lightboxImg');
+  const img = document.getElementById('lightboxImg');
   const label = document.getElementById('lightboxLabel');
-  if (doc === 'alv') {
-    img.src   = document.getElementById('alvaraImg')?.src || '';
-    img.alt   = 'Alvará de Funcionamento';
-    label.textContent = 'Alvará de Funcionamento — Farmácia Central';
-  } else {
-    img.src   = document.getElementById('nifImg')?.src || '';
-    img.alt   = 'Comprovativo NIF';
-    label.textContent = 'Comprovativo NIF — Farmácia Central';
+  
+  @if($documentos->alvara)
+  if (doc === 'alvara') {
+    img.src = '{{ asset('storage/' . $documentos->alvara) }}';
+    img.alt = 'Alvará de Funcionamento';
+    label.textContent = 'Alvará de Funcionamento — {{ $farmacia->name ?? 'Farmácia' }}';
+    document.getElementById('lightbox').classList.add('open');
   }
-  document.getElementById('lightbox').classList.add('open');
+  @endif
+  
+  @if(isset($documentos->nif) && file_exists(storage_path('app/public/' . $documentos->nif)))
+  if (doc === 'nif') {
+    img.src = '{{ asset('storage/' . $documentos->nif) }}';
+    img.alt = 'Comprovativo NIF';
+    label.textContent = 'Comprovativo NIF — {{ $farmacia->name ?? 'Farmácia' }}';
+    document.getElementById('lightbox').classList.add('open');
+  }
+  @endif
 }
 
 function closeLightbox() {
@@ -523,20 +763,15 @@ document.addEventListener('keydown', e => {
   if (e.key === 'Escape') closeLightbox();
 });
 
-/* Placeholder HTML quando a imagem falha */
-function noImgHtml(msg) {
-  return `<div class="doc-placeholder">
-    <i class="bi bi-image-alt"></i>
-    <span>${msg}<br>Carregue o ficheiro nas configurações</span>
-  </div>`;
-}
-
 /* ══ SIDEBAR ═════════════════════════════════════ */
 function setActive(el) {
   document.querySelectorAll('.nav-item.active').forEach(i => i.classList.remove('active'));
   el.classList.add('active');
 }
-function toggleSub(id) { document.getElementById(id).classList.toggle('open'); }
+
+function toggleSub(id) { 
+  document.getElementById(id).classList.toggle('open'); 
+}
 </script>
 </body>
 </html>

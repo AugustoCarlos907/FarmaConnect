@@ -40,17 +40,17 @@ class MedicamentoController extends Controller
                 'descricao' => 'required|string',
                 'forma_farmaceutica' => 'required|string',
                 'dosagem' => 'required|string',
-                // 'farmacia_id' => 'required|integer|exists:farmacias,id',
                 'categoria_id' => 'required|integer|exists:categorias,id',
                 'quantidade' => 'required|integer|min:1',
                 'preco' => 'required|numeric|min:0',
                 'data_validade' => 'required|date',
                 'lote' => 'nullable|string|max:255',
+                // 'farmacia_id' => 'required|integer|exists:farmacias,id',
                 // 'ativo' => 'required|boolean'
 
             ]);
     
-            $medicamento = $this->service->createMedicamento(
+            $medicamentos = $this->service->createMedicamento(
                 $validatedData['name'],
                 $validatedData['descricao'],
                 $validatedData['forma_farmaceutica'],
@@ -62,6 +62,6 @@ class MedicamentoController extends Controller
                 $validatedData['lote'] ?? null,
             );
     
-            return response()->json($medicamento, 201);
+            return redirect()->route('medicamentos.farmacias');
         }
 }

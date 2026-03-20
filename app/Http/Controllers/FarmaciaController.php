@@ -57,7 +57,7 @@ class FarmaciaController extends Controller
         try {
 
             //   utilizador
-            $entregadorUser = User::create([
+            $entregador = User::create([
                 'name' => $data['name'],
                 'email' => $data['email'],
                 'password' => Hash::make($data['password']),
@@ -73,7 +73,7 @@ class FarmaciaController extends Controller
                 'latitude' => $data['latitude'] ?? null,
                 'longitude' => $data['longitude'] ?? null,
                 'farmacia_id' => $user->farmacia_id,
-                'user_id' => $entregadorUser->id,
+                'user_id' => $entregador->id,
             ]);
 
             DB::commit();
@@ -143,7 +143,8 @@ class FarmaciaController extends Controller
 
     //documentos
     public function documentos(){
-        return view('farmacias.dashboard.documentos');
+        $documentos = $this->farmaService->getPharmacyDocs();
+        return view('farmacias.dashboard.documentos' , compact('documentos'));
     }
 
     //Relatorios

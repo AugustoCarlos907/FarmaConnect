@@ -50,6 +50,7 @@
     .logo-mark svg { width: 14px; height: 14px; fill: #fff; }
     .logo-text { font-family: 'Sora', sans-serif; font-size: 1.1rem; font-weight: 700; line-height: 1; }
     .logo-text .f { color: var(--accent); } .logo-text .c { color: var(--text); }
+    
     .sidebar-body { flex: 1; overflow-y: auto; padding: 8px 0 12px; }
     .sidebar-body::-webkit-scrollbar { width: 0; }
     .nav-section { padding: 0 8px; }
@@ -80,6 +81,27 @@
     .pill-open { background: #dcfce7; color: #15803d; }
     .ph-meta { font-size: 0.7rem; color: var(--accent-2); opacity: .8; display: flex; align-items: center; gap: 4px; margin-bottom: 2px; }
 
+        /* Logout button */
+    .logout-form {
+        margin-top: 12px;
+    }
+
+    .logout-btn {
+        color: var(--danger);
+    }
+
+    .logout-btn i {
+        color: var(--danger);
+    }
+
+    .logout-btn:hover {
+        background: var(--danger-light);
+        color: var(--danger);
+    }
+
+    .logout-btn:hover i {
+        color: var(--danger);
+    }
     /* ─── MAIN ────────────────────────────── */
     .main { flex: 1; margin-left: 220px; display: flex; flex-direction: column; min-height: 100vh; }
 
@@ -343,103 +365,129 @@
 <div class="layout">
 
   <!-- ══ SIDEBAR ══════════════════════════════════ -->
-  <aside class="sidebar">
+<aside class="sidebar">
     <div class="sidebar-header">
-      <a href="#" class="logo">
-        <div class="logo-mark">
-          <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 13v-2H9v-2h2V9h2v2h2v2h-2v2h-2z"/></svg>
-        </div>
-        <span class="logo-text"><span class="f">Farma</span><span class="c">Connect</span></span>
-      </a>
+        <a href="#" class="logo">
+            <div class="logo-mark">
+                <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 13v-2H9v-2h2V9h2v2h2v2h-2v2h-2z"/></svg>
+            </div>
+            <span class="logo-text"><span class="f">Farma</span><span class="c">Connect</span></span>
+        </a>
     </div>
 
     <div class="sidebar-body">
-      <div class="nav-section">
-        <span class="nav-label">Principal</span>
-        <button class="nav-item" onclick="setActive(this)"><i class="bi bi-grid-1x2"></i><a class="text-decoration-none" href="{{ route('index.farmacias') }}"> Dashboard</a></button>
+        <div class="nav-section">
+            <span class="nav-label">Principal</span>
+            
+            <!-- Dashboard -->
+            <a href="{{ route('index.farmacias') }}" class="nav-item {{ request()->routeIs('index.farmacias') ? 'active' : '' }}">
+                <i class="bi bi-grid-1x2"></i>
+                <span>Dashboard</span>
+            </a>
 
-        <div class="has-sub" id="sub-stock">
-          <button class="nav-item" onclick="toggleSub('sub-stock')">
-            <i class="bi bi-archive"></i> Stock
-            {{-- <span class="nav-badge nb-amber">3</span> --}}
-            <i class="bi bi-chevron-down chevron"></i>
-          </button>
-          <div class="sub">
-            <div class="sub-item"><i class="bi bi-list-ul"></i><a class="text-decoration-none" href="{{ route('medicamentos.farmacias') }}"> Lista de produtos</a></div>
-            <div class="sub-item"><i class="bi bi-exclamation-triangle"></i> Stock baixo <span class="nav-badge nb-red" style="margin-left:4px"></span></div>
-          </div>
+            <!-- Stock com submenu -->
+            <div class="has-sub {{ request()->routeIs('medicamentos.farmacias') ? 'open' : '' }}" id="sub-stock">
+                <div class="nav-item" onclick="toggleSub('sub-stock')">
+                    <i class="bi bi-archive"></i>
+                    <span>Stock</span>
+                    <i class="bi bi-chevron-down chevron"></i>
+                </div>
+                <div class="sub">
+                    <a href="{{ route('medicamentos.farmacias') }}" class="sub-item {{ request()->routeIs('medicamentos.farmacias') ? 'active-sub' : '' }}">
+                        <i class="bi bi-list-ul"></i>
+                        <span>Lista de produtos</span>
+                    </a>
+                    <div class="sub-item">
+                        <i class="bi bi-exclamation-triangle"></i>
+                        <span>Stock baixo</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pedidos -->
+            <a href="{{ route('pedidos.farmacias') }}" class="nav-item {{ request()->routeIs('pedidos.farmacias') ? 'active' : '' }}">
+                <i class="bi bi-truck"></i>
+                <span>Pedidos</span>
+
+            </a>
+
+            <!-- Entregadores -->
+            <a href="{{ route('entregadores.farmacias') }}" class="nav-item {{ request()->routeIs('entregadores.farmacias') ? 'active' : '' }}">
+                <i class="bi bi-person-badge"></i>
+                <span>Entregadores</span>
+
+            </a>
+
+            <!-- Clientes -->
+            <a href="{{ route('clientes.farmacias') }}" class="nav-item {{ request()->routeIs('clientes.farmacias') ? 'active' : '' }}">
+                <i class="bi bi-people"></i>
+                <span>Clientes</span>
+            </a>
+
+            <!-- Avaliações -->
+            <a href="{{ route('avaliacoes.farmacias') }}" class="nav-item {{ request()->routeIs('avaliacoes.farmacias') ? 'active' : '' }}">
+                <i class="bi bi-star"></i>
+                <span>Avaliações</span>
+
+            </a>
+
+            <span class="nav-label">Gestão</span>
+
+            <!-- Documentos -->
+            <a href="{{ route('documentos.farmacias') }}" class="nav-item {{ request()->routeIs('documentos.farmacias') ? 'active' : '' }}">
+                <i class="bi bi-file-earmark-text"></i>
+                <span>Documentos</span>
+            </a>
+
+            <!-- Configurações com submenu -->
+            <div class="has-sub" id="sub-cfg">
+                <div class="nav-item" onclick="toggleSub('sub-cfg')">
+                    <i class="bi bi-gear"></i>
+                    <span>Configurações</span>
+                    <i class="bi bi-chevron-down chevron"></i>
+                </div>
+                <div class="sub">
+                    <div class="sub-item">
+                        <i class="bi bi-person"></i>
+                        <span>Perfil</span>
+                    </div>
+                    <div class="sub-item">
+                        <i class="bi bi-shop"></i>
+                        <span>Farmácia</span>
+                    </div>
+                    <div class="sub-item">
+                        <i class="bi bi-clock"></i>
+                        <span>Horário</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sair -->
+            <form action="{{ route('logout', ['id'=>Auth::user()->id]) }}" method="post" class="logout-form">
+                @csrf
+                <button type="submit" class="nav-item logout-btn">
+                    <i class="bi bi-box-arrow-right"></i>
+                    <span>Sair</span>
+                </button>
+            </form>
         </div>
-        <button class="nav-item active" onclick="setActive(this)">
-          <i class="bi bi-truck"></i><a href="{{route('pedidos.farmacias')}}"> Pedidos</a>
-          {{-- <span class="nav-badge nb-red">{{ $pedidos->where('status', 'Pendente')->count() }}</span> --}}
-        </button>
-        <button class="nav-item" onclick="setActive(this)">
-          <i class="bi bi-person-badge"></i> <a href="{{route('entregadores.farmacias')}}"> Entregadores </a>
-          {{-- <span class="nav-badge nb-teal">4</span> --}}
-        </button>
-        <button class="nav-item" onclick="setActive(this)">
-          <i class="bi bi-people"></i> <a href="{{route('clientes.farmacias')}}">Clientes</a> 
-        </button>
-
-        {{-- <span class="nav-label">Análise</span>
-        <div class="has-sub" id="sub-rel">
-          <button class="nav-item" onclick="toggleSub('sub-rel')">
-            <i class="bi bi-bar-chart-line"></i> Relatórios
-            <i class="bi bi-chevron-down chevron"></i>
-          </button>
-          <div class="sub">
-            <div class="sub-item"><i class="bi bi-cash-stack"></i> Vendas</div>
-            <div class="sub-item"><i class="bi bi-archive"></i> Stock</div>
-            <div class="sub-item"><i class="bi bi-truck"></i> Entregas</div>
-            <div class="sub-item"><i class="bi bi-star"></i> Avaliações</div>
-          </div>
-        </div> --}}
-        
-        <button class="nav-item" onclick="setActive(this)">
-          <i class="bi bi-star"></i> <a href="{{route('avaliacoes.farmacias')}}"> Avaliações</a>
-          {{-- <span class="nav-badge nb-amber">{{ $data['todas_avaliacoes']->count() }}</span> --}}
-        </button>
-
-        <span class="nav-label">Gestão</span>
-        <button class="nav-item" onclick="setActive(this)">
-          <i class="bi bi-file-earmark-text"></i> <a href="{{route('documentos.farmacias') }}">Documentos</a> 
-
-          {{-- <span class="nav-badge nb-slate">2</span> --}}
-        </button>
-        <div class="has-sub" id="sub-cfg">
-          <button class="nav-item" onclick="toggleSub('sub-cfg')">
-            <i class="bi bi-gear"></i> Configurações
-            <i class="bi bi-chevron-down chevron"></i>
-          </button>
-          <div class="sub">
-            <div class="sub-item"><i class="bi bi-person"></i> Perfil</div>
-            <div class="sub-item"><i class="bi bi-shop"></i> Farmácia</div>
-            <div class="sub-item"><i class="bi bi-clock"></i> Horário</div>
-            {{-- <div class="sub-item"><i class="bi bi-bell"></i> Notificações</div> --}}
-          </div>
-        </div>
-        <div class="nav-divider"></div>
-        <button class="nav-item" style="color:var(--danger)">
-          <i class="bi bi-box-arrow-right" style="color:var(--danger)"></i> Sair
-        </button>
-      </div>
     </div>
 
-   <div class="sidebar-footer">
-      @php
-        $farmacia = Auth::user()->farmacia;
-      @endphp
-      <div class="ph-card">
-        <div class="ph-row">
-          <span class="ph-name">{{ $farmacia->name ?? 'FC' }}</span>
-          <span class="ph-pill pill-open">{{ $farmacia->status  }}</span>
+    <div class="sidebar-footer">
+        @php
+            $farmacia = Auth::user()->farmacia;
+        @endphp
+        <div class="ph-card">
+            <div class="ph-row">
+                <span class="ph-name">{{ $farmacia->name ?? 'Farmácia' }}</span>
+                <span class="ph-pill pill-open">{{ $farmacia->status ?? 'Aberta' }}</span>
+            </div>
+            <p class="ph-meta"><i class="bi bi-geo-alt"></i> {{ $farmacia->endereco ?? '—' }}</p>
+            <p class="ph-meta"><i class="bi bi-clock"></i> {{ $farmacia->horario_abertura ?? '08:00' }} - {{ $farmacia->horario_fechamento ?? '22:00' }}</p>
+            <p class="ph-meta" style="opacity:.55;font-size:.65rem;margin-top:2px"><i class="bi bi-building"></i> {{ $farmacia->company ?? 'FarmaConnect' }}</p>
         </div>
-        <p class="ph-meta"><i class="bi bi-geo-alt"></i> {{ $farmacia->endereco  }}</p>
-        <p class="ph-meta"><i class="bi bi-clock"></i> {{ $farmacia->horario_abertura ?? '08:00 ' }} - {{ $farmacia->horario_fechamento ?? '22:00' }}</p>
-        <p class="ph-meta" style="opacity:.55;font-size:.65rem;margin-top:2px"><i class="bi bi-building"></i> {{ $farmacia->company ?? 'UNKNOWN' }}</p>
-      </div>
     </div>
-  </aside>
+</aside>
 
   <!-- ══ MAIN ══════════════════════════════════════ -->
   <div class="main">
@@ -518,6 +566,10 @@
             <button class="st-tab" data-status="done" onclick="setTab(this,'done')"><i class="bi bi-check-circle" style="font-size:.7rem"></i> Concluídos <span class="tab-count" id="tc-done">{{ $concluidos }}</span></button>
             <button class="st-tab" data-status="canceled" onclick="setTab(this,'canceled')">Cancelados <span class="tab-count" id="tc-canceled">{{ $cancelados + $rejeitados }}</span></button>
           </div>
+        </div>
+
+          <div class="toolbar-right">
+          <button class="btn btn-outline btn-icon" title="Exportar" onclick="alert('Exportar clientes — integrar API')"><i class="bi bi-download"></i>Imprimir Relatório</button>
         </div>
 
 

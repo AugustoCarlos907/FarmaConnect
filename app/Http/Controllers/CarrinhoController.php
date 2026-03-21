@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\Carrinho;
 use App\Models\Endereco;
+use App\Models\Pagamento;
 use App\Models\StockItem;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -26,8 +27,10 @@ class CarrinhoController extends Controller
     {
         $itens = $this->carrinhoDoUser();
         $total = $itens->sum(fn($item) => $item->subtotal);
+        
         $enderecos = Endereco::where('user_id', Auth()->user()->id)->get();
-        return view('clientes.dashboard.carrinho', compact('itens', 'total' , 'enderecos'));
+        // $payments = Pagamento::pluck('metodo');
+        return view('clientes.dashboard.carrinho', compact('itens', 'total' , 'enderecos' ));
     }
 
     public function adicionar(Request $request)

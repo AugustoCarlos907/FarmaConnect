@@ -569,7 +569,7 @@
         </div>
 
           <div class="toolbar-right">
-          <button class="btn btn-outline btn-icon" title="Exportar" onclick="alert('Exportar clientes — integrar API')"><i class="bi bi-download"></i>Imprimir Relatório</button>
+          <button class="btn btn-outline btn-icon" style="background-color: #0899a6;color:white " title="Exportar" onclick="alert('Exportar clientes — integrar API')"><i class="bi bi-download"></i>Imprimir Relatório</button>
         </div>
 
 

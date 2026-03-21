@@ -22,8 +22,8 @@ class CriarPedidoRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'farmacia_id' => 'required|exists:farmacias,id',
-            'endereco_entrega' => 'required|string',
+            // 'farmacia_id' => 'required|exists:farmacias,id',
+            'endereco' => 'required|string',
             'items' => 'required|array|min:1',
             'items.*.stock_id' => 'required|exists:farmacia_medicamentos,id',
             'items.*.quantidade' => 'required|integer|min:1',

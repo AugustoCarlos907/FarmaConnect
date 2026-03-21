@@ -19,26 +19,26 @@ use Twilio\Rest\Client;
 
     
 
-Route::middleware(['guest'])->group(function(){
-    Route::get('/', function(){
-        return view('index');
-    })->name('index');
+    Route::middleware(['guest'])->group(function(){
+        Route::get('/', function(){
+            return view('index');
+        })->name('index');
 
 
-    Route::get('client/register', [AuthController::class, 'create'])->name('register');
-    Route::post('/register', [AuthController::class, 'store']);
+        Route::get('client/register', [AuthController::class, 'create'])->name('register');
+        Route::post('/register', [AuthController::class, 'store']);
 
-    Route::get('/email/verify', function () {
-        return view('auth.verify-email');
-    })->middleware('auth')->name('verification.notice');
+        Route::get('/email/verify', function () {
+            return view('auth.verify-email');
+        })->middleware('auth')->name('verification.notice');
 
-    Route::get('/email/verify/{id}/{hash}', function () {
-        return view('auth.verify-email');
-    })->middleware(['auth', 'signed'])->name('verification.verify');
-    
-    Route::get('/login', [AuthController::class, 'login'])->name('login');
-    Route::post('/login', [AuthController::class, 'authenticate'])->name('authenticate');
-});
+        Route::get('/email/verify/{id}/{hash}', function () {
+            return view('auth.verify-email');
+        })->middleware(['auth', 'signed'])->name('verification.verify');
+        
+        Route::get('/login', [AuthController::class, 'login'])->name('login');
+        Route::post('/login', [AuthController::class, 'authenticate'])->name('authenticate');
+    });
 
 
     //companhia
@@ -51,8 +51,8 @@ Route::middleware(['guest'])->group(function(){
     Route::post('companhia/register/farmacia', [CompanhiaController::class, 'registerFarmacia'])->name('companhia.farmacia.register');
     // Route::post('companhia/register/farmacia', [CompanhiaController::class, 'registerFarmacia']);
 
+    //farmacias
     Route::middleware(['auth', 'farma'])->group(function(){ 
-        //farmacias
         Route::get('farmacia/dashboard', [DashboardFarmaciaController::class , 'dashboard'])->name('index.farmacias');
         Route::get('/farmacia/medicamentos', [FarmaciaController::class, 'listMedicamentos'])->name('medicamentos.farmacias');
         Route::post('/farmacia/create-medicamento' , [MedicamentoController::class , 'create'])->name('medicamentos.store');
@@ -67,9 +67,9 @@ Route::middleware(['guest'])->group(function(){
         
         });
     
+    //Entregadores
     Route::middleware(['auth', 'entregador'])->group(function(){
 
-        //Entregadores
         Route::get('entregador/dashboard', [DashboardEntregadorController::class, 'dashboard'])->name('index.entregadores');
         Route::get('entregas/concluidas/{entregadorId}', [EntregaController::class, 'concluidasPorEntregador']);
         Route::get('entregas/em-transito/{entregadorId}', [EntregaController::class, 'emTransitoPorEntregador']);
@@ -105,8 +105,8 @@ Route::middleware(['guest'])->group(function(){
 
 });
 
+    //clientes
     Route::middleware(['auth' , 'user'])->group(function(){
-        //clientes
         Route::get('/home', function(){ 
             // Auth::loginUsingId(3);
             return view('clientes.dashboard.index'); 
@@ -117,10 +117,11 @@ Route::middleware(['guest'])->group(function(){
         Route::get('/produtos' , [ClientHomePageController::class, 'produtos'])->name('produtos.clientes');
         Route::get('/carrinho', function(){ return view('clientes.dashboard.carrinho'); })->name('carrinho.clientes');
 
-        Route::post('/pedidos', [PedidoController::class, 'store']);
+        Route::post('/pedidos', [PedidoController::class, 'store'])->name('pedidos.store');
         Route::get('/pedidos', [PedidoController::class, 'pedidos'])->name('pedidos.clientes');
         Route::post('/pedidos/{id}/cancelar', [PedidoController::class, 'cancelar']);
 
+        Route::post('/enderecos-create' ,[])->name('enderecos.store');
         Route::get('/categorias', [ClientHomePageController::class, 'searchCategorias'])->name('categorias');
         Route::get('categorias/produtos/{id}', [ClientHomePageController::class, 'produtosPorCategoria'])->name('produtos.categoria');
 
@@ -132,6 +133,7 @@ Route::middleware(['guest'])->group(function(){
             Route::delete('/limpar',               [CarrinhoController::class, 'limpar'])    ->name('limpar');
         });
         
+        Route::get('/search-medicamentos'  , [MedicamentoController::class , 'index'])->name('medicamentos.search');
         Route::post('/upload/comprovativo/{id}', [ComprovativoPagamentoController::class, 'uploadComprovativo']);
 
         // Route::post('/logout/{id}' , [AuthController::class, 'logout'])->name('logout');

@@ -10,10 +10,10 @@ class Pedido extends Model
     protected $fillable = [
         'user_id',
         'farmacia_id',
-        'total',
         'status',
         'data_pedido',
         'endereco',
+        // 'total',
     ];
 
 

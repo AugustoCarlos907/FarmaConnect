@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CriarPedidoRequest;
+use App\Models\Carrinho;
 use App\Models\Pedido;
 use App\Services\PedidoService;
 use Illuminate\Http\Request;
@@ -11,18 +12,22 @@ class PedidoController extends Controller
 {
     public function __construct(public PedidoService $service){}
 
-     public function store(CriarPedidoRequest $request)
+     public function store(Request $request)
     {
         $pedido = $this->service->criarPedido(
             auth()->id(),
             $request->items,
-            $request->endereco_entrega,
+            $request->endereco,
             $request->latitude,
             $request->longitude,
             $request->metodo_pagamento
         );
 
-        return response()->json($pedido, 201);
+        if($pedido){
+            Carrinho::where('user_id', auth()->id())->delete();
+        }
+
+        return redirect()->route('carrinho.clientes')->with('success', 'Pedido confirmado com sucesso!');
     }
 
 

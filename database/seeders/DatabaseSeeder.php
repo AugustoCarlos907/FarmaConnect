@@ -185,44 +185,44 @@ class DatabaseSeeder extends Seeder
         //     ]);
         // }
 
-        // Medicamento::create([
-        //     'name' => 'Diclofenac',
-        //     'preco' => 400.00,
-        //     'descricao' => 'Antibiotico oral para tratamento de dores e inflamações',
-        //     'dosagem' => 200 .'mg',
-        //     'forma_farmaceutica' => 'Comprimido',
-        //     'categoria_id' => 2,
-        //     // 'farmacia_id' => 1,
-        //     'created_at' => Carbon::now(),
-        //     'updated_at' => Carbon::now(),
-
-        // ]);
-
-        // StockItem::create([
-        //         'medicamento_id' => 2,
-        //         'farmacia_id' => 1,
-        //         'quantidade' => 4,
-        //         'preco' => 400.00,
-        //         'data_validade' => Carbon::now()->addMonths(6),
-        //         'lote' => Str::upper(Str::random(10)),
-        //         'ativo' => true,
-        //         'created_at' => Carbon::now(),
-        //         'updated_at' => Carbon::now(),
-        // ]);
-
-        Pedido::create([
-            'user_id' => 3,
-            'farmacia_id' => 1,
-            // 'total' => 800.00,
-            'endereco' => 'Rua das Flores, 123',
-            'latitude' => -23.5505,
-            'longitude' => -46.6333,
-            // 'metodo_pagamento' => 'Cartão de Crédito',
-            'status' => 'Concluído',
-            'data_pedido' => Carbon::now(),
+        Medicamento::create([
+            'name' => 'Dipirona',
+            'preco' => 400.00,
+            'descricao' => '',
+            'dosagem' => 200 .'mg',
+            'forma_farmaceutica' => 'Âmpola',
+            'categoria_id' => 4,
+            // 'farmacia_id' => 1,
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),
+
         ]);
+
+        StockItem::create([
+                'medicamento_id' => 15,
+                'farmacia_id' => 2,
+                'quantidade' => 1,
+                'preco' => 400.00,
+                'data_validade' => Carbon::now()->addMonths(6),
+                'lote' => Str::upper(Str::random(10)),
+                'ativo' => true,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+        ]);
+
+        // Pedido::create([
+        //     'user_id' => 3,
+        //     'farmacia_id' => 1,
+        //     // 'total' => 800.00,
+        //     'endereco' => 'Rua das Flores, 123',
+        //     'latitude' => -23.5505,
+        //     'longitude' => -46.6333,
+        //     // 'metodo_pagamento' => 'Cartão de Crédito',
+        //     'status' => 'Concluído',
+        //     'data_pedido' => Carbon::now(),
+        //     'created_at' => Carbon::now(),
+        //     'updated_at' => Carbon::now(),
+        // ]);
 
          // Pedido::create([
          //    'user_id' => 3,

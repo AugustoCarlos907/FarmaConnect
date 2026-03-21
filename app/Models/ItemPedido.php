@@ -12,7 +12,7 @@ class ItemPedido extends Model
         'subtotal',
         
         'pedido_id',
-        'stock_item_id',
+        'stock_items_id',
     ];
 
     public function pedido()

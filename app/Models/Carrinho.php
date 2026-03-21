@@ -22,9 +22,9 @@ class Carrinho extends Model
     {
         return $this->belongsTo(StockItem::class);
     }
+    
 
     // ── Helper
-
     // Preço da linha (preco do medicamento × quantidade)
     public function getSubtotalAttribute(): float
     {

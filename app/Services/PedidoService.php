@@ -38,15 +38,17 @@ class PedidoService
         $farmacia = $this->encontrarFarmaciaComTodosItens($items, $latitude, $longitude);
 
         if (!$farmacia) {
-            throw new Exception('Nenhuma farmácia encontrada para os medicamentos selecionados.');
+            return redirect()->route('carrinho.clientes')->withErrors([
+                'farmacia' => 'Os medicamentos selecionados estão dispostos em múltiplas farmácias , não é possivel confirmar o pedido...'
+            ]);        
         }
          
 
         $pedido = Pedido::create([
-                'usuario_id' => $usuarioId,
+                'user_id' => $usuarioId,
                 'farmacia_id' => $farmacia->id,
                 'status' => 'pendente',
-                'total' => 0,
+                // 'total' => 0,
                 'data_pedido' => $dataPedido ?? now(),
                 'endereco'=> $endereco,
                 'latitude' =>  $latitude,
@@ -67,7 +69,7 @@ class PedidoService
                 $subtotal = $stock->preco * $item['quantidade'];
 
                 $pedido->items()->create([
-                    'stock_item_id' => $stock->id,
+                    'stock_items_id' => $stock->id,
                     'quantidade' => $item['quantidade'],
                     'preco_unitario' => $stock->preco,
                     'subtotal' => $subtotal,
@@ -113,12 +115,13 @@ class PedidoService
                 }
             }
 
-            $pagamento = $pedido->pagamento()->create([
+            $pedido->pagamento()->create([
                 'metodo' => $metodoPagamento,
                 'valor' => $total,
                 'status' => 'pendente',
                 'iban_destino' => $ibanDestino,
                 'numero_express' => $numeroExpress,
+                'pedido_id' => $pedido->id
             ]);
 
             return $pedido;

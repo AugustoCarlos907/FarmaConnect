@@ -316,12 +316,11 @@
 
     <!-- Search box -->
     <div class="topbar-search">
-      <form action="{{ route('farmacias.list') }}" method="get">
-        @csrf
+      <form action="{{ route('farmacias.search') }}" method="get">
       <div class="ts-box">
         <div class="ts-field" style="flex:2;">
           <i class="bi bi-hospital"></i>
-          <input type="text" id="searchPharm" name="query" placeholder="Nome da farmácia " oninput="filterPharmacies()" value="{{ old('query') }}">
+          <input type="text" id="searchPharm" name="query" placeholder="Nome da farmácia " oninput="filterPharmacies()" value="{{ request('query') }}">
         </div>
         <div class="ts-sep d-none d-md-block"></div>
         <div class="ts-sep d-none d-md-block"></div>
@@ -333,7 +332,7 @@
             <option value="24h">Abertas 24h</option>
           </select>
         </div>
-        <button type="submit" class="ts-btn" onclick="filterPharmacies()"><i class="bi bi-search"></i> Pesquisar</button>
+        <button type="submit" class="ts-btn"><i class="bi bi-search"></i> Pesquisar</button>
       </div>
       <div class="quick-filters" id="quickFilters">
         <span class="qf-tag active" onclick="quickFilter(this,'')"> Todas</span>

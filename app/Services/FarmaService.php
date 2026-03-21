@@ -38,14 +38,20 @@ class FarmaService{
             ->paginate($perPage);
     }
 
-    public function getClientes(){
-        
-        return User::whereHas('pedidos', function($q){
-            $q->whereHas('farmacia', function($q2){
-                $q2->where('id', auth()->user()->farmacia->id);
-            });
-        })->paginate(10);
+    public function getClientes()
+    {
+        $farmaciaId = auth()->user()->farmacia->id;
+
+        return User::whereHas('pedidos.farmacia', function($q) use ($farmaciaId) {
+                $q->where('id', $farmaciaId);
+            })
+            ->with(['pedidos' => function($q) use ($farmaciaId) {
+                // Isto garante que $cliente->pedidos traga APENAS os desta farmácia
+                $q->where('farmacia_id', $farmaciaId);
+            }])
+            ->paginate(10);
     }
+
 
     public function getPharmacyDocs(){
         return Farmacia::where('id', auth()->user()->farmacia->id)

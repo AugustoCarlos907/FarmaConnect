@@ -603,11 +603,11 @@
       <div class="toolbar">
         <div class="toolbar-left">
           <!-- Search -->
+
           <div class="search-wrap">
             <i class="bi bi-search"></i>
-            <input type="text" class="search-input" id="searchInput" placeholder="Pesquisar por nome, SKU, princípio activo…" oninput="filterTable()">
+            <input type="text" class="search-input" name="search" value="{{ request('search') }}" id="searchInput" placeholder="Pesquisar por medicamento …" oninput="filterTable()">
           </div>
-
           <!-- Filtros rápidos por categoria -->
           <div class="filter-chips" id="catChips">
             <span class="chip active" data-cat="all" onclick="filterCat(this, 'all')">Todos</span>

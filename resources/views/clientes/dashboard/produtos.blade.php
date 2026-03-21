@@ -210,7 +210,7 @@
     </div>
 
     <div class="hero-search-bar">
-      <form action="{{ route('produtos.clientes') }}" method="GET">
+      <form action="{{ route('categorias.search') }}" method="GET">
         @if(request('sort'))
           <input type="hidden" name="sort" value="{{ request('sort') }}">
         @endif

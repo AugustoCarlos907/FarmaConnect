@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AvaliacaoController;
 use App\Http\Controllers\CarrinhoController;
+use App\Http\Controllers\CategoriaController;
 use App\Http\Controllers\ClientHomePageController;
 use App\Http\Controllers\CompanhiaController;
 use App\Http\Controllers\ComprovativoPagamentoController;
@@ -134,6 +135,9 @@ use Twilio\Rest\Client;
         });
         
         Route::get('/search-medicamentos'  , [MedicamentoController::class , 'index'])->name('medicamentos.search');
+        Route::get('/search-farmacias'  , [FarmaciaController::class , 'search'])->name('farmacias.search');
+        Route::get('/search-categorias'  , [CategoriaController::class , 'search'])->name('categorias.search');
+
         Route::post('/upload/comprovativo/{id}', [ComprovativoPagamentoController::class, 'uploadComprovativo']);
 
         // Route::post('/logout/{id}' , [AuthController::class, 'logout'])->name('logout');

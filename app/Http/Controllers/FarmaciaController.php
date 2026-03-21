@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Companhia;
 use App\Models\Entregador;
+use App\Models\Farmacia;
 use App\Models\User;
 use App\Services\FarmaService;
 use App\Services\MedicamentoService;
@@ -153,5 +154,16 @@ class FarmaciaController extends Controller
     }
 
 
+    public function search(Request $request){
+
+        $search = $request->input('query');
+
+        $farmacias = Farmacia::when($search, function ($query, $search) {
+                                return $query->where('name', 'LIKE', "%{$search}%")
+                                            ->orWhere('descricao', 'LIKE', "%{$search}%"); 
+                            })->paginate(6);
+
+        return response()->json($farmacias);
+    }
     
 }

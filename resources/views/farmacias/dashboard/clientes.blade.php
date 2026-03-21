@@ -358,7 +358,7 @@
       @php
         $totalClientes = $clientes->total();
         $totalPedidos = $clientes->sum(function($cliente) {
-            return $cliente->pedidos->count();
+            return $cliente->pedidos->where('farmacia_id' , Auth::user()->farmacia->id)->count();
         });
         $totalGasto = $clientes->sum(function($cliente) {
             return $cliente->pedidos->sum('total');
@@ -423,7 +423,7 @@
               @forelse($clientes as $cliente)
                 @php
                   $pedidos = $cliente->pedidos ?? collect();
-                  $totalPedidosCliente = $pedidos->count();
+                  $totalPedidosCliente = $cliente->pedidos->where('farmacia_id', Auth::user()->farmacia->id)->count();
                   $totalGastoCliente = $pedidos->sum('total');
                   $endereco = $pedidos->first()->endereco ?? '—';
                   $iniciais = implode('', array_map(function($n) { return $n[0] ?? ''; }, explode(' ', $cliente->name)));

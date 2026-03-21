@@ -432,50 +432,7 @@
 <body>
 
 <!-- ===== HEADER ===== -->
-<header class="header fixed-top" id="mainHeader">
-  <div class="container-xl">
-    <div class="d-flex align-items-center gap-3">
-      <a href="{{ route('index.clientes') }}" class="text-decoration-none me-2 flex-shrink-0">
-        <h1 class="sitename"><span class="s1">Farma</span><span class="s2">Connect</span></h1>
-      </a>
-      <div class="header-search d-none d-md-block mx-auto">
-        <div class="input-group">
-          <span class="input-group-text"><i class="bi bi-search"></i></span>
-          <input type="text" class="form-control" placeholder="Pesquise medicamentos, farmácias...">
-          <button class="btn-search-go" type="button"><i class="bi bi-arrow-right-circle-fill"></i></button>
-        </div>
-      </div>
-      <nav class="navmenu d-none d-lg-block flex-shrink-0">
-        <ul>
-          <li><a href="{{ route('index.clientes') }}"><i class="bi bi-house-door"></i> Início</a></li>
-          <li><a href="{{route('farmacias.list')}}"><i class="bi bi-hospital"></i> Farmácias</a></li>
-          <li><a href="{{ route('produtos.clientes') }}"><i class="bi bi-box-seam"></i> Produtos</a></li>
-          <li><a href="{{ route('pedidos.clientes') }}"><i class="bi bi-clock-history"></i> Histórico</a></li>
-        </ul>
-      </nav>
-      <div class="d-flex align-items-center gap-3 flex-shrink-0 ms-auto ms-lg-0">
-        <a href="{{ route('carrinho.clientes') }}" class="header-cart d-none d-sm-inline-flex">
-          <i class="bi bi-bag"></i>
-          <span class="cart-badge">3</span>
-        </a>
-        <div class="dropdown">
-          <a href="#" class="profile-toggle dropdown-toggle" id="pdrop" data-bs-toggle="dropdown" aria-expanded="false">
-            <img src="https://ui-avatars.com/api/?name=Ana+Costa&background=099aa7&color=fff&rounded=true&size=34"
-                 width="34" height="34" class="rounded-circle" alt="Perfil">
-            <span class="pname d-none d-md-inline">{{ Auth::user()->name }}</span>
-          </a>
-          <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="pdrop">
-            <li><a class="dropdown-item active" href="{{ route('perfil.clientes') }}"><i class="bi bi-person me-2"></i>Minha Conta</a></li>
-            <li><a class="dropdown-item" href="{{ route('pedidos.clientes') }}"><i class="bi bi-bag me-2"></i>Pedidos</a></li>
-            <li><a class="dropdown-item" href="#"><i class="bi bi-heart me-2"></i>Favoritos</a></li>
-            <li><hr class="dropdown-divider mx-2 my-1"></li>
-            <li><a class="dropdown-item text-danger" href="{{ route('logout' , ['id'=>auth()->user()->id]) }}"><i class="bi bi-box-arrow-right me-2"></i>Terminar Sessão</a></li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </div>
-</header>
+@include('clientes.dashboard.header')
 
 <!-- ===== PAGE TOPBAR ===== -->
 <div class="page-topbar" style="padding-top:64px;">
@@ -991,20 +948,8 @@
   </div><!-- /container -->
 </div><!-- /profile-wrap -->
 
-<!-- ===== FOOTER MINI ===== -->
-<footer style="background:var(--heading);color:#fff;padding:2rem 0;margin-top:2rem;">
-  <div class="container-xl">
-    <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
-      <span style="font-size:1.3rem;font-weight:800;"><span style="color:var(--accent);">Farma</span>Connect</span>
-      <span style="color:#6a8a8d;font-size:.85rem;">&copy; 2026 FarmaConnect · Todos os direitos reservados.</span>
-      <div>
-        <a href="#" style="color:#a0b9bc;font-size:.82rem;text-decoration:none;margin-left:1rem;">Privacidade</a>
-        <a href="#" style="color:#a0b9bc;font-size:.82rem;text-decoration:none;margin-left:1rem;">Termos</a>
-        <a href="#" style="color:#a0b9bc;font-size:.82rem;text-decoration:none;margin-left:1rem;">Suporte</a>
-      </div>
-    </div>
-  </div>
-</footer>
+<!-- ===== FOOTER  ===== -->
+  @include('clientes.dashboard.footer')
 
 <!-- Toast notification -->
 <div class="toast-fc" id="toastFc">

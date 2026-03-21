@@ -488,6 +488,8 @@
       color:#6a8a8d; font-size:.88rem;
     }
 
+    
+
     /* Scroll top */
     #scroll-top {
       position:fixed; bottom:28px; right:28px;
@@ -542,78 +544,10 @@
 <body>
 
   <!-- ===================== HEADER ===================== -->
-  <header class="header fixed-top" id="mainHeader">
-    <div class="container-xl">
-      <div class="d-flex align-items-center gap-3">
+@include('clientes.dashboard.header')
 
-        <!-- Logo -->
-        <a href="#" class="text-decoration-none me-2 flex-shrink-0">
-          <h1 class="sitename"><span class="s1">Farma</span><span class="s2">Connect</span></h1>
-        </a>
 
-        <!-- Search bar -->
-        <div class="header-search d-none d-md-block mx-auto">
-            <form action="" method="post">
-          <div class="input-group">
-                <span class="input-group-text"><i class="bi bi-search"></i></span>
-                <input type="text" class="form-control" placeholder="Pesquise medicamentos, farmácias..." name="search">
-                <button class="btn-search-go" type="submit">
-                  <i class="bi bi-arrow-right-circle-fill"></i>
-                </button>
-            </div>
-        </form>
-        </div>
-
-        <!-- Nav -->
-        <nav class="navmenu d-none d-lg-block flex-shrink-0">
-          <ul>
-            <li><a href="#hero" class="active"><i class="bi bi-house-door"></i> Início</a></li>
-            <li><a href="{{ route('farmacias.list') }}"><i class="bi bi-hospital"></i> Farmácias</a></li>
-            <li> <a href="{{ route('produtos.clientes') }}"><i class="bi bi-box-seam"></i> Produtos</a></li>
-            <li> <a href="{{ route('pedidos.clientes') }}"><i class="bi bi-clock-history"></i> Histórico</a></li>
-          </ul>
-        </nav>
-
-        <!-- Actions -->
-        <div class="d-flex align-items-center gap-3 flex-shrink-0 ms-auto ms-lg-0">
-          <!-- Cart -->
-          <a href="{{ route('carrinho.clientes') }}" class="header-cart d-none d-sm-inline-flex">
-            <i class="bi bi-bag"></i>
-            <span class="cart-badge">3</span>
-          </a>
-
-          <!-- Profile dropdown -->
-          <div class="dropdown">
-            <a href="#" class="profile-toggle dropdown-toggle" id="pdrop" data-bs-toggle="dropdown" aria-expanded="false">
-              <img src="https://ui-avatars.com/api/?name=Cliente&background=099aa7&color=fff&rounded=true&size=34"
-                   width="34" height="34" class="rounded-circle" alt="Perfil">
-              <span class="pname d-none d-md-inline">Perfil</span>
-            </a>
-            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="pdrop">
-              <li><a class="dropdown-item" href="{{ route('perfil.clientes') }}"><i class="bi bi-person me-2"></i>Minha Conta</a></li>
-              <li><a class="dropdown-item" href="{{ route('pedidos.clientes') }}"><i class="bi bi-bag me-2"></i>Pedidos</a></li>
-              <li><a class="dropdown-item" href="#"><i class="bi bi-heart me-2"></i>Favoritos</a></li>
-              <li><hr class="dropdown-divider mx-2 my-1"></li>
-              <form action="{{ route('logout', ['id' => auth()->user()->id]) }}" method="POST">
-                    @csrf
-                    <button type="submit"  style="background: none; border: none; width: 100%; text-align: left;">
-                        
-                        <span class="text-danger dropdown-item "><i class="bi bi-box-arrow-right "></i> Terminar Sessão</span>
-                    </button>
-                </form>
-              {{-- <li><a class="dropdown-item text-danger" href="#"><i class="bi bi-box-arrow-right me-2"></i>Sair</a></li> --}}
-            </ul>
-          </div>
-
-          <!-- Entrar (quando não logado) -->
-          <!-- <a class="btn-primary-fc d-none d-sm-inline" href="#">Entrar</a> -->
-        </div>
-
-      </div>
-    </div>
-  </header>
-
-  <main style="padding-top:64px;">
+  <main >
 
     <!-- ===================== HERO ===================== -->
     <section id="hero" class="hero">
@@ -960,54 +894,8 @@
   </main>
 
   <!-- ===================== FOOTER ===================== -->
-  <footer id="contact" class="footer">
-    <div class="container">
-      <div class="row gy-4">
-        <div class="col-lg-4">
-          <h3>FarmaConnect</h3>
-          <p style="color:#a0b9bc;line-height:1.75;font-size:.93rem;">
-            Plataforma angolana de busca e entrega de medicamentos. Conectamos farmácias e clientes em Luanda e futuramente em todo o país.
-          </p>
-          <div class="mt-3">
-            <a href="#" class="social-link"><i class="bi bi-facebook"></i></a>
-            <a href="#" class="social-link"><i class="bi bi-instagram"></i></a>
-            <a href="#" class="social-link"><i class="bi bi-whatsapp"></i></a>
-            <a href="#" class="social-link"><i class="bi bi-linkedin"></i></a>
-          </div>
-        </div>
-        <div class="col-lg-2 offset-lg-1">
-          <h4>Links</h4>
-          <ul class="list-unstyled">
-            <li><a href="#">Início</a></li>
-            <li><a href="#">Sobre nós</a></li>
-            <li><a href="#">Farmácias</a></li>
-            <li><a href="#">Medicamentos</a></li>
-            <li><a href="#">Contacto</a></li>
-          </ul>
-        </div>
-        <div class="col-lg-2">
-          <h4>Para farmácias</h4>
-          <ul class="list-unstyled">
-            <li><a href="#">Cadastrar farmácia</a></li>
-            <li><a href="#">Área do parceiro</a></li>
-            <li><a href="#">Planos</a></li>
-            <li><a href="#">Suporte</a></li>
-          </ul>
-        </div>
-        <div class="col-lg-3">
-          <h4>Contacto</h4>
-          <div class="contact-item"><i class="bi bi-telephone-fill"></i> +244 923 456 789</div>
-          <div class="contact-item"><i class="bi bi-envelope-fill"></i> geral@farmaconnect.ao</div>
-          <div class="contact-item"><i class="bi bi-geo-alt-fill"></i> Luanda, Angola</div>
-          <div class="contact-item"><i class="bi bi-clock-fill"></i> Seg–Sex: 08h–20h | Sáb: 09h–18h</div>
-        </div>
-      </div>
-      <div class="footer-bottom">
-        &copy; 2026 FarmaConnect. Todos os direitos reservados.
-      </div>
-    </div>
-  </footer>
-
+  @include('clientes.dashboard.footer')
+  
   <!-- Scroll top -->
   <a href="#" id="scroll-top"><i class="bi bi-arrow-up-short"></i></a>
 

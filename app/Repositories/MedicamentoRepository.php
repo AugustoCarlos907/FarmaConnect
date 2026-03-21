@@ -29,8 +29,7 @@ public function searchMedicamento($search, $perPage, $userLat, $userLng , $min_p
             ->where('stock_items.ativo', 1)
             ->where(function ($query) use ($search) {
                 $query->where('medicamentos.name', 'LIKE', "%{$search}%")
-                      ->orWhere('medicamentos.descricao', 'LIKE', "%{$search}%")
-                      ->orWhere('medicamentos.principio_ativo', 'LIKE', "%{$search}%");
+                      ->orWhere('medicamentos.descricao', 'LIKE', "%{$search}%");
             });
 
         if (!is_null($min_price)) {

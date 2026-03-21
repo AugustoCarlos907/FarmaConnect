@@ -27,9 +27,7 @@
     body { font-family:'Inter',-apple-system,sans-serif; background:#f4f8f8; color:var(--text); overflow-x:hidden; }
 
     /* ===== HEADER ===== */
-    .header { background:rgba(255,255,255,.97); backdrop-filter:blur(16px); box-shadow:0 1px 0 rgba(9,154,167,.08),0 4px 24px rgba(9,154,167,.06); padding:.75rem 0; z-index:1000; transition:box-shadow .3s; }
-    .header.scrolled { box-shadow:0 2px 28px rgba(9,154,167,.14); }
-    .sitename { font-size:1.75rem; font-weight:800; letter-spacing:-.03em; line-height:1; margin:0; }
+       .sitename { font-size:1.75rem; font-weight:800; letter-spacing:-.03em; line-height:1; margin:0; }
     .sitename .s1 { color:var(--accent); } .sitename .s2 { color:var(--heading); }
     .hdr-search { flex:1; max-width:560px; }
     .hdr-search .ig { border:1.5px solid var(--border); border-radius:50px; background:#f6fbfb; overflow:hidden; display:flex; align-items:center; transition:border-color .2s,box-shadow .2s; }
@@ -301,52 +299,10 @@
 <body class="grid-mode">
 
 <!-- ===== HEADER ===== -->
-<header class="header fixed-top" id="mainHeader">
-  <div class="container-xl">
-    <div class="d-flex align-items-center gap-3">
-      <a href="#" class="text-decoration-none me-2 flex-shrink-0">
-        <h1 class="sitename"><span class="s1">Farma</span><span class="s2">Connect</span></h1>
-      </a>
-      <div class="hdr-search d-none d-md-block mx-auto">
-        <div class="ig">
-          <span class="ig-icon"><i class="bi bi-search"></i></span>
-          <input type="text" placeholder="Pesquise medicamentos, farmácias..." id="hdrSearch">
-          <button class="ig-btn"><i class="bi bi-arrow-right-circle-fill"></i></button>
-        </div>
-      </div>
-      <nav class="navmenu d-none d-lg-block flex-shrink-0">
-        <ul>
-          <li><a href="{{ route('index.clientes') }}"><i class="bi bi-house-door"></i> Início</a></li>
-          <li><a class="active" href="{{ route('farmacias.list') }}"><i class="bi bi-hospital"></i> Farmácias</a></li>
-          <li><a href="{{ route('produtos.clientes') }}" ><i class="bi bi-box-seam"></i> Produtos</a></li>
-          <li><a href="{{ route('pedidos.clientes') }}"><i class="bi bi-clock-history"></i> Histórico</a></li>
-        </ul>
-      </nav>
-      <div class="d-flex align-items-center gap-3 flex-shrink-0 ms-auto ms-lg-0">
-        <a href="{{ route('carrinho.clientes') }}" class="hdr-icon d-none d-sm-inline-flex" onclick="openCart();return false;">
-          <i class="bi bi-bag"></i>
-          <span class="hdr-badge" id="cartBadge">0</span>
-        </a>        
-        <div class="dropdown">
-          <a href="#" class="profile-toggle dropdown-toggle" id="pdrop" data-bs-toggle="dropdown">
-            <img src="https://ui-avatars.com/api/?name=Ana+Costa&background=099aa7&color=fff&rounded=true&size=34" width="34" height="34" class="rounded-circle" alt="">
-            <span class="pname d-none d-md-inline">{{ Auth::user()->name }}</span>
-          </a>
-          <ul class="dropdown-menu dropdown-menu-end">
-            <li><a class="dropdown-item" href="{{ route('perfil.clientes') }}"><i class="bi bi-person me-2"></i>Minha Conta</a></li>
-            <li><a class="dropdown-item" href="{{ route('pedidos.clientes') }}"><i class="bi bi-bag me-2"></i>Pedidos</a></li>
-            <li><a class="dropdown-item" href="#"><i class="bi bi-heart me-2"></i>Favoritos</a></li>
-            <li><hr class="dropdown-divider mx-2 my-1"></li>
-            <li><a class="dropdown-item text-danger" href="{{ route('logout' , ['id'=>Auth()->user()->id]) }}"><i class="bi bi-box-arrow-right me-2"></i>Terminar Sessão</a></li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </div>
-</header>
+@include('clientes.dashboard.header')
 
 <!-- ===== TOPBAR ===== -->
-<div class="page-topbar mt-2" style="padding-top:64px;">
+<div class="page-topbar " >
   <div class="tb-blob tb1"></div>
   <div class="tb-blob tb2"></div>
   <div class="container-xl" style="position:relative;z-index:2;">
@@ -732,19 +688,8 @@
 </div>
 
 <!-- ===== FOOTER ===== -->
-<footer style="background:#1f2f31;color:#fff;padding:2rem 0;margin-top:2rem;">
-  <div class="container-xl">
-    <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
-      <span style="font-size:1.3rem;font-weight:800;"><span style="color:#099aa7;">Farma</span>Connect</span>
-      <span style="color:#6a8a8d;font-size:.85rem;">&copy; 2026 FarmaConnect · Todos os direitos reservados.</span>
-      <div>
-        <a href="#" style="color:#a0b9bc;font-size:.82rem;text-decoration:none;margin-left:1rem;">Privacidade</a>
-        <a href="#" style="color:#a0b9bc;font-size:.82rem;text-decoration:none;margin-left:1rem;">Termos</a>
-        <a href="#" style="color:#a0b9bc;font-size:.82rem;text-decoration:none;margin-left:1rem;">Suporte</a>
-      </div>
-    </div>
-  </div>
-</footer>
+  @include('clientes.dashboard.footer')
+
 
 <!-- Toast -->
 <div class="toast-fc" id="toastFc">

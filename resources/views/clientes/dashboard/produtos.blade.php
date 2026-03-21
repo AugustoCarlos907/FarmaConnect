@@ -166,57 +166,8 @@
 <!-- ══════════════════════════════════════════
      HEADER
 ══════════════════════════════════════════ -->
-<header class="header" id="mainHeader">
-  <div class="container-xl">
-    <div class="d-flex align-items-center gap-3">
+@include('clientes.dashboard.header')
 
-      <a href="{{ route('index.clientes') }}" class="text-decoration-none me-2 flex-shrink-0">
-        <h1 class="sitename"><span class="s1">Farma</span><span class="s2">Connect</span></h1>
-      </a>
-
-      <div class="header-search d-none d-md-block mx-auto">
-        <form action="{{ route('produtos.clientes') }}" method="GET" class="ig">
-          <span class="ig-icon"><i class="bi bi-search"></i></span>
-          <input type="text" name="query" value="{{ request('query') }}" placeholder="Pesquise categorias...">
-          <button type="submit" class="ig-btn"><i class="bi bi-arrow-right-circle-fill"></i></button>
-        </form>
-      </div>
-
-      <nav class="navmenu d-none d-lg-block flex-shrink-0">
-        <ul>
-          <li><a href="{{ route('index.clientes') }}"><i class="bi bi-house-door"></i> Início</a></li>
-          <li><a href="{{ route('farmacias.list') }}"><i class="bi bi-hospital"></i> Farmácias</a></li>
-          <li><a href="{{ route('produtos.clientes') }}" class="active"><i class="bi bi-box-seam"></i> Produtos</a></li>
-          <li><a href="{{ route('pedidos.clientes') }}"><i class="bi bi-clock-history"></i> Histórico</a></li>
-        </ul>
-      </nav>
-
-      <div class="d-flex align-items-center gap-3 flex-shrink-0 ms-auto ms-lg-0">
-        <a href="{{ route('carrinho.clientes') }}" class="hdr-icon d-none d-sm-inline-flex">
-          <i class="bi bi-bag"></i>
-          <span class="hdr-badge">0</span>
-        </a>
-        <div class="dropdown">
-          <a href="#" class="profile-toggle dropdown-toggle" data-bs-toggle="dropdown">
-            <img src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=099aa7&color=fff&rounded=true&size=34"
-                 width="34" height="34" class="rounded-circle" alt="Perfil">
-            <span class="pname d-none d-md-inline">{{ Auth::user()->name }}</span>
-          </a>
-          <ul class="dropdown-menu dropdown-menu-end">
-            <li><a class="dropdown-item" href="{{ route('perfil.clientes') }}"><i class="bi bi-person me-2"></i>Minha Conta</a></li>
-            <li><a class="dropdown-item" href="{{ route('pedidos.clientes') }}"><i class="bi bi-bag me-2"></i>Pedidos</a></li>
-            <li><a class="dropdown-item" href="#"><i class="bi bi-heart me-2"></i>Favoritos</a></li>
-            <li><hr class="dropdown-divider mx-2 my-1"></li>
-            <li><a class="dropdown-item text-danger" href="{{ route('logout', ['id' => Auth::user()->id]) }}">
-              <i class="bi bi-box-arrow-right me-2"></i>Terminar Sessão
-            </a></li>
-          </ul>
-        </div>
-      </div>
-
-    </div>
-  </div>
-</header>
 
 <!-- ══════════════════════════════════════════
      TOPBAR
@@ -320,22 +271,7 @@
 
       <div class="cat-grid" id="catGrid">
 
-        {{-- <a class="cat-card" href="#" title="Analgésicos e Antitérmicos">
-          <div class="cc-img">
-            <img src="https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=400&auto=format&fit=crop"
-                 alt="Analgésicos e Antitérmicos" loading="lazy">
-            <div class="cc-img-overlay"></div>
-            <div class="cc-arrow"><i class="bi bi-arrow-right"></i></div>
-          </div>
-          <div class="cc-body">
-            <div class="cc-name">Analgésicos e Antitérmicos</div>
-            <div class="cc-desc">Alívio da dor e febre</div>
-            <div class="cc-footer">
-              <span class="cc-count"><i class="bi bi-capsule-pill" style="font-size:.7rem;"></i> 218 medicamentos</span>
-            </div>
-          </div>
-        </a>
-             @foreach  --}}
+
 
         @foreach($categorias as $cat)
         <a class="cat-card" href="{{ route('produtos.categoria' , ['id'=>$cat->id]) }}" title="{{ $cat->name }}">
@@ -361,7 +297,7 @@
         @endforeach
       </div>
 
-      <!-- Paginação (activar quando o controller usar paginate()) -->
+      <!-- Paginação  -->
       
       @if($categorias->hasPages())
         <div class="pag-wrap">
@@ -390,19 +326,7 @@
 <!-- ══════════════════════════════════════════
      FOOTER
 ══════════════════════════════════════════ -->
-<footer style="background:#1f2f31;color:#fff;padding:2rem 0;margin-top:1rem;">
-  <div class="container-xl">
-    <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
-      <span style="font-size:1.3rem;font-weight:800;"><span style="color:#099aa7;">Farma</span>Connect</span>
-      <span style="color:#6a8a8d;font-size:.85rem;">&copy; {{ date('Y') }} FarmaConnect · Todos os direitos reservados.</span>
-      <div>
-        <a href="#" style="color:#a0b9bc;font-size:.82rem;text-decoration:none;margin-left:1rem;">Privacidade</a>
-        <a href="#" style="color:#a0b9bc;font-size:.82rem;text-decoration:none;margin-left:1rem;">Termos</a>
-        <a href="#" style="color:#a0b9bc;font-size:.82rem;text-decoration:none;margin-left:1rem;">Suporte</a>
-      </div>
-    </div>
-  </div>
-</footer>
+  @include('clientes.dashboard.footer')
 
 <button id="scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})">
   <i class="bi bi-arrow-up-short"></i>

@@ -12,16 +12,28 @@ class MedicamentoController extends Controller
     public function index(Request $request , $perPage = 10)
     {
         $search = $request->input('search');
+        $minPrice = $request->input('min_price');
+
+        // Obter latitude/longitude do usuário autenticado (supondo que existam no user)
+        $user = $request->user();
+        $userLat = $user->latitude ?? null;
+        $userLng = $user->longitude ?? null;
+
+        // Se não tiver localização, podemos usar um valor padrão (ex: Luanda)
+        if (is_null($userLat) || is_null($userLng)) {
+            $userLat = -8.8383; // coordenadas de exemplo (Luanda)
+            $userLng = 13.2344;
+        }
 
         $medicamentos = $this->service->SearchMedicamento(
-            $request->$search, 
+            $search, 
             $perPage,
-            $request->user()->latitude,
-            $request->user()->longitude,
-            $request->min_price
+            $userLat,
+            $userLng,
+            $minPrice
             );
 
-        return response()->json($medicamentos);
+        return view('clientes.dashboard.produto_resultado' , compact('medicamentos'));
     }
 
 

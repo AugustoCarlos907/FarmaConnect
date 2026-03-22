@@ -163,7 +163,7 @@ class FarmaciaController extends Controller
                                             ->orWhere('descricao', 'LIKE', "%{$search}%"); 
                             })->paginate(6);
 
-        return response()->json($farmacias);
+        return view('clientes.dashboard.farmacias_resultado' , compact('farmacias'));
     }
     
 }

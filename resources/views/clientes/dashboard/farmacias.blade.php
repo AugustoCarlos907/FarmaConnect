@@ -416,24 +416,6 @@
             </div>
           </div>
 
-          <!-- Bairro filter -->
-          {{-- <div class="fbox">
-            <div class="fbox-header">
-              <h6><i class="bi bi-geo-alt me-1" style="color:var(--accent);"></i>Bairro</h6>
-              <button class="fbox-clear" onclick="clearFilter('bairro')">Limpar</button>
-            </div>
-            <div class="fbox-body">
-              <div class="fcheck-list">
-                <label class="fcheck-item"><div class="fcheck-left"><input type="checkbox"> <label>Ingombotas</label></div><span class="fcheck-count">7</span></label>
-                <label class="fcheck-item"><div class="fcheck-left"><input type="checkbox"> <label>Kilamba</label></div><span class="fcheck-count">6</span></label>
-                <label class="fcheck-item"><div class="fcheck-left"><input type="checkbox"> <label>Talatona</label></div><span class="fcheck-count">5</span></label>
-                <label class="fcheck-item"><div class="fcheck-left"><input type="checkbox"> <label>Maianga</label></div><span class="fcheck-count">5</span></label>
-                <label class="fcheck-item"><div class="fcheck-left"><input type="checkbox"> <label>Alvalade</label></div><span class="fcheck-count">4</span></label>
-                <label class="fcheck-item"><div class="fcheck-left"><input type="checkbox"> <label>Benfica</label></div><span class="fcheck-count">3</span></label>
-                <label class="fcheck-item"><div class="fcheck-left"><input type="checkbox"> <label>Viana</label></div><span class="fcheck-count">3</span></label>
-              </div>
-            </div>
-          </div> --}}
 
           <!-- Avaliação -->
           <div class="fbox">
@@ -488,7 +470,7 @@
       <div class="col-lg-9">
 
         <!-- Featured / Destaque -->
-        <div class="featured-section">
+        <div class="featured-section mt-4">
           <h6><i class="bi bi-lightning-charge-fill" style="color:#f59e0b;"></i> Farmácias em destaque</h6>
           
           <div class="featured-scroll">
@@ -542,16 +524,12 @@
                 <div class="ph-meta">
                   <div class="ph-rating"><i class="bi bi-star-fill"> {{-- Calcula a média ou retorna 0 se não houver avaliações --}}
             {{ number_format($farmacia->avaliacoes->avg('classificacao') ?? 0, 1) }}</i> <span class="ph-reviews">({{ $farmacia->avaliacoes->count() ?? 0 }})</span></div>
-                  {{-- <span class="ph-tag"><i class="bi bi-truck"></i> 25 min</span> --}}
-                  {{-- <span class="ph-tag">Entrega 800 Kz</span> --}}
+            
                 </div>
-                {{-- <div class="ph-specs">
-                  <span class="ph-spec">Geral</span><span class="ph-spec">Derma</span><span class="ph-spec">Pediátrico</span>
-                </div> --}}
-                <div class="ph-delivery"><i class="bi bi-clock"></i> Seg-Dom: <strong>{{$farmacia->horario_abertura}} - {{ $farmacia->horario_fechamento }}</strong></div>
+
+                <div class="ph-delivery"><i class="bi bi-clock"></i> Seg-Dom: <strong>{{$farmacia->horario_abertura ?? '08:00'}} - {{ $farmacia->horario_fechamento ?? '22:00'}}</strong></div>
                 <div class="ph-actions">
                   <button class="ph-btn ph-view" onclick="openModal('central')"><i class="bi bi-eye"></i> Ver</button>
-                  {{-- <button class="ph-btn ph-order"><i class="bi bi-bag-plus"></i> Pedir</button> --}}
                 </div>
               </div>
             </div>
@@ -566,71 +544,33 @@
             </div>
           @endif
 
-          
-
         </div><!-- /gridContainer -->
 
         <!-- LIST VIEW items (mirrored) -->
         <div id="listContainer">
+          @if ($farmacias->count()!=0)
+          @foreach ($farmacias as $farmacia )
           <div class="ph-list-card" data-name="farmácia central" data-bairro="ingombotas" data-status="open">
             <div class="ph-list-img"><img src="https://images.unsplash.com/photo-1587854692152-cbe660dbde88?w=320&auto=format&fit=crop" alt=""></div>
             <div class="ph-list-body">
               <div class="d-flex align-items-start gap-2 mb-1 flex-wrap">
-                <span style="font-size:1rem;font-weight:800;color:var(--heading);">Farmácia Central</span>
+                <span style="font-size:1rem;font-weight:800;color:var(--heading);">{{ $farmacia->name }}</span>
                 <span class="ph-badge ph-open" style="font-size:.68rem;padding:.18rem .6rem;border-radius:50px;background:#d4edda;color:#155724;border:none;"><i class="bi bi-circle-fill" style="font-size:.4rem;"></i> Aberta</span>
               </div>
-              <div class="ph-loc mb-1"><i class="bi bi-geo-alt-fill"></i> Ingombotas, Rua Ho Chi Min · 1.2 km</div>
+              <div class="ph-loc mb-1"><i class="bi bi-geo-alt-fill"></i> {{ $farmacia->bairro }}</div>
               <div class="d-flex align-items-center gap-2 flex-wrap">
-                <div class="ph-rating"><i class="bi bi-star-fill"></i> 4.9 <span class="ph-reviews">(312)</span></div>
-                <span class="ph-tag"><i class="bi bi-truck"></i> 25 min</span>
-                <span class="ph-spec">Geral</span><span class="ph-spec">Derma</span>
+                <div class="ph-rating"><i class="bi bi-star-fill"></i> {{ number_format($farmacia->avaliacoes->avg('classificacao') ?? 0, 1) }} <span class="ph-reviews">({{ $farmacia->avaliacoes->count() ?? 0 }})</span></div>
               </div>
             </div>
+            <div class="ph-delivery"><i class="bi bi-clock"></i> Seg-Dom: <strong>{{$farmacia->horario_abertura ?? '08:00'}} - {{ $farmacia->horario_fechamento ?? '22:00'}}</strong></div>
+
             <div class="ph-list-actions">
               <button class="ph-btn ph-view" style="width:100%;" onclick="openModal('central')"><i class="bi bi-eye"></i> Ver</button>
-              {{-- <button class="ph-btn ph-order" style="width:100%;"><i class="bi bi-bag-plus"></i> Pedir</button> --}}
             </div>
           </div>
 
-          <div class="ph-list-card" data-name="farmácia kilamba" data-bairro="kilamba" data-status="open">
-            <div class="ph-list-img"><img src="https://images.unsplash.com/photo-1576671081837-49000212a370?w=320&auto=format&fit=crop" alt=""></div>
-            <div class="ph-list-body">
-              <div class="d-flex align-items-start gap-2 mb-1 flex-wrap">
-                <span style="font-size:1rem;font-weight:800;color:var(--heading);">Farmácia Kilamba</span>
-                <span class="ph-badge ph-open" style="font-size:.68rem;padding:.18rem .6rem;border-radius:50px;background:#d4edda;color:#155724;border:none;"><i class="bi bi-circle-fill" style="font-size:.4rem;"></i> Aberta 24h</span>
-              </div>
-              <div class="ph-loc mb-1"><i class="bi bi-geo-alt-fill"></i> Kilamba, Rua dos Combates · 3.8 km</div>
-              <div class="d-flex align-items-center gap-2 flex-wrap">
-                <div class="ph-rating"><i class="bi bi-star-fill"></i> 4.7 <span class="ph-reviews">(198)</span></div>
-                <span class="ph-tag"><i class="bi bi-truck"></i> 30 min</span>
-                <span class="ph-spec">Geral</span><span class="ph-spec">Cardiovascular</span>
-              </div>
-            </div>
-            <div class="ph-list-actions">
-              <button class="ph-btn ph-view" style="width:100%;" onclick="openModal('kilamba')"><i class="bi bi-eye"></i> Ver</button>
-              {{-- <button class="ph-btn ph-order" style="width:100%;"><i class="bi bi-bag-plus"></i> Pedir</button> --}}
-            </div>
-          </div>
-
-          <div class="ph-list-card" data-name="farmácia talatona" data-bairro="talatona" data-status="open">
-            <div class="ph-list-img"><img src="https://images.unsplash.com/photo-1631549916768-4119b2e5f926?w=320&auto=format&fit=crop" alt=""></div>
-            <div class="ph-list-body">
-              <div class="d-flex align-items-start gap-2 mb-1 flex-wrap">
-                <span style="font-size:1rem;font-weight:800;color:var(--heading);">Farmácia Talatona</span>
-                <span class="ph-badge ph-open" style="font-size:.68rem;padding:.18rem .6rem;border-radius:50px;background:#d4edda;color:#155724;border:none;"><i class="bi bi-circle-fill" style="font-size:.4rem;"></i> Aberta</span>
-              </div>
-              <div class="ph-loc mb-1"><i class="bi bi-geo-alt-fill"></i> Talatona, Belas Shopping · 7.1 km</div>
-              <div class="d-flex align-items-center gap-2 flex-wrap">
-                <div class="ph-rating"><i class="bi bi-star-fill"></i> 4.9 <span class="ph-reviews">(421)</span></div>
-                <span class="ph-tag"><i class="bi bi-truck"></i> 35 min</span>
-                <span class="ph-spec">Geral</span><span class="ph-spec">Ortopedia</span>
-              </div>
-            </div>
-            <div class="ph-list-actions">
-              <button class="ph-btn ph-view" style="width:100%;" onclick="openModal('talatona')"><i class="bi bi-eye"></i> Ver</button>
-              {{-- <button class="ph-btn ph-order" style="width:100%;"><i class="bi bi-bag-plus"></i> Pedir</button> --}}
-            </div>
-          </div>
+          @endforeach
+          @endif
         </div>
 
 
@@ -648,7 +588,7 @@
 </div>
 
 <!-- ===== MODAL FARMÁCIA DETAIL ===== -->
-<div class="modal fade" id="pharmModal" tabindex="-1">
+{{-- <div class="modal fade" id="pharmModal" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered modal-lg">
     <div class="modal-content">
       <div class="modal-ph-banner">
@@ -679,12 +619,12 @@
         </div>
       </div>
       <div class="modal-footer gap-2">
-        {{-- <button type="button" class="btn-close-fc" data-bs-dismiss="modal" style="background:var(--soft);color:var(--accent);border:none;border-radius:50px;padding:.5rem 1.2rem;font-size:.85rem;font-weight:700;cursor:pointer;">Fechar</button> --}}
+        <button type="button" class="btn-close-fc" data-bs-dismiss="modal" style="background:var(--soft);color:var(--accent);border:none;border-radius:50px;padding:.5rem 1.2rem;font-size:.85rem;font-weight:700;cursor:pointer;">Fechar</button>
         <button class="ph-btn ph-order" style="max-width:180px;display:inline-flex;" data-bs-dismiss="modal" onclick="showToast('Farmácia seleccionada!','Escolha os seus medicamentos.')"><i class="bi bi-bag-plus"></i> Fazer pedido</button>
       </div>
     </div>
   </div>
-</div>
+</div> --}}
 
 <!-- ===== FOOTER ===== -->
   @include('clientes.dashboard.footer')
@@ -700,61 +640,10 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script>
 
-  /* ===== DATA ===== */
-  const pharmData = {
-    central: {
-      name: 'Farmácia Central',
-      loc: 'Ingombotas, Rua Ho Chi Min',
-      img: 'https://images.unsplash.com/photo-1587854692152-cbe660dbde88?w=900&auto=format&fit=crop',
-      addr: 'Rua Ho Chi Min, Nº 12, Ingombotas, Luanda',
-      phone: '+244 222 345 678',
-      email: 'central@farmaciasluanda.ao',
-      rating: '4.9 ★ (312 avaliações)',
-      delivery: 'Entrega em ~25 min · Taxa 800 Kz · Grátis acima 10 000 Kz',
-      hours: [
-        ['Segunda','08h00 — 22h00',false],['Terça','08h00 — 22h00',false],
-        ['Quarta','08h00 — 22h00',false],['Quinta','08h00 — 22h00',false],
-        ['Sexta','08h00 — 22h00',false],['Sábado','09h00 — 20h00',false],
-        ['Domingo','10h00 — 18h00',true],
-      ]
-    },
-    kilamba: {
-      name: 'Farmácia Kilamba',
-      loc: 'Kilamba, Rua dos Combates',
-      img: 'https://images.unsplash.com/photo-1576671081837-49000212a370?w=900&auto=format&fit=crop',
-      addr: 'Rua dos Combates, Bloco 14, Kilamba, Luanda',
-      phone: '+244 222 456 789',
-      email: 'kilamba@farmaciasluanda.ao',
-      rating: '4.7 ★ (198 avaliações)',
-      delivery: 'Entrega em ~30 min · Taxa 1 000 Kz · Aberta 24 horas',
-      hours: [
-        ['Segunda','24 horas',false],['Terça','24 horas',false],
-        ['Quarta','24 horas',false],['Quinta','24 horas',false],
-        ['Sexta','24 horas',false],['Sábado','24 horas',false],
-        ['Domingo','24 horas',true],
-      ]
-    },
-    talatona: {
-      name: 'Farmácia Talatona',
-      loc: 'Talatona, Belas Shopping',
-      img: 'https://images.unsplash.com/photo-1631549916768-4119b2e5f926?w=900&auto=format&fit=crop',
-      addr: 'Belas Shopping, Loja 34, Talatona, Luanda',
-      phone: '+244 222 567 890',
-      email: 'talatona@farmaciasluanda.ao',
-      rating: '4.9 ★ (421 avaliações)',
-      delivery: 'Entrega em ~35 min · Taxa 1 200 Kz · Grátis acima 15 000 Kz',
-      hours: [
-        ['Segunda','08h00 — 23h00',false],['Terça','08h00 — 23h00',false],
-        ['Quarta','08h00 — 23h00',false],['Quinta','08h00 — 23h00',false],
-        ['Sexta','08h00 — 23h00',false],['Sábado','09h00 — 23h00',false],
-        ['Domingo','10h00 — 22h00',true],
-      ]
-    }
-  };
 
   /* ===== MODAL ===== */
   function openModal(key) {
-    const d = pharmData[key]; if (!d) return;
+    const d = $farmacias[key]; if (!d) return;
     document.getElementById('modalImg').src    = d.img;
     document.getElementById('modalName').textContent = d.name;
     document.getElementById('modalLoc').textContent  = d.loc;

@@ -13,7 +13,7 @@ class Pedido extends Model
         'status',
         'data_pedido',
         'endereco',
-        // 'total',
+        'total',
     ];
 
 

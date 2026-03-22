@@ -74,7 +74,7 @@ class ReportController extends Controller
         if($data['tipo_relatorio'] == 'pdf'){
             $pdf = Pdf::loadView('farmacias.relatorios.pedidos_pdf', ['relatorio' => $relatorio]);
 
-            return $pdf->download('relatorio-'.$relatorio->id.'.pdf');
+            return $pdf->download('RELATORIO-FARMACONNECT'.$relatorio->id.'.pdf');
         }
     }
 }

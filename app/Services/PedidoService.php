@@ -139,7 +139,7 @@ class PedidoService
     public function getLastPedidosByPharmacy(){
         return Pedido::where('farmacia_id', auth()->user()->farmacia_id)
                     ->orderBy('created_at', 'desc')
-                    ->limit(6)
+                    ->limit(5)
                     ->get();
     }
 

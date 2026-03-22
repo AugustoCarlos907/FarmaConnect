@@ -55,16 +55,22 @@ use Twilio\Rest\Client;
     //farmacias
     Route::middleware(['auth', 'farma'])->group(function(){ 
         Route::get('farmacia/dashboard', [DashboardFarmaciaController::class , 'dashboard'])->name('index.farmacias');
+
         Route::get('/farmacia/medicamentos', [FarmaciaController::class, 'listMedicamentos'])->name('medicamentos.farmacias');
         Route::post('/farmacia/create-medicamento' , [MedicamentoController::class , 'create'])->name('medicamentos.store');
+
         Route::get('farmacia/pedidos', [FarmaciaController::class, 'pedidos'])->name('pedidos.farmacias');
+
         Route::get('farmacia/entregadores', [FarmaciaController::class, 'entregadores'])->name('entregadores.farmacias');
+        Route::post('/farmacias/create-entregador' , [FarmaciaController::class , 'registerEntregadores'])->name('entregadores.store');
         Route::get('/farmacia/clientes' , [FarmaciaController::class, 'clientes'])->name('clientes.farmacias');
+
         Route::get('/farmacia/avaliacoes' , [AvaliacaoController::class, 'index'])->name('avaliacoes.farmacias');
+
         Route::get('/farmacia/documentos' , [FarmaciaController::class, 'documentos'])->name('documentos.farmacias');
 
         Route::get('/alert/stock/items', []);
-        Route::post('/relatorios/gerar', [ReportController::class, 'gerarRelatorio']);
+        Route::post('/relatorios/gerar', [ReportController::class, 'gerarRelatorio'])->name('farmacias.report');
         
         });
     

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Services\ReportService;
 use Auth;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 
@@ -65,16 +66,15 @@ class ReportController extends Controller
 
         $relatorio = $this->service->gerarRelatorioPoPeriodo(
            $user->farmacia_id,
-           $data['data_inicio'],
-              $data['data_fim'],
-        $data['tipo_relatorio'] );
+           $data['data_inicio'] ?? Carbon::now(),
+           $data['data_fim'] ?? Carbon::now(),
+           $data['tipo_relatorio'] ?? 'pdf'
+        );
 
         if($data['tipo_relatorio'] == 'pdf'){
-            $pdf = Pdf::loadView('relatorios.pdf', ['relatorio' => $relatorio]);
+            $pdf = Pdf::loadView('farmacias.relatorios.pedidos_pdf', ['relatorio' => $relatorio]);
 
             return $pdf->download('relatorio-'.$relatorio->id.'.pdf');
         }
-
-
     }
 }

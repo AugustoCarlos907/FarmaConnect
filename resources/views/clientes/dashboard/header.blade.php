@@ -263,9 +263,16 @@
                         <li><a class="dropdown-item" href="{{ route('perfil.clientes') }}"><i class="bi bi-person me-2"></i>Minha Conta</a></li>
                         <li><a class="dropdown-item" href="{{ route('pedidos.clientes') }}"><i class="bi bi-bag me-2"></i>Pedidos</a></li>
                         <li><hr class="dropdown-divider mx-2 my-1"></li>
-                        <li><a class="dropdown-item text-danger" href="{{ route('logout', ['id' => auth()->id()]) }}">
-                            <i class="bi bi-box-arrow-right me-2"></i>Terminar Sessão
-                        </a></li>
+                        <li>
+                            <a class="dropdown-item text-danger" href="{{ route('logout', ['id' => auth()->id()]) }}"
+                            onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                <i class="bi bi-box-arrow-right me-2"></i>Terminar Sessão
+                            </a>
+
+                            <form id="logout-form" action="{{ route('logout', ['id' => auth()->id()]) }}" method="POST" class="d-none">
+                                @csrf
+                            </form>
+                        </li>
                     </ul>
                 </div>
             </div>

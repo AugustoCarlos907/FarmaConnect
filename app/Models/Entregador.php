@@ -29,6 +29,17 @@ class Entregador extends Authenticatable
         'user_id'
     ];
 
+    protected $with = ['user'];
+    public function getNameAttribute()
+    {
+        return $this->user?->name;
+    }
+
+    public function getEmailAttribute()
+    {
+        return $this->user?->email;
+    }
+
     public function entregas()
     {
         return $this->hasMany(Entrega::class);

@@ -569,7 +569,15 @@
         </div>
 
           <div class="toolbar-right">
-          <button class="btn btn-outline btn-icon" style="background-color: #0899a6;color:white " title="Exportar" onclick="alert('Exportar clientes — integrar API')"><i class="bi bi-download"></i>Imprimir Relatório</button>
+            <form action="{{ route('farmacias.report') }}" method="post">
+              @csrf
+              <!-- Adiciona estes campos (podes usar inputs de data se preferires) -->
+              <input type="hidden" name="data_inicio" value="{{ request('data_inicio', now()->startOfMonth()->toDateString()) }}">
+              <input type="hidden" name="data_fim" value="{{ request('data_fim', now()->toDateString()) }}">
+              <input type="hidden" name="tipo_relatorio" value="pdf">
+
+              <button class="btn btn-outline btn-icon" type="submit" style="background-color: #0899a6;color:white; " title="Exportar" ><i class="bi bi-download"></i>Imprimir Relatório</button>
+            </form>
         </div>
 
 

@@ -18,8 +18,8 @@ class AlertService{
     public function checkLowPriceItems(float $limit = 5): void
     {
        $items = StockItem::query()
-            ->where('quantity', '<', $limit)
-            ->where('active', '1')
+            ->where('quantidade', '<', $limit)
+            ->where('active', true)
             ->get()
             ->groupBy('farmacia_id');
 

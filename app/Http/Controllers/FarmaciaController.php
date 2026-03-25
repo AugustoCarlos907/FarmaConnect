@@ -142,6 +142,7 @@ class FarmaciaController extends Controller
     //     return view('farmacias.dashboard.avaliacoes');
     // }
 
+    
     //documentos
     public function documentos(){
         $documentos = $this->farmaService->getPharmacyDocs();

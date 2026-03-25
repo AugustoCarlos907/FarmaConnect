@@ -9,9 +9,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class StockFile extends Model
 {
     use SoftDeletes;
+    protected $table = 'stock_files';
     protected $fillable = [
         'farmacia_id',
-        'file_name',
+        'filename',
         'file_path',
         'status'
     ];

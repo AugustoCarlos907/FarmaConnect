@@ -53,5 +53,24 @@ class PedidoController extends Controller
         ));
     }
 
+    public function updateStatus($id , Request $request){
+
+        $request->validate([
+            'status' => 'required|string'
+        ]);
+
+        $pedido = Pedido::findOrFail($id);
+
+        $statusPermitidos = ['Aprovado', 'Pago', 'Cancelado', 'Rejeitado'];
+
+        if (in_array($request->status, $statusPermitidos)) {
+        $pedido->update([
+            'status' => $request->status
+        ]);
+    }
+
+        return redirect()->route('pedidos.farmacias');
+        
+    }
     
 }

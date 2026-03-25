@@ -3,9 +3,11 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Medicamento extends Model
 {
+    // use SoftDeletes;
     protected $fillable = [
         'name',
         'descricao',
@@ -19,6 +21,7 @@ class Medicamento extends Model
 
     
 
+    protected $with = ['stockItems'];
     
     public function stockItems()
     {

@@ -367,7 +367,6 @@
       background: var(--surface-2); font-size: 0.77rem; color: var(--text-3);
       flex-shrink: 0; flex-wrap: wrap; gap: 8px;
     }
-    .tf-info { display: flex; align-items: center; gap: 10px; }
     .rows-select { padding: 3px 22px 3px 8px; border: 1px solid var(--border); border-radius: var(--r-sm); font-size: 0.75rem; font-family: 'DM Sans', sans-serif; background: var(--surface) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='5'%3E%3Cpath d='M0 0l4 5 4-5z' fill='%2394a3b8'/%3E%3C/svg%3E") no-repeat right 7px center; appearance: none; color: var(--text-2); cursor: pointer; }
     .pagination { display: flex; align-items: center; gap: 3px; }
     .pg-btn { min-width: 28px; height: 28px; padding: 0 6px; border-radius: var(--r-sm); border: 1px solid var(--border); background: var(--surface); font-size: 0.77rem; font-family: 'DM Sans', sans-serif; color: var(--text-3); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all .1s; }
@@ -649,7 +648,14 @@
           </div>
 
           <button class="btn btn-outline btn-icon" title="Exportar CSV" onclick="alert('Exportar CSV — integrar com API Laravel')"><i class="bi bi-download"></i></button>
-          <button class="btn btn-outline btn-icon" title="Importar CSV" onclick="alert('Importar CSV — integrar com API Laravel')"><i class="bi bi-upload"></i></button>
+          <form action="{{ route('upload.files') }}  " method="POST" enctype="multipart/form-data" id="csvUploadForm">
+          @csrf
+          <input type="file" name="file" id="csvFileInput" accept=".csv" style="display: none;">
+          <button type="button" class="btn btn-outline btn-icon   w-25" title="Importar CSV" onclick="document.getElementById('csvFileInput').click();">
+              <i class="bi bi-upload"></i>IMPORTAR CSV
+          </button>
+      </form>
+
           <button class="btn btn-primary" onclick="openDrawer(null)">
             <i class="bi bi-plus-lg"></i> Novo produto
           </button>
@@ -807,7 +813,13 @@
                       <button class="act-btn" title="Editar" onclick="openDrawer({{ $medicamento->id }})"><i class="bi bi-pencil"></i></button>
                       <button class="act-btn" title="Repor stock" onclick="alert('Repor stock de {{ $medicamento->name }}')"><i class="bi bi-bag-plus"></i></button>
                       <button class="act-btn" title="Ver histórico" onclick="alert('Histórico de movimentos')"><i class="bi bi-clock-history"></i></button>
-                      <button class="act-btn danger" title="Eliminar" onclick="openConfirmSingle({{ $medicamento->id }})"><i class="bi bi-trash"></i></button>
+                      <form id="form-delete-{{ $medicamento->id }}" action="{{ route('medicamentos.destroy', $medicamento->id) }}" method="POST">
+                          @csrf
+                          @method('DELETE')
+                          <button type="button" class="act-btn danger" onclick="openConfirmSingle({{ $medicamento->id }}, '{{ $medicamento->nome }}')">
+                              <i class="bi bi-trash"></i>
+                          </button>
+                      </form>
                     </div>
                   </td>
                 </tr>
@@ -831,18 +843,17 @@
 
         <!-- Pagination -->
         <div class="table-footer">
-          <div class="tf-info">
+          <div class="tf-left">
             <span>Mostrar</span>
-            <select class="rows-select" id="rowsPerPage" onchange="changePage(1)">
-              <option value="15">15</option>
+            <select class="rows-select" onchange="...">
+              <option value="10">10</option>
               <option value="25" selected>25</option>
               <option value="50">50</option>
-              <option value="100">100</option>
             </select>
-            <span>por página &nbsp;·&nbsp; <span id="pageInfo">{{ $medicamentos->firstItem() ?? 0 }}–{{ $medicamentos->lastItem() ?? 0 }} de {{ $medicamentos->total() }}</span></span>
+            <span>por página</span>
           </div>
           <div class="pagination" id="pagination">
-            {{ $medicamentos->links() }}
+            {{ $medicamentos->links('vendor.pagination.fc-pagination') }}
           </div>
         </div>
       </div>
@@ -953,6 +964,14 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Quando um ficheiro for selecionado, submete o formulário
+    document.getElementById('csvFileInput').addEventListener('change', function() {
+        if (this.files.length > 0) {
+            document.getElementById('csvUploadForm').submit();
+        }
+    });
+</script>
 
 <script>
 /* ══ DADOS DO BACKEND ═══════════════════════════ */
@@ -1066,7 +1085,8 @@ function render() {
           <div class="row-actions">
             <button class="act-btn" title="Editar" onclick="openDrawer(${p.id})"><i class="bi bi-pencil"></i></button>
             <button class="act-btn" title="Repor stock" onclick="alert('Repor stock de ${p.name}')"><i class="bi bi-bag-plus"></i></button>
-            <button class="act-btn danger" title="Eliminar" onclick="openConfirmSingle(${p.id})"><i class="bi bi-trash"></i></button>
+           <button onclick="confirmDelete()" class="btn-danger">Confirmar</button>
+           <button onclick="document.getElementById('confirmModal').classList.remove('open')">Cancelar</button>
           </div>
         </td>
       </tr>`;
@@ -1312,28 +1332,24 @@ function submitProductForm() {
 }
 
 /* ══ DELETE ════════════════════════════════════════ */
-let deleteSingleId = null;
+let formToSubmit = null; // Guarda o ID do formulário selecionado
 
-function openConfirmSingle(id) {
-  deleteSingleId = id;
-  const p = allProducts.find(x => x.id === id);
+function openConfirmSingle(id, nome) {
+  // Define qual formulário será enviado
+  formToSubmit = `form-delete-${id}`;
+  
   const confirmText = document.getElementById('confirmText');
   if (confirmText) {
-    confirmText.textContent = `Tem a certeza que quer eliminar "${p?.name}"? Esta acção não pode ser revertida.`;
-  }
-  document.getElementById('confirmModal').classList.add('open');
-}
-
-function openConfirmModal() {
-  deleteSingleId = null;
-  const confirmText = document.getElementById('confirmText');
-  if (confirmText) {
-    confirmText.textContent = `Vai eliminar ${selected.size} produto(s). Esta acção é permanente e não pode ser revertida.`;
+    confirmText.textContent = `Tem a certeza que quer eliminar "${nome}"? Esta acção não pode ser revertida.`;
   }
   document.getElementById('confirmModal').classList.add('open');
 }
 
 function confirmDelete() {
+  if (formToSubmit) {
+    // Submete o formulário guardado
+    document.getElementById(formToSubmit).submit();
+  }
 }
 
 document.getElementById('confirmModal').addEventListener('click', function(e) {

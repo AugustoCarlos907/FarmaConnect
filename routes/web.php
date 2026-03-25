@@ -11,6 +11,7 @@ use App\Http\Controllers\DashboardEntregadorController;
 use App\Http\Controllers\DashboardFarmaciaController;
 use App\Http\Controllers\EntregaController;
 use App\Http\Controllers\FarmaciaController;
+use App\Http\Controllers\FileController;
 use App\Http\Controllers\MedicamentoController;
 use App\Http\Controllers\PedidoController;
 use App\Http\Controllers\PerfilController;
@@ -58,19 +59,25 @@ use Twilio\Rest\Client;
 
         Route::get('/farmacia/medicamentos', [FarmaciaController::class, 'listMedicamentos'])->name('medicamentos.farmacias');
         Route::post('/farmacia/create-medicamento' , [MedicamentoController::class , 'create'])->name('medicamentos.store');
+        Route::delete('/farmacias/medicamento-delete/{id}' , [MedicamentoController::class , 'destroy'])->name('medicamentos.destroy');
 
-        Route::get('farmacia/pedidos', [FarmaciaController::class, 'pedidos'])->name('pedidos.farmacias');
+        Route::get('/farmacia/pedidos', [FarmaciaController::class, 'pedidos'])->name('pedidos.farmacias');
+        Route::put('/pedidos/{id}/status', [PedidoController::class, 'updateStatus'])->name('pedidos.status.update');       
 
-        Route::get('farmacia/entregadores', [FarmaciaController::class, 'entregadores'])->name('entregadores.farmacias');
+        Route::get('/farmacia/entregadores', [FarmaciaController::class, 'entregadores'])->name('entregadores.farmacias');
         Route::post('/farmacias/create-entregador' , [FarmaciaController::class , 'registerEntregadores'])->name('entregadores.store');
+
         Route::get('/farmacia/clientes' , [FarmaciaController::class, 'clientes'])->name('clientes.farmacias');
 
         Route::get('/farmacia/avaliacoes' , [AvaliacaoController::class, 'index'])->name('avaliacoes.farmacias');
 
         Route::get('/farmacia/documentos' , [FarmaciaController::class, 'documentos'])->name('documentos.farmacias');
+        Route::post('/farmacia/importar-csv' , [FileController::class , 'uploadFile'])->name('upload.files');
 
         Route::get('/alert/stock/items', []);
-        Route::post('/relatorios/gerar', [ReportController::class, 'gerarRelatorio'])->name('farmacias.report');
+        Route::post('/farmacia/relatorios/gerar', [ReportController::class, 'gerarRelatorioPedidos'])->name('farmacias.report');
+        // Route::post('/relatorios/gerar', [ReportController::class, 'gerarRelatorioClientes'])->name('farmacias.reportClientesk');
+
         
         });
     

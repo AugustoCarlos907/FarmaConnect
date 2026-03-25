@@ -39,5 +39,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(AvaliacaoInterface::class , AvaliacaoRepository::class);
         $this->app->bind(FarmaInterface::class , FarmaRepository::class);
         Paginator::useBootstrapFive();
+        // App\Providers\AppServiceProvider::boot()
+        Paginator::defaultView('vendor.pagination.fc-pagination');
     }
 }

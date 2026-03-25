@@ -23,24 +23,25 @@ class FileController extends Controller
             $relativePath = $file;
             $filename =  $request->file('file')->getClientOriginalName();
 
-            $farmaciaId = Auth::guard('farmacia')->id();
+            $user = Auth::user();
+            if($user->role != 'gestor_farmacia'){
+                abort(403 , 'NÃO AUTORIZADO');
+            }
 
-            $stockFile = $this->service->saveFile([
+            $farmaciaId = $user->farmacia_id;
+            $data = [
                 'file_path' => $relativePath, 
-                'file_name' => $filename,
+                'filename' => $filename,
                 'farmacia_id' => $farmaciaId,
-            ]);
+            ];
+            
+            $stockFile = $this->service->saveFile($data);
 
             ParsePharmacyStockCsvJob::dispatch($stockFile);
 
-            return response()->json([
-                'message' => 'File uploaded successfully',
-                'file_path' => $relativePath,
-            ], 201);
+            return redirect()->route('medicamentos.farmacias');
         } else {
-            return response()->json([
-                'message' => 'No file uploaded'
-            ], 400);
+            return response()->json('Error');
         }
     }
 }

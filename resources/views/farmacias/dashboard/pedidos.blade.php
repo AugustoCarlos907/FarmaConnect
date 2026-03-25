@@ -270,6 +270,60 @@
     .pg-btn:disabled { opacity: .35; cursor: default; }
     .pg-ell { padding: 0 4px; color: var(--text-4); font-size: 0.75rem; }
 
+    /* Workflow buttons - estilo moderno */
+    .workflow-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 8px;
+      flex-wrap: wrap;
+    }
+    .workflow-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border: none;
+      border-radius: 30px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      font-family: 'DM Sans', sans-serif;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      background-color: var(--surface-2);
+      color: var(--text-2);
+      border: 1px solid var(--border);
+    }
+    .workflow-btn i {
+      font-size: 0.8rem;
+    }
+    .workflow-btn.approve {
+      background-color: #e6f7e6;
+      color: #2b7a2b;
+      border-color: #b3e6b3;
+    }
+    .workflow-btn.approve:hover {
+      background-color: #c8e6c8;
+      transform: translateY(-1px);
+    }
+    .workflow-btn.reject {
+      background-color: #ffe6e6;
+      color: #b33;
+      border-color: #ffcccc;
+    }
+    .workflow-btn.reject:hover {
+      background-color: #ffcccc;
+      transform: translateY(-1px);
+    }
+    .workflow-btn.paid {
+      background-color: #e6f2ff;
+      color: #0066cc;
+      border-color: #b3d1ff;
+    }
+    .workflow-btn.paid:hover {
+      background-color: #cce0ff;
+      transform: translateY(-1px);
+    }
+
     /* ─── EMPTY STATE ─────────────────────── */
     .empty-state { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 48px 20px; color: var(--text-4); }
     .empty-ico { width: 50px; height: 50px; border-radius: var(--r-xl); background: var(--surface-2); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 1.3rem; margin-bottom: 10px; }
@@ -676,20 +730,51 @@
                   </td>
                   <td><span class="price-val">{{ number_format($total, 0, ',', '.') }} Kz</span></td>
                   <td>
-                    <div class="row-actions">
-                      <button class="act-btn" title="Ver detalhe" onclick="openDrawer({{ $pedido->id }})"><i class="bi bi-eye"></i></button>
-                      @if(in_array($pedido->status, ['Pendente', 'Aprovado']))
-                        <button class="act-btn" title="Preparar" onclick="changeStatus({{ $pedido->id }}, 'prep')"><i class="bi bi-box-seam"></i></button>
-                      @endif
-                      @if($pedido->status == 'pago')
-                        <button class="act-btn" title="Enviar" onclick="changeStatus({{ $pedido->id }}, 'route')"><i class="bi bi-bicycle"></i></button>
-                      @endif
-                      @if($pedido->status == 'Em Entrega')
-                        <button class="act-btn" title="Concluir" onclick="changeStatus({{ $pedido->id }}, 'done')"><i class="bi bi-check-circle"></i></button>
-                      @endif
-                      @if(!in_array($pedido->status, ['Concluído', 'Cancelado', 'Rejeitado']))
-                        <button class="act-btn d" title="Cancelar" onclick="openCancelModal({{ $pedido->id }})"><i class="bi bi-x-circle"></i></button>
-                      @endif
+                      <!-- Botões existentes (com JavaScript) -->
+                      {{-- <div class="row-actions">
+                          <button class="act-btn" title="Ver detalhe" onclick="openDrawer({{ $pedido->id }})"><i class="bi bi-eye"></i></button>
+                          @if(in_array($pedido->status, ['Pendente', 'Aprovado']))
+                              <button class="act-btn" title="Preparar" onclick="changeStatus({{ $pedido->id }}, 'prep')"><i class="bi bi-box-seam"></i></button>
+                          @endif
+                          @if($pedido->status == 'pago')
+                              <button class="act-btn" title="Enviar" onclick="changeStatus({{ $pedido->id }}, 'route')"><i class="bi bi-bicycle"></i></button>
+                          @endif
+                          @if($pedido->status == 'Em Entrega')
+                              <button class="act-btn" title="Concluir" onclick="changeStatus({{ $pedido->id }}, 'done')"><i class="bi bi-check-circle"></i></button>
+                          @endif
+                          @if(!in_array($pedido->status, ['Concluído', 'Cancelado', 'Rejeitado']))
+                              <button class="act-btn d" title="Cancelar" onclick="openCancelModal({{ $pedido->id }})"><i class="bi bi-x-circle"></i></button>
+                          @endif
+                      </div> --}}
+
+                         <!-- NOVOS BOTÕES DE APROVAÇÃO -->
+                    <div class="workflow-actions">
+                        <form action="{{ route('pedidos.status.update', $pedido->id) }}" method="POST" style="display: inline;">
+                            @csrf
+                            @method('PUT')
+                            <input type="hidden" name="status" value="Aprovado">
+                            <button type="submit" class="workflow-btn approve">
+                                <i class="bi bi-check-circle"></i> Aprovar
+                            </button>
+                        </form>
+
+                        <form action="{{ route('pedidos.status.update', $pedido->id) }}" method="POST" style="display: inline;">
+                            @csrf
+                            @method('PUT')
+                            <input type="hidden" name="status" value="Rejeitado">
+                            <button type="submit" class="workflow-btn reject">
+                                <i class="bi bi-x-circle"></i> Rejeitar
+                            </button>
+                        </form>
+
+                        <form action="{{ route('pedidos.status.update', $pedido->id) }}" method="POST" style="display: inline;">
+                            @csrf
+                            @method('PUT')
+                            <input type="hidden" name="status" value="pago">
+                            <button type="submit" class="workflow-btn paid">
+                                <i class="bi bi-credit-card"></i> Marcar pago
+                            </button>
+                        </form>
                     </div>
                   </td>
                 </tr>

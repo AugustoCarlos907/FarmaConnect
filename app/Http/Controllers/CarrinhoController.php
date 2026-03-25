@@ -43,14 +43,14 @@ class CarrinhoController extends Controller
         $stockItem  = StockItem::findOrFail($request->stock_item_id);
         $quantidade = $request->quantidade ?? 1;
 
-        // Verifica se já existe no carrinho deste user
+    
         $itemExistente = Carrinho::where('user_id', Auth::id())
                                  ->where('stock_item_id', $stockItem->id)
                                  ->first();
 
         $novaQty = $quantidade + ($itemExistente?->quantidade ?? 0);
 
-        // Valida stock suficiente
+        // ValidaÇÃo stock suficiente
         if (!$stockItem->temStock($novaQty)) {
             return back()->with('erro', 'Stock insuficiente para a quantidade pedida.');
         }

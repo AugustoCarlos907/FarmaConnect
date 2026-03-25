@@ -16,7 +16,6 @@ class StockItem extends Model
         'medicamento_id',
         'farmacia_id'
         
-
     ];
 
     protected $casts = [

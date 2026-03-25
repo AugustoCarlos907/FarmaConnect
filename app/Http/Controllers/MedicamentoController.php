@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Medicamento;
 use App\Services\MedicamentoService;
 use Illuminate\Http\Request;
 
@@ -14,12 +15,10 @@ class MedicamentoController extends Controller
         $search = $request->input('search');
         $minPrice = $request->input('min_price');
 
-        // Obter latitude/longitude do usuário autenticado (supondo que existam no user)
         $user = $request->user();
         $userLat = $user->latitude ?? null;
         $userLng = $user->longitude ?? null;
 
-        // Se não tiver localização, podemos usar um valor padrão (ex: Luanda)
         if (is_null($userLat) || is_null($userLng)) {
             $userLat = -8.8383; // coordenadas de exemplo (Luanda)
             $userLng = 13.2344;
@@ -37,7 +36,6 @@ class MedicamentoController extends Controller
     }
 
 
-    //list medication comparation with prices in nearby pharmacies
     public function listMedicamentosByCategoria($perPage = 10)
     {
         $medicamentos = $this->service->getMedicamentoByCategoria($perPage);
@@ -45,8 +43,7 @@ class MedicamentoController extends Controller
         return response()->json($medicamentos);
     }
 
-        public function create(Request $request)
-        {
+    public function create(Request $request){
             $validatedData = $request->validate([
                 'name' => 'required|string|max:255',
                 'descricao' => 'required|string',
@@ -76,4 +73,13 @@ class MedicamentoController extends Controller
     
             return redirect()->route('medicamentos.farmacias');
         }
+
+    public function destroy($id){
+        $medicamento = Medicamento::findOrFail($id);
+
+        $medicamento->delete();
+
+        return redirect()->route('medicamentos.farmacias')->with('success' , 'Medicamento Eliminado');
+    }
+
 }

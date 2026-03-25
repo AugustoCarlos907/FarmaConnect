@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Models\Categoria;
 use App\Models\Medicamento;
 use App\Models\StockFile;
 use App\Models\StockItem;
@@ -39,15 +40,17 @@ class ParsePharmacyStockCsvJob implements ShouldQueue
             );
 
             $expectedHeader = [
-                'CodigoArtigo', // código de barras ou SKU
-                'NomeProduto',  // nome do medicamento
+                'CodigoArtigo',
+                'NomeProduto',
                 'Quantidade',
                 'Lote',
                 'DataValidade',
                 'PrecoUnitario',
+                'Categoria',
+                'Dosagem',
+                'PrecoMedicamento'
             ];
 
-            // Cabeçalho
             $header = $file->fgetcsv();
             if (!$header || !is_array($header)) {
                 throw new Exception('CSV vazio ou inválido');
@@ -64,13 +67,19 @@ class ParsePharmacyStockCsvJob implements ShouldQueue
                 );
             }
 
+            // Obter ou criar categoria padrão (para casos onde a categoria não existe)
+            $categoriaPadrao = Categoria::firstOrCreate(
+                ['name' => 'Outros'],
+                ['descricao' => 'Categoria padrão para medicamentos sem categoria definida']
+            );
+
             $rows = [];
             $lineNumber = 1;
 
             while (!$file->eof()) {
                 $lineNumber++;
                 $row = $file->fgetcsv();
-                if (!$row || !is_array($row) || count($row) < 6) {
+                if (!$row || !is_array($row) || count($row) < count($expectedHeader)) {
                     continue;
                 }
 
@@ -80,60 +89,56 @@ class ParsePharmacyStockCsvJob implements ShouldQueue
                     $quantidade,
                     $lote,
                     $dataValidade,
-                    $precoUnitario
-                ] = array_map(fn ($v) => trim((string)$v), $row);
+                    $precoUnitario,
+                    $categoriaNome,
+                    $dosagem,
+                    $precoMedicamento
+                ] = array_map(fn($v) => trim((string)$v), $row);
 
-                // Validação básica
                 if (empty($codigoArtigo) || empty($nomeProduto)) {
                     Log::warning("Linha {$lineNumber}: Código ou nome do medicamento ausente");
                     continue;
                 }
 
-                // Separar nome e dosagem se possível
-                $nome = $nomeProduto;
-                $dosagem = null;
-                if (preg_match('/(.+?)\s+(\d+\s*mg|ml|g|mcg|UI|%)$/i', $nomeProduto, $matches)) {
-                    $nome = trim($matches[1]);
-                    $dosagem = trim($matches[2]);
+                // Buscar categoria pelo nome (exato)
+                $categoria = null;
+                if (!empty($categoriaNome)) {
+                    $categoria = Categoria::where('name', $categoriaNome)->first();
                 }
 
-                // Exemplo: descrição, forma_farmaceutica e categoria_id podem ser extraídos de outras fontes ou deixados nulos
-                $descricao = null;
-                $forma_farmaceutica = null;
-                $categoria_id = null;
+                // Se não encontrou, usar a categoria padrão
+                if (!$categoria) {
+                    $categoria = $categoriaPadrao;
+                    Log::warning("Linha {$lineNumber}: Categoria '{$categoriaNome}' não encontrada. Usando categoria padrão '{$categoriaPadrao->name}'.");
+                }
+
+                $medicamentoData = [
+                    'descricao'          => 'UNKNOWN',
+                    'forma_farmaceutica' => 'UNKNOWN',
+                    'dosagem'            => $dosagem ?: null,
+                    'categoria_id'       => $categoria->id,
+                    'preco'              => is_numeric($precoMedicamento) ? (float) $precoMedicamento : 0.00,
+                ];
 
                 $medicamento = Medicamento::updateOrCreate(
-                    [
-                        'name' => $nome,
-                    ],
-                    [
-                        'descricao' => $descricao,
-                        'forma_farmaceutica' => $forma_farmaceutica,
-                        'dosagem' => $dosagem,
-                        'categoria_id' => $categoria_id,
-                    ]
+                    ['name' => $nomeProduto],
+                    $medicamentoData
                 );
 
-                // Quantidade
-                $quantidade = is_numeric($quantidade) ? (int) $quantidade : 0;
-                // Preço
-                $preco = is_numeric($precoUnitario)
-                    ? number_format((float) $precoUnitario, 2, '.', '')
-                    : '0.00';
-                // Data de validade
-                $dataValidade = $this->parseDate($dataValidade);
+                $quantidadeStock = is_numeric($quantidade) ? (int) $quantidade : 0;
+                $precoStock = is_numeric($precoUnitario) ? (float) $precoUnitario : 0.00;
+                $validade = $this->parseDate($dataValidade);
 
                 $rows[] = [
-                    'stock_file_id' => $this->stockFile->id,
-                    'pharmacy_id'   => $this->stockFile->farmacia_id,
-                    'medicamento_id'=> $medicamento->id,
-                    'quantidade'    => $quantidade,
-                    'preco'         => $preco,
-                    'data_validade' => $dataValidade,
-                    'lote'          => $lote ?: null,
-                    'ativo'         => '1',
-                    'created_at'    => now(),
-                    'updated_at'    => now(),
+                    'medicamento_id' => $medicamento->id,
+                    'farmacia_id'    => $this->stockFile->farmacia_id,
+                    'quantidade'     => $quantidadeStock,
+                    'preco'          => $precoStock,
+                    'data_validade'  => $validade,
+                    'lote'           => $lote ?: null,
+                    'ativo'          => true,
+                    'created_at'     => now(),
+                    'updated_at'     => now(),
                 ];
             }
 
@@ -145,11 +150,7 @@ class ParsePharmacyStockCsvJob implements ShouldQueue
                 StockItem::insert($chunk->toArray());
             });
 
-            $this->stockFile->update([
-                'status' => 'concluido',
-                'processed_at' => now(),
-            ]);
-
+            $this->stockFile->update(['status' => 'concluido']);
             app(AlertService::class)->checkLowPriceItems();
             Log::info("Stock processado com sucesso. Arquivo ID {$this->stockFile->id}");
 
@@ -157,7 +158,7 @@ class ParsePharmacyStockCsvJob implements ShouldQueue
             $this->stockFile->update(['status' => 'erro']);
             Log::error('Erro ao processar stock CSV', [
                 'file_id' => $this->stockFile->id,
-                'error' => $e->getMessage()
+                'error'   => $e->getMessage()
             ]);
             throw $e;
         }
@@ -166,7 +167,9 @@ class ParsePharmacyStockCsvJob implements ShouldQueue
     private function parseDate(?string $date): ?string
     {
         try {
-            return $date ? date('Y-m-d', strtotime($date)) : null;
+            if (empty($date)) return null;
+            $timestamp = strtotime($date);
+            return $timestamp ? date('Y-m-d', $timestamp) : null;
         } catch (\Throwable) {
             return null;
         }

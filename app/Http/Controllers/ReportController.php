@@ -51,7 +51,7 @@ class ReportController extends Controller
         return response()->json($stock);
     }
 
-    public function gerarRelatorio (Request $request){
+    public function gerarRelatorioPedidos (Request $request){
         $data = $request->validate([
             'data_inicio' => 'required|date',
             'data_fim'    => 'required|date|after_or_equal:data_inicio',
@@ -77,4 +77,5 @@ class ReportController extends Controller
             return $pdf->download('RELATORIO-FARMACONNECT'.$relatorio->id.'.pdf');
         }
     }
+
 }

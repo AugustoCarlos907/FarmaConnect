@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Pedido;
 use App\Models\Relatorio;
+use App\Models\User;
 use Carbon\Carbon;
 
 class ReportService{
@@ -63,5 +64,6 @@ class ReportService{
 
         return $relatorioGeral;
     }
+
 
 }

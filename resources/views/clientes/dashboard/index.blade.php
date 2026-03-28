@@ -642,23 +642,23 @@
       <!-- Barra de stats -->
       <div class="hero-statsbar">
         <div class="sbar-item">
-          <span class="sbar-num">50+</span>
-          <span class="sbar-lbl">Farmácias Parceiras</span>
+          <span class="sbar-num">24h</span>
+          <span class="sbar-lbl">Suporte Técnico</span>
         </div>
         <div class="sbar-sep"></div>
         <div class="sbar-item">
-          <span class="sbar-num">5 000+</span>
-          <span class="sbar-lbl">Medicamentos</span>
+          <span class="sbar-num">100%</span>
+          <span class="sbar-lbl">Entrega Rastreada</span>
         </div>
         <div class="sbar-sep"></div>
         <div class="sbar-item">
-          <span class="sbar-num">30 min</span>
-          <span class="sbar-lbl">Entrega Média</span>
+          <span class="sbar-num">+300%</span>
+          <span class="sbar-lbl">Crescimento Anual</span>
         </div>
         <div class="sbar-sep"></div>
         <div class="sbar-item">
-          <span class="sbar-num">10 000+</span>
-          <span class="sbar-lbl">Clientes Satisfeitos</span>
+          <span class="sbar-num">100%</span>
+          <span class="sbar-lbl">Transações Seguras ( Criptografia )</span>
         </div>
       </div>
     </section>

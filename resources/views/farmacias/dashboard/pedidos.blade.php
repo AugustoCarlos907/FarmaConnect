@@ -749,6 +749,7 @@
 
                          <!-- NOVOS BOTÕES DE APROVAÇÃO -->
                     <div class="workflow-actions">
+                      @if($pedido->status == "Pendente")
                         <form action="{{ route('pedidos.status.update', $pedido->id) }}" method="POST" style="display: inline;">
                             @csrf
                             @method('PUT')
@@ -757,7 +758,8 @@
                                 <i class="bi bi-check-circle"></i> Aprovar
                             </button>
                         </form>
-
+                      @endif
+                      @if($pedido->status != "Rejeitado")
                         <form action="{{ route('pedidos.status.update', $pedido->id) }}" method="POST" style="display: inline;">
                             @csrf
                             @method('PUT')
@@ -766,7 +768,8 @@
                                 <i class="bi bi-x-circle"></i> Rejeitar
                             </button>
                         </form>
-
+                      @endif
+                      @if($pedido->status =="Aprovado")
                         <form action="{{ route('pedidos.status.update', $pedido->id) }}" method="POST" style="display: inline;">
                             @csrf
                             @method('PUT')
@@ -775,6 +778,7 @@
                                 <i class="bi bi-credit-card"></i> Marcar pago
                             </button>
                         </form>
+                      @endif
                     </div>
                   </td>
                 </tr>

@@ -34,7 +34,8 @@ class MedicamentoService
         $quantitade ,
         $preco,
         $dataValidade,
-        $lote
+        $lote,
+        $requerReceita
         ){
 
         $medicamento =  Medicamento::create([
@@ -43,7 +44,8 @@ class MedicamentoService
             'preco' => $preco,
             'forma_farmaceutica' => $forma_farmaceutica,
             'dosagem' => $dosagem,
-            'categoria_id' => $categoria_id
+            'categoria_id' => $categoria_id,
+            'requer_receita' => $requerReceita
         ]);
 
         $medicamento->stockItems()->create([

@@ -63,6 +63,77 @@
     .address-card{animation-delay:.06s;opacity:0;}
     .delivery-card{animation-delay:.12s;opacity:0;}
     .payment-card{animation-delay:.18s;opacity:0;}
+    .prescricao-section {
+    margin-top: 0.75rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--border);
+    background-color: var(--surface-2);
+    border-radius: 12px;
+    padding: 0.75rem;
+    }
+
+    .prescricao-alert {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.75rem;
+        padding: 0.5rem 0.75rem;
+        border-radius: 8px;
+    }
+
+    .prescricao-success {
+        background-color: var(--success-light);
+        color: #15803d;
+    }
+
+    .prescricao-link {
+        margin-left: 0.5rem;
+        text-decoration: underline;
+        color: var(--accent);
+    }
+
+    .prescricao-form {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        align-items: center;
+    }
+
+    .prescricao-input {
+        flex: 1;
+        padding: 0.375rem 0.75rem;
+        font-size: 0.75rem;
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        background: var(--surface);
+    }
+
+    .prescricao-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+        padding: 0.375rem 0.75rem;
+        font-size: 0.75rem;
+        font-weight: 600;
+        border-radius: 6px;
+        border: 1px solid var(--accent);
+        background: var(--surface);
+        color: var(--accent);
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .prescricao-btn:hover {
+        background: var(--accent-light);
+        transform: translateY(-1px);
+    }
+
+    .prescricao-help {
+        font-size: 0.7rem;
+        color: var(--text-3);
+        margin-top: 0.5rem;
+        margin-bottom: 0;
+    }
     @keyframes fadeUp{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:none;}}
     .cc-head,.ac-head{padding:1.1rem 1.4rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
     .cc-head h6,.ac-head h6{font-size:.9rem;font-weight:800;color:var(--heading);margin:0;display:flex;align-items:center;gap:.5rem;}
@@ -149,6 +220,13 @@
     .toast-fc i{font-size:1.3rem;color:#a8ffd4;flex-shrink:0;}
     .toast-fc strong{font-size:.9rem;display:block;}
     .toast-fc span{font-size:.78rem;color:rgba(255,255,255,.65);}
+    .success-icon i {
+    animation: pulse 0.5s ease-in-out;
+    }
+    @keyframes pulse {
+        0% { transform: scale(0.8); opacity: 0; }
+        100% { transform: scale(1); opacity: 1; }
+    }
     @media(max-width:991px){.summary-card{position:static;margin-top:1.2rem;}}
     @media(max-width:768px){.header-search{display:none;}.ci-img{width:56px;height:56px;}}
     @media(max-width:576px){.cs-label{display:none;}}
@@ -228,62 +306,89 @@
           </div>
 
           @forelse($itens as $item)
-            @php
-              $med   = $item->stockItem->medicamento;
-              $farm  = $item->stockItem->farmacia;
-              $preco = $item->stockItem->preco;
-              $linha = $preco * $item->quantidade;
-            @endphp
-            <div class="cart-item" id="ci-{{ $item->id }}">
-              @if($med->imagem ?? false)
-                <img class="ci-img" src="{{ asset('storage/'.$med->imagem) }}" alt="{{ $med->name }}">
-              @else
-                <div class="ci-img d-flex align-items-center justify-content-center" style="font-size:2rem">💊</div>
-              @endif
-              <div class="ci-info">
-                <div class="ci-cat">{{ $med->categoria->name ?? '—' }}</div>
-                <div class="ci-name">{{ $med->name }}</div>
-                <div class="ci-meta">
-                  @if($med->forma_farmaceutica ?? false)
-                    <span><i class="bi bi-box"></i> {{ $med->forma_farmaceutica }}{{ $med->dosagem ? ' · '.$med->dosagem : '' }}</span>
+              @php
+                  $med   = $item->stockItem->medicamento;
+                  $farm  = $item->stockItem->farmacia;
+                  $preco = $item->stockItem->preco;
+                  $linha = $preco * $item->quantidade;
+              @endphp
+              <div class="cart-item" id="ci-{{ $item->id }}">
+                  {{-- Imagem --}}
+                  @if($med->imagem ?? false)
+                      <img class="ci-img" src="{{ asset('storage/'.$med->imagem) }}" alt="{{ $med->name }}">
+                  @else
+                      <div class="ci-img d-flex align-items-center justify-content-center" style="font-size:2rem">💊</div>
                   @endif
-                  @if($farm)
-                    <span><i class="bi bi-hospital"></i> {{ $farm->name }}</span>
+
+                  {{-- Informações --}}
+                  <div class="ci-info">
+                      <div class="ci-cat">{{ $med->categoria->name ?? '—' }}</div>
+                      <div class="ci-name">{{ $med->name }}</div>
+                      <div class="ci-meta">
+                          @if($med->forma_farmaceutica ?? false)
+                              <span><i class="bi bi-box"></i> {{ $med->forma_farmaceutica }}{{ $med->dosagem ? ' · '.$med->dosagem : '' }}</span>
+                          @endif
+                          @if($farm)
+                              <span><i class="bi bi-hospital"></i> {{ $farm->name }}</span>
+                          @endif
+                      </div>
+                      <div class="qty-ctrl">
+                          <form action="{{ route('carrinho.actualizar', $item) }}" method="POST">
+                              @csrf @method('PATCH')
+                              <input type="hidden" name="quantidade" value="{{ max(1, $item->quantidade - 1) }}">
+                              <button type="submit" class="qty-btn minus" {{ $item->quantidade <= 1 ? 'disabled' : '' }}><i class="bi bi-dash"></i></button>
+                          </form>
+                          <span class="qty-num">{{ $item->quantidade }}</span>
+                          <form action="{{ route('carrinho.actualizar', $item) }}" method="POST">
+                              @csrf @method('PATCH')
+                              <input type="hidden" name="quantidade" value="{{ $item->quantidade + 1 }}">
+                              <button type="submit" class="qty-btn" {{ $item->quantidade >= ($item->stockItem->quantidade ?? 999) ? 'disabled' : '' }}><i class="bi bi-plus"></i></button>
+                          </form>
+                          <span style="font-size:.75rem;color:var(--muted);margin-left:.3rem">un.</span>
+                      </div>
+                  </div>
+
+                  {{-- Preço e remover --}}
+                  <div class="ci-right">
+                      <div>
+                          <div class="ci-price">{{ number_format($linha, 0, ',', '.') }} Kz</div>
+                          <div class="ci-old">{{ number_format($med->preco, 0, ',', '.') }} Kz / un.</div>
+                      </div>
+                      <form action="{{ route('carrinho.remover', $item) }}" method="POST">
+                          @csrf @method('DELETE')
+                          <button type="submit" class="ci-remove" title="Remover"><i class="bi bi-trash3"></i></button>
+                      </form>
+                  </div>
+
+                  {{-- Receita médica (apenas se necessário) --}}
+                  @if($med->requer_receita)
+                      <div class="prescricao-section">
+                          @if($item->prescricao_path)
+                              <div class="prescricao-alert prescricao-success">
+                                  <i class="bi bi-check-circle-fill"></i> Receita anexada.
+                                  <a href="{{ asset('storage/'.$item->prescricao_path) }}" target="_blank" class="prescricao-link">Ver</a>
+                              </div>
+                          @else
+                              <form action="" method="POST" enctype="multipart/form-data" class="prescricao-form">
+                                  @csrf
+                                  <input type="file" name="receita" accept="image/*,application/pdf" class="prescricao-input" required>
+                                  <button type="submit" class="prescricao-btn">
+                                      <i class="bi bi-upload"></i> Anexar receita
+                                  </button>
+                              </form>
+                              <p class="prescricao-help">Medicamento sujeito a receita médica. Anexe a receita para finalizar o pedido.</p>
+                          @endif
+                      </div>
                   @endif
-                </div>
-                <div class="qty-ctrl">
-                  <form action="{{ route('carrinho.actualizar', $item) }}" method="POST">
-                    @csrf @method('PATCH')
-                    <input type="hidden" name="quantidade" value="{{ max(1, $item->quantidade - 1) }}">
-                    <button type="submit" class="qty-btn minus" {{ $item->quantidade <= 1 ? 'disabled' : '' }}><i class="bi bi-dash"></i></button>
-                  </form>
-                  <span class="qty-num">{{ $item->quantidade }}</span>
-                  <form action="{{ route('carrinho.actualizar', $item) }}" method="POST">
-                    @csrf @method('PATCH')
-                    <input type="hidden" name="quantidade" value="{{ $item->quantidade + 1 }}">
-                    <button type="submit" class="qty-btn" {{ $item->quantidade >= ($item->stockItem->quantidade ?? 999) ? 'disabled' : '' }}><i class="bi bi-plus"></i></button>
-                  </form>
-                  <span style="font-size:.75rem;color:var(--muted);margin-left:.3rem">un.</span>
-                </div>
+                  
               </div>
-              <div class="ci-right">
-                <div>
-                  <div class="ci-price">{{ number_format($linha, 0, ',', '.') }} Kz</div>
-                  <div class="ci-old">{{ number_format($preco, 0, ',', '.') }} Kz / un.</div>
-                </div>
-                <form action="{{ route('carrinho.remover', $item) }}" method="POST">
-                  @csrf @method('DELETE')
-                  <button type="submit" class="ci-remove" title="Remover"><i class="bi bi-trash3"></i></button>
-                </form>
-              </div>
-            </div>
           @empty
-            <div class="empty-cart">
-              <span class="ec-icon">🛒</span>
-              <h4>O seu carrinho está vazio</h4>
-              <p>Adicione medicamentos para continuar o seu pedido.</p>
-              <a href="{{ route('produtos.clientes') }}" class="btn-go-shop"><i class="bi bi-box-seam"></i> Ver produtos</a>
-            </div>
+              <div class="empty-cart">
+                  <span class="ec-icon">🛒</span>
+                  <h4>O seu carrinho está vazio</h4>
+                  <p>Adicione medicamentos para continuar o seu pedido.</p>
+                  <a href="{{ route('produtos.clientes') }}" class="btn-go-shop"><i class="bi bi-box-seam"></i> Ver produtos</a>
+              </div>
           @endforelse
         </div>
 
@@ -403,7 +508,7 @@
                 @endif
                 <div class="sum-item-name">{{ $med->name }}</div>
                 <div class="sum-item-qty">×{{ $item->quantidade }}</div>
-                <div class="sum-item-price">{{ number_format($preco*$item->quantidade,0,',','.') }} Kz</div>
+                <div class="sum-item-price">{{ number_format($med->preco*$item->quantidade,0,',','.') }} Kz</div>
               </div>
             @endforeach
 
@@ -437,6 +542,41 @@
   </div>
 </div>
 
+
+<!-- Modal de confirmação -->
+<div class="modal fade" id="confirmacaoModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header border-0 pb-0">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+            <div class="modal-body text-center">
+                <div class="success-icon mb-3" style="font-size: 3rem; color: var(--success);">
+                    <i class="bi bi-check-circle-fill"></i>
+                </div>
+                <h4 class="mb-2">Pedido confirmado!</h4>
+                <p class="text-muted">Obrigado pela sua compra. Em breve será processado.</p>
+
+                <div class="bg-light rounded-3 p-3 my-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span><i class="bi bi-truck"></i> Taxa de entrega:</span>
+                        <strong id="modalTaxa">0 Kz</strong>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center mt-2">
+                        <span><i class="bi bi-geo-alt"></i> Distância:</span>
+                        <strong id="modalDistancia">0 km</strong>
+                    </div>
+                </div>
+
+                <div class="mt-3">
+                    <a href="{{ route('pedidos.clientes') }}" class="btn btn-primary">Ver meus pedidos</a>
+                    <a href="{{ route('index.clientes') }}" class="btn btn-outline-secondary ms-2">Página inicial</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- ═══ FOOTER ═══ -->
   @include('clientes.dashboard.footer')
 
@@ -457,11 +597,22 @@ let deliveryFee = 800;
    Os valores vêm dos data-* dos .addr-option renderizados pelo Blade.
 ──────────────────────────────────────────────────── */
 function selectAddr(el) {
-  document.querySelectorAll('.addr-option').forEach(a => a.classList.remove('selected'));
-  el.classList.add('selected');
-  document.getElementById('h-endereco').value = el.dataset.endereco || '';
-  document.getElementById('h-lat').value      = el.dataset.lat      || '';
-  document.getElementById('h-lng').value      = el.dataset.lng      || '';
+    // Remove a classe 'selected' de todos
+    document.querySelectorAll('.addr-option').forEach(addr => addr.classList.remove('selected'));
+    el.classList.add('selected');
+
+    // Obter os valores dos data-* atributos
+    const endereco = el.getAttribute('data-endereco') || '';
+    const lat = el.getAttribute('data-lat') || '';
+    const lng = el.getAttribute('data-lng') || '';
+
+    // Preencher os campos hidden
+    document.getElementById('h-endereco').value = endereco;
+    document.getElementById('h-lat').value = lat;
+    document.getElementById('h-lng').value = lng;
+
+    console.log('Endereço selecionado:', endereco, 'lat:', lat, 'lng:', lng);
+
 }
 
 /* ── ENTREGA ──────────────────────────────────────── */
@@ -534,6 +685,20 @@ window.addEventListener('scroll', () => {
 @if(session('success'))
   showToast('Pedido criado!', '{{ session("success") }}');
 @endif
+
+// Verifica se há dados de entrega flash e abre o modal automaticamente
+@if(session('entrega'))
+    const entrega = @json(session('entrega'));
+    document.getElementById('modalTaxa').innerText = 
+        new Intl.NumberFormat('pt-AO', { style: 'currency', currency: 'AOA' })
+            .format(entrega.taxa_entrega);
+    document.getElementById('modalDistancia').innerText = 
+        entrega.distancia_km.toFixed(2) + ' km';
+    
+    const modal = new bootstrap.Modal(document.getElementById('confirmacaoModal'));
+    modal.show();
+@endif
 </script>
+
 </body>
 </html>

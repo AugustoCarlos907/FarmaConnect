@@ -382,16 +382,19 @@
     Todos <span class="fbadge">{{ $totalPedidos }}</span>
   </button>
   <button class="ftab" data-filter="pendente" onclick="filterOrders(this,'pendente')">
-    Pendente <span class="fbadge">{{ $pedidos->where('status','pendente')->count() }}</span>
+    Pendente <span class="fbadge">{{ $pedidos->where('status','Pendente')->count() }}</span>
+  </button>
+  <button class="ftab" data-filter="entregue" onclick="filterOrders(this,'aprovado')">
+    Aprovado <span class="fbadge">{{ $pedidos->where('status','Aprovado')->count() }}</span>
   </button>
   <button class="ftab" data-filter="em_entrega" onclick="filterOrders(this,'em_entrega')">
-    Em entrega <span class="fbadge">{{ $emEntrega }}</span>
+    Em entrega <span class="fbadge">{{ $pedidos->where('status','Em Entrega')->count()  }}</span>
   </button>
   <button class="ftab" data-filter="entregue" onclick="filterOrders(this,'entregue')">
-    Entregues <span class="fbadge">{{ $entregues }}</span>
-  </button>
+    Entregues <span class="fbadge">{{ $pedidos->where('status','Concluido')->count() }}</span>
+  </button>  
   <button class="ftab" data-filter="cancelado" onclick="filterOrders(this,'cancelado')">
-    Cancelados <span class="fbadge">{{ $pedidos->where('status','cancelado')->count() }}</span>
+    Cancelados <span class="fbadge">{{ $pedidos->where('status','Cancelado')->count() }}</span>
   </button>
 </div>
 
@@ -415,8 +418,13 @@
     ];
     $statusInfo = $statusMap[$pedido->status] ?? ['label' => $pedido->status, 'css' => 'sb-pendente', 'icon' => 'bi-question-circle'];
       // Steps do progresso
-      $steps = ['pendente','concluido','preparando','em_entrega','entregue'];
-      $currentIdx = array_search($st, $steps);
+      // $steps = ['pendente','concluido','preparando','em_entrega','entregue'];
+    // $currentIdx = array_search($st, $steps);
+
+    $statusOrder = ['Pendente', 'Aprovado', 'pago', 'Em Entrega', 'Concluído'];
+    $currentIdx  = array_search($pedido->status, $statusOrder);
+    if ($currentIdx === false) $currentIdx = 0;
+
     @endphp
 
     <div class="order-card {{ $st === 'em_entrega' ? 'open' : '' }}"
@@ -459,7 +467,7 @@
       <div class="oc-body">
 
         {{-- Banner de rastreio (só em entrega) --}}
-        @if($st === 'em_entrega')
+        @if($st === 'Em Entrega')
           <div class="tracking-banner">
             <span class="tb-dot"></span>
             <div class="tb-text">
@@ -475,7 +483,7 @@
           <h6>Estado do pedido</h6>
           <div class="steps-row">
 
-            @if($st === 'cancelado')
+            @if($st === 'Cancelado')
               {{-- Estado cancelado: steps diferentes --}}
               <div class="pstep done">
                 <div class="pstep-dot"><i class="bi bi-check2"></i></div>
@@ -496,10 +504,10 @@
               {{-- Steps normais --}}
               @php
                 $stepDefs = [
-                  ['key'=>'pendente',   'icon'=>'bi-hourglass-split', 'label'=>'Pendente'],
-                  ['key'=>'confirmado', 'icon'=>'bi-bag-check',       'label'=>'Confirmado'],
-                  ['key'=>'em_entrega', 'icon'=>'bi-truck',           'label'=>'Em entrega'],
-                  ['key'=>'entregue',   'icon'=>'bi-house',           'label'=>'Entregue'],
+                  ['key'=>'Pendente',   'icon'=>'bi-hourglass-split', 'label'=>'Pendente'],
+                  ['key'=>'Aprovado', 'icon'=>'bi-bag-check',       'label'=>'Confirmado'],
+                  ['key'=>'Em Entrega', 'icon'=>'bi-truck',           'label'=>'Em entrega'],
+                  ['key'=>'Concluído',   'icon'=>'bi-house',           'label'=>'Entregue'],
                 ];
               @endphp
 
@@ -519,11 +527,11 @@
                   </div>
                   <div class="pstep-label">{{ $step['label'] }}</div>
                   <div class="pstep-time">
-                    @if($isDone || $isActive)
-                      {{ \Carbon\Carbon::parse($pedido->data_pedido)->addMinutes($i * 10)->format('H:i') }}
+                    {{-- @if($isDone || $isActive)
+                      {{ \Carbon\Carbon::parse($pedido->data_pedido)->format('H:i') }}
                     @else
                       —
-                    @endif
+                    @endif --}}
                   </div>
                 </div>
               @endforeach
@@ -537,9 +545,11 @@
           <h6>Itens do pedido</h6>
 
           @foreach($pedido->items as $item)
-            @php $med = $item->stockItem->medicamento ?? null; @endphp
-            <div class="item-row">
+            @php 
+            $med = $item->stockItem->medicamento ?? null;
+            @endphp
 
+            <div class="item-row">
               {{-- Imagem --}}
               @if($med && ($med->imagem ?? false))
                 <img src="{{ asset('storage/'.$med->imagem) }}"
@@ -552,7 +562,7 @@
               <div class="item-info">
                 <div class="item-name">{{ $med->name ?? '—' }}</div>
                 <div class="item-cat">
-                  {{ $med->categoria->nome ?? '' }}
+                  {{ $med->categoria->name ?? '' }}
                   @if($med && $med->forma_farmaceutica)
                     · {{ $med->forma_farmaceutica }}
                   @endif
@@ -572,6 +582,17 @@
         {{-- ── TOTAIS ── --}}
         <div class="oc-totals">
           <div class="tot-row">
+            <span>Distância</span>
+            <span>{{ $pedido->entrega->distancia_km ?? 'UNKNOWN' }} Km</span>
+          </div>
+          <div class="tot-row">
+            @php
+             $taxaEntrega = $pedido->entrega->taxa_entrega ?? 0
+            @endphp
+            <span>Taxa de Entrega</span>
+            <span>{{ number_format($taxaEntrega, 0, ',', ' ' )  }} Kz</span>
+          </div>          
+          <div class="tot-row">
             <span>Subtotal</span>
             <span>{{ number_format($pedido->total, 0, ',', ' ') }} Kz</span>
           </div>
@@ -579,50 +600,56 @@
           {{-- <div class="tot-row"><span>Taxa de entrega</span><span>{{ $pedido->taxa_entrega }} Kz</span></div> --}}
           {{-- <div class="tot-row"><span>Desconto</span><span style="color:#22c55e;">— {{ $pedido->desconto }} Kz</span></div> --}}
           <div class="tot-row bold">
-            <span>Total {{ $st === 'entregue' ? 'pago' : 'a pagar' }}</span>
-            <span>{{ number_format($pedido->total, 0, ',', ' ') }} Kz</span>
+            <span>Total {{ $st === 'Concluído' ? 'pago' : 'a pagar' }}</span>
+            <span>{{ number_format($pedido->total + $taxaEntrega , 0, ',', ' ') }} Kz</span>
           </div>
         </div>
 
         {{-- ── ACÇÕES (variam por status) ── --}}
         <div class="oc-actions">
 
-          @if($st === 'em_entrega')
+          @if($st === 'Em Entrega')
             <button class="oa-btn oa-primary"><i class="bi bi-map"></i> Rastrear entrega</button>
             <button class="oa-btn oa-outline"><i class="bi bi-telephone"></i> Ligar ao entregador</button>
-            <button class="oa-btn oa-ghost"><i class="bi bi-receipt"></i> Ver factura</button>
+            <a class="oa-btn oa-ghost text-decoration-none" href="{{ route('pedidos.factura', ['id' => $pedido->id]) }}"><i class="bi bi-receipt"></i> Ver factura</a>
 
-          @elseif($st === 'entregue')
+
+          @elseif($st === 'Concluído')
             <button class="oa-btn oa-primary" onclick="openRatingModal()">
-              <i class="bi bi-star"></i> Avaliar pedido
+              <i class="bi bi-star"></i> Avaliar Farmacia
             </button>
-            <button class="oa-btn oa-outline" onclick="reorder()">
+            {{-- <button class="oa-btn oa-outline" onclick="reorder()">
               <i class="bi bi-arrow-repeat"></i> Repetir pedido
-            </button>
-            <button class="oa-btn oa-ghost"><i class="bi bi-receipt"></i> Ver factura</button>
-            <button class="oa-btn oa-ghost"><i class="bi bi-download"></i> Baixar PDF</button>
+            </button> --}}
+            <a class="oa-btn oa-ghost text-decoration-none" href="{{ route('pedidos.factura', ['id' => $pedido->id]) }}"><i class="bi bi-receipt"></i> Ver factura</a>
 
-          @elseif($st === 'pendente')
+            {{-- <button class="oa-btn oa-ghost"><i class="bi bi-download"></i> Baixar PDF</button> --}}
+
+          @elseif($st === 'Pendente')
             <button class="oa-btn oa-ghost"><i class="bi bi-receipt"></i> Ver detalhes</button>
             {{-- Cancelar via POST --}}
-            <form action="{{ route('pedidos.cancelar', $pedido) }}" method="POST"
+            <form action="{{ route('pedidos.cancelar' , ['id'=>$pedido->id]) }}" method="POST"
                   onsubmit="return confirm('Tem a certeza que deseja cancelar este pedido?')">
               @csrf
-              @method('PATCH')
+              {{-- @method('PATCH') --}}
               <button type="submit" class="oa-btn oa-danger">
                 <i class="bi bi-x-circle"></i> Cancelar pedido
               </button>
             </form>
 
-          @elseif($st === 'cancelado')
+          @elseif($st === 'Cancelado')
             <button class="oa-btn oa-ghost"><i class="bi bi-receipt"></i> Ver detalhes</button>
             <button class="oa-btn oa-outline" onclick="reorder()">
               <i class="bi bi-arrow-repeat"></i> Repetir pedido
             </button>
 
+          @elseif($st === 'Aprovado')
+
+          <a class="oa-btn oa-ghost text-decoration-none" href="{{ route('pedidos.factura', ['id' => $pedido->id]) }}"><i class="bi bi-receipt"></i> Ver factura</a>
           @else
             {{-- confirmado / preparando --}}
             <button class="oa-btn oa-ghost"><i class="bi bi-receipt"></i> Ver detalhes</button>
+            
           @endif
 
         </div>
@@ -652,13 +679,16 @@
     </div>
 
     <!-- Pagination -->
-    <div class="pagination-fc" id="pagination">
-      <button class="pg-btn" disabled><i class="bi bi-chevron-left"></i></button>
+    {{-- <div class="pagination-fc" id="pagination"> --}}
+      {{-- <button class="pg-btn" disabled><i class="bi bi-chevron-left"></i></button>
       <button class="pg-btn active">1</button>
       <button class="pg-btn">2</button>
-      <button class="pg-btn">3</button>
-      <button class="pg-btn"><i class="bi bi-chevron-right"></i></button>
-    </div>
+      <button class="pg-btn">3</button> --}}
+      <div class="pagination" id="pagination">
+            {{ $pedidos->links('vendor.pagination.fc-pagination') }}
+          </div>
+      {{-- <button class="pg-btn"><i class="bi bi-chevron-right"></i></button> --}}
+    {{-- </div> --}}
 
   </div>
 </div>
@@ -668,7 +698,7 @@
 
 
 <!-- ===== RATING MODAL ===== -->
-<div class="modal fade" id="ratingModal" tabindex="-1">
+{{-- <div class="modal fade" id="ratingModal" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered modal-sm">
     <div class="modal-content">
       <div class="modal-header">
@@ -694,7 +724,7 @@
       </div>
     </div>
   </div>
-</div>
+</div> --}}
 
 <!-- Toast -->
 <div class="toast-fc" id="toastFc">

@@ -7,6 +7,7 @@ use App\Models\Companhia;
 use App\Models\Endereco;
 use App\Models\Entregador;
 use App\Models\Farmacia;
+use App\Models\ItemPedido;
 use App\Models\Medicamento;
 use App\Models\Pedido;
 use App\Models\StockItem;
@@ -129,51 +130,51 @@ class DatabaseSeeder extends Seeder
         // ]);
 
 
-        $categorias = [
-            'Analgésicos e Antitérmicos',
-            'Anti-inflamatórios',
-            'Antibióticos',
-            'Antivirais',
-            'Antifúngicos',
-            'Antiparasitários',
-            'Antialérgicos',
-            'Antigripais',
-            'Anestésicos',
-            'Antidepressivos',
-            'Ansiolíticos e Sedativos',
-            'Antipsicóticos',
-            'Antiepilépticos',
-            'Anti-hipertensivos',
-            'Diuréticos',
-            'Antidiabéticos',
-            'Hipolipemiantes',
-            'Medicamentos Cardiovasculares',
-            'Medicamentos Respiratórios',
-            'Medicamentos Gastrointestinais',
-            'Medicamentos Dermatológicos',
-            'Medicamentos Oftálmicos',
-            'Medicamentos Otológicos',
-            'Medicamentos Urológicos',
-            'Medicamentos Ginecológicos',
-            'Medicamentos Pediátricos',
-            'Medicamentos Oncológicos',
-            'Medicamentos Imunológicos',
-            'Vacinas',
-            'Hormônios e Endócrinos',
-            'Material Médico-Hospitalar',
-            'Produtos para Primeiros Socorros',
-            'Produtos Ortopédicos',
-            'Produtos para Diabéticos',
-            'Higiene Pessoal',
-            'Higiene Oral',
-            'Produtos Dermatológicos e Cosméticos',
-            'Vitaminas e Suplementos',
-            'Produtos Naturais e Fitoterápicos',
-            'Saúde Infantil',
-            'Saúde da Mulher',
-            'Saúde do Homem',
-            'Saúde do Idoso',
-        ];
+        // $categorias = [
+        //     'Analgésicos e Antitérmicos',
+        //     'Anti-inflamatórios',
+        //     'Antibióticos',
+        //     'Antivirais',
+        //     'Antifúngicos',
+        //     'Antiparasitários',
+        //     'Antialérgicos',
+        //     'Antigripais',
+        //     'Anestésicos',
+        //     'Antidepressivos',
+        //     'Ansiolíticos e Sedativos',
+        //     'Antipsicóticos',
+        //     'Antiepilépticos',
+        //     'Anti-hipertensivos',
+        //     'Diuréticos',
+        //     'Antidiabéticos',
+        //     'Hipolipemiantes',
+        //     'Medicamentos Cardiovasculares',
+        //     'Medicamentos Respiratórios',
+        //     'Medicamentos Gastrointestinais',
+        //     'Medicamentos Dermatológicos',
+        //     'Medicamentos Oftálmicos',
+        //     'Medicamentos Otológicos',
+        //     'Medicamentos Urológicos',
+        //     'Medicamentos Ginecológicos',
+        //     'Medicamentos Pediátricos',
+        //     'Medicamentos Oncológicos',
+        //     'Medicamentos Imunológicos',
+        //     'Vacinas',
+        //     'Hormônios e Endócrinos',
+        //     'Material Médico-Hospitalar',
+        //     'Produtos para Primeiros Socorros',
+        //     'Produtos Ortopédicos',
+        //     'Produtos para Diabéticos',
+        //     'Higiene Pessoal',
+        //     'Higiene Oral',
+        //     'Produtos Dermatológicos e Cosméticos',
+        //     'Vitaminas e Suplementos',
+        //     'Produtos Naturais e Fitoterápicos',
+        //     'Saúde Infantil',
+        //     'Saúde da Mulher',
+        //     'Saúde do Homem',
+        //     'Saúde do Idoso',
+        // ];
 
         // foreach ($categorias as $categoria) {
         //     DB::table('categorias')->insert([
@@ -186,12 +187,12 @@ class DatabaseSeeder extends Seeder
         // }
 
         Medicamento::create([
-            'name' => 'Dipirona',
+            'name' => 'Paracetamol',
             'preco' => 400.00,
-            'descricao' => '',
+            'descricao' => 'klrw',
             'dosagem' => 200 .'mg',
             'forma_farmaceutica' => 'Âmpola',
-            'categoria_id' => 4,
+            'categoria_id' => 1,
             // 'farmacia_id' => 1,
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),
@@ -199,7 +200,7 @@ class DatabaseSeeder extends Seeder
         ]);
 
         StockItem::create([
-                'medicamento_id' => 15,
+                'medicamento_id' => 30,
                 'farmacia_id' => 2,
                 'quantidade' => 1,
                 'preco' => 400.00,
@@ -224,19 +225,28 @@ class DatabaseSeeder extends Seeder
         //     'updated_at' => Carbon::now(),
         // ]);
 
-         // Pedido::create([
-         //    'user_id' => 3,
-         //    'farmacia_id' => 1,
-         //    'total' => 800.00,
-         //    'endereco_entrega' => 'Rua das Flores, 123',
-         //    'latitude' => -23.5505,
-         //    'longitude' => -46.6333,
-         //    'metodo_pagamento' => 'Cartão de Crédito',
-         //    'status' => 'em_entrega',
-         //    'data_pedido' => Carbon::now(),
-         //    'created_at' => Carbon::now(),
-         //    'updated_at' => Carbon::now(),
-         // ]);
+        //  Pedido::create([
+        //     'user_id' => 4,
+        //     'farmacia_id' => 1,
+        //     'total' => 800.00,
+        //     'endereco' => 'São Paulo',
+        //     'latitude' => -24.5505,
+        //     'longitude' => -12.6333,
+        //     'metodo_pagamento' => 'express',
+        //     'status' => 'Concluído',
+        //     'data_pedido' => Carbon::now(),
+        //     'created_at' => Carbon::now(),
+        //     'updated_at' => Carbon::now(),
+        //  ]);
+
+        // ItemPedido::create([
+        //     'pedido_id' => 22,
+        //     'stock_items_id'=> 20,
+        //     'quantidade' =>2,
+        //     'preco_unitario'=> 100.00,
+        //     'subtotal'=> 100.00
+
+        // ]);
 
         //  Endereco::create([
         //     'user_id' => 3,

@@ -14,12 +14,16 @@ class Medicamento extends Model
         'preco',
         'forma_farmaceutica',
         'dosagem',
-        'categoria_id'
+        'categoria_id',
+        'requer_receita'
         // 'farmacia_id',
         // 'principio_ativo',
     ];
 
     
+    protected $casts = [
+    'requer_receita' => 'boolean',
+    ];
 
     protected $with = ['stockItems'];
     

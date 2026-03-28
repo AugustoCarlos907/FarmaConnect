@@ -9,13 +9,14 @@ class Entrega extends Model
     protected $fillable = [
         'pedido_id',
         'entregador_id',
-        // 'avaliacao_id',
         'status',
+        'endereco_entrega',
         'taxa_entrega',
         'distancia_km',
         'data_saida',
         'data_entrega',
         'observacoes'
+        // 'avaliacao_id',
     ];
 
     public function pedido()
@@ -28,8 +29,5 @@ class Entrega extends Model
         return $this->belongsTo(Entregador::class);
     }
 
-    // public function avaliacao()
-    // {
-    //     return $this->belongsTo(Avaliacao::class);
-    // }
+
 }

@@ -7,6 +7,7 @@
 
   <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -729,6 +730,7 @@
                 <th onclick="sortBy('status')" class="no-sort">Estado</th>
                 <th onclick="sortBy('price')">Preço venda <i class="bi bi-arrow-up-down sort-icon"></i></th>
                 <th onclick="sortBy('expiry')">Validade <i class="bi bi-arrow-up-down sort-icon"></i></th>
+                <th >Requer Receita Médica <i class="bi bi-arrow-up-down sort-icon"></i></th>
                 <th class="no-sort"></th>
               </tr>
             </thead>
@@ -808,6 +810,7 @@
                     <span class="price-unit">por unidade</span>
                   </td>
                   <td>{!! $expiryHtml !!}</td>
+                  <td ><b>{{ $medicamento->requer_receita ? 'SIM' : 'NÃO' }}</b></td>
                   <td>
                     <div class="row-actions">
                       <button class="act-btn" title="Editar" onclick="openDrawer({{ $medicamento->id }})"><i class="bi bi-pencil"></i></button>
@@ -904,8 +907,11 @@
           <label>Categoria *</label>
           <select class="form-select" name="categoria_id" id="fCat" required>
             <option value="">Selecionar categoria</option>
-            @foreach($medicamentos as $medicamento)
-              <option value="{{ $medicamento->categoria->id }}">{{ $medicamento->categoria->name }}</option>
+            @php
+            $categorias = App\Models\Categoria::all();
+            @endphp
+            @foreach($categorias as $categoria)
+              <option value="{{ $categoria->id }}">{{ $categoria->name }}</option>
             @endforeach
           </select>
         </div>
@@ -920,6 +926,14 @@
             <option value="Gotas">Gotas</option>
             <option value="Outro">Outro</option>
           </select>
+        </div>
+
+        <div class="form-group">
+            <label>Receita Médica</label>
+            <select class="form-select" name="requer_receita" id="fReceita">
+              <option value="0">Não</option>
+              <option value="1">Sim</option>
+            </select>
         </div>
       </div>
 

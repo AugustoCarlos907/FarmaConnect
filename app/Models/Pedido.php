@@ -13,6 +13,8 @@ class Pedido extends Model
         'status',
         'data_pedido',
         'endereco',
+        'latitude',
+        'longitude',
         'total',
     ];
 
@@ -38,5 +40,13 @@ class Pedido extends Model
 
     public function pagamento(){
         return $this->hasOne(Pagamento::class);
+    }
+
+    public function entrega(){
+        return $this->hasOne(Entrega::class);
+    }
+
+    public function factura(){
+        return $this->hasOne(Factura::class);
     }
 }

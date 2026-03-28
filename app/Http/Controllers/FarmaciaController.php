@@ -126,6 +126,11 @@ class FarmaciaController extends Controller
     public function entregadores($perPage = 10){
 
         $farmaId = Auth::user()->farmacia_id;
+        
+        Entregador::doesntHave('entregas')->update([
+        'status' => 'Ativo',
+        'disponivel' => true]);
+        
         $entregadores = $this->farmaService->entregadoresByPharmacy($farmaId, $perPage);
         return view('farmacias.dashboard.entregadores', compact('entregadores'));
     }

@@ -66,9 +66,19 @@
     .page-topbar p  { color:rgba(255,255,255,.68); font-size:.92rem; margin-top:.3rem; }
 
     /* Hero search inside topbar */
-    .topbar-search {
+  .topbar-search { margin-top:1.6rem; max-width:520px; }
+
+    /* .topbar-search {
       margin-top:1.8rem; position:relative; z-index:2;
-    }
+    } */
+    .hero-search-bar { margin-top:1.6rem; max-width:520px; }
+    .hsb-inner { background:rgba(255,255,255,.15); backdrop-filter:blur(14px); border:1.5px solid rgba(255,255,255,.25); border-radius:50px; display:flex; align-items:center; padding:.4rem .4rem .4rem 1.2rem; gap:.5rem; transition:all .25s; }
+    .hsb-inner:focus-within { background:rgba(255,255,255,.22); border-color:rgba(255,255,255,.5); }
+    .hsb-inner input { flex:1; background:none; border:none; outline:none; color:#fff; font-size:.9rem; font-family:inherit; }
+    .hsb-inner input::placeholder { color:rgba(255,255,255,.55); }
+    .hsb-btn { background:#fff; color:var(--accent); border:none; border-radius:50px; padding:.55rem 1.3rem; font-size:.86rem; font-weight:700; font-family:inherit; cursor:pointer; display:flex; align-items:center; gap:.4rem; transition:all .22s; white-space:nowrap; }
+    .hsb-btn:hover { background:var(--soft); }
+
     .ts-box {
       background:#fff; border-radius:20px;
       box-shadow:0 20px 50px rgba(0,0,0,.18);
@@ -315,34 +325,28 @@
     <p>Encontre a farmácia mais próxima e faça o seu pedido agora</p>
 
     <!-- Search box -->
-    <div class="topbar-search">
-      <form action="{{ route('farmacias.search') }}" method="get">
-      <div class="ts-box">
-        <div class="ts-field" style="flex:2;">
-          <i class="bi bi-hospital"></i>
-          <input type="text" id="searchPharm" name="query" placeholder="Nome da farmácia " oninput="filterPharmacies()" value="{{ request('query') }}">
-        </div>
-        <div class="ts-sep d-none d-md-block"></div>
-        <div class="ts-sep d-none d-md-block"></div>
-        <div class="ts-field">
-          <i class="bi bi-clock"></i>
-          <select id="filterStatus" onchange="filterPharmacies()">
-            <option value="">Qualquer horário</option>
-            <option value="open">Abertas agora</option>
-            <option value="24h">Abertas 24h</option>
-          </select>
-        </div>
-        <button type="submit" class="ts-btn"><i class="bi bi-search"></i> Pesquisar</button>
+    <div class="topbar-search ">
+
+      <div class="hero-search-bar">
+        <form action="{{ route('farmacias.search') }}" method="get">
+
+          <div class="hsb-inner">
+            <i class="bi bi-hospital"></i>
+            <input type="text" id="searchPharm" name="query" placeholder="Nome da farmácia " oninput="filterPharmacies()" value="{{ request('query') }}">
+  
+            <button type="submit" class="hsb-btn"><i class="bi bi-search"></i> Pesquisar</button>
+          </div>
+        </form>
       </div>
+
       <div class="quick-filters" id="quickFilters">
         <span class="qf-tag active" onclick="quickFilter(this,'')"> Todas</span>
         <span class="qf-tag" onclick="quickFilter(this,'open')">Abertas agora</span>
         <span class="qf-tag" onclick="quickFilter(this,'24h')"> 24 horas</span>
         {{-- <span class="qf-tag" onclick="quickFilter(this,'new')"> Recentes</span> --}}
-        <span class="qf-tag" onclick="quickFilter(this,'fav')"> Favoritas</span>
+        {{-- <span class="qf-tag" onclick="quickFilter(this,'fav')"> Favoritas</span> --}}
       </div>
       
-    </form>
     </div>
   </div>
 </div>
@@ -529,7 +533,9 @@
 
                 <div class="ph-delivery"><i class="bi bi-clock"></i> Seg-Dom: <strong>{{$farmacia->horario_abertura ?? '08:00'}} - {{ $farmacia->horario_fechamento ?? '22:00'}}</strong></div>
                 <div class="ph-actions">
-                  <button class="ph-btn ph-view" onclick="openModal('central')"><i class="bi bi-eye"></i> Ver</button>
+                <button class="ph-btn ph-view" onclick="openModal({{ $farmacia->id }})">
+                    <i class="bi bi-eye"></i> Ver
+                </button>
                 </div>
               </div>
             </div>
@@ -565,7 +571,9 @@
             <div class="ph-delivery"><i class="bi bi-clock"></i> Seg-Dom: <strong>{{$farmacia->horario_abertura ?? '08:00'}} - {{ $farmacia->horario_fechamento ?? '22:00'}}</strong></div>
 
             <div class="ph-list-actions">
-              <button class="ph-btn ph-view" style="width:100%;" onclick="openModal('central')"><i class="bi bi-eye"></i> Ver</button>
+              <button class="ph-btn ph-view" style="width:100%;" onclick="openModal({{ $farmacia->id }})">
+                  <i class="bi bi-eye"></i> Ver
+              </button>
             </div>
           </div>
 
@@ -588,7 +596,7 @@
 </div>
 
 <!-- ===== MODAL FARMÁCIA DETAIL ===== -->
-{{-- <div class="modal fade" id="pharmModal" tabindex="-1">
+<div class="modal fade" id="pharmModal" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered modal-lg">
     <div class="modal-content">
       <div class="modal-ph-banner">
@@ -605,12 +613,11 @@
         <div class="row g-4">
           <div class="col-md-6">
             <h6 style="font-size:.8rem;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.8rem;">Informações</h6>
-            <div class="info-row"><i class="bi bi-geo-alt-fill"></i> <span id="mAddr"></span></div>
+            <div class="info-row"><i class="bi bi-geo-alt-fill"></i>   <span id="mAddr"></span></div>
             <div class="info-row"><i class="bi bi-telephone-fill"></i> <span id="mPhone"></span></div>
-            <div class="info-row"><i class="bi bi-envelope-fill"></i> <span id="mEmail"></span></div>
+            <div class="info-row"><i class="bi bi-envelope-fill"></i>  <span id="mEmail"></span></div>
             <div class="info-row"><i class="bi bi-star-fill" style="color:#f59e0b;"></i> <span id="mRating"></span></div>
-            <div class="info-row"><i class="bi bi-truck"></i> <span id="mDelivery"></span></div>
-            <div class="info-row"><i class="bi bi-credit-card"></i> <span>Multicaixa Express · Cartão · Numerário</span></div>
+            <div class="info-row"><i class="bi bi-credit-card"></i>    <span>Multicaixa Express · Cartão · Numerário</span></div>
           </div>
           <div class="col-md-6">
             <h6 style="font-size:.8rem;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.8rem;">Horário de funcionamento</h6>
@@ -619,12 +626,14 @@
         </div>
       </div>
       <div class="modal-footer gap-2">
-        <button type="button" class="btn-close-fc" data-bs-dismiss="modal" style="background:var(--soft);color:var(--accent);border:none;border-radius:50px;padding:.5rem 1.2rem;font-size:.85rem;font-weight:700;cursor:pointer;">Fechar</button>
-        <button class="ph-btn ph-order" style="max-width:180px;display:inline-flex;" data-bs-dismiss="modal" onclick="showToast('Farmácia seleccionada!','Escolha os seus medicamentos.')"><i class="bi bi-bag-plus"></i> Fazer pedido</button>
+        <button type="button" data-bs-dismiss="modal"
+          style="background:var(--soft);color:var(--accent);border:none;border-radius:50px;padding:.5rem 1.2rem;font-size:.85rem;font-weight:700;cursor:pointer;">
+          Fechar
+        </button>
       </div>
     </div>
   </div>
-</div> --}}
+</div>
 
 <!-- ===== FOOTER ===== -->
   @include('clientes.dashboard.footer')
@@ -642,25 +651,30 @@
 
 
   /* ===== MODAL ===== */
-  function openModal(key) {
-    const d = $farmacias[key]; if (!d) return;
-    document.getElementById('modalImg').src    = d.img;
-    document.getElementById('modalName').textContent = d.name;
-    document.getElementById('modalLoc').textContent  = d.loc;
-    document.getElementById('mAddr').textContent     = d.addr;
-    document.getElementById('mPhone').textContent    = d.phone;
-    document.getElementById('mEmail').textContent    = d.email;
-    document.getElementById('mRating').textContent   = d.rating;
-    document.getElementById('mDelivery').textContent = d.delivery;
-    const today = new Date().getDay(); // 0=Sun
-    const dayMap = [6,0,1,2,3,4,5]; // Sun=6
-    document.getElementById('mHours').innerHTML = d.hours.map((h, i) => `
-      <tr class="${dayMap[today]===i?'today':''}">
-        <td>${h[0]}</td><td>${h[1]}${dayMap[today]===i?' <strong style="color:var(--accent);">(hoje)</strong>':''}</td>
-      </tr>`).join('');
-    new bootstrap.Modal(document.getElementById('pharmModal')).show();
-  }
+function openModal(id) {
+  const d = farmaciasData[id];
+  if (!d) return;
 
+  document.getElementById('modalImg').src              = d.img;
+  document.getElementById('modalName').textContent     = d.name;
+  document.getElementById('modalLoc').textContent      = d.bairro;
+  document.getElementById('mAddr').textContent         = d.endereco  || 'Endereço não disponível';
+  document.getElementById('mPhone').textContent        = d.telefone  || 'Telefone não disponível';
+  document.getElementById('mEmail').textContent        = d.email     || 'Email não disponível';
+  document.getElementById('mRating').textContent       = d.rating + ' ★  (' + d.reviews + ' avaliações)';
+
+  // Horário — mesmo horário todos os dias (ajuste se tiver horários por dia)
+  const days = ['Segunda','Terça','Quarta','Quinta','Sexta','Sábado','Domingo'];
+  const todayIdx = (new Date().getDay() + 6) % 7; // 0=Seg ... 6=Dom
+  document.getElementById('mHours').innerHTML = days.map((day, i) =>
+    `<tr class="${i === todayIdx ? 'today' : ''}">
+       <td>${day}</td>
+       <td>${d.abertura} – ${d.fechamento}${i === todayIdx ? ' <strong style="color:var(--accent);">(hoje)</strong>' : ''}</td>
+     </tr>`
+  ).join('');
+
+  new bootstrap.Modal(document.getElementById('pharmModal')).show();
+}
   /* ===== VIEW TOGGLE ===== */
   function setView(mode) {
     document.body.className = mode + '-mode';
@@ -774,6 +788,25 @@
     io.observe(el);
   });
 
+</script>
+<script>
+const farmaciasData = {
+  @foreach ($farmacias as $farmacia)
+  {{ $farmacia->id }}: {
+    id:        {{ $farmacia->id }},
+    name:      @json($farmacia->name),
+    bairro:    @json($farmacia->bairro),
+    endereco:  @json($farmacia->endereco ?? ''),
+    telefone:  @json($farmacia->telefone ?? ''),
+    email:     @json($farmacia->email ?? ''),
+    abertura:  @json($farmacia->horario_abertura ?? '08:00'),
+    fechamento:@json($farmacia->horario_fechamento ?? '22:00'),
+    rating:    {{ number_format($farmacia->avaliacoes->avg('classificacao') ?? 0, 1) }},
+    reviews:   {{ $farmacia->avaliacoes->count() }},
+    img:       "https://images.unsplash.com/photo-1587854692152-cbe660dbde88?w=800&auto=format&fit=crop",
+  },
+  @endforeach
+};
 </script>
 </body>
 </html>

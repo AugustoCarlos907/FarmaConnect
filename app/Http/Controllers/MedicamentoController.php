@@ -54,6 +54,7 @@ class MedicamentoController extends Controller
                 'preco' => 'required|numeric|min:0',
                 'data_validade' => 'required|date',
                 'lote' => 'nullable|string|max:255',
+                'requer_receita' => 'required|',
                 // 'farmacia_id' => 'required|integer|exists:farmacias,id',
                 // 'ativo' => 'required|boolean'
 
@@ -69,6 +70,7 @@ class MedicamentoController extends Controller
                 $validatedData['preco'],
                 $validatedData['data_validade'],
                 $validatedData['lote'] ?? null,
+                $validatedData['requer_receita'],
             );
     
             return redirect()->route('medicamentos.farmacias');

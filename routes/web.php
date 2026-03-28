@@ -9,7 +9,9 @@ use App\Http\Controllers\CompanhiaController;
 use App\Http\Controllers\ComprovativoPagamentoController;
 use App\Http\Controllers\DashboardEntregadorController;
 use App\Http\Controllers\DashboardFarmaciaController;
+use App\Http\Controllers\EnderecoController;
 use App\Http\Controllers\EntregaController;
+use App\Http\Controllers\FacturaController;
 use App\Http\Controllers\FarmaciaController;
 use App\Http\Controllers\FileController;
 use App\Http\Controllers\MedicamentoController;
@@ -133,9 +135,15 @@ use Twilio\Rest\Client;
 
         Route::post('/pedidos', [PedidoController::class, 'store'])->name('pedidos.store');
         Route::get('/pedidos', [PedidoController::class, 'pedidos'])->name('pedidos.clientes');
-        Route::post('/pedidos/{id}/cancelar', [PedidoController::class, 'cancelar']);
+        // Route::get('/pedidos/{id}/confirmacao', [PedidoController::class, 'confirmacao'])->name('pedido.confirmacao');
+        Route::post('/pedidos/{id}/cancelar', [PedidoController::class, 'cancelar'])->name('pedidos.cancelar');
 
-        Route::post('/enderecos-create' ,[])->name('enderecos.store');
+        Route::get('/pedido/{id}/factura' , [FacturaController::class , 'index'])->name('pedidos.factura');
+
+        Route::get('/enderecos' ,[EnderecoController::class , 'index'])->name('enderecos.map');
+        Route::post('/enderecos-create' ,[EnderecoController::class , 'create'])->name('enderecos.store');
+        Route::delete('/enderecos-delete/{id}' ,[EnderecoController::class , 'destroy'])->name('enderecos.destroy');
+        
         Route::get('/categorias', [ClientHomePageController::class, 'searchCategorias'])->name('categorias');
         Route::get('categorias/produtos/{id}', [ClientHomePageController::class, 'produtosPorCategoria'])->name('produtos.categoria');
 

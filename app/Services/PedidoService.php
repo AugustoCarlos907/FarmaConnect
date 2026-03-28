@@ -38,7 +38,7 @@ class PedidoService
         $farmacia = $this->encontrarFarmaciaComTodosItens($items, $latitude, $longitude);
 
         if (!$farmacia) {
-            return redirect()->route('carrinho.clientes')->withErrors([
+            return back()->withErrors([
                 'farmacia' => 'Os medicamentos selecionados estão dispostos em múltiplas farmácias , não é possivel confirmar o pedido...'
             ]);        
         }
@@ -48,7 +48,7 @@ class PedidoService
                 'user_id' => $usuarioId,
                 'farmacia_id' => $farmacia->id,
                 'status' => 'pendente',
-                // 'total' => 0,
+                'total' => 0,
                 'data_pedido' => $dataPedido ?? now(),
                 'endereco'=> $endereco,
                 'latitude' =>  $latitude,
@@ -243,7 +243,7 @@ class PedidoService
 
 
 
-    private function encontrarFarmaciaComTodosItens(array $items, float $lat, float $lng){
+    public function encontrarFarmaciaComTodosItens(array $items, float $lat, float $lng){
     $stockIds = collect($items)->pluck('stockId');
 
     $farmacias = StockItem::whereIn('id', $stockIds)

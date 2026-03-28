@@ -349,7 +349,23 @@
     .avatar-upload-area:hover { border-color: var(--accent); background: var(--mint); }
     .avatar-upload-area i { font-size: 2rem; color: #b0c4c6; display: block; margin-bottom: .5rem; }
     .avatar-upload-area p { font-size: .82rem; color: var(--muted); margin: 0; }
-    .avatar-upload-area span { font-size: .75rem; color: #b0c4c6; }
+    .avatar-upload-area span { font-size: .75rem; color: #b0c4c6; } 
+
+    /* ─── ADDR CARDS (tab Localização) ─── */
+    .addr-card { display:flex; align-items:flex-start; gap:1rem; padding:1rem 1.1rem; border:1.5px solid var(--border); border-radius:16px; background:#fafefe; transition:all .22s; }
+    .addr-card:hover { border-color:var(--accent); background:#fff; box-shadow:0 6px 20px rgba(9,154,167,.08); }
+    .addr-card--primary { border-color:var(--accent); background:var(--mint); }
+    .addr-card__icon { width:44px; height:44px; background:var(--soft); border-radius:12px; display:flex; align-items:center; justify-content:center; color:var(--accent); font-size:1.15rem; flex-shrink:0; }
+    .addr-card--primary .addr-card__icon { background:var(--accent); color:#fff; }
+    .addr-card__body { flex:1; min-width:0; }
+    .addr-card__label { font-size:.72rem; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:.05em; margin-bottom:.2rem; display:flex; align-items:center; gap:.4rem; }
+    .addr-primary-badge { background:var(--accent); color:#fff; font-size:.65rem; font-weight:700; padding:.1rem .5rem; border-radius:50px; text-transform:none; letter-spacing:0; }
+    .addr-card__name { font-size:.9rem; font-weight:700; color:var(--heading); line-height:1.4; word-break:break-word; }
+    .addr-card__coords { font-size:.72rem; color:var(--muted); margin-top:.25rem; display:flex; align-items:center; gap:.3rem; }
+    .addr-card__actions { display:flex; flex-direction:column; gap:.35rem; flex-shrink:0; }
+    .addr-action-btn { width:32px; height:32px; border-radius:10px; border:1.5px solid var(--border); background:#fff; color:var(--muted); display:flex; align-items:center; justify-content:center; font-size:.82rem; cursor:pointer; transition:all .18s; text-decoration:none; }
+    .addr-action-btn:hover { border-color:var(--accent); color:var(--accent); background:var(--soft); }
+    .addr-action-btn--danger:hover { border-color:#fca5a5; color:#e74c3c; background:#fdecea; }
 
     /* Danger zone */
     .danger-card {
@@ -562,7 +578,7 @@
 
                   <!-- Nome -->
                   <div class="col-md-6">
-                    <label class="fc-label"><i class="bi bi-person"></i> Primeiro Nome <span class="req">*</span></label>
+                    <label class="fc-label"><i class="bi bi-person"></i>  Nome <span class="req">*</span></label>
                     <div class="fc-input-icon">
                       <i class="bi bi-person"></i>
                       <input type="text" class="fc-input" name="name" id="iName"
@@ -572,7 +588,7 @@
                   </div>
 
                   <!-- Apelido -->
-                  <div class="col-md-6">
+                  {{-- <div class="col-md-6">
                     <label class="fc-label"><i class="bi bi-person"></i> Apelido <span class="req">*</span></label>
                     <div class="fc-input-icon">
                       <i class="bi bi-person"></i>
@@ -580,7 +596,7 @@
                              placeholder="Ex: Costa" value="{{ $user->last_name }}" required>
                     </div>
                     <div class="fc-error" id="err-last_name">Por favor, insira o apelido.</div>
-                  </div>
+                  </div> --}}
 
                   <!-- Email -->
                   <div class="col-md-6">
@@ -770,88 +786,114 @@
 
         <!-- ===== TAB: LOCALIZAÇÃO ===== -->
         <div id="tab-location" style="display:none;">
-          <div class="pcard">
+ 
+          <div class="pcard mt-5">
             <div class="pcard-header">
               <div class="pcard-title">
                 <div class="pcard-icon"><i class="bi bi-geo-alt"></i></div>
                 <div>
-                  <h5>Endereço e Localização</h5>
-                  <p>Para entregas mais rápidas e precisas</p>
+                  <h5>Os meus endereços</h5>
+                  <p>Endereços guardados para entrega</p>
                 </div>
               </div>
+              {{-- Botão principal ─ redireciona para o form com mapa --}}
+              <a href="{{ route('enderecos.map') }}"
+                 class="btn-save"
+                 style="font-size:.82rem;padding:.58rem 1.2rem;text-decoration:none;">
+                <i class="bi bi-plus-circle"></i> Adicionar endereço
+              </a>
             </div>
-            <div class="pcard-body">
-              <form id="formLocation" novalidate>
-                @csrf
-                @method('PUT')
-
-                <!-- Mapa placeholder -->
-                <div class="map-preview">
-                  <div class="map-preview-placeholder">
-                    <i class="bi bi-map"></i>
-                    <span>Clique em "Usar localização actual" para preencher automaticamente</span>
+ 
+            <div class="pcard-body" style="padding:1.2rem 1.8rem;">
+ 
+              @php 
+                $enderecos = Auth::user()->enderecos ?? collect(); 
+              @endphp
+ 
+              @if($enderecos->isEmpty())
+ 
+                {{-- Estado vazio --}}
+                <div style="text-align:center;padding:2.5rem 1rem;">
+                  <div style="width:64px;height:64px;background:var(--mint);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;font-size:1.8rem;color:var(--accent);">
+                    <i class="bi bi-geo-alt"></i>
                   </div>
+                  <h6 style="font-weight:800;color:var(--heading);margin-bottom:.4rem;">
+                    Nenhum endereço guardado
+                  </h6>
+                  <p style="font-size:.84rem;color:var(--muted);max-width:280px;margin:0 auto 1.2rem;">
+                    Adicione um endereço para que possamos entregar os seus medicamentos mais rapidamente.
+                  </p>
+                  <a href="{{ route('enderecos.map') }}" class="btn-save"
+                     style="font-size:.84rem;text-decoration:none;">
+                    <i class="bi bi-plus-circle"></i> Adicionar primeiro endereço
+                  </a>
                 </div>
-
-                <div class="d-flex gap-2 mb-4 flex-wrap">
-                  <button type="button" class="loc-btn" onclick="getLocation()">
-                    <i class="bi bi-crosshair2"></i> Usar localização actual
-                  </button>
-                  <button type="button" class="loc-btn" style="background:var(--mint);">
-                    <i class="bi bi-plus-circle"></i> Adicionar endereço manualmente
-                  </button>
-                </div>
-
-                <div class="row g-4">
-
-                  <!-- Endereço -->
-                  <div class="col-12">
-                    <label class="fc-label"><i class="bi bi-house"></i> Endereço Completo</label>
-                    <div class="fc-input-icon">
-                      <i class="bi bi-house"></i>
-                      <input type="text" class="fc-input" name="endereco" id="iEndereco"
-                             placeholder="Rua, número, bairro, município..."
-                             value="{{ $endereco->name ?? 'UNDEFINED' }}">
+ 
+              @else
+ 
+                <div style="display:flex;flex-direction:column;gap:.75rem;">
+                  @foreach($enderecos as $end)
+                    <div class="addr-card {{ $loop->first ? 'addr-card--primary' : '' }}">
+ 
+                      {{-- Ícone --}}
+                      <div class="addr-card__icon">
+                        <i class="bi bi-{{ $loop->first ? 'house-fill' : 'geo-alt-fill' }}"></i>
+                      </div>
+ 
+                      {{-- Texto --}}
+                      <div class="addr-card__body">
+                        <div class="addr-card__label">
+                          {{ $loop->first ? 'Principal' : 'Endereço '.$loop->iteration }}
+                          @if($loop->first)
+                            <span class="addr-primary-badge">
+                              <i class="bi bi-star-fill" style="font-size:.55rem"></i> Principal
+                            </span>
+                          @endif
+                        </div>
+                        <div class="addr-card__name">
+                          {{ $end->name ?? $end->endereco ?? '—' }}
+                        </div>
+                        @if(($end->latitude ?? false) && ($end->longitude ?? false))
+                          <div class="addr-card__coords">
+                            <i class="bi bi-compass" style="font-size:.7rem;color:var(--accent)"></i>
+                            {{ number_format((float)$end->latitude,  6) }},
+                            {{ number_format((float)$end->longitude, 6) }}
+                          </div>
+                        @endif
+                      </div>
+ 
+                      {{-- Acções --}}
+                      <div class="addr-card__actions">
+                        {{-- Editar — abre o mapa com o endereço pré-carregado --}}
+                        <a href="{{ route('enderecos.map', ['id' => $end->id]) }}"
+                           class="addr-action-btn" title="Editar">
+                          <i class="bi bi-pencil"></i>
+                        </a>
+                        {{-- Remover --}}
+                        <form action="{{ route('enderecos.destroy', $end->id) }}"
+                              method="POST"
+                              onsubmit="return confirm('Remover este endereço?')">
+                          @csrf @method('DELETE')
+                          <button type="submit"
+                                  class="addr-action-btn addr-action-btn--danger"
+                                  title="Remover">
+                            <i class="bi bi-trash3"></i>
+                          </button>
+                        </form>
+                      </div>
+ 
                     </div>
-                    <div class="fc-hint"><i class="bi bi-info-circle"></i> Máximo 500 caracteres</div>
-                  </div>
-
-                  <!-- Latitude -->
-                  <div class="col-md-6">
-                    <label class="fc-label"><i class="bi bi-compass"></i> Latitude</label>
-                    <div class="fc-input-icon">
-                      <i class="bi bi-compass"></i>
-                      <input type="text" class="fc-input" name="latitude" id="iLat"
-                             placeholder="-8." value="{{$endereco->latitude ?? 'UNDEFINED'}}"
-                             pattern="^-?([0-9]{1,2})(\.[0-9]+)?$">
-                    </div>
-                  </div>
-
-                  <!-- Longitude -->
-                  <div class="col-md-6">
-                    <label class="fc-label"><i class="bi bi-compass-fill"></i> Longitude</label>
-                    <div class="fc-input-icon">
-                      <i class="bi bi-compass-fill"></i>
-                      <input type="text" class="fc-input" name="longitude" id="iLng"
-                             placeholder="13.2344" value="{{$endereco->longitude ?? 'UNDEFINED'}}"
-                             pattern="^-?([0-9]{1,3})(\.[0-9]+)?$">
-                    </div>
-                  </div>
-
-                  <div class="col-12">
-                    <div class="fc-hint"><i class="bi bi-shield-check"></i> As coordenadas são usadas apenas para calcular a rota de entrega e nunca são partilhadas.</div>
-                  </div>
-
+                  @endforeach
                 </div>
-
-                <div class="fc-divider"></div>
-                <div class="d-flex align-items-center gap-3 flex-wrap">
-                  <button type="submit" class="btn-save">
-                    <i class="bi bi-geo-alt-fill"></i> Guardar Localização
-                  </button>
-                  <button type="reset" class="btn-cancel">Cancelar</button>
+ 
+                {{-- Rodapé — adicionar mais --}}
+                <div style="margin-top:1.2rem;padding-top:1.2rem;border-top:1px solid var(--border);">
+                  <a href="{{ route('enderecos.map') }}" class="loc-btn">
+                    <i class="bi bi-plus-circle"></i> Adicionar outro endereço
+                  </a>
                 </div>
-              </form>
+ 
+              @endif
             </div>
           </div>
         </div><!-- /tab-location -->

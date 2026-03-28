@@ -22,7 +22,7 @@ class ItemPedido extends Model
 
     public function stockItem()
     {
-        return $this->belongsTo(StockItem::class);
+        return $this->belongsTo(StockItem::class , 'stock_items_id');
     }
 
     

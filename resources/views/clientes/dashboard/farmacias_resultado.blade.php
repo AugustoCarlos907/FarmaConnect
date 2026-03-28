@@ -69,6 +69,16 @@
     .result-meta strong { color:#fff; }
     .result-meta .dot { width:3px; height:3px; border-radius:50%; background:rgba(255,255,255,.4); }
 
+     .topbar-search { margin-top:1.6rem; max-width:520px; }
+
+    .hero-search-bar { margin-top:1.6rem; max-width:520px; }
+    .hsb-inner { background:rgba(255,255,255,.15); backdrop-filter:blur(14px); border:1.5px solid rgba(255,255,255,.25); border-radius:50px; display:flex; align-items:center; padding:.4rem .4rem .4rem 1.2rem; gap:.5rem; transition:all .25s; }
+    .hsb-inner:focus-within { background:rgba(255,255,255,.22); border-color:rgba(255,255,255,.5); }
+    .hsb-inner input { flex:1; background:none; border:none; outline:none; color:#fff; font-size:.9rem; font-family:inherit; }
+    .hsb-inner input::placeholder { color:rgba(255,255,255,.55); }
+    .hsb-btn { background:#fff; color:var(--accent); border:none; border-radius:50px; padding:.55rem 1.3rem; font-size:.86rem; font-weight:700; font-family:inherit; cursor:pointer; display:flex; align-items:center; gap:.4rem; transition:all .22s; white-space:nowrap; }
+    .hsb-btn:hover { background:var(--soft); }
+
     /* Search re-bar no topbar */
     .ts-box { background:#fff; border-radius:20px; box-shadow:0 20px 50px rgba(0,0,0,.18); padding:1rem 1.3rem; display:flex; align-items:center; gap:1rem; flex-wrap:wrap; margin-top:1.5rem; }
     .ts-field { flex:1; min-width:180px; position:relative; }
@@ -220,27 +230,20 @@
     </div>
 
     {{-- Barra de pesquisa — preserva o query actual, permite nova pesquisa --}}
-    <form action="{{ route('farmacias.search') }}" method="GET">
-      <div class="ts-box">
-        <div class="ts-field" style="flex:2">
-          <i class="bi bi-hospital"></i>
-          <input type="text" name="query"
-                 placeholder="Nome da farmácia…"
-                 value="{{ request('query') }}">
-        </div>
-        <span class="ts-sep d-none d-md-block"></span>
-        <div class="ts-field">
-          <i class="bi bi-clock"></i>
-          <select name="status">
-            <option value="">Qualquer horário</option>
-            <option value="open"  {{ request('status') === 'open' ? 'selected' : '' }}>Abertas agora</option>
-            <option value="24h"   {{ request('status') === '24h'  ? 'selected' : '' }}>Abertas 24h</option>
-          </select>
-        </div>
-        <button type="submit" class="ts-btn"><i class="bi bi-search"></i> Pesquisar</button>
-      </div>
-    </form>
+      <div class="topbar-search ">
 
+        <div class="hero-search-bar">
+          <form action="{{ route('farmacias.search') }}" method="get">
+
+            <div class="hsb-inner">
+              <i class="bi bi-hospital"></i>
+              <input type="text" id="searchPharm" name="query" placeholder="Nome da farmácia " oninput="filterPharmacies()" value="{{ request('query') }}">
+    
+              <button type="submit" class="hsb-btn"><i class="bi bi-search"></i> Pesquisar</button>
+            </div>
+          </form>
+        </div>
+      </div>
   </div>
 </div>
 

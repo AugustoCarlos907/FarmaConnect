@@ -4,16 +4,29 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CriarPedidoRequest;
 use App\Models\Carrinho;
+use App\Models\Factura;
 use App\Models\Pedido;
+use App\Services\EntregaService;
 use App\Services\PedidoService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class PedidoController extends Controller
 {
-    public function __construct(public PedidoService $service){}
+    public function __construct(
+        public PedidoService $service,
+        public EntregaService $entregaService
+        ){}
 
      public function store(Request $request)
     {
+        try {
+        $farmacia = $this->service->encontrarFarmaciaComTodosItens($request->items, $request->latitude, $request->longitude);
+
+        if (!$farmacia) {
+        return back()->withErrors(['farmacia' => 'Medicamentos em múltiplas farmácias ou indisponíveis...']);
+        }
+
         $pedido = $this->service->criarPedido(
             auth()->id(),
             $request->items,
@@ -23,11 +36,29 @@ class PedidoController extends Controller
             $request->metodo_pagamento
         );
 
-        if($pedido){
-            Carrinho::where('user_id', auth()->id())->delete();
-        }
+        if($pedido ){
+            Carrinho::where('user_id', Auth()->id())->delete();
+            
+            $entrega = $this->entregaService->criarEntrega($pedido);
+            
+            // Guarda os dados da entrega na sessão (flash)
+            session()->flash('entrega', [
+                'distancia_km' => $entrega->distancia_km,
+                'taxa_entrega' => $entrega->taxa_entrega,
+                'pedido_id'    => $pedido->id,
+            ]);
 
-        return redirect()->route('carrinho.clientes')->with('success', 'Pedido confirmado com sucesso!');
+            // return redirect()->route('pedido.confirmacao', $pedido->id)->with('entrega', $entrega);
+            return redirect()->route('carrinho.clientes')->with('success' , 'Pedido enviado com sucesso');
+
+        }
+    }
+        catch (\Exception $e) {
+        //captura do erro do service
+        return back()->withErrors(['entregador' => $e->getMessage()])->withInput();
+    }
+
+        return back()->with('error', 'Falha ao processar pedido.');
     }
 
 
@@ -37,40 +68,81 @@ class PedidoController extends Controller
     {
         $user = auth()->user();
 
-        $pedidos = Pedido::with(['farmacia', 'items.stockItem.medicamento'])
+        $pedidos = Pedido::with(['farmacia', 'items.stockItem.medicamento.categoria'])
                         ->where('user_id', $user->id)
                         ->latest('data_pedido')
-                        ->get();
+                        ->paginate(10);
+
+        $col = $pedidos->getCollection();
+
 
        
         $totalPedidos  = $pedidos->count();
-        $emEntrega     = $pedidos->where('status', 'em_entrega')->count();
-        $entregues     = $pedidos->where('status', 'entregue')->count();
-        $totalGasto    = $pedidos->whereIn('status', ['entregue'])->sum('total');
+        $emEntrega    = $col->where('status', 'Em Entrega')->count();
+        $entregues    = $col->where('status', 'Concluído')->count();  
+        $totalGasto   = $col->whereIn('status', ['Concluído'])->sum('total');
+
+        // $emEntrega     = $pedidos->where('status', 'Em Entrega')->count();
+        // $entregues     = $pedidos->where('status', 'Concluído')->count();
+        // $totalGasto    = $pedidos->whereIn('status', ['entregue'])->sum('total');
 
         return view('clientes.pedidos.index', compact(
             'pedidos', 'totalPedidos', 'emEntrega', 'entregues', 'totalGasto'
         ));
     }
 
-    public function updateStatus($id , Request $request){
 
+    public function updateStatus($id, Request $request)
+    {
         $request->validate([
-            'status' => 'required|string'
+            'status' => 'required|string|in:Aprovado,pago,Cancelado,Rejeitado'
         ]);
 
         $pedido = Pedido::findOrFail($id);
 
-        $statusPermitidos = ['Aprovado', 'Pago', 'Cancelado', 'Rejeitado'];
+        return DB::transaction(function () use ($pedido, $request) {
+            
+            $pedido->update(['status' => $request->status]);
 
-        if (in_array($request->status, $statusPermitidos)) {
+            if ($pedido->status === "Aprovado") {
+                Factura::create([
+                    'user_id'        => $pedido->user_id,
+                    'pedido_id'      => $pedido->id,
+                    'pagamento_id'   => $pedido->pagamento->id ?? null,
+                    'numero_factura' => 'FAC-' . now()->format('Ymd') . '-' . strtoupper(uniqid()),
+                    'valor_total'    => $pedido->total,
+                    'IVA'            => $pedido->total * 0.14,
+                    'emitida_em'     => now()
+                ]);
+
+                // return redirect()->route('facturas.index')->with('success', 'Pedido aprovado e fatura gerada!');
+            }
+
+            return redirect()->back()->with('success', 'Status do pedido atualizado para ' . $request->status);
+        });
+    }
+
+    public function cancelar($id){
+        $pedido = Pedido::findOrFail($id);
         $pedido->update([
-            'status' => $request->status
+            'status' => 'Cancelado'
         ]);
+
+        return back()->with('success' , 'Pedido Cancelado');
     }
 
-        return redirect()->route('pedidos.farmacias');
-        
-    }
+    // public function confirmacao($id){
+    // $pedido = Pedido::with(['farmacia', 'items.stockItem.medicamento', 'entrega'])
+    //     ->findOrFail($id);
+
+    // // Garante que o pedido pertence ao utilizador autenticado
+    // if ($pedido->user_id !== auth()->id()) {
+    //     abort(403);
+    // }
+
+    // $entrega = $pedido->entrega; // relação hasOne
+
+    // return view('clientes.dashboard.pedido_confirmacao', compact('pedido', 'entrega'));
+    // }
     
 }

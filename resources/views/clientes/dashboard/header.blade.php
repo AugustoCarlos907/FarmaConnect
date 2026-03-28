@@ -224,13 +224,13 @@
                             placeholder="Pesquise os medicamentos ..." 
                             value="{{ request('search') }}">
                         <!-- Campo para filtro de preço mínimo (opcional) -->
-                        <div class="price-filter d-none d-sm-flex align-items-center">
+                        {{-- <div class="price-filter d-none d-sm-flex align-items-center">
                             <span class="price-label">Mín:</span>
                             <input type="number" name="min_price" class="min-price-input" 
                                 placeholder="Preço mínimo" step="100" 
                                 value="{{ request('min_price') }} " 
                                 style="width: 80px; border: none; background: transparent; padding: .5rem 0 .5rem .2rem; font-size: .85rem; color: var(--heading); outline: none;">
-                        </div>
+                        </div> --}}
                         <button type="submit" class="search-btn" aria-label="Pesquisar">
                             <i class="bi bi-arrow-right-circle-fill"></i>
                         </button>

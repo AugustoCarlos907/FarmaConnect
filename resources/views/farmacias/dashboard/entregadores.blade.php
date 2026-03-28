@@ -485,7 +485,9 @@
       <!-- ─── CARD VIEW ─────────────────────────── -->
       <div class="cards-grid" id="cardsGrid">
 
+
         @forelse($entregadores as $del)
+
           @php
             $paletas  = [
               ['bg'=>'#fdecea','text'=>'#a32d2d'],['bg'=>'#faeeda','text'=>'#854f0b'],
@@ -547,7 +549,7 @@
 
             <div class="del-stats">
               <div class="ds-item"><div class="ds-val">{{ $del->status }}</div><div class="ds-lbl">Estado</div></div>
-              <div class="ds-item"><div class="ds-val">{{ $del->disponivel ? 'Sim' : 'Não' }}</div><div class="ds-lbl">Disponível</div></div>
+              <div class="ds-item"><div class="ds-val">{{ $status=='Ocupado'?'Não' : 'Sim' }}</div><div class="ds-lbl">Disponível</div></div>
             </div>
 
             <div class="del-card-footer">
@@ -623,7 +625,7 @@
                   </td>
                   <td>
                     <span style="font-size:.75rem;font-weight:600;color:{{ $del->disponivel ? 'var(--success)' : 'var(--text-4)' }}">
-                      {{ $del->disponivel ? 'Sim' : 'Não' }}
+                      {{ $status=='Ocupado'?'Não' : 'Sim' }}
                     </span>
                   </td>
                   <td style="color:var(--text-3);font-size:.77rem">{{ $del->matricula_veiculo ?? '—' }}</td>

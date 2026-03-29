@@ -137,7 +137,6 @@ use Twilio\Rest\Client;
         Route::get('/pedidos', [PedidoController::class, 'pedidos'])->name('pedidos.clientes');
         // Route::get('/pedidos/{id}/confirmacao', [PedidoController::class, 'confirmacao'])->name('pedido.confirmacao');
         Route::post('/pedidos/{id}/cancelar', [PedidoController::class, 'cancelar'])->name('pedidos.cancelar');
-
         Route::get('/pedido/{id}/factura' , [FacturaController::class , 'index'])->name('pedidos.factura');
 
         Route::get('/enderecos' ,[EnderecoController::class , 'index'])->name('enderecos.map');
@@ -161,6 +160,7 @@ use Twilio\Rest\Client;
 
         Route::post('/upload/comprovativo/{id}', [ComprovativoPagamentoController::class, 'uploadComprovativo']);
 
+        Route::post('/avaliacao-create/{id}', [AvaliacaoController::class , 'create'])->name('avaliacao.create');
         // Route::post('/logout/{id}' , [AuthController::class, 'logout'])->name('logout');
     });
         

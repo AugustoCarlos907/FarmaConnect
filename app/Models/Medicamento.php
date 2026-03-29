@@ -16,7 +16,6 @@ class Medicamento extends Model
         'dosagem',
         'categoria_id',
         'requer_receita'
-        // 'farmacia_id',
         // 'principio_ativo',
     ];
 
@@ -38,8 +37,6 @@ class Medicamento extends Model
         return $this->belongsTo(Categoria::class);
     }
 
-    // public function farmacia(){
-    //     return $this->belongsTo(Farmacia::class);
-    // }
+
     
 }

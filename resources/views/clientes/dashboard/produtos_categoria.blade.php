@@ -12,6 +12,7 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
   <style>
+    /* (todo o CSS permanece igual ao original – mantido por brevidade) */
     :root {
       --accent:      #099aa7;
       --accent-dark: #067e8a;
@@ -246,26 +247,34 @@
     <div class="stats-strip">
       <div class="stat-item">
         <div>
-          <strong>{{ $categoria->medicamentos->count() }}</strong>
+          <strong>{{ $categoria->medicamentos()->count() }}</strong>
           <span>Medicamentos</span>
         </div>
       </div>
       <div class="stat-sep"></div>
       <div class="stat-item">
         <div>
-          {{-- farmácias distintas com este medicamento --}}
-          <strong>{{ $categoria->medicamentos->pluck('farmacia_id')->unique()->count() }}</strong>
+          @php
+            // Contagem de farmácias distintas que têm stock deste medicamento
+            $farmaciasCount = \App\Models\StockItem::whereHas('medicamento', function($q) use ($categoria) {
+                $q->where('categoria_id', $categoria->id);
+            })->distinct('farmacia_id')->count('farmacia_id');
+          @endphp
+          <strong>{{ $farmaciasCount }}</strong>
           <span>Farmácias</span>
         </div>
       </div>
       <div class="stat-sep"></div>
       <div class="stat-item">
         <div>
+          {{-- Como não há campo de desconto, exibimos quantidade de medicamentos com stock > 0 --}}
           @php
-            $temDesc = $categoria->medicamentos->filter(fn($m) => ($m->preco_desconto ?? 0) > 0)->count();
+            $comStock = $categoria->medicamentos()->whereHas('stockItems', function($q) {
+                $q->where('ativo', 1)->where('quantidade', '>', 0);
+            })->count();
           @endphp
-          <strong>{{ $temDesc }}</strong>
-          <span>Em promoção</span>
+          <strong>{{ $comStock }}</strong>
+          <span>Disponíveis</span>
         </div>
       </div>
     </div>
@@ -322,7 +331,10 @@
 
             <!-- Farmácia -->
             @php
-              $farmacias = $categoria->medicamentos->pluck('farmacia')->filter()->unique('id');
+              // Obtém as farmácias que têm stock de medicamentos desta categoria
+              $farmacias = \App\Models\Farmacia::whereHas('stockItems.medicamento', function($q) use ($categoria) {
+                  $q->where('categoria_id', $categoria->id);
+              })->get();
             @endphp
             @if($farmacias->count())
             <div class="filter-group">
@@ -350,7 +362,6 @@
           </div>
         </form>
 
-
       </aside>
 
       <!-- ────────────── CONTENT ────────────── -->
@@ -359,7 +370,7 @@
         <!-- Toolbar -->
         <div class="toolbar-bar mt-4">
           <span class="result-count">
-            <strong>{{ $categoria->medicamentos->count() }}</strong> medicamento{{ $categoria->medicamentos->count() != 1 ? 's' : '' }}
+            <strong>{{ $medicamentos->total() }}</strong> medicamento{{ $medicamentos->total() != 1 ? 's' : '' }}
             @if(request()->hasAny(['preco_min','preco_max','em_stock','com_desconto','sem_receita','farmacias']))
               <span style="color:var(--accent);"> · filtros activos</span>
             @endif
@@ -379,7 +390,7 @@
               <option value="default"  {{ request('sort','default')==='default'  ? 'selected':'' }}>Relevância</option>
               <option value="preco_az" {{ request('sort')==='preco_az' ? 'selected':'' }}>Preço: menor → maior</option>
               <option value="preco_za" {{ request('sort')==='preco_za' ? 'selected':'' }}>Preço: maior → menor</option>
-              <option value="name_az"  {{ request('sort')==='name_az'  ? 'selected':'' }}>name A → Z</option>
+              <option value="name_az"  {{ request('sort')==='name_az'  ? 'selected':'' }}>Nome A → Z</option>
               <option value="novo"     {{ request('sort')==='novo'     ? 'selected':'' }}>Mais recentes</option>
             </select>
           </form>
@@ -391,7 +402,7 @@
         </div>
 
         <!-- ══════════ GRID DE MEDICAMENTOS ══════════ -->
-        @if($categoria->medicamentos->isEmpty())
+        @if($medicamentos->isEmpty())
 
           <div class="empty-state">
             <span class="ei">💊</span>
@@ -403,83 +414,85 @@
 
           <div class="prod-grid" id="prodGrid">
 
-            
-            @foreach($categoria->medicamentos as $med)
+            @foreach($medicamentos as $med)
+              @php
+                  // Pega o primeiro StockItem activo com quantidade > 0
+                  $stock = $med->stockItems
+                               ->where('ativo', 1)
+                               ->where('quantidade', '>', 0)
+                               ->first();
+              @endphp
 
-    @php
-        // {{-- Pega o primeiro StockItem activo com quantidade > 0 --}}
-        $stock = $med->stockItems
-                     ->where('ativo', 1)
-                     ->where('quantidade', '>', 0)
-                     ->first();
-    @endphp
+              <div class="prod-card">
 
-    <div class="prod-card">
-
-        {{-- IMAGEM --}}
-        <div class="pc-img">
-            @if($med->imagem ?? false)
-                <img src="{{ asset('storage/'.$med->imagem) }}" alt="{{ $med->name }}" loading="lazy">
-            @else
-                <div class="pc-img-placeholder">💊</div>
-            @endif
-            <button class="pc-fav" title="Favoritos"><i class="bi bi-heart"></i></button>
-        </div>
-
-        {{-- CORPO --}}
-        <div class="pc-body">
-            <div class="pc-cat">{{ $categoria->nome }}</div>
-            <div class="pc-name">{{ $med->name }}</div>
-
-            @if($med->forma_farmaceutica)
-                <div class="pc-sub">{{ $med->forma_farmaceutica }} · {{ $med->dosagem }}</div>
-            @endif
-
-            {{-- Farmácia vem do StockItem --}}
-            @if($stock && $stock->farmacia)
-                <div class="pc-farm">
-                    <i class="bi bi-hospital" style="font-size:.7rem;"></i>
-                    {{ $stock->farmacia->name }}
+                {{-- IMAGEM --}}
+                <div class="pc-img">
+                  @if($med->imagem ?? false)
+                    <img src="{{ asset('storage/'.$med->imagem) }}" alt="{{ $med->name }}" loading="lazy">
+                  @else
+                    <div class="pc-img-placeholder">💊</div>
+                  @endif
+                  <button class="pc-fav" title="Favoritos"><i class="bi bi-heart"></i></button>
                 </div>
-            @endif
-        </div>
 
-        {{-- FOOTER COM PREÇO --}}
-        <div class="pc-footer">
-            <div class="pc-price-wrap">
-                @if($stock)
-                    <span class="pc-price">
+                {{-- CORPO --}}
+                <div class="pc-body">
+                  <div class="pc-cat">{{ $categoria->name }}</div>
+                  <div class="pc-name">{{ $med->name }}</div>
+
+                  @if($med->forma_farmaceutica)
+                    <div class="pc-sub">{{ $med->forma_farmaceutica }} · {{ $med->dosagem }}</div>
+                  @endif
+
+                  {{-- Farmácia vem do StockItem --}}
+                  @if($stock && $stock->farmacia)
+                    <div class="pc-farm">
+                      <i class="bi bi-hospital" style="font-size:.7rem;"></i>
+                      {{ $stock->farmacia->name }}
+                    </div>
+                  @endif
+                </div>
+
+                {{-- FOOTER COM PREÇO --}}
+                <div class="pc-footer">
+                  <div class="pc-price-wrap">
+                    @if($stock)
+                      <span class="pc-price">
                         {{ number_format($med->preco, 0, ',', ' ') }} <span class="cur">Kz</span>
-                    </span>
-                    <span style="font-size:.72rem; color:#22c55e; font-weight:600;">
+                      </span>
+                      <span style="font-size:.72rem; color:#22c55e; font-weight:600;">
                         {{ $stock->quantidade }} em stock
-                    </span>
-                @else
-                    <span style="font-size:.8rem; color:#ef4444; font-weight:700;">Sem stock</span>
-                @endif
-            </div>
+                      </span>
+                    @else
+                      <span style="font-size:.8rem; color:#ef4444; font-weight:700;">Sem stock</span>
+                    @endif
+                  </div>
 
-            {{-- Botão só activo se houver stock --}}
-            @if($stock)
-                <form action="{{ route('carrinho.adicionar') }}" method="POST">
-                    @csrf
-                    <input type="hidden" name="stock_item_id" value="{{ $stock->id }}">
-                    <input type="hidden" name="quantidade"    value="1">
-                    <button type="submit" class="btn-cart">
+                  {{-- Botão só activo se houver stock --}}
+                  @if($stock)
+                    <form action="{{ route('carrinho.adicionar') }}" method="POST">
+                      @csrf
+                      <input type="hidden" name="stock_item_id" value="{{ $stock->id }}">
+                      <input type="hidden" name="quantidade"    value="1">
+                      <button type="submit" class="btn-cart">
                         <i class="bi bi-bag-plus"></i> Adicionar
+                      </button>
+                    </form>
+                  @else
+                    <button class="btn-cart" disabled style="background:#e0e0e0;color:#aaa;cursor:not-allowed;">
+                      Esgotado
                     </button>
-                </form>
-            @else
-                <button class="btn-cart" disabled style="background:#e0e0e0;color:#aaa;cursor:not-allowed;">
-                    Esgotado
-                </button>
-            @endif
-        </div>
+                  @endif
+                </div>
 
-    </div>
+              </div>
+            @endforeach
 
-@endforeach
+          </div>
 
+          <!-- Paginação -->
+          <div class="pagination-fc" id="paginationBar">
+            {{ $medicamentos->links('vendor.pagination.fc-pagination') }}
           </div>
 
         @endif
@@ -493,7 +506,7 @@
 </div>
 
 <!-- FOOTER -->
-  @include('clientes.dashboard.footer')
+@include('clientes.dashboard.footer')
 
 <!-- Toast -->
 <div class="toast-fc" id="toastFc">

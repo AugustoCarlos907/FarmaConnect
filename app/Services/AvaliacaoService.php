@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Avaliacao;
 use App\Models\Entrega;
+use App\Models\Pedido;
 use App\Repositories\Interfaces\AvaliacaoInterface;
 
 class AvaliacaoService{
@@ -28,15 +29,15 @@ class AvaliacaoService{
     }
 
     public function createAvaliacao($id, $classificacao, $comentario){
-        $entrega =  $this->entrega = Entrega::find($id);
+        $pedido  = Pedido::findOrFail($id);
 
-        if($entrega->status == 'entregue'){
+        if($pedido->status == 'Concluído'){
             
             $avaliacao = Avaliacao::create([
                 'classificacao' => $classificacao,
                 'comentario' => $comentario,
-                'farmacia_id' => $entrega->pedido->farmacia_id,
-                'user_id' => auth()->id()
+                'farmacia_id' => $pedido->farmacia_id,
+                'user_id' => $pedido->user_id
             ]);
 
         return $avaliacao;

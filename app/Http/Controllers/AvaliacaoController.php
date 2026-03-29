@@ -22,21 +22,26 @@ class AvaliacaoController extends Controller
         return view('farmacias.dashboard.avaliacoes', compact('avaliacoes'));
     }
 
-    public function create(Request $request){
-        $request->validate([
+    public function create(Request $request , $id){
+        try {
+            $request->validate([
             'classificacao' => 'required|integer|min:1|max:5',
             'comentario' => 'nullable|string|max:255'
         ]);
 
-        $pedido = Auth::user()->pedidos()->latest()->first();
+        // $pedido = Auth::user()->pedidos()->latest()->first();
         $this->service->createAvaliacao(
-            $pedido->entrega->id,
+            $id,
             $request->classificacao,
             $request->comentario
         );
 
-        return response()->json(['message' => 'Avaliação criada com sucesso!'], 201);
-    }
+         return response()->json(['success' => true]);
+    
+        } catch (\Exception $e) {
+            return back()->withErrors('Não é possível criar a avaliacao' .$e->getMessage());
+        }
+}
 
     public function update(Request $request, $id){
         $data = $request->validated();

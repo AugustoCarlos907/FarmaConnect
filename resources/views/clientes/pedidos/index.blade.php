@@ -615,9 +615,9 @@
 
 
           @elseif($st === 'Concluído')
-            <button class="oa-btn oa-primary" onclick="openRatingModal()">
-              <i class="bi bi-star"></i> Avaliar Farmacia
-            </button>
+          <button class="oa-btn oa-primary" onclick="openRatingModal({{ $pedido->id }}, '{{ addslashes($pedido->farmacia->name) }}')">
+              <i class="bi bi-star"></i> Avaliar farmácia
+          </button>
             {{-- <button class="oa-btn oa-outline" onclick="reorder()">
               <i class="bi bi-arrow-repeat"></i> Repetir pedido
             </button> --}}
@@ -693,38 +693,44 @@
   </div>
 </div>
 
+
+<!-- Modal de avaliação -->
+<div class="modal fade" id="avaliacaoModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-md">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title fw-bold">Avaliar Farmácia</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+            <div class="modal-body text-center">
+                <div class="mb-3">
+                    <img id="modalFarmaciaLogo" src="" style="width: 60px; height: 60px; object-fit: cover; border-radius: 12px; display: none;">
+                    <h6 id="modalFarmaciaNome" class="mt-2 fw-bold"></h6>
+                </div>
+                <div class="star-rate" id="avaliacaoStars">
+                    <i class="bi bi-star-fill" data-val="1"></i>
+                    <i class="bi bi-star-fill" data-val="2"></i>
+                    <i class="bi bi-star-fill" data-val="3"></i>
+                    <i class="bi bi-star-fill" data-val="4"></i>
+                    <i class="bi bi-star-fill" data-val="5"></i>
+                </div>
+                <p id="avaliacaoLabel" class="text-muted small mt-2 mb-3"></p>
+                <textarea id="avaliacaoComentario" class="form-control" rows="3" placeholder="Como foi a sua experiência com esta farmácia? (opcional)"></textarea>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" id="btnEnviarAvaliacao">Enviar avaliação</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 <!-- ===== FOOTER MINI ===== -->
   @include('clientes.dashboard.footer')
 
 
-<!-- ===== RATING MODAL ===== -->
-{{-- <div class="modal fade" id="ratingModal" tabindex="-1">
-  <div class="modal-dialog modal-dialog-centered modal-sm">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" style="font-weight:800;color:#1f2f31;">Avaliar pedido</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-      </div>
-      <div class="modal-body text-center">
-        <div style="font-size:2.5rem;margin-bottom:.5rem;">💊</div>
-        <p style="font-size:.9rem;color:#6c8285;margin-bottom:0;">Como foi a sua experiência com a <strong style="color:#1f2f31;">Farmácia Kilamba</strong>?</p>
-        <div class="star-rate" id="starRate">
-          <i class="bi bi-star-fill" data-val="1" onclick="rateStar(1)"></i>
-          <i class="bi bi-star-fill" data-val="2" onclick="rateStar(2)"></i>
-          <i class="bi bi-star-fill" data-val="3" onclick="rateStar(3)"></i>
-          <i class="bi bi-star-fill" data-val="4" onclick="rateStar(4)"></i>
-          <i class="bi bi-star-fill" data-val="5" onclick="rateStar(5)"></i>
-        </div>
-        <p id="starLabel" style="font-size:.82rem;color:#6c8285;margin-bottom:1rem;min-height:1.2em;"></p>
-        <textarea class="fc-input" style="border-radius:14px;resize:none;font-family:inherit;font-size:.88rem;" rows="3" placeholder="Deixe um comentário (opcional)..."></textarea>
-      </div>
-      <div class="modal-footer gap-2">
-        <button class="btn-close-fc" data-bs-dismiss="modal">Cancelar</button>
-        <button class="oa-btn oa-primary" onclick="submitRating()"><i class="bi bi-send"></i> Enviar avaliação</button>
-      </div>
-    </div>
-  </div>
-</div> --}}
+
 
 <!-- Toast -->
 <div class="toast-fc" id="toastFc">
@@ -740,135 +746,198 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-
   // ===== HEADER SCROLL =====
-  const hdr = document.getElementById('mainHeader');
-  window.addEventListener('scroll', () => hdr.classList.toggle('scrolled', scrollY > 50));
-  const st = document.getElementById('scroll-top');
-  window.addEventListener('scroll', () => st.style.display = scrollY > 320 ? 'flex' : 'none');
+const hdr = document.getElementById('mainHeader');
+window.addEventListener('scroll', () => hdr?.classList.toggle('scrolled', scrollY > 50));
+const st = document.getElementById('scroll-top');
+window.addEventListener('scroll', () => st && (st.style.display = scrollY > 320 ? 'flex' : 'none'));
 
-  // ===== TOGGLE CARD =====
-  function toggleCard(header) {
+// ===== TOGGLE CARD =====
+function toggleCard(header) {
     const card = header.closest('.order-card');
-    card.classList.toggle('open');
-  }
+    if (card) card.classList.toggle('open');
+}
 
-  // ===== FILTER =====
-  function filterOrders(btn, status) {
+// ===== FILTER =====
+function filterOrders(btn, status) {
     document.querySelectorAll('.ftab').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
     const cards = document.querySelectorAll('.order-card');
     let visible = 0;
     cards.forEach(c => {
-      const show = status === 'todos' || c.dataset.status === status;
-      c.style.display = show ? 'block' : 'none';
-      if (show) visible++;
+        const show = status === 'todos' || c.dataset.status === status;
+        c.style.display = show ? 'block' : 'none';
+        if (show) visible++;
     });
-    document.getElementById('emptyState').style.display = visible === 0 ? 'block' : 'none';
-    document.getElementById('pagination').style.display = visible === 0 ? 'none' : 'flex';
-  }
+    const emptyState = document.getElementById('emptyState');
+    const pagination = document.getElementById('pagination');
+    if (emptyState) emptyState.style.display = visible === 0 ? 'block' : 'none';
+    if (pagination) pagination.style.display = visible === 0 ? 'none' : 'flex';
+}
 
-  // ===== SEARCH =====
-  function searchOrder(val) {
+// ===== SEARCH =====
+function searchOrder(val) {
     const q = val.toLowerCase();
     const cards = document.querySelectorAll('.order-card');
     let visible = 0;
     cards.forEach(c => {
-      const num = c.dataset.num.toLowerCase();
-      const farm = c.querySelector('.oc-farm-name').textContent.toLowerCase();
-      const items = [...c.querySelectorAll('.item-name')].map(i => i.textContent.toLowerCase()).join(' ');
-      const show = !q || num.includes(q) || farm.includes(q) || items.includes(q);
-      c.style.display = show ? 'block' : 'none';
-      if (show) visible++;
+        const num = c.dataset.num?.toLowerCase() || '';
+        const farm = c.querySelector('.oc-farm-name')?.textContent.toLowerCase() || '';
+        const items = [...c.querySelectorAll('.item-name')].map(i => i.textContent.toLowerCase()).join(' ');
+        const show = !q || num.includes(q) || farm.includes(q) || items.includes(q);
+        c.style.display = show ? 'block' : 'none';
+        if (show) visible++;
     });
-    document.getElementById('emptyState').style.display = visible === 0 ? 'block' : 'none';
-  }
+    const emptyState = document.getElementById('emptyState');
+    if (emptyState) emptyState.style.display = visible === 0 ? 'block' : 'none';
+}
 
-  // ===== SORT =====
-  function sortOrders(val) {
+// ===== SORT =====
+function sortOrders(val) {
     const list = document.getElementById('ordersList');
     const cards = [...list.querySelectorAll('.order-card')];
     cards.sort((a, b) => {
-      const va = parseInt(a.dataset.val), vb = parseInt(b.dataset.val);
-      const da = a.querySelector('.oc-date').textContent;
-      const db = b.querySelector('.oc-date').textContent;
-      if (val === 'value_desc') return vb - va;
-      if (val === 'value_asc')  return va - vb;
-      if (val === 'oldest')     return da.localeCompare(db);
-      return db.localeCompare(da); // recent
+        const va = parseInt(a.dataset.val), vb = parseInt(b.dataset.val);
+        const da = a.querySelector('.oc-date')?.textContent || '';
+        const db = b.querySelector('.oc-date')?.textContent || '';
+        if (val === 'value_desc') return vb - va;
+        if (val === 'value_asc')  return va - vb;
+        if (val === 'oldest')     return da.localeCompare(db);
+        return db.localeCompare(da); // recent
     });
     cards.forEach(c => list.appendChild(c));
-  }
+}
 
-  function resetFilter() {
-    document.querySelector('.ftab[data-filter="todos"]').click();
-  }
+function resetFilter() {
+    const btn = document.querySelector('.ftab[data-filter="todos"]');
+    if (btn) btn.click();
+}
 
-  // ===== CANCEL ORDER =====
-  function cancelOrder(btn) {
+// ===== CANCEL ORDER =====
+function cancelOrder(btn) {
     if (!confirm('Tem a certeza que deseja cancelar este pedido?')) return;
     const card = btn.closest('.order-card');
-    const badge = card.querySelector('.status-badge');
-    badge.className = 'status-badge sb-cancelado';
-    badge.textContent = 'Cancelado';
-    card.dataset.status = 'cancelado';
-    showToast('Pedido cancelado','O seu pedido foi cancelado com sucesso.');
-    // remove cancel button
-    btn.closest('.oc-actions').innerHTML = `
-      <button class="oa-btn oa-ghost"><i class="bi bi-receipt"></i> Ver detalhes</button>
-    `;
-  }
-
-  // ===== REORDER =====
-  function reorder() {
-    showToast('A adicionar ao carrinho...','Os itens foram adicionados ao seu carrinho.');
-  }
-
-  // ===== RATING MODAL =====
-  let currentRating = 0;
-  const starLabels = ['','Péssimo 😞','Mau 😕','Razoável 😐','Bom 😊','Excelente 🤩'];
-
-  function openRatingModal() {
-    currentRating = 0;
-    document.querySelectorAll('#starRate i').forEach(s => s.classList.remove('active'));
-    document.getElementById('starLabel').textContent = '';
-    new bootstrap.Modal(document.getElementById('ratingModal')).show();
-  }
-
-  function rateStar(val) {
-    currentRating = val;
-    document.querySelectorAll('#starRate i').forEach((s, i) => {
-      s.classList.toggle('active', i < val);
-    });
-    document.getElementById('starLabel').textContent = starLabels[val];
-  }
-
-  function submitRating() {
-    if (currentRating === 0) { showToast('Atenção','Por favor, seleccione uma classificação.'); return; }
-    bootstrap.Modal.getInstance(document.getElementById('ratingModal')).hide();
-    showToast('Avaliação enviada! ⭐','Obrigada pelo seu feedback. Ajuda-nos a melhorar.');
-  }
-
-  // ===== TOAST =====
-  function showToast(title, msg) {
-    document.getElementById('toastTitle').textContent = title;
-    document.getElementById('toastMsg').textContent   = msg;
-    const t = document.getElementById('toastFc');
-    t.classList.add('show');
-    setTimeout(() => t.classList.remove('show'), 3500);
-  }
-
-  // ===== PAGINATION =====
-  document.querySelectorAll('.pg-btn').forEach((btn, i) => {
-    if (!btn.querySelector('i')) {
-      btn.addEventListener('click', () => {
-        document.querySelectorAll('.pg-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        window.scrollTo({top:0, behavior:'smooth'});
-      });
+    const badge = card?.querySelector('.status-badge');
+    if (badge) {
+        badge.className = 'status-badge sb-cancelado';
+        badge.textContent = 'Cancelado';
+        card.dataset.status = 'cancelado';
     }
-  });
+    showToast('Pedido cancelado', 'O seu pedido foi cancelado com sucesso.');
+    btn.closest('.oc-actions').innerHTML = `
+        <button class="oa-btn oa-ghost"><i class="bi bi-receipt"></i> Ver detalhes</button>
+    `;
+}
 
+// ===== REORDER =====
+function reorder() {
+    showToast('A adicionar ao carrinho...', 'Os itens foram adicionados ao seu carrinho.');
+}
+
+// ===== TOAST =====
+function showToast(title, msg) {
+    const toastEl = document.getElementById('toastFc');
+    if (!toastEl) return;
+    document.getElementById('toastTitle').textContent = title;
+    document.getElementById('toastMsg').textContent = msg;
+    toastEl.classList.add('show');
+    setTimeout(() => toastEl.classList.remove('show'), 3500);
+}
+
+// ===== PAGINATION =====
+document.querySelectorAll('.pg-btn').forEach(btn => {
+    if (!btn.querySelector('i')) {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.pg-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    }
+});
+
+// ===== AVALIAÇÃO =====
+let currentRating = 0;
+let currentPedidoId = null;
+
+const starsContainer = document.getElementById('avaliacaoStars');
+const comentarioInput = document.getElementById('avaliacaoComentario');
+const modalFarmaciaNome = document.getElementById('modalFarmaciaNome');
+
+if (starsContainer) {
+    function updateStars(rating) {
+        const stars = starsContainer.querySelectorAll('i');
+        stars.forEach((star, idx) => {
+            if (idx < rating) star.classList.add('active');
+            else star.classList.remove('active');
+        });
+    }
+
+    starsContainer.addEventListener('click', (e) => {
+        const star = e.target.closest('i');
+        if (!star) return;
+        const val = parseInt(star.getAttribute('data-val'));
+        if (isNaN(val)) return;
+        currentRating = val;
+        updateStars(currentRating);
+    });
+}
+
+function openRatingModal(pedidoId, farmaciaNome) {
+    currentPedidoId = pedidoId;
+    currentRating = 0;
+    if (starsContainer) updateStars(0);
+    if (comentarioInput) comentarioInput.value = '';
+    if (modalFarmaciaNome) modalFarmaciaNome.textContent = farmaciaNome;
+    const modalEl = document.getElementById('avaliacaoModal');
+    if (modalEl) {
+        const modal = new bootstrap.Modal(modalEl);
+        modal.show();
+    }
+}
+
+const btnEnviar = document.getElementById('btnEnviarAvaliacao');
+if (btnEnviar) {
+    btnEnviar.addEventListener('click', function() {
+        if (currentRating === 0) {
+            showToast('Atenção', 'Por favor, seleccione uma classificação.');
+            return;
+        }
+        const comentario = comentarioInput ? comentarioInput.value.trim() : '';
+
+        fetch(`/avaliacao-create/${currentPedidoId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            body: JSON.stringify({
+                classificacao: currentRating,
+                comentario: comentario
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                showToast('Avaliação enviada!', 'Obrigado pelo seu feedback.');
+                const modal = bootstrap.Modal.getInstance(document.getElementById('avaliacaoModal'));
+                if (modal) modal.hide();
+                // Desabilitar botão do pedido
+                const btn = document.querySelector(`button[onclick*="openRatingModal(${currentPedidoId}"]`);
+                if (btn) {
+                    btn.disabled = true;
+                    btn.classList.add('disabled');
+                    btn.innerHTML = '<i class="bi bi-check-circle"></i> Avaliado';
+                }
+            } else {
+                showToast('Erro', data.message || 'Não foi possível enviar a avaliação.');
+            }
+        })
+        .catch(error => {
+            console.error('Erro:', error);
+            showToast('Erro', 'Falha ao comunicar com o servidor.');
+        });
+    });
+}
 </script>
 </body>
 </html>

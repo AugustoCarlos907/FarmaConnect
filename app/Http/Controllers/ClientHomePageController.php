@@ -48,14 +48,71 @@ class ClientHomePageController extends Controller
         return view('clientes.dashboard.produtos' , ['categorias'=>$categorias]);
     }
 
-    public function produtosPorCategoria($id)
-    {
-           $categoria = Categoria::with(['medicamentos.stockItems.farmacia' ])
-                                 ->findOrFail($id);
 
-            return view('clientes.dashboard.produtos_categoria', [
-                'categoria' => $categoria
-            ]);    
+
+    public function produtosPorCategoria(Request $request, $id)
+    {
+        $categoria = Categoria::findOrFail($id);
+
+        $query = $categoria->medicamentos()->with(['stockItems.farmacia']);
+
+        // Filtro de preço
+        if ($request->filled('preco_min')) {
+            $query->where('preco', '>=', $request->preco_min);
+        }
+        // if ($request->filled('preco_max')) {
+        //     $query->where('preco', '<=', $request->preco_max);
+        // }
+
+        // Filtro "em stock" – exige stock_items com quantidade > 0
+        if ($request->boolean('em_stock')) {
+            $query->whereHas('stockItems', function($q) {
+                $q->where('quantidade', '>', 0)->where('ativo', 1);
+            });
+        }
+
+        // Filtro "com desconto" – se existir campo preco_desconto
+        // if ($request->boolean('com_desconto')) {
+        //     $query->whereNotNull('preco_desconto')->where('preco_desconto', '>', 0);
+        // }
+
+        // Filtro "sem receita médica" – assumindo campo requer_receita = false
+        if ($request->boolean('sem_receita')) {
+            $query->where('requer_receita', false);
+        }
+
+        // Filtro por farmácias
+        if ($request->filled('farmacias')) {
+            $farmaciaIds = $request->farmacias;
+            $query->whereHas('stockItems', function($q) use ($farmaciaIds) {
+                $q->whereIn('farmacia_id', $farmaciaIds);
+            });
+        }
+
+        // Ordenação
+        switch ($request->get('sort', 'default')) {
+            case 'preco_az':
+                $query->orderBy('preco', 'asc');
+                break;
+            case 'preco_za':
+                $query->orderBy('preco', 'desc');
+                break;
+            case 'name_az':
+                $query->orderBy('name', 'asc');
+                break;
+            case 'novo':
+                $query->orderBy('created_at', 'desc');
+                break;
+            default:
+                $query->orderBy('id', 'desc');
+        }
+
+        $medicamentos = $query->paginate(10);
+
+        return view('clientes.dashboard.produtos_categoria', [
+            'categoria'    => $categoria,
+            'medicamentos' => $medicamentos
+        ]);
     }
 
     public function searchCategorias(Request $request)

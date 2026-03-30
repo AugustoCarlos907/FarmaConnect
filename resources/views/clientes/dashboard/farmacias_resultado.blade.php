@@ -254,8 +254,8 @@
 
       <!-- ════ SIDEBAR ════ -->
       <div class="col-lg-3 mt-4">
-        <div class="filter-card">
-          <div class="fc-head">
+        <div class="filter-card mt-4">
+          <div class="fc-head mt-4">
             <h6><i class="bi bi-sliders"></i> Filtros</h6>
             <a href="{{ route('farmacias.search', ['query' => request('query')]) }}"
                class="fc-reset">Limpar</a>
@@ -264,23 +264,6 @@
             <form action="{{ route('farmacias.search') }}" method="GET" id="filterForm">
               <input type="hidden" name="query" value="{{ request('query') }}">
 
-              {{-- Estado --}}
-              <div class="fc-section">
-                <span class="fc-label">Estado</span>
-                <label class="fcheck-item">
-                  <input type="checkbox" name="status[]" value="open"
-                         {{ in_array('open', (array) request('status', [])) ? 'checked' : '' }}>
-                  <label>Abertas agora</label>
-                  <span class="fcheck-count">
-                    {{ $farmacias->getCollection()->where('status','Aberta')->count() }}
-                  </span>
-                </label>
-                <label class="fcheck-item">
-                  <input type="checkbox" name="status[]" value="closed"
-                         {{ in_array('closed', (array) request('status', [])) ? 'checked' : '' }}>
-                  <label>Fechadas</label>
-                </label>
-              </div>
 
               {{-- Ordenação --}}
               <div class="fc-section">
@@ -307,7 +290,7 @@
       </div>
 
       <!-- ════ RESULTADOS ════ -->
-      <div class="col-lg-9 mt-4">
+      <div class="col-lg-9 mt-5">
 
         @if($farmacias->isEmpty())
 

@@ -2,6 +2,8 @@
 
 namespace App\Mail;
 
+use App\Models\Entrega;
+use App\Models\Pedido;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
@@ -16,7 +18,10 @@ class NotifyUserOrderCompleted extends Mailable
     /**
      * Create a new message instance.
      */
-    public function __construct()
+    public function __construct(
+        public Pedido $pedido,
+        public Entrega $entrega
+    )
     {
         //
     }
@@ -27,7 +32,7 @@ class NotifyUserOrderCompleted extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Notify User Order Completed',
+            subject: 'O seu pedido está em entrega ',
         );
     }
 
@@ -37,7 +42,7 @@ class NotifyUserOrderCompleted extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'view.name',
+            view: 'emails.pedidos.order_delivery',
         );
     }
 

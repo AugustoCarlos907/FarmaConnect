@@ -11,36 +11,36 @@ use Exception;
 class EntregaService{
 
     // Entregas concluídas
-    public function entregasConcluidasPorEntregador($entregadorId, $perPage = 10) {
+    public function entregasConcluidasPorEntregador($entregadorId) {
         return Entrega::where('status', 'concluída')
             ->where('entregador_id', $entregadorId)
             ->orderByDesc('id')
-            ->paginate($perPage);
+            ->paginate(10);
     }
 
-    public function entregasEmTransitoPorEntregador($entregadorId, $perPage = 10) {
+    public function entregasEmTransitoPorEntregador($entregadorId) {
         return Entrega::where('status', 'em transito')
             ->where('entregador_id', $entregadorId)
             ->orderByDesc('id')
-            ->paginate($perPage);
+            ->paginate(10);
     }
 
-    public function entregasCanceladasPorEntregador($entregadorId, $perPage ) {
+    public function entregasCanceladasPorEntregador($entregadorId ) {
         return Entrega::where('status', 'cancelada')
             ->where('entregador_id', $entregadorId)
             ->orderByDesc('id')
-            ->paginate($perPage);
+            ->paginate(10);
     }
 
     // Entregas de hoje por entregador
-    public function getEntregasDeHojeByEntregador($entregadorId, $perPage ) {
+    public function getEntregasDeHojeByEntregador($entregadorId ) {
         return Entrega::where(function($query) use ($entregadorId) {
                 $query->where('entregador_id', $entregadorId)
                       ->where('status', 'concluída');
             })
             ->whereDate('created_at', now()->toDateString())
             ->orderByDesc('id')
-            ->paginate($perPage);
+            ->paginate(10);
     }
 
     public function getAllEntregasByEntregador($perPage){
@@ -101,22 +101,22 @@ class EntregaService{
 
             $entregador = $this->buscarEntregadorDisponivel($pedido);
 
-            if (!$entregador) {
-                throw new \Exception(
-                    'Pedido recebido, mas sem entregador disponível no momento. Aguardando!'
-                );
-            }
+            // if (!$entregador) {
+            //     throw new \Exception(
+            //         'Pedido recebido, mas sem entregador disponível no momento. Aguardando!'
+            //     );
+            // }
 
-            // ── Coordenadas do endereço de entrega (do pedido) ──────────────
+            // ── Coordenadas do endereço de entrega (do pedido)
             $endLat = $pedido->latitude  ?? $pedido->endereco_lat  ?? null;
             $endLng = $pedido->longitude ?? $pedido->endereco_lng  ?? null;
 
-            // ── Coordenadas da farmácia ──────────────────────────────────────
+            // ── Coordenadas da farmácia
             $farmacia   = $pedido->farmacia;
             $farmLat    = $farmacia->latitude  ?? null;
             $farmLng    = $farmacia->longitude ?? null;
 
-            // ── Cálculo (só se ambos os pontos estiverem disponíveis) ────────
+            // ── Cálculo (só se ambos os pontos estiverem disponíveis) 
             $distanciaKm  = null;
             $taxaEntrega  = null;
 
@@ -128,7 +128,7 @@ class EntregaService{
                 $taxaEntrega = $this->calcularTaxaEntrega($distanciaKm);
             }
 
-            // ── Criar a entrega ──────────────────────────────────────────────
+            // ── Criar a entrega 
             $entrega = Entrega::create([
                 'pedido_id'        => $pedido->id,
                 'entregador_id'    => $entregador->id,
@@ -139,7 +139,6 @@ class EntregaService{
                 'data_saida'       => now(),
             ]);
 
-            $pedido->update(['status' => 'Em Entrega']);
 
             $entregador->update(['status' => 'Ocupado']);
 

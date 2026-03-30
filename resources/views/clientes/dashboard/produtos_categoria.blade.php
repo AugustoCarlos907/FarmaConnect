@@ -173,6 +173,10 @@
     .btn-cart:hover { background:var(--accent-dark); transform:scale(1.04); }
     .btn-cart.added { background:#16a34a; }
 
+    /* pagination */
+    .pagination-fc { display:flex; align-items:center; justify-content:center; gap:.4rem; margin-top:1.5rem; }
+     */
+
     /* LIST MODE */
     .prod-grid.list-mode .prod-card { flex-direction:row; border-radius:16px; }
     .prod-grid.list-mode .pc-img { width:120px; height:auto; min-height:110px; flex-shrink:0; border-radius:0; }
@@ -451,6 +455,14 @@
                       {{ $stock->farmacia->name }}
                     </div>
                   @endif
+
+                  @if ($med->requer_receita)
+                    <div class="pc-sub"> 
+                      <i class="bi bi-alert alert-danger" style="font-size:.7rem;"></i>
+                       <h7 class="text-danger">  PRESCIÇÃO MÉDICA NECESSÁRIA</h7>
+                       </div>
+
+                  @endif
                 </div>
 
                 {{-- FOOTER COM PREÇO --}}
@@ -491,7 +503,7 @@
           </div>
 
           <!-- Paginação -->
-          <div class="pagination-fc" id="paginationBar">
+          <div class="pagination-fc" id="pagination">
             {{ $medicamentos->links('vendor.pagination.fc-pagination') }}
           </div>
 

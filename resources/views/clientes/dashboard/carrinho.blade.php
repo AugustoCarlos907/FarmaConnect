@@ -376,7 +376,7 @@
                                       <i class="bi bi-upload"></i> Anexar receita
                                   </button>
                               </form>
-                              <p class="prescricao-help">Medicamento sujeito a receita médica. Anexe a receita para finalizar o pedido.</p>
+                              <p class="prescricao-help text-danger">{{strtoupper(' Medicamento sujeito a receita mÉdica. Anexe a receita para finalizar o pedido.')}}</p>
                           @endif
                       </div>
                   @endif

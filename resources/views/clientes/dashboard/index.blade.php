@@ -680,8 +680,11 @@
               <div class="pharmacy-location"><i class="bi bi-geo-alt-fill"></i> Ingombotas, Rua Ho Chi Min</div>
               <span class="pharmacy-status status-open"><i class="bi bi-circle-fill" style="font-size:.5rem;"></i> Aberta agora</span>
               <div class="pharmacy-actions">
-                <a href="#" class="btn-view">Ver medicamentos</a>
-                <a href="#" class="btn-order">Pedir entrega</a>
+                <a href="{{ route('farmacias.list') }}" class="btn-view"> 
+                    <i class="bi bi-eye"></i> Analisar Farmácia
+                </a>
+                {{-- <a href="#" class="btn-view">Ver medicamentos</a>
+                <a href="#" class="btn-order">Pedir entrega</a> --}}
               </div>
             </div>
           </div>
@@ -694,8 +697,11 @@
               <div class="pharmacy-location"><i class="bi bi-geo-alt-fill"></i> Kilamba, Rua dos Combates</div>
               <span class="pharmacy-status status-open"><i class="bi bi-circle-fill" style="font-size:.5rem;"></i> Aberta agora</span>
               <div class="pharmacy-actions">
-                <a href="#" class="btn-view">Ver medicamentos</a>
-                <a href="#" class="btn-order">Pedir entrega</a>
+
+                <a href="{{ route('farmacias.list') }}" class="btn-view"> 
+                    <i class="bi bi-eye"></i> Analisar Farmácia
+                </a>
+                {{-- <a href="#" class="btn-order">Pedir entrega</a> --}}
               </div>
             </div>
           </div>
@@ -708,8 +714,11 @@
               <div class="pharmacy-location"><i class="bi bi-geo-alt-fill"></i> Talatona, Belas Shopping</div>
               <span class="pharmacy-status status-open"><i class="bi bi-circle-fill" style="font-size:.5rem;"></i> Aberta agora</span>
               <div class="pharmacy-actions">
-                <a href="#" class="btn-view">Ver medicamentos</a>
-                <a href="#" class="btn-order">Pedir entrega</a>
+                <a href="{{ route('farmacias.list') }}" class="btn-view"> 
+                    <i class="bi bi-eye"></i> Analisar Farmácia
+                </a>
+                {{-- <a href="#" class="btn-view">Ver medicamentos</a>
+                <a href="#" class="btn-order">Pedir entrega</a> --}}
               </div>
             </div>
           </div>

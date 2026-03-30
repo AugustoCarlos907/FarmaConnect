@@ -9,6 +9,7 @@
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90' fill='%23099aa7'>💊</text></svg>">
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 
   <style>
     :root {
@@ -26,8 +27,8 @@
     html { scroll-behavior:smooth; }
     body { font-family:'Inter',-apple-system,sans-serif; background:#f4f8f8; color:var(--text); overflow-x:hidden; }
 
-    /* ===== HEADER ===== */
-       .sitename { font-size:1.75rem; font-weight:800; letter-spacing:-.03em; line-height:1; margin:0; }
+    /* ── HEADER ── */
+    .sitename { font-size:1.75rem; font-weight:800; letter-spacing:-.03em; line-height:1; margin:0; }
     .sitename .s1 { color:var(--accent); } .sitename .s2 { color:var(--heading); }
     .hdr-search { flex:1; max-width:560px; }
     .hdr-search .ig { border:1.5px solid var(--border); border-radius:50px; background:#f6fbfb; overflow:hidden; display:flex; align-items:center; transition:border-color .2s,box-shadow .2s; }
@@ -44,14 +45,13 @@
     .hdr-icon:hover { color:var(--accent); }
     .hdr-badge { position:absolute; top:-6px; right:-8px; background:var(--accent); color:#fff; font-size:.6rem; font-weight:700; width:17px; height:17px; border-radius:50%; display:flex; align-items:center; justify-content:center; border:2px solid #fff; }
     .profile-toggle { display:flex; align-items:center; gap:.5rem; text-decoration:none; color:var(--heading); }
-    .profile-toggle img { border:2px solid var(--soft); }
     .profile-toggle .pname { font-weight:600; font-size:.88rem; }
     .dropdown-menu { border:none; box-shadow:0 12px 40px rgba(9,154,167,.12); border-radius:18px; padding:.5rem; min-width:180px; }
     .dropdown-item { border-radius:10px; font-size:.9rem; font-weight:500; padding:.55rem .9rem; transition:background .15s; }
     .dropdown-item:hover { background:var(--soft); color:var(--accent); }
     .dropdown-item.text-danger:hover { background:#fdecea; color:#c0392b; }
 
-    /* ===== TOPBAR ===== */
+    /* ── TOPBAR ── */
     .page-topbar { background:linear-gradient(138deg,#046a76 0%,#099aa7 52%,#0ec4d4 100%); padding:2.5rem 0 4.5rem; position:relative; overflow:hidden; }
     .page-topbar::before { content:''; position:absolute; inset:0; background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E"); }
     .tb-blob { position:absolute; border-radius:50%; filter:blur(60px); pointer-events:none; }
@@ -64,45 +64,18 @@
     .breadcrumb-fc .cur { color:#fff; font-size:.83rem; font-weight:600; }
     .page-topbar h2 { color:#fff; font-size:1.9rem; font-weight:800; letter-spacing:-.02em; margin:0; }
     .page-topbar p  { color:rgba(255,255,255,.68); font-size:.92rem; margin-top:.3rem; }
-
-    /* Hero search inside topbar */
-  .topbar-search { margin-top:1.6rem; max-width:520px; }
-
-    /* .topbar-search {
-      margin-top:1.8rem; position:relative; z-index:2;
-    } */
     .hero-search-bar { margin-top:1.6rem; max-width:520px; }
     .hsb-inner { background:rgba(255,255,255,.15); backdrop-filter:blur(14px); border:1.5px solid rgba(255,255,255,.25); border-radius:50px; display:flex; align-items:center; padding:.4rem .4rem .4rem 1.2rem; gap:.5rem; transition:all .25s; }
     .hsb-inner:focus-within { background:rgba(255,255,255,.22); border-color:rgba(255,255,255,.5); }
-    .hsb-inner input { flex:1; background:none; border:none; outline:none; color:#fff; font-size:.9rem; font-family:inherit; }
+    .hsb-inner input { flex:1; background:none; border:none; outline:none; color:#fff; font-size:.9rem; font-family:inherit; min-width:0; }
     .hsb-inner input::placeholder { color:rgba(255,255,255,.55); }
-    .hsb-btn { background:#fff; color:var(--accent); border:none; border-radius:50px; padding:.55rem 1.3rem; font-size:.86rem; font-weight:700; font-family:inherit; cursor:pointer; display:flex; align-items:center; gap:.4rem; transition:all .22s; white-space:nowrap; }
+    .hsb-btn { background:#fff; color:var(--accent); border:none; border-radius:50px; padding:.55rem 1.3rem; font-size:.86rem; font-weight:700; font-family:inherit; cursor:pointer; display:flex; align-items:center; gap:.4rem; transition:all .22s; white-space:nowrap; flex-shrink:0; }
     .hsb-btn:hover { background:var(--soft); }
-
-    .ts-box {
-      background:#fff; border-radius:20px;
-      box-shadow:0 20px 50px rgba(0,0,0,.18);
-      padding:1.2rem 1.5rem;
-      display:flex; align-items:center; gap:1rem; flex-wrap:wrap;
-    }
-    .ts-field { flex:1; min-width:180px; position:relative; }
-    .ts-field i { position:absolute; left:.95rem; top:50%; transform:translateY(-50%); color:var(--accent); font-size:.95rem; pointer-events:none; }
-    .ts-field input, .ts-field select {
-      width:100%; border:1.5px solid var(--border); border-radius:50px;
-      padding:.7rem 1rem .7rem 2.6rem; font-size:.9rem; font-family:inherit;
-      color:var(--heading); background:#fafefe; outline:none; transition:border-color .2s;
-    }
-    .ts-field input:focus, .ts-field select:focus { border-color:var(--accent); }
-    .ts-sep { width:1px; height:36px; background:var(--border); flex-shrink:0; }
-    .ts-btn { background:var(--accent); color:#fff; border:none; border-radius:50px; padding:.72rem 1.8rem; font-size:.92rem; font-weight:700; font-family:inherit; cursor:pointer; display:flex; align-items:center; gap:.5rem; transition:all .25s; white-space:nowrap; }
-    .ts-btn:hover { background:var(--accent-dark); transform:scale(1.03); }
-
-    /* Quick filters */
     .quick-filters { display:flex; gap:.5rem; flex-wrap:wrap; margin-top:1rem; }
     .qf-tag { background:rgba(255,255,255,.15); color:#fff; border:1px solid rgba(255,255,255,.28); padding:.28rem .85rem; border-radius:50px; font-size:.78rem; font-weight:600; cursor:pointer; transition:background .2s; }
     .qf-tag:hover,.qf-tag.active { background:#fff; color:var(--accent); }
 
-    /* ===== STATS BAR ===== */
+    /* ── STATS STRIP ── */
     .stats-strip { background:#fff; border-bottom:1px solid var(--border); }
     .stat-item { display:flex; align-items:center; gap:.7rem; padding:1rem 0; border-right:1px solid var(--border); flex:1; justify-content:center; }
     .stat-item:last-child { border-right:none; }
@@ -110,42 +83,57 @@
     .stat-val  { font-size:1.3rem; font-weight:800; color:var(--heading); line-height:1; }
     .stat-lbl  { font-size:.7rem; color:var(--muted); text-transform:uppercase; letter-spacing:.05em; }
 
-    /* ===== MAIN LAYOUT ===== */
+    /* ── PAGE WRAP ── */
     .page-wrap { margin-top:-2rem; padding-bottom:4rem; }
 
-    /* ===== SIDEBAR FILTERS ===== */
+    /* ── SIDEBAR ── */
     .filter-sidebar { position:sticky; top:80px; }
     .fbox { background:#fff; border-radius:20px; box-shadow:var(--shadow); overflow:hidden; margin-bottom:1rem; }
-    .fbox-header { padding:1rem 1.3rem; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; }
+    .fbox-header { padding:.9rem 1.3rem; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; }
     .fbox-header h6 { font-size:.85rem; font-weight:800; color:var(--heading); margin:0; }
-    .fbox-clear { font-size:.75rem; color:var(--accent); cursor:pointer; font-weight:600; border:none; background:none; }
-    .fbox-body  { padding:1.1rem 1.3rem; }
+    .fbox-clear { font-size:.75rem; color:var(--accent); cursor:pointer; font-weight:600; border:none; background:none; font-family:inherit; }
+    .fbox-body  { padding:1rem 1.3rem; }
 
-    /* Check list */
-    .fcheck-list { display:flex; flex-direction:column; gap:.5rem; }
-    .fcheck-item { display:flex; align-items:center; justify-content:space-between; cursor:pointer; padding:.3rem 0; }
+    /* Checkboxes */
+    .fcheck-list { display:flex; flex-direction:column; gap:.45rem; }
+    .fcheck-item { display:flex; align-items:center; justify-content:space-between; cursor:pointer; padding:.25rem 0; }
     .fcheck-left { display:flex; align-items:center; gap:.6rem; }
     .fcheck-item input[type=checkbox] { width:16px; height:16px; accent-color:var(--accent); cursor:pointer; flex-shrink:0; }
-    .fcheck-item label { font-size:.87rem; color:var(--text); cursor:pointer; }
+    .fcheck-item label { font-size:.86rem; color:var(--text); cursor:pointer; }
     .fcheck-count { font-size:.72rem; background:var(--mint); color:var(--accent); padding:.1rem .5rem; border-radius:50px; font-weight:700; }
 
-    /* Rating filter */
+    /* Rating stars filter */
     .rating-filter { display:flex; flex-direction:column; gap:.4rem; }
-    .rf-item { display:flex; align-items:center; gap:.5rem; cursor:pointer; padding:.25rem 0; }
-    .rf-item input { width:16px; height:16px; accent-color:var(--accent); cursor:pointer; }
-    .rf-stars i { color:#f59e0b; font-size:.85rem; }
-    .rf-stars span { font-size:.78rem; color:var(--muted); }
+    .rf-item { display:flex; align-items:center; gap:.6rem; cursor:pointer; padding:.25rem 0; border-radius:8px; transition:background .12s; }
+    .rf-item:hover { background:var(--mint); padding-left:.4rem; }
+    .rf-item input[type=radio] { width:15px; height:15px; accent-color:var(--accent); cursor:pointer; flex-shrink:0; }
+    .rf-stars { display:flex; align-items:center; gap:.25rem; }
+    .rf-stars i { color:#f59e0b; font-size:.82rem; }
+    .rf-stars i.empty { color:#e4f0f0; }
+    .rf-stars span { font-size:.78rem; color:var(--muted); margin-left:.15rem; }
 
     /* Distance slider */
     .dist-slider { width:100%; accent-color:var(--accent); }
     .dist-val { font-size:.82rem; font-weight:700; color:var(--accent); }
 
-    /* ===== TOOLBAR ===== */
-    .results-toolbar {
-      background:#fff; border-radius:16px; box-shadow:var(--shadow);
-      padding:.9rem 1.3rem; margin-bottom:1.2rem;
-      display:flex; align-items:center; gap:1rem; flex-wrap:wrap;
-    }
+    /* Active filters bar */
+    .active-filters { display:flex; gap:.4rem; flex-wrap:wrap; margin-bottom:.8rem; }
+    .af-tag { display:inline-flex; align-items:center; gap:.3rem; background:var(--soft); color:var(--accent); border:1px solid var(--accent); border-radius:50px; padding:.2rem .7rem; font-size:.75rem; font-weight:700; cursor:pointer; }
+    .af-tag:hover { background:var(--accent); color:#fff; }
+    .af-tag i { font-size:.65rem; }
+
+    /* ── MAPA ── */
+    #pharmacyMap { width:100%; height:340px; border-radius:18px; border:1.5px solid var(--border); z-index:1; }
+    .map-container { background:#fff; border-radius:20px; box-shadow:var(--shadow); overflow:hidden; margin-bottom:1rem; }
+    .map-header { padding:.85rem 1.2rem; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; }
+    .map-header h6 { font-size:.85rem; font-weight:800; color:var(--heading); margin:0; display:flex; align-items:center; gap:.5rem; }
+    .map-header h6 i { color:var(--accent); }
+    .map-body { padding:.8rem; }
+    .map-toggle-btn { font-size:.75rem; font-weight:700; color:var(--accent); background:var(--soft); border:none; border-radius:50px; padding:.28rem .8rem; cursor:pointer; font-family:inherit; transition:all .2s; }
+    .map-toggle-btn:hover { background:var(--accent); color:#fff; }
+
+    /* ── TOOLBAR ── */
+    .results-toolbar { background:#fff; border-radius:16px; box-shadow:var(--shadow); padding:.85rem 1.3rem; margin-bottom:1.2rem; display:flex; align-items:center; gap:.8rem; flex-wrap:wrap; }
     .results-count { font-size:.88rem; color:var(--muted); }
     .results-count strong { color:var(--heading); }
     .view-toggle { display:flex; gap:.3rem; margin-left:auto; }
@@ -153,123 +141,73 @@
     .vt-btn.active,.vt-btn:hover { background:var(--accent); color:#fff; border-color:var(--accent); }
     .sort-sel { border:1.5px solid var(--border); border-radius:50px; padding:.38rem 1rem; font-size:.83rem; font-family:inherit; color:var(--heading); background:#fafefe; outline:none; cursor:pointer; }
 
-    /* ===== PHARMACY CARD (GRID) ===== */
-    .ph-card {
-      background:#fff; border-radius:22px; overflow:hidden;
-      box-shadow:var(--shadow); transition:all .3s; height:100%;
-      border:2px solid transparent; display:flex; flex-direction:column;
-    }
+    /* ── CARD GRID ── */
+    .ph-card { background:#fff; border-radius:22px; overflow:hidden; box-shadow:var(--shadow); transition:all .3s; height:100%; border:2px solid transparent; display:flex; flex-direction:column; }
     .ph-card:hover { transform:translateY(-6px); border-color:var(--accent); box-shadow:0 20px 44px rgba(9,154,167,.15); }
-
-    .ph-img-wrap { position:relative; height:170px; overflow:hidden; }
+    .ph-img-wrap { position:relative; height:165px; overflow:hidden; }
     .ph-img-wrap img { width:100%; height:100%; object-fit:cover; transition:transform .4s; }
     .ph-card:hover .ph-img-wrap img { transform:scale(1.06); }
     .ph-img-overlay { position:absolute; inset:0; background:linear-gradient(to bottom,transparent 40%,rgba(0,0,0,.35)); }
     .ph-badge-top { position:absolute; top:10px; left:12px; display:flex; gap:.4rem; flex-wrap:wrap; }
     .ph-badge { font-size:.7rem; font-weight:700; padding:.22rem .7rem; border-radius:50px; backdrop-filter:blur(8px); border:1px solid rgba(255,255,255,.3); }
     .ph-open   { background:rgba(34,197,94,.85); color:#fff; }
-    .ph-closed { background:rgba(231,76,60,.85);  color:#fff; }
-    .ph-24h    { background:rgba(9,154,167,.85);   color:#fff; }
-    .ph-new    { background:rgba(245,158,11,.9);   color:#fff; }
-    .ph-fav-btn {
-      position:absolute; top:10px; right:12px;
-      width:32px; height:32px; background:rgba(255,255,255,.88);
-      border-radius:50%; display:flex; align-items:center; justify-content:center;
-      cursor:pointer; font-size:.95rem; color:#b0c4c6; transition:all .2s;
-      backdrop-filter:blur(8px); border:none;
-    }
+    .ph-closed { background:rgba(231,76,60,.85); color:#fff; }
+    .ph-fav-btn { position:absolute; top:10px; right:12px; width:32px; height:32px; background:rgba(255,255,255,.88); border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:.95rem; color:#b0c4c6; transition:all .2s; backdrop-filter:blur(8px); border:none; }
     .ph-fav-btn:hover,.ph-fav-btn.active { color:#e74c3c; transform:scale(1.15); }
-    .ph-dist { position:absolute; bottom:10px; right:12px; background:rgba(255,255,255,.88); backdrop-filter:blur(8px); border-radius:50px; padding:.2rem .65rem; font-size:.72rem; font-weight:700; color:var(--heading); display:flex; align-items:center; gap:.25rem; }
-
-    .ph-body { padding:1.2rem; flex:1; display:flex; flex-direction:column; }
-    .ph-name { font-size:1rem; font-weight:800; color:var(--heading); margin-bottom:.2rem; }
-    .ph-loc  { font-size:.78rem; color:var(--muted); display:flex; align-items:center; gap:.3rem; margin-bottom:.7rem; }
-    .ph-meta { display:flex; align-items:center; gap:.5rem; flex-wrap:wrap; margin-bottom:.9rem; }
-    .ph-rating { display:flex; align-items:center; gap:.3rem; font-size:.78rem; font-weight:700; color:var(--heading); }
-    .ph-rating i { color:#f59e0b; font-size:.82rem; }
-    .ph-reviews { font-size:.72rem; color:var(--muted); }
-    .ph-tag { background:#f0f5f5; color:var(--muted); font-size:.72rem; padding:.2rem .6rem; border-radius:50px; font-weight:600; }
-    .ph-delivery { font-size:.78rem; color:var(--muted); display:flex; align-items:center; gap:.3rem; margin-bottom:.9rem; }
+    .ph-body { padding:1.1rem; flex:1; display:flex; flex-direction:column; }
+    .ph-name { font-size:.98rem; font-weight:800; color:var(--heading); margin-bottom:.2rem; }
+    .ph-loc  { font-size:.78rem; color:var(--muted); display:flex; align-items:center; gap:.3rem; margin-bottom:.55rem; }
+    .ph-rating { display:flex; align-items:center; gap:.25rem; font-size:.78rem; font-weight:700; color:var(--heading); margin-bottom:.65rem; }
+    .ph-rating i { color:#f59e0b; font-size:.8rem; }
+    .ph-reviews { font-size:.7rem; color:var(--muted); font-weight:400; }
+    .ph-delivery { font-size:.76rem; color:var(--muted); display:flex; align-items:center; gap:.3rem; margin-bottom:.9rem; }
     .ph-delivery strong { color:var(--heading); }
-
-    /* Specialties pills */
-    .ph-specs { display:flex; gap:.3rem; flex-wrap:wrap; margin-bottom:1rem; }
-    .ph-spec { background:var(--mint); color:var(--accent); font-size:.68rem; font-weight:700; padding:.18rem .55rem; border-radius:50px; }
-
     .ph-actions { display:flex; gap:.5rem; margin-top:auto; }
-    .ph-btn { flex:1; padding:.52rem; text-align:center; border-radius:50px; text-decoration:none; font-weight:700; font-size:.82rem; transition:all .25s; cursor:pointer; border:none; font-family:inherit; display:flex; align-items:center; justify-content:center; gap:.35rem; }
+    .ph-btn { flex:1; padding:.5rem; text-align:center; border-radius:50px; text-decoration:none; font-weight:700; font-size:.8rem; transition:all .25s; cursor:pointer; border:none; font-family:inherit; display:flex; align-items:center; justify-content:center; gap:.35rem; }
     .ph-view  { background:var(--soft); color:var(--accent); }
     .ph-order { background:var(--accent); color:#fff; }
     .ph-view:hover  { background:var(--accent); color:#fff; }
     .ph-order:hover { background:var(--accent-dark); }
 
-    /* ===== LIST VIEW ===== */
-    .ph-list-card {
-      background:#fff; border-radius:18px; box-shadow:var(--shadow);
-      border:2px solid transparent; transition:all .3s; overflow:hidden;
-      display:none; align-items:stretch; margin-bottom:.85rem;
-    }
+    /* ── LIST VIEW ── */
+    .ph-list-card { background:#fff; border-radius:18px; box-shadow:var(--shadow); border:2px solid transparent; transition:all .3s; overflow:hidden; display:none; align-items:stretch; margin-bottom:.85rem; }
     .ph-list-card:hover { border-color:var(--accent); box-shadow:0 14px 38px rgba(9,154,167,.13); transform:translateY(-2px); }
-    .ph-list-img { width:160px; flex-shrink:0; overflow:hidden; position:relative; }
-    .ph-list-img img { width:100%; height:100%; object-fit:cover; transition:transform .4s; }
-    .ph-list-card:hover .ph-list-img img { transform:scale(1.06); }
-    .ph-list-body { flex:1; padding:1.1rem 1.3rem; display:flex; flex-direction:column; justify-content:center; }
-    .ph-list-actions { display:flex; flex-direction:column; justify-content:center; align-items:flex-end; gap:.5rem; padding:1rem 1.2rem; border-left:1px solid var(--border); min-width:160px; }
-    .ph-list-open { display:flex; align-items:center; gap:.5rem; }
+    .ph-list-img { width:150px; flex-shrink:0; overflow:hidden; }
+    .ph-list-img img { width:100%; height:100%; object-fit:cover; }
+    .ph-list-body { flex:1; padding:1rem 1.2rem; display:flex; flex-direction:column; justify-content:center; }
+    .ph-list-actions { display:flex; flex-direction:column; justify-content:center; gap:.5rem; padding:.9rem 1.1rem; border-left:1px solid var(--border); min-width:150px; }
 
     /* View modes */
-    body.list-mode .ph-grid-item { display:none !important; }
-    body.list-mode .ph-list-card { display:flex !important; }
-    body.grid-mode .ph-grid-item { display:block !important; }
-    body.grid-mode .ph-list-card { display:none !important; }
+    body.list-mode  .ph-grid-item { display:none !important; }
+    body.list-mode  .ph-list-card { display:flex !important; }
+    body.grid-mode  .ph-grid-item { display:block !important; }
+    body.grid-mode  .ph-list-card { display:none !important; }
 
-    /* ===== FEATURED SECTION ===== */
-    .featured-section { background:var(--mint); border-radius:20px; padding:1.5rem; margin-bottom:1.5rem; }
+    /* Destaque */
+    .featured-section { background:var(--mint); border-radius:20px; padding:1.4rem; margin-bottom:1.4rem; }
     .featured-section h6 { font-size:.8rem; font-weight:800; color:var(--muted); text-transform:uppercase; letter-spacing:.07em; margin-bottom:1rem; display:flex; align-items:center; gap:.5rem; }
     .featured-scroll { display:flex; gap:1rem; overflow-x:auto; padding-bottom:.5rem; scrollbar-width:none; }
     .featured-scroll::-webkit-scrollbar { display:none; }
-    .feat-card { background:#fff; border-radius:16px; padding:.9rem 1.1rem; min-width:200px; flex-shrink:0; display:flex; align-items:center; gap:.85rem; cursor:pointer; transition:all .25s; border:1.5px solid transparent; }
+    .feat-card { background:#fff; border-radius:16px; padding:.85rem 1rem; min-width:190px; flex-shrink:0; display:flex; align-items:center; gap:.8rem; cursor:pointer; transition:all .25s; border:1.5px solid transparent; }
     .feat-card:hover { border-color:var(--accent); box-shadow:0 8px 24px rgba(9,154,167,.12); }
-    .feat-img { width:44px; height:44px; border-radius:12px; object-fit:cover; flex-shrink:0; }
-    .feat-name { font-size:.88rem; font-weight:700; color:var(--heading); line-height:1.2; }
+    .feat-img { width:42px; height:42px; border-radius:12px; object-fit:cover; flex-shrink:0; }
+    .feat-name { font-size:.86rem; font-weight:700; color:var(--heading); line-height:1.2; }
     .feat-meta { font-size:.72rem; color:var(--muted); }
-    .feat-badge { font-size:.65rem; font-weight:700; background:var(--soft); color:var(--accent); padding:.1rem .5rem; border-radius:50px; }
 
-    /* ===== MAP TOGGLE ===== */
-    .map-toggle-bar {
-      background:#fff; border-radius:16px; box-shadow:var(--shadow);
-      padding:1rem 1.3rem; margin-bottom:1.2rem;
-      display:flex; align-items:center; gap:1rem;
-    }
-    .map-preview-thumb {
-      width:100%; height:180px; border-radius:14px; overflow:hidden;
-      background:linear-gradient(135deg,#eaf6f5,#dff3f0);
-      display:flex; align-items:center; justify-content:center;
-      position:relative; cursor:pointer; margin-bottom:1.2rem;
-    }
-    .map-preview-thumb img { width:100%; height:100%; object-fit:cover; }
-    .map-overlay-btn {
-      position:absolute; inset:0; background:rgba(9,154,167,.15);
-      display:flex; align-items:center; justify-content:center;
-      transition:background .2s;
-    }
-    .map-overlay-btn:hover { background:rgba(9,154,167,.25); }
-    .map-overlay-btn span { background:#fff; color:var(--accent); font-weight:700; font-size:.85rem; padding:.65rem 1.4rem; border-radius:50px; box-shadow:0 8px 24px rgba(0,0,0,.14); display:flex; align-items:center; gap:.45rem; }
-
-    /* ===== EMPTY STATE ===== */
+    /* Empty */
     .empty-ph { background:#fff; border-radius:20px; box-shadow:var(--shadow); padding:3.5rem 2rem; text-align:center; display:none; }
     .empty-ph i { font-size:3.5rem; color:#b0d8dc; display:block; margin-bottom:1rem; }
     .empty-ph h5 { font-size:1.1rem; font-weight:800; color:var(--heading); margin-bottom:.5rem; }
     .empty-ph p  { color:var(--muted); font-size:.9rem; max-width:280px; margin:0 auto 1.2rem; }
 
-    /* ===== PAGINATION ===== */
+    /* Pagination */
     .pagination-fc { display:flex; align-items:center; justify-content:center; gap:.4rem; margin-top:1.8rem; }
     .pg-btn { width:38px; height:38px; border-radius:10px; border:1.5px solid var(--border); background:#fff; color:var(--muted); font-size:.85rem; font-weight:600; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all .2s; font-family:inherit; }
     .pg-btn:hover { border-color:var(--accent); color:var(--accent); }
     .pg-btn.active { background:var(--accent); color:#fff; border-color:var(--accent); }
     .pg-btn:disabled { opacity:.4; cursor:not-allowed; }
 
-    /* ===== MODAL FARMÁCIA ===== */
+    /* ── MODAL ── */
     .modal-content { border:none; border-radius:24px; overflow:hidden; box-shadow:0 20px 60px rgba(0,0,0,.14); }
     .modal-ph-banner { height:200px; overflow:hidden; position:relative; }
     .modal-ph-banner img { width:100%; height:100%; object-fit:cover; }
@@ -280,39 +218,42 @@
     .info-row { display:flex; align-items:flex-start; gap:.75rem; padding:.65rem 0; border-bottom:1px solid #f4f8f8; font-size:.88rem; }
     .info-row:last-child { border-bottom:none; }
     .info-row i { color:var(--accent); font-size:1rem; width:18px; flex-shrink:0; margin-top:.05rem; }
-    .info-row span { color:var(--text); }
-    .info-row strong { color:var(--heading); }
-
-    /* Hours table */
     .hours-table { width:100%; font-size:.82rem; }
     .hours-table td { padding:.3rem .2rem; color:var(--muted); }
     .hours-table td:first-child { font-weight:600; color:var(--heading); width:100px; }
     .hours-table tr.today td { color:var(--accent); font-weight:700; }
 
+    /* Stars inline */
+    .star-inline { color:#f59e0b; font-size:.82rem; }
+    .star-inline.empty { color:#e4f0f0; }
+
     /* Toast */
-    .toast-fc { position:fixed; bottom:28px; right:28px; background:var(--heading); color:#fff; border-radius:16px; padding:1rem 1.4rem; display:flex; align-items:center; gap:.8rem; box-shadow:0 16px 40px rgba(0,0,0,.18); z-index:9999; transform:translateY(80px); opacity:0; transition:all .35s cubic-bezier(.34,1.56,.64,1); max-width:360px; }
+    .toast-fc { position:fixed; bottom:28px; right:28px; background:var(--heading); color:#fff; border-radius:16px; padding:1rem 1.4rem; display:flex; align-items:center; gap:.8rem; box-shadow:0 16px 40px rgba(0,0,0,.18); z-index:9999; transform:translateY(80px); opacity:0; transition:all .35s cubic-bezier(.34,1.56,.64,1); max-width:360px; pointer-events:none; }
     .toast-fc.show { transform:translateY(0); opacity:1; }
     .toast-fc i { font-size:1.3rem; color:#a8ffd4; flex-shrink:0; }
     .toast-fc strong { font-size:.9rem; display:block; }
     .toast-fc span   { font-size:.78rem; color:rgba(255,255,255,.65); }
 
-    /* Scroll top */
     #scroll-top { position:fixed; bottom:28px; right:28px; width:48px; height:48px; background:var(--accent); color:#fff; border-radius:50%; text-decoration:none; font-size:1.4rem; display:none; align-items:center; justify-content:center; z-index:999; transition:all .3s; box-shadow:0 6px 20px rgba(9,154,167,.35); }
     #scroll-top:hover { background:var(--accent-dark); transform:translateY(-4px); }
 
-    /* Responsive */
+    /* Leaflet popup */
+    .lf-popup { font-family:'Inter',sans-serif; min-width:160px; }
+    .lf-popup strong { font-size:.88rem; color:var(--heading); display:block; margin-bottom:.2rem; }
+    .lf-popup span { font-size:.76rem; color:var(--muted); }
+    .lf-popup .lf-btn { display:inline-block; margin-top:.5rem; background:var(--accent); color:#fff; border:none; border-radius:50px; padding:.3rem .85rem; font-size:.75rem; font-weight:700; cursor:pointer; font-family:inherit; }
+
     @media(max-width:991px) { .filter-sidebar { display:none; } }
     @media(max-width:768px) { .hdr-search{display:none;} .ph-list-img{width:110px;} .ph-list-actions{min-width:120px;} }
-    @media(max-width:576px) { .ph-list-actions{display:none;} .ts-sep{display:none;} }
+    @media(max-width:576px) { .ph-list-actions{display:none;} }
   </style>
 </head>
 <body class="grid-mode">
 
-<!-- ===== HEADER ===== -->
 @include('clientes.dashboard.header')
 
-<!-- ===== TOPBAR ===== -->
-<div class="page-topbar " >
+<!-- ── TOPBAR ── -->
+<div class="page-topbar">
   <div class="tb-blob tb1"></div>
   <div class="tb-blob tb2"></div>
   <div class="container-xl" style="position:relative;z-index:2;">
@@ -324,145 +265,153 @@
     <h2>Farmácias em Luanda</h2>
     <p>Encontre a farmácia mais próxima e faça o seu pedido agora</p>
 
-    <!-- Search box -->
-    <div class="topbar-search ">
+    <div class="hero-search-bar">
+      <form action="{{ route('farmacias.search') }}" method="GET">
+        <div class="hsb-inner">
+          <i class="bi bi-hospital" style="color:rgba(255,255,255,.6);flex-shrink:0"></i>
+          <input type="text" name="query" placeholder="Nome ou bairro da farmácia…"
+                 value="{{ request('query') }}">
+          <button type="submit" class="hsb-btn"><i class="bi bi-search"></i> Pesquisar</button>
+        </div>
+      </form>
+    </div>
 
-      <div class="hero-search-bar">
-        <form action="{{ route('farmacias.search') }}" method="get">
-
-          <div class="hsb-inner">
-            <i class="bi bi-hospital"></i>
-            <input type="text" id="searchPharm" name="query" placeholder="Nome da farmácia " oninput="filterPharmacies()" value="{{ request('query') }}">
-  
-            <button type="submit" class="hsb-btn"><i class="bi bi-search"></i> Pesquisar</button>
-          </div>
-        </form>
-      </div>
-
-      <div class="quick-filters" id="quickFilters">
-        <span class="qf-tag active" onclick="quickFilter(this,'')"> Todas</span>
-        <span class="qf-tag" onclick="quickFilter(this,'open')">Abertas agora</span>
-        <span class="qf-tag" onclick="quickFilter(this,'24h')"> 24 horas</span>
-        {{-- <span class="qf-tag" onclick="quickFilter(this,'new')"> Recentes</span> --}}
-        {{-- <span class="qf-tag" onclick="quickFilter(this,'fav')"> Favoritas</span> --}}
-      </div>
-      
+    <div class="quick-filters">
+      <span class="qf-tag active"   id="qf-all"    onclick="quickFilter(this,'all')">Todas</span>
+      <span class="qf-tag"          id="qf-open"   onclick="quickFilter(this,'open')">Abertas agora</span>
+      <span class="qf-tag"          id="qf-closed" onclick="quickFilter(this,'closed')">Fechadas</span>
     </div>
   </div>
 </div>
 
-<!-- ===== STATS STRIP ===== -->
+<!-- ── STATS STRIP ── -->
 <div class="stats-strip">
   <div class="container-xl">
     <div class="d-flex">
       <div class="stat-item">
         <div class="stat-icon"><i class="bi bi-hospital"></i></div>
-        <div><div class="stat-val">50+</div><div class="stat-lbl">Farmácias</div></div>
+        <div><div class="stat-val" id="statTotal">{{ $farmacias->count() }}</div><div class="stat-lbl">Farmácias</div></div>
       </div>
       <div class="stat-item">
         <div class="stat-icon"><i class="bi bi-check-circle"></i></div>
-        <div><div class="stat-val">38</div><div class="stat-lbl">Abertas agora</div></div>
+        <div>
+          <div class="stat-val">
+            @php
+              $horaAtual = now()->format('H:i');
+              $abertas = $farmacias->filter(fn($f) =>
+                ($f->horario_abertura ?? '08:00') <= $horaAtual &&
+                $horaAtual <= ($f->horario_fechamento ?? '22:00')
+              )->count();
+            @endphp
+            {{ $abertas }}
+          </div>
+          <div class="stat-lbl">Abertas agora</div>
+        </div>
       </div>
-      <div class="stat-item">
-        <div class="stat-icon"><i class="bi bi-moon-stars"></i></div>
-        <div><div class="stat-val">8</div><div class="stat-lbl">Abertas 24h</div></div>
-      </div>
-      {{-- <div class="stat-item d-none d-md-flex">
-        <div class="stat-icon"><i class="bi bi-truck"></i></div>
-        <div><div class="stat-val">30 min</div><div class="stat-lbl">Entrega média</div></div>
-      </div> --}}
-      <div class="stat-item d-none d-lg-flex">
+      <div class="stat-item d-none d-md-flex">
         <div class="stat-icon"><i class="bi bi-capsule-pill"></i></div>
         <div><div class="stat-val">5 000+</div><div class="stat-lbl">Medicamentos</div></div>
+      </div>
+      <div class="stat-item d-none d-lg-flex">
+        <div class="stat-icon"><i class="bi bi-star-fill" style="color:#f59e0b"></i></div>
+        <div>
+          <div class="stat-val">
+            {{ number_format($farmacias->avg(fn($f) => $f->avaliacoes->avg('classificacao') ?? 0), 1) }}★
+          </div>
+          <div class="stat-lbl">Avaliação média</div>
+        </div>
       </div>
     </div>
   </div>
 </div>
 
-<!-- ===== PAGE CONTENT ===== -->
+<!-- ── PAGE CONTENT ── -->
 <div class="page-wrap">
   <div class="container-xl">
     <div class="row g-4">
 
-      <!-- SIDEBAR -->
+      <!-- ════ SIDEBAR ════ -->
       <div class="col-lg-3 d-none d-lg-block">
-        <div class="filter-sidebar">
+        <div class="filter-sidebar mt-4">
 
-          <!-- Map preview -->
-          <div class="map-preview-thumb mb-3" style="border-radius:20px;height:160px;">
-            <img src="https://images.unsplash.com/photo-1524661135-423995f22d0b?w=600&auto=format&fit=crop" alt="Mapa Luanda" style="filter:saturate(.8);">
-            <div class="map-overlay-btn">
-              <span><i class="bi bi-map"></i> Ver no mapa</span>
+          <!-- MAPA -->
+          <div class="map-container">
+            <div class="map-header">
+              <h6><i class="bi bi-map"></i> Mapa de farmácias</h6>
+              <button class="map-toggle-btn" id="mapToggleBtn" onclick="toggleMap()">
+                <i class="bi bi-chevron-up"></i> Ocultar
+              </button>
+            </div>
+            <div class="map-body" id="mapBody">
+              <div id="pharmacyMap"></div>
             </div>
           </div>
 
-          <!-- Status filter -->
+          <!-- ESTADO DE ABERTURA -->
           <div class="fbox">
             <div class="fbox-header">
-              <h6><i class="bi bi-clock me-1" style="color:var(--accent);"></i>Estado</h6>
+              <h6><i class="bi bi-clock me-1" style="color:var(--accent)"></i>Estado</h6>
               <button class="fbox-clear" onclick="clearFilter('status')">Limpar</button>
             </div>
             <div class="fbox-body">
               <div class="fcheck-list">
                 <label class="fcheck-item">
-                  <div class="fcheck-left"><input type="checkbox" checked> <label>Abertas agora</label></div>
-                  <span class="fcheck-count">38</span>
+                  <div class="fcheck-left">
+                    <input type="checkbox" id="chk-open" value="open" onchange="applyFilters()">
+                    <label for="chk-open">Abertas agora</label>
+                  </div>
+                  <span class="fcheck-count">{{ $abertas }}</span>
                 </label>
                 <label class="fcheck-item">
-                  <div class="fcheck-left"><input type="checkbox"> <label>Abertas 24h</label></div>
-                  <span class="fcheck-count">8</span>
-                </label>
-                <label class="fcheck-item">
-                  <div class="fcheck-left"><input type="checkbox"> <label>Fechadas</label></div>
-                  <span class="fcheck-count">12</span>
+                  <div class="fcheck-left">
+                    <input type="checkbox" id="chk-closed" value="closed" onchange="applyFilters()">
+                    <label for="chk-closed">Fechadas</label>
+                  </div>
+                  <span class="fcheck-count">{{ $farmacias->count() - $abertas }}</span>
                 </label>
               </div>
             </div>
           </div>
 
-
-          <!-- Avaliação -->
+          <!-- AVALIAÇÃO -->
           <div class="fbox">
             <div class="fbox-header">
-              <h6><i class="bi bi-star me-1" style="color:var(--accent);"></i>Avaliação</h6>
+              <h6><i class="bi bi-star me-1" style="color:var(--accent)"></i>Avaliação mínima</h6>
               <button class="fbox-clear" onclick="clearFilter('rating')">Limpar</button>
             </div>
             <div class="fbox-body">
               <div class="rating-filter">
-                <label class="rf-item"><input type="radio" name="rating"> <div class="rf-stars"><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i> <span>5 estrelas</span></div></label>
-                <label class="rf-item"><input type="radio" name="rating"> <div class="rf-stars"><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star"></i> <span>4+ estrelas</span></div></label>
-                <label class="rf-item"><input type="radio" name="rating"> <div class="rf-stars"><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star"></i><i class="bi bi-star"></i> <span>3+ estrelas</span></div></label>
+                @foreach([5,4,3,2] as $stars)
+                  <label class="rf-item">
+                    <input type="radio" name="ratingFilter" value="{{ $stars }}" onchange="applyFilters()">
+                    <div class="rf-stars">
+                      @for($s = 1; $s <= 5; $s++)
+                        <i class="bi bi-star{{ $s <= $stars ? '-fill' : '' }}{{ $s > $stars ? ' empty' : '' }}"></i>
+                      @endfor
+                      <span>{{ $stars }}+ estrelas</span>
+                    </div>
+                  </label>
+                @endforeach
               </div>
             </div>
           </div>
 
-          <!-- Distância -->
+          <!-- DISTÂNCIA -->
           <div class="fbox">
             <div class="fbox-header">
-              <h6><i class="bi bi-pin-map me-1" style="color:var(--accent);"></i>Distância máx.</h6>
+              <h6><i class="bi bi-pin-map me-1" style="color:var(--accent)"></i>Distância máx.</h6>
             </div>
             <div class="fbox-body">
               <div class="d-flex justify-content-between mb-2">
                 <span style="font-size:.78rem;color:var(--muted);">0 km</span>
-                <span class="dist-val" id="distVal">10 km</span>
+                <span class="dist-val" id="distVal">Qualquer</span>
               </div>
-              <input type="range" class="dist-slider" min="1" max="30" value="10" oninput="document.getElementById('distVal').textContent=this.value+' km'">
-            </div>
-          </div>
-
-          <!-- Especialidades -->
-          <div class="fbox">
-            <div class="fbox-header">
-              <h6><i class="bi bi-capsule me-1" style="color:var(--accent);"></i>Especialidade</h6>
-              <button class="fbox-clear" onclick="clearFilter('spec')">Limpar</button>
-            </div>
-            <div class="fbox-body">
-              <div class="fcheck-list">
-                <label class="fcheck-item"><div class="fcheck-left"><input type="checkbox"> <label>Medicamentos gerais</label></div></label>
-                <label class="fcheck-item"><div class="fcheck-left"><input type="checkbox"> <label>Dermatologia</label></div></label>
-                <label class="fcheck-item"><div class="fcheck-left"><input type="checkbox"> <label>Pediatria</label></div></label>
-                <label class="fcheck-item"><div class="fcheck-left"><input type="checkbox"> <label>Cardiovascular</label></div></label>
-                <label class="fcheck-item"><div class="fcheck-left"><input type="checkbox"> <label>Ortopedia</label></div></label>
+              <input type="range" class="dist-slider" id="distSlider"
+                     min="0" max="30" value="0"
+                     oninput="onDistChange(this.value)">
+              <div style="font-size:.72rem;color:var(--muted);margin-top:.4rem">
+                <i class="bi bi-info-circle" style="color:var(--accent)"></i>
+                Requer activar a sua localização
               </div>
             </div>
           </div>
@@ -470,132 +419,192 @@
         </div>
       </div>
 
-      <!-- MAIN -->
+      <!-- ════ MAIN ════ -->
       <div class="col-lg-9">
 
-        <!-- Featured / Destaque -->
+        <!-- Destaque -->
         <div class="featured-section mt-4">
           <h6><i class="bi bi-lightning-charge-fill" style="color:#f59e0b;"></i> Farmácias em destaque</h6>
-          
           <div class="featured-scroll">
-            @foreach ($farmaDestaque as $farma )
-            <div class="feat-card" onclick="openModal('central')">
-              <img src="https://images.unsplash.com/photo-1587854692152-cbe660dbde88?w=88&auto=format&fit=crop" class="feat-img" alt="">
-              <div>
-                <div class="feat-name">{{ $farma->name }}</div>
-                <div class="feat-meta">{{$farma->bairro}}· {{ number_format($farma->avaliacoes_avg_classificacao, 1) }}★ </div>
+            @foreach($farmaDestaque as $farma)
+              <div class="feat-card" onclick="openModal({{ $farma->id }})">
+                <img src="https://images.unsplash.com/photo-1587854692152-cbe660dbde88?w=88&auto=format&fit=crop"
+                     class="feat-img" alt="{{ $farma->name }}">
+                <div>
+                  <div class="feat-name">{{ $farma->name }}</div>
+                  <div class="feat-meta">
+                    {{ $farma->bairro }}
+                    · {{ number_format($farma->avaliacoes_avg_classificacao ?? 0, 1) }}★
+                  </div>
+                </div>
               </div>
-            </div>
             @endforeach
           </div>
         </div>
 
+        <!-- Filtros activos -->
+        <div class="active-filters" id="activeFilters"></div>
+
         <!-- Toolbar -->
         <div class="results-toolbar">
-          <span class="results-count">Mostrando <strong id="countVisible">6</strong> de <strong>{{ $farmacias->count() }}</strong> farmácias</span>
-          <select class="sort-sel" onchange="sortPharmacies(this.value)">
+          <span class="results-count">
+            Mostrando <strong id="countVisible">{{ $farmacias->count() }}</strong>
+            de <strong>{{ $farmacias->count() }}</strong> farmácias
+          </span>
+          <select class="sort-sel" id="sortSel" onchange="sortCards()">
             <option value="relevance">Relevância</option>
             <option value="rating">Melhor avaliação</option>
-            <option value="distance">Mais próximas</option>
-            <option value="delivery">Entrega mais rápida</option>
+            <option value="name">Nome A→Z</option>
           </select>
-          <div class="view-toggle ms-auto">
+          <div class="view-toggle">
             <button class="vt-btn active" id="gridBtn" onclick="setView('grid')" title="Grelha"><i class="bi bi-grid"></i></button>
-            <button class="vt-btn" id="listBtn" onclick="setView('list')" title="Lista"><i class="bi bi-list-ul"></i></button>
+            <button class="vt-btn"        id="listBtn" onclick="setView('list')" title="Lista"><i class="bi bi-list-ul"></i></button>
           </div>
         </div>
 
         <!-- GRID VIEW -->
         <div class="row g-4" id="gridContainer">
-          @if ($farmacias->count()!=0)
-          @foreach ($farmacias as $farmacia )
-          
-          <!-- Card 1 -->
-          <div class="col-md-6 col-xl-4 ph-grid-item" data-name="farmácia central" data-bairro="ingombotas" data-status="open" data-fav="false">
-            <div class="ph-card">
-              <div class="ph-img-wrap">
-                <img src="https://images.unsplash.com/photo-1587854692152-cbe660dbde88?w=500&auto=format&fit=crop" alt="">
-                <div class="ph-img-overlay"></div>
-                <div class="ph-badge-top">
-                  <span class="ph-badge ph-open"><i class="bi bi-circle-fill" style="font-size:.45rem;"></i> Aberta</span>
+          @forelse($farmacias as $farmacia)
+            @php
+              $rating  = round($farmacia->avaliacoes->avg('classificacao') ?? 0, 1);
+              $nRev    = $farmacia->avaliacoes->count();
+              $hora    = now()->format('H:i');
+              $aberta  = ($farmacia->horario_abertura ?? '08:00') <= $hora
+                      && $hora <= ($farmacia->horario_fechamento ?? '22:00');
+            @endphp
+            <div class="col-md-6 col-xl-4 ph-grid-item"
+                 data-name="{{ strtolower($farmacia->name) }}"
+                 data-bairro="{{ strtolower($farmacia->bairro ?? '') }}"
+                 data-status="{{ $aberta ? 'open' : 'closed' }}"
+                 data-rating="{{ $rating }}"
+                 data-lat="{{ $farmacia->latitude ?? '' }}"
+                 data-lng="{{ $farmacia->longitude ?? '' }}">
+              <div class="ph-card">
+                <div class="ph-img-wrap">
+                  <img src="https://images.unsplash.com/photo-1587854692152-cbe660dbde88?w=500&auto=format&fit=crop" alt="{{ $farmacia->name }}">
+                  <div class="ph-img-overlay"></div>
+                  <div class="ph-badge-top">
+                    <span class="ph-badge {{ $aberta ? 'ph-open' : 'ph-closed' }}">
+                      <i class="bi bi-circle-fill" style="font-size:.42rem;"></i>
+                      {{ $aberta ? 'Aberta' : 'Fechada' }}
+                    </span>
+                  </div>
+                  <button class="ph-fav-btn" onclick="toggleFav(this)"><i class="bi bi-heart"></i></button>
                 </div>
-                <button class="ph-fav-btn" onclick="toggleFav(this)"><i class="bi bi-heart"></i></button>
-                {{-- <div class="ph-dist"><i class="bi bi-geo-alt"></i> {{ $farmacia-> }} km</div> --}}
-              </div>
-              <div class="ph-body">
-                <div class="ph-name">{{ $farmacia->name }}</div>
-                <div class="ph-loc"><i class="bi bi-geo-alt-fill"></i>{{ $farmacia->bairro }}</div>
-                <div class="ph-meta">
-                  <div class="ph-rating"><i class="bi bi-star-fill"> {{-- Calcula a média ou retorna 0 se não houver avaliações --}}
-            {{ number_format($farmacia->avaliacoes->avg('classificacao') ?? 0, 1) }}</i> <span class="ph-reviews">({{ $farmacia->avaliacoes->count() ?? 0 }})</span></div>
-            
+                <div class="ph-body">
+                  <div class="ph-name">{{ $farmacia->name }}</div>
+                  <div class="ph-loc"><i class="bi bi-geo-alt-fill"></i>{{ $farmacia->bairro ?? '—' }}</div>
+                  <div class="ph-rating">
+                    @for($s = 1; $s <= 5; $s++)
+                      <i class="bi bi-star{{ $s <= round($rating) ? '-fill star-inline' : ' star-inline empty' }}" style="color:{{ $s <= round($rating) ? '#f59e0b' : '#e4f0f0' }}"></i>
+                    @endfor
+                    <span style="margin-left:.2rem">{{ number_format($rating,1) }}</span>
+                    <span class="ph-reviews">({{ $nRev }})</span>
+                  </div>
+                  <div class="ph-delivery">
+                    <i class="bi bi-clock"></i> Seg-Dom:
+                    <strong>{{ $farmacia->horario_abertura ?? '08:00' }} – {{ $farmacia->horario_fechamento ?? '22:00' }}</strong>
+                  </div>
+                  <div class="ph-actions">
+                    <button class="ph-btn ph-view" onclick="openModal({{ $farmacia->id }})">
+                      <i class="bi bi-eye"></i> Ver
+                    </button>
+                    <a href="{{ route('produtos.clientes', ['farmacia_id' => $farmacia->id]) }}"
+                       class="ph-btn ph-order">
+                      <i class="bi bi-bag-plus"></i> Encomendar
+                    </a>
+                  </div>
                 </div>
-
-                <div class="ph-delivery"><i class="bi bi-clock"></i> Seg-Dom: <strong>{{$farmacia->horario_abertura ?? '08:00'}} - {{ $farmacia->horario_fechamento ?? '22:00'}}</strong></div>
-                <div class="ph-actions">
-                <button class="ph-btn ph-view" onclick="openModal({{ $farmacia->id }})">
-                    <i class="bi bi-eye"></i> Ver
-                </button>
-                </div>
               </div>
             </div>
-          </div>
-          @endforeach
-          @else
-            <div class="empty-ph" id="emptyState">
-              <i class="bi bi-hospital"></i>
-              <h5>Nenhuma farmácia encontrada</h5>
-              <p>Tente ajustar os filtros ou pesquisar por outro bairro.</p>
-              <button class="ph-btn ph-order" style="display:inline-flex;max-width:180px;" onclick="resetAll()">Ver todas as farmácias</button>
-            </div>
-          @endif
-
-        </div><!-- /gridContainer -->
-
-        <!-- LIST VIEW items (mirrored) -->
-        <div id="listContainer">
-          @if ($farmacias->count()!=0)
-          @foreach ($farmacias as $farmacia )
-          <div class="ph-list-card" data-name="farmácia central" data-bairro="ingombotas" data-status="open">
-            <div class="ph-list-img"><img src="https://images.unsplash.com/photo-1587854692152-cbe660dbde88?w=320&auto=format&fit=crop" alt=""></div>
-            <div class="ph-list-body">
-              <div class="d-flex align-items-start gap-2 mb-1 flex-wrap">
-                <span style="font-size:1rem;font-weight:800;color:var(--heading);">{{ $farmacia->name }}</span>
-                <span class="ph-badge ph-open" style="font-size:.68rem;padding:.18rem .6rem;border-radius:50px;background:#d4edda;color:#155724;border:none;"><i class="bi bi-circle-fill" style="font-size:.4rem;"></i> Aberta</span>
-              </div>
-              <div class="ph-loc mb-1"><i class="bi bi-geo-alt-fill"></i> {{ $farmacia->bairro }}</div>
-              <div class="d-flex align-items-center gap-2 flex-wrap">
-                <div class="ph-rating"><i class="bi bi-star-fill"></i> {{ number_format($farmacia->avaliacoes->avg('classificacao') ?? 0, 1) }} <span class="ph-reviews">({{ $farmacia->avaliacoes->count() ?? 0 }})</span></div>
+          @empty
+            <div class="col-12">
+              <div class="empty-ph" style="display:block;">
+                <i class="bi bi-hospital"></i>
+                <h5>Nenhuma farmácia encontrada</h5>
+                <p>Tente ajustar os filtros ou pesquisar por outro bairro.</p>
               </div>
             </div>
-            <div class="ph-delivery"><i class="bi bi-clock"></i> Seg-Dom: <strong>{{$farmacia->horario_abertura ?? '08:00'}} - {{ $farmacia->horario_fechamento ?? '22:00'}}</strong></div>
-
-            <div class="ph-list-actions">
-              <button class="ph-btn ph-view" style="width:100%;" onclick="openModal({{ $farmacia->id }})">
-                  <i class="bi bi-eye"></i> Ver
-              </button>
-            </div>
-          </div>
-
-          @endforeach
-          @endif
+          @endforelse
         </div>
 
+        <!-- LIST VIEW -->
+        <div id="listContainer">
+          @foreach($farmacias as $farmacia)
+            @php
+              $rating = round($farmacia->avaliacoes->avg('classificacao') ?? 0, 1);
+              $nRev   = $farmacia->avaliacoes->count();
+              $hora   = now()->format('H:i');
+              $aberta = ($farmacia->horario_abertura ?? '08:00') <= $hora
+                     && $hora <= ($farmacia->horario_fechamento ?? '22:00');
+            @endphp
+            <div class="ph-list-card"
+                 data-name="{{ strtolower($farmacia->name) }}"
+                 data-bairro="{{ strtolower($farmacia->bairro ?? '') }}"
+                 data-status="{{ $aberta ? 'open' : 'closed' }}"
+                 data-rating="{{ $rating }}"
+                 data-lat="{{ $farmacia->latitude ?? '' }}"
+                 data-lng="{{ $farmacia->longitude ?? '' }}">
+              <div class="ph-list-img">
+                <img src="https://images.unsplash.com/photo-1587854692152-cbe660dbde88?w=320&auto=format&fit=crop" alt="{{ $farmacia->name }}">
+              </div>
+              <div class="ph-list-body">
+                <div class="d-flex align-items-center gap-2 mb-1 flex-wrap">
+                  <span style="font-size:.95rem;font-weight:800;color:var(--heading)">{{ $farmacia->name }}</span>
+                  <span class="ph-badge {{ $aberta ? 'ph-open' : 'ph-closed' }}"
+                        style="font-size:.68rem;padding:.18rem .6rem;border-radius:50px;border:none">
+                    <i class="bi bi-circle-fill" style="font-size:.4rem"></i>
+                    {{ $aberta ? 'Aberta' : 'Fechada' }}
+                  </span>
+                </div>
+                <div class="ph-loc mb-1"><i class="bi bi-geo-alt-fill"></i> {{ $farmacia->bairro ?? '—' }}</div>
+                <div class="ph-rating" style="margin-bottom:.4rem">
+                  @for($s = 1; $s <= 5; $s++)
+                    <i class="bi bi-star{{ $s <= round($rating) ? '-fill' : '' }}"
+                       style="color:{{ $s <= round($rating) ? '#f59e0b' : '#e4f0f0' }};font-size:.8rem"></i>
+                  @endfor
+                  <span style="margin-left:.2rem;font-size:.78rem;font-weight:700">{{ number_format($rating,1) }}</span>
+                  <span class="ph-reviews">({{ $nRev }})</span>
+                </div>
+                <div style="font-size:.76rem;color:var(--muted)">
+                  <i class="bi bi-clock"></i>
+                  {{ $farmacia->horario_abertura ?? '08:00' }} – {{ $farmacia->horario_fechamento ?? '22:00' }}
+                </div>
+              </div>
+              <div class="ph-list-actions">
+                <button class="ph-btn ph-view" style="width:100%" onclick="openModal({{ $farmacia->id }})">
+                  <i class="bi bi-eye"></i> Ver
+                </button>
+                <a href="{{ route('produtos.clientes', ['farmacia_id' => $farmacia->id]) }}"
+                   class="ph-btn ph-order" style="width:100%;text-decoration:none">
+                  <i class="bi bi-bag-plus"></i> Encomendar
+                </a>
+              </div>
+            </div>
+          @endforeach
+        </div>
 
+        <!-- Empty state (filtros JS) -->
+        <div class="empty-ph" id="emptyState">
+          <i class="bi bi-hospital"></i>
+          <h5>Nenhuma farmácia encontrada</h5>
+          <p>Tente ajustar os filtros ou pesquisar por outro bairro.</p>
+          <button class="ph-btn ph-order" style="display:inline-flex;max-width:200px;margin:0 auto" onclick="resetAll()">
+            Ver todas as farmácias
+          </button>
+        </div>
 
-        <!-- Pagination -->
+        <!-- Paginação -->
         <div class="pagination-fc" id="paginationBar">
           {{ $farmacias->links() }}
-          <a href="{{ $farmacias->nextPageUrl() }}" class="pg-btn">
-            <i class="bi bi-chevron-right"></i>
-          </a>
         </div>
-      </div>
-    </div>
+
+      </div><!-- /col-lg-9 -->
+    </div><!-- /row -->
   </div>
 </div>
 
-<!-- ===== MODAL FARMÁCIA DETAIL ===== -->
+<!-- ── MODAL FARMÁCIA ── -->
 <div class="modal fade" id="pharmModal" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered modal-lg">
     <div class="modal-content">
@@ -605,41 +614,44 @@
       <div class="modal-header">
         <div>
           <h5 class="modal-title" id="modalName" style="font-weight:800;color:var(--heading);margin:0;"></h5>
-          <div id="modalLoc" style="font-size:.82rem;color:var(--muted);margin-top:.1rem;"></div>
+          <div style="display:flex;align-items:center;gap:.8rem;margin-top:.3rem;flex-wrap:wrap;">
+            <span id="modalBadge" style="font-size:.72rem;font-weight:700;padding:.2rem .65rem;border-radius:50px;"></span>
+            <span id="modalRatingStars" style="font-size:.8rem;color:#f59e0b;"></span>
+          </div>
         </div>
         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body">
         <div class="row g-4">
           <div class="col-md-6">
-            <h6 style="font-size:.8rem;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.8rem;">Informações</h6>
+            <h6 style="font-size:.78rem;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.8rem;">Informações</h6>
             <div class="info-row"><i class="bi bi-geo-alt-fill"></i>   <span id="mAddr"></span></div>
             <div class="info-row"><i class="bi bi-telephone-fill"></i> <span id="mPhone"></span></div>
             <div class="info-row"><i class="bi bi-envelope-fill"></i>  <span id="mEmail"></span></div>
-            <div class="info-row"><i class="bi bi-star-fill" style="color:#f59e0b;"></i> <span id="mRating"></span></div>
             <div class="info-row"><i class="bi bi-credit-card"></i>    <span>Multicaixa Express · Cartão · Numerário</span></div>
           </div>
           <div class="col-md-6">
-            <h6 style="font-size:.8rem;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.8rem;">Horário de funcionamento</h6>
+            <h6 style="font-size:.78rem;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.8rem;">Horário</h6>
             <table class="hours-table" id="mHours"></table>
           </div>
         </div>
       </div>
       <div class="modal-footer gap-2">
         <button type="button" data-bs-dismiss="modal"
-          style="background:var(--soft);color:var(--accent);border:none;border-radius:50px;padding:.5rem 1.2rem;font-size:.85rem;font-weight:700;cursor:pointer;">
+                style="background:var(--soft);color:var(--accent);border:none;border-radius:50px;padding:.5rem 1.2rem;font-size:.85rem;font-weight:700;cursor:pointer;">
           Fechar
         </button>
+        <a id="modalOrderBtn" href="#"
+           style="background:var(--accent);color:#fff;border:none;border-radius:50px;padding:.5rem 1.4rem;font-size:.85rem;font-weight:700;text-decoration:none;display:inline-flex;align-items:center;gap:.4rem;">
+          <i class="bi bi-bag-plus"></i> Encomendar
+        </a>
       </div>
     </div>
   </div>
 </div>
 
-<!-- ===== FOOTER ===== -->
-  @include('clientes.dashboard.footer')
+@include('clientes.dashboard.footer')
 
-
-<!-- Toast -->
 <div class="toast-fc" id="toastFc">
   <i class="bi bi-check-circle-fill"></i>
   <div><strong id="toastTitle">Sucesso</strong><span id="toastMsg"></span></div>
@@ -647,166 +659,388 @@
 <a href="#" id="scroll-top"><i class="bi bi-arrow-up-short"></i></a>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
 
-
-  /* ===== MODAL ===== */
-function openModal(id) {
-  const d = farmaciasData[id];
-  if (!d) return;
-
-  document.getElementById('modalImg').src              = d.img;
-  document.getElementById('modalName').textContent     = d.name;
-  document.getElementById('modalLoc').textContent      = d.bairro;
-  document.getElementById('mAddr').textContent         = d.endereco  || 'Endereço não disponível';
-  document.getElementById('mPhone').textContent        = d.telefone  || 'Telefone não disponível';
-  document.getElementById('mEmail').textContent        = d.email     || 'Email não disponível';
-  document.getElementById('mRating').textContent       = d.rating + ' ★  (' + d.reviews + ' avaliações)';
-
-  // Horário — mesmo horário todos os dias (ajuste se tiver horários por dia)
-  const days = ['Segunda','Terça','Quarta','Quinta','Sexta','Sábado','Domingo'];
-  const todayIdx = (new Date().getDay() + 6) % 7; // 0=Seg ... 6=Dom
-  document.getElementById('mHours').innerHTML = days.map((day, i) =>
-    `<tr class="${i === todayIdx ? 'today' : ''}">
-       <td>${day}</td>
-       <td>${d.abertura} – ${d.fechamento}${i === todayIdx ? ' <strong style="color:var(--accent);">(hoje)</strong>' : ''}</td>
-     </tr>`
-  ).join('');
-
-  new bootstrap.Modal(document.getElementById('pharmModal')).show();
-}
-  /* ===== VIEW TOGGLE ===== */
-  function setView(mode) {
-    document.body.className = mode + '-mode';
-    document.getElementById('gridBtn').classList.toggle('active', mode === 'grid');
-    document.getElementById('listBtn').classList.toggle('active', mode === 'list');
-  }
-
-  /* ===== FILTER ===== */
-  function filterPharmacies() {
-    const q      = document.getElementById('searchPharm').value.toLowerCase();
-    const bairro = document.getElementById('filterBairro').value;
-    const status = document.getElementById('filterStatus').value;
-    let visible  = 0;
-
-    // Grid
-    document.querySelectorAll('.ph-grid-item').forEach(el => {
-      const nm = el.dataset.name || '';
-      const br = el.dataset.bairro || '';
-      const st = el.dataset.status || '';
-      const matchQ = !q || nm.includes(q);
-      const matchB = !bairro || br === bairro;
-      const matchS = !status || st === status || (status === 'open' && st !== 'closed') || (status === '24h' && st === '24h');
-      el.style.display = (matchQ && matchB && matchS) ? 'block' : 'none';
-      if (matchQ && matchB && matchS) visible++;
-    });
-
-    // List
-    document.querySelectorAll('.ph-list-card').forEach(el => {
-      const nm = el.dataset.name || '';
-      const br = el.dataset.bairro || '';
-      const st = el.dataset.status || '';
-      const matchQ = !q || nm.includes(q);
-      const matchB = !bairro || br === bairro;
-      const matchS = !status || st === status || (status === 'open' && st !== 'closed');
-      el.style.display = (matchQ && matchB && matchS) ? 'flex' : 'none';
-    });
-
-    document.getElementById('countVisible').textContent = visible;
-    document.getElementById('emptyState').style.display  = visible === 0 ? 'block' : 'none';
-    document.getElementById('paginationBar').style.display = visible === 0 ? 'none' : 'flex';
-  }
-
-  /* ===== QUICK FILTER ===== */
-  function quickFilter(el, val) {
-    document.querySelectorAll('.qf-tag').forEach(t => t.classList.remove('active'));
-    el.classList.add('active');
-    document.getElementById('filterStatus').value = val;
-    filterPharmacies();
-  }
-
-  /* ===== SORT ===== */
-  function sortPharmacies(val) {
-    showToast('Ordenação actualizada', 'Os resultados foram reorganizados.');
-  }
-
-  /* ===== FAVOURITE ===== */
-  function toggleFav(btn) {
-    const active = btn.classList.toggle('active');
-    btn.innerHTML = active ? '<i class="bi bi-heart-fill"></i>' : '<i class="bi bi-heart"></i>';
-    showToast(active ? '❤️ Adicionado aos favoritos' : 'Removido dos favoritos', '');
-  }
-
-  /* ===== CLEAR FILTER ===== */
-  function clearFilter(type) {
-    document.querySelectorAll(`#filter-sidebar input[type=checkbox]`).forEach(c => c.checked = false);
-    filterPharmacies();
-  }
-
-  function resetAll() {
-    document.getElementById('searchPharm').value = '';
-    document.getElementById('filterBairro').value = '';
-    document.getElementById('filterStatus').value = '';
-    document.querySelectorAll('.qf-tag').forEach(t => t.classList.remove('active'));
-    document.querySelectorAll('.qf-tag')[0]?.classList.add('active');
-    filterPharmacies();
-  }
-
-  /* ===== HEADER SCROLL ===== */
-  const hdr = document.getElementById('mainHeader');
-  window.addEventListener('scroll', () => hdr.classList.toggle('scrolled', scrollY > 50));
-  const st  = document.getElementById('scroll-top');
-  window.addEventListener('scroll', () => st.style.display = scrollY > 320 ? 'flex' : 'none');
-
-  /* ===== TOAST ===== */
-  function showToast(title, msg) {
-    document.getElementById('toastTitle').textContent = title;
-    document.getElementById('toastMsg').textContent   = msg;
-    const t = document.getElementById('toastFc');
-    t.classList.add('show');
-    setTimeout(() => t.classList.remove('show'), 3200);
-  }
-
-  /* ===== PAGINATION ===== */
-  document.querySelectorAll('.pg-btn').forEach(btn => {
-    if (!btn.querySelector('i')) {
-      btn.addEventListener('click', () => {
-        document.querySelectorAll('.pg-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        window.scrollTo({ top:0, behavior:'smooth' });
-      });
-    }
-  });
-
-  /* ===== ANIMATE ON SCROLL ===== */
-  const io = new IntersectionObserver(entries => {
-    entries.forEach(e => { if (e.isIntersecting) { e.target.style.opacity='1'; e.target.style.transform='translateY(0)'; } });
-  }, { threshold:.1 });
-  document.querySelectorAll('.ph-card, .ph-list-card').forEach(el => {
-    el.style.opacity = '0'; el.style.transform = 'translateY(20px)';
-    el.style.transition = 'opacity .5s ease, transform .5s ease';
-    io.observe(el);
-  });
-
-</script>
-<script>
 const farmaciasData = {
-  @foreach ($farmacias as $farmacia)
+  @foreach($farmacias as $farmacia)
+  @php
+    $rating = round($farmacia->avaliacoes->avg('classificacao') ?? 0, 1);
+    $nRev   = $farmacia->avaliacoes->count();
+    $hora   = now()->format('H:i');
+    $aberta = ($farmacia->horario_abertura ?? '08:00') <= $hora
+           && $hora <= ($farmacia->horario_fechamento ?? '22:00');
+  @endphp
   {{ $farmacia->id }}: {
     id:        {{ $farmacia->id }},
     name:      @json($farmacia->name),
-    bairro:    @json($farmacia->bairro),
+    bairro:    @json($farmacia->bairro ?? ''),
     endereco:  @json($farmacia->endereco ?? ''),
     telefone:  @json($farmacia->telefone ?? ''),
     email:     @json($farmacia->email ?? ''),
-    abertura:  @json($farmacia->horario_abertura ?? '08:00'),
+    abertura:  @json($farmacia->horario_abertura  ?? '08:00'),
     fechamento:@json($farmacia->horario_fechamento ?? '22:00'),
-    rating:    {{ number_format($farmacia->avaliacoes->avg('classificacao') ?? 0, 1) }},
-    reviews:   {{ $farmacia->avaliacoes->count() }},
+    rating:    {{ $rating }},
+    reviews:   {{ $nRev }},
+    aberta:    {{ $aberta ? 'true' : 'false' }},
+    lat:       {{ $farmacia->latitude  ?? 'null' }},
+    lng:       {{ $farmacia->longitude ?? 'null' }},
     img:       "https://images.unsplash.com/photo-1587854692152-cbe660dbde88?w=800&auto=format&fit=crop",
   },
   @endforeach
 };
+
+/* ══════════════════════════════════════════════════════════
+   MAPA LEAFLET
+══════════════════════════════════════════════════════════ */
+const map = L.map('pharmacyMap').setView([-8.8383, 13.2344], 12);
+
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+  maxZoom: 19,
+}).addTo(map);
+
+/* Ícone personalizado */
+const makeIcon = (aberta) => L.divIcon({
+  className: '',
+  html: `<div style="
+    width:30px;height:30px;
+    background:${aberta ? '#16a34a' : '#d94040'};
+    border:3px solid #fff;
+    border-radius:50% 50% 50% 0;
+    transform:rotate(-45deg);
+    box-shadow:0 3px 10px rgba(0,0,0,.3);
+  "></div>`,
+  iconSize:   [30, 30],
+  iconAnchor: [15, 30],
+  popupAnchor:[0, -32],
+});
+
+const mapMarkers = {};
+
+Object.values(farmaciasData).forEach(f => {
+  if (!f.lat || !f.lng) return;
+  const marker = L.marker([f.lat, f.lng], { icon: makeIcon(f.aberta) })
+    .addTo(map)
+    .bindPopup(`
+      <div class="lf-popup">
+        <strong>${f.name}</strong>
+        <span>${f.bairro}</span><br>
+        <span style="color:${f.aberta ? '#16a34a' : '#d94040'};font-weight:700;font-size:.75rem;">
+          ${f.aberta ? '● Aberta' : '● Fechada'}
+        </span>
+        &nbsp;·&nbsp;
+        <span style="color:#f59e0b;font-size:.75rem;">★ ${f.rating}</span><br>
+        <button class="lf-btn" onclick="openModal(${f.id})">Ver detalhes</button>
+      </div>`);
+  mapMarkers[f.id] = marker;
+});
+
+/* Colapsar/expandir mapa */
+function toggleMap() {
+  const body = document.getElementById('mapBody');
+  const btn  = document.getElementById('mapToggleBtn');
+  const hidden = body.style.display === 'none';
+  body.style.display  = hidden ? '' : 'none';
+  btn.innerHTML = hidden
+    ? '<i class="bi bi-chevron-up"></i> Ocultar'
+    : '<i class="bi bi-chevron-down"></i> Mostrar mapa';
+  if (hidden) setTimeout(() => map.invalidateSize(), 100);
+}
+
+/* ══════════════════════════════════════════════════════════
+   ESTADO DOS FILTROS
+══════════════════════════════════════════════════════════ */
+let filterStatus  = 'all';   // 'all' | 'open' | 'closed'
+let filterRating  = 0;       // mínimo de estrelas (0 = sem filtro)
+let filterDistKm  = 0;       // 0 = sem filtro de distância
+let userLat       = null;
+let userLng       = null;
+
+/* ── Localização do utilizador (para filtro de distância) ── */
+if (navigator.geolocation) {
+  navigator.geolocation.getCurrentPosition(pos => {
+    userLat = pos.coords.latitude;
+    userLng = pos.coords.longitude;
+    L.marker([userLat, userLng], {
+      icon: L.divIcon({
+        className:'',
+        html:'<div style="width:16px;height:16px;background:#099aa7;border-radius:50%;border:3px solid #fff;box-shadow:0 0 0 4px rgba(9,154,167,.25)"></div>',
+        iconSize:[16,16], iconAnchor:[8,8],
+      })
+    }).addTo(map).bindPopup('<strong>A sua localização</strong>');
+  }, () => {});
+}
+
+/* ══════════════════════════════════════════════════════════
+   FILTRO PRINCIPAL — actua sobre os elementos do DOM
+══════════════════════════════════════════════════════════ */
+function applyFilters() {
+  /* Ler estado actual dos controlos */
+  const chkOpen   = document.getElementById('chk-open').checked;
+  const chkClosed = document.getElementById('chk-closed').checked;
+  const ratingEl  = document.querySelector('input[name="ratingFilter"]:checked');
+  filterRating    = ratingEl ? parseInt(ratingEl.value) : 0;
+  filterDistKm    = parseInt(document.getElementById('distSlider').value) || 0;
+
+  /* Status: se ambos marcados ou nenhum → mostrar todos */
+  if ((chkOpen && chkClosed) || (!chkOpen && !chkClosed)) filterStatus = 'all';
+  else if (chkOpen)   filterStatus = 'open';
+  else                filterStatus = 'closed';
+
+  let visible = 0;
+
+  const allGrid = document.querySelectorAll('.ph-grid-item');
+  const allList = document.querySelectorAll('.ph-list-card');
+
+  allGrid.forEach((el, i) => {
+    const show = matchesFilters(el);
+    el.style.display = show ? '' : 'none';
+    if (show) visible++;
+    /* Sincroniza na lista */
+    if (allList[i]) allList[i].style.display = show ? 'flex' : 'none';
+    /* Sincroniza marcadores no mapa */
+    const id = getFarmaciaIdFromEl(el);
+    if (mapMarkers[id]) {
+      if (show) mapMarkers[id].addTo(map);
+      else      map.removeLayer(mapMarkers[id]);
+    }
+  });
+
+  document.getElementById('countVisible').textContent = visible;
+  document.getElementById('emptyState').style.display  = visible === 0 ? 'block' : 'none';
+  document.getElementById('paginationBar').style.display = visible === 0 ? 'none' : '';
+
+  renderActiveFilters();
+}
+
+function matchesFilters(el) {
+  const status = el.dataset.status;
+  const rating = parseFloat(el.dataset.rating) || 0;
+  const lat    = parseFloat(el.dataset.lat);
+  const lng    = parseFloat(el.dataset.lng);
+
+  /* Filtro de estado */
+  if (filterStatus !== 'all' && status !== filterStatus) return false;
+
+  /* Filtro de avaliação */
+  if (filterRating > 0 && rating < filterRating) return false;
+
+  /* Filtro de distância */
+  if (filterDistKm > 0 && userLat && userLng && lat && lng) {
+    const dist = haversine(userLat, userLng, lat, lng);
+    if (dist > filterDistKm) return false;
+  }
+
+  return true;
+}
+
+function getFarmaciaIdFromEl(el) {
+  /* Extrai o id do onclick do botão Ver dentro do card */
+  const btn = el.querySelector('[onclick*="openModal"]');
+  if (!btn) return null;
+  const m = btn.getAttribute('onclick').match(/\d+/);
+  return m ? parseInt(m[0]) : null;
+}
+
+/* Haversine */
+function haversine(lat1, lng1, lat2, lng2) {
+  const R = 6371;
+  const dLat = (lat2-lat1) * Math.PI/180;
+  const dLng = (lng2-lng1) * Math.PI/180;
+  const a = Math.sin(dLat/2)**2 + Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLng/2)**2;
+  return R * 2 * Math.asin(Math.sqrt(a));
+}
+
+/* ── Tags de filtros activos ── */
+function renderActiveFilters() {
+  const af = document.getElementById('activeFilters');
+  const tags = [];
+
+  if (filterStatus === 'open')   tags.push(['Abertas',   () => { document.getElementById('chk-open').checked=false; applyFilters(); }]);
+  if (filterStatus === 'closed') tags.push(['Fechadas',  () => { document.getElementById('chk-closed').checked=false; applyFilters(); }]);
+  if (filterRating > 0)          tags.push([filterRating+'★+', () => { document.querySelector('input[name="ratingFilter"]:checked').checked=false; applyFilters(); }]);
+  if (filterDistKm > 0)          tags.push([filterDistKm+' km', () => { document.getElementById('distSlider').value=0; onDistChange(0); }]);
+
+  af.innerHTML = tags.map(([label, fn], i) =>
+    `<span class="af-tag" onclick="activeFilterFns[${i}]()">
+       <i class="bi bi-x-circle-fill"></i> ${label}
+     </span>`
+  ).join('');
+
+  window.activeFilterFns = tags.map(t => t[1]);
+}
+
+/* ── Filtro de distância ── */
+function onDistChange(val) {
+  const v = parseInt(val);
+  document.getElementById('distVal').textContent = v === 0 ? 'Qualquer' : v + ' km';
+  filterDistKm = v;
+  applyFilters();
+}
+
+/* ── Quick filters (pills no topbar) ── */
+function quickFilter(el, val) {
+  document.querySelectorAll('.qf-tag').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+
+  const chkOpen   = document.getElementById('chk-open');
+  const chkClosed = document.getElementById('chk-closed');
+
+  if (val === 'open')   { chkOpen.checked=true;  chkClosed.checked=false; }
+  else if(val==='closed'){ chkOpen.checked=false; chkClosed.checked=true; }
+  else                  { chkOpen.checked=false;  chkClosed.checked=false; }
+
+  applyFilters();
+}
+
+/* ── Limpar filtros individuais ── */
+function clearFilter(type) {
+  if (type === 'status') {
+    document.getElementById('chk-open').checked   = false;
+    document.getElementById('chk-closed').checked = false;
+    filterStatus = 'all';
+    document.querySelectorAll('.qf-tag').forEach(t => t.classList.remove('active'));
+    document.getElementById('qf-all').classList.add('active');
+  }
+  if (type === 'rating') {
+    const checked = document.querySelector('input[name="ratingFilter"]:checked');
+    if (checked) checked.checked = false;
+    filterRating = 0;
+  }
+  applyFilters();
+}
+
+function resetAll() {
+  clearFilter('status');
+  clearFilter('rating');
+  document.getElementById('distSlider').value = 0;
+  onDistChange(0);
+}
+
+/* ══════════════════════════════════════════════════════════
+   ORDENAÇÃO
+══════════════════════════════════════════════════════════ */
+function sortCards() {
+  const val = document.getElementById('sortSel').value;
+  const grid = document.getElementById('gridContainer');
+  const list = document.getElementById('listContainer');
+
+  const getSortVal = (el) => {
+    if (val === 'rating') return -parseFloat(el.dataset.rating || 0);
+    if (val === 'name')   return el.dataset.name || '';
+    return 0;
+  };
+
+  const sortEls = (container, selector) => {
+    const items = [...container.querySelectorAll(selector)];
+    items.sort((a, b) => {
+      const va = getSortVal(a), vb = getSortVal(b);
+      return va < vb ? -1 : va > vb ? 1 : 0;
+    });
+    items.forEach(el => container.appendChild(el));
+  };
+
+  sortEls(grid, '.ph-grid-item');
+  sortEls(list, '.ph-list-card');
+}
+
+/* ══════════════════════════════════════════════════════════
+   VIEW TOGGLE
+══════════════════════════════════════════════════════════ */
+function setView(mode) {
+  document.body.className = mode + '-mode';
+  document.getElementById('gridBtn').classList.toggle('active', mode === 'grid');
+  document.getElementById('listBtn').classList.toggle('active', mode === 'list');
+  localStorage.setItem('farmView', mode);
+}
+const _sv = localStorage.getItem('farmView');
+if (_sv === 'list') setView('list');
+
+/* ══════════════════════════════════════════════════════════
+   MODAL
+══════════════════════════════════════════════════════════ */
+function openModal(id) {
+  const d = farmaciasData[id];
+  if (!d) return;
+
+  document.getElementById('modalImg').src = d.img;
+  document.getElementById('modalName').textContent = d.name;
+  document.getElementById('mAddr').textContent     = d.endereco || 'Endereço não disponível';
+  document.getElementById('mPhone').textContent    = d.telefone  || 'Telefone não disponível';
+  document.getElementById('mEmail').textContent    = d.email     || 'Email não disponível';
+
+  /* Badge de estado */
+  const badge = document.getElementById('modalBadge');
+  badge.textContent = d.aberta ? '● Aberta' : '● Fechada';
+  badge.style.background = d.aberta ? '#dcfce7' : '#fdecea';
+  badge.style.color      = d.aberta ? '#15803d' : '#c0392b';
+
+  /* Estrelas no modal */
+  let stars = '';
+  for (let s = 1; s <= 5; s++) {
+    stars += `<i class="bi bi-star${s <= Math.round(d.rating) ? '-fill' : ''}"
+               style="color:${s <= Math.round(d.rating) ? '#f59e0b' : '#e4f0f0'}"></i>`;
+  }
+  document.getElementById('modalRatingStars').innerHTML =
+    stars + ` <span style="color:var(--muted);font-size:.82rem;margin-left:.25rem">${d.rating} (${d.reviews} avaliações)</span>`;
+
+  /* Horário */
+  const days = ['Segunda','Terça','Quarta','Quinta','Sexta','Sábado','Domingo'];
+  const todayIdx = (new Date().getDay() + 6) % 7;
+  document.getElementById('mHours').innerHTML = days.map((day, i) =>
+    `<tr class="${i === todayIdx ? 'today' : ''}">
+       <td>${day}</td>
+       <td>${d.abertura} – ${d.fechamento}${i === todayIdx ? ' <strong style="color:var(--accent)">(hoje)</strong>' : ''}</td>
+     </tr>`
+  ).join('');
+
+  /* Botão encomendar */
+  document.getElementById('modalOrderBtn').href =
+    `{{ route('produtos.clientes') }}?farmacia_id=${id}`;
+
+  /* Centrar mapa no marcador */
+  if (d.lat && d.lng) {
+    map.flyTo([d.lat, d.lng], 15, { duration: 1 });
+    mapMarkers[id]?.openPopup();
+  }
+
+  new bootstrap.Modal(document.getElementById('pharmModal')).show();
+}
+
+/* ══════════════════════════════════════════════════════════
+   FAVORITO
+══════════════════════════════════════════════════════════ */
+function toggleFav(btn) {
+  const on = btn.classList.toggle('active');
+  btn.innerHTML = on ? '<i class="bi bi-heart-fill"></i>' : '<i class="bi bi-heart"></i>';
+  showToast(on ? 'Adicionado aos favoritos' : 'Removido dos favoritos', '');
+}
+
+/* ══════════════════════════════════════════════════════════
+   HEADER SCROLL + SCROLL TOP
+══════════════════════════════════════════════════════════ */
+const _hdr = document.getElementById('mainHeader');
+const _st  = document.getElementById('scroll-top');
+window.addEventListener('scroll', () => {
+  _hdr?.classList.toggle('scrolled', scrollY > 50);
+  _st.style.display = scrollY > 320 ? 'flex' : 'none';
+});
+
+/* ══════════════════════════════════════════════════════════
+   TOAST
+══════════════════════════════════════════════════════════ */
+function showToast(title, msg) {
+  document.getElementById('toastTitle').textContent = title;
+  document.getElementById('toastMsg').textContent   = msg ? ' ' + msg : '';
+  const t = document.getElementById('toastFc');
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3200);
+}
+
+/* ── Init ── */
+map.invalidateSize();
+
 </script>
 </body>
 </html>

@@ -186,30 +186,30 @@ class DatabaseSeeder extends Seeder
         //     ]);
         // }
 
-        Medicamento::create([
-            'name' => 'Paracetamol',
-            'preco' => 400.00,
-            'descricao' => 'klrw',
-            'dosagem' => 200 .'mg',
-            'forma_farmaceutica' => 'Âmpola',
-            'categoria_id' => 1,
-            // 'farmacia_id' => 1,
-            'created_at' => Carbon::now(),
-            'updated_at' => Carbon::now(),
+        // Medicamento::create([
+        //     'name' => 'Paracetamol',
+        //     'preco' => 400.00,
+        //     'descricao' => 'klrw',
+        //     'dosagem' => 200 .'mg',
+        //     'forma_farmaceutica' => 'Âmpola',
+        //     'categoria_id' => 1,
+        //     // 'farmacia_id' => 1,
+        //     'created_at' => Carbon::now(),
+        //     'updated_at' => Carbon::now(),
 
-        ]);
+        // ]);
 
-        StockItem::create([
-                'medicamento_id' => 30,
-                'farmacia_id' => 2,
-                'quantidade' => 1,
-                'preco' => 400.00,
-                'data_validade' => Carbon::now()->addMonths(6),
-                'lote' => Str::upper(Str::random(10)),
-                'ativo' => true,
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now(),
-        ]);
+        // StockItem::create([
+        //         'medicamento_id' => 30,
+        //         'farmacia_id' => 2,
+        //         'quantidade' => 1,
+        //         'preco' => 400.00,
+        //         'data_validade' => Carbon::now()->addMonths(6),
+        //         'lote' => Str::upper(Str::random(10)),
+        //         'ativo' => true,
+        //         'created_at' => Carbon::now(),
+        //         'updated_at' => Carbon::now(),
+        // ]);
 
         // Pedido::create([
         //     'user_id' => 3,
@@ -255,5 +255,15 @@ class DatabaseSeeder extends Seeder
         //     'latitude' => -23.5505,
         //     'longitude' => -46.6333,
         //  ]);
+
+        $farmacia = Farmacia::findOrFail(3);
+        $farmacia->update([
+            'endereco' => "Largo da Mutamba, n.º 5",
+            'rua' => "Rua Major Kanhangulo ",
+            'bairro' => "Mutamba",
+            'municipio' => "Luanda",
+            'latitude' => "-8.814700",
+            'longitude' => "13.230600",
+        ]);
     }
 }

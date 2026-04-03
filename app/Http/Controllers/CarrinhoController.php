@@ -29,8 +29,17 @@ class CarrinhoController extends Controller
         $total = $itens->sum(fn($item) => $item->subtotal);
         
         $enderecos = Endereco::where('user_id', Auth()->user()->id)->get();
-        // $payments = Pagamento::pluck('metodo');
-        return view('clientes.dashboard.carrinho', compact('itens', 'total' , 'enderecos' ));
+        
+        // Obter a farmácia (a primeira do carrinho; assumindo que todos os itens são da mesma farmácia)
+        $farmacia = $itens->first()?->stockItem->farmacia;
+        $farmaciaLat = $farmacia->latitude ?? null;
+        $farmaciaLng = $farmacia->longitude ?? null;
+
+        return view('clientes.dashboard.carrinho', compact(
+            'itens', 'total', 'enderecos', 'farmaciaLat', 'farmaciaLng'
+        ));
+
+        // return view('clientes.dashboard.carrinho', compact('itens', 'total' , 'enderecos' ));
     }
 
     public function adicionar(Request $request)

@@ -164,11 +164,17 @@ class FarmaciaController extends Controller
 
         $search = $request->input('query');
 
-        $farmacias = Farmacia::when($search, function ($query, $search) {
-                                return $query->where('name', 'LIKE', "%{$search}%")
-                                            ->orWhere('descricao', 'LIKE', "%{$search}%"); 
-                            })->paginate(6);
+        // $farmacias = Farmacia::when($search, function ($query, $search) {
+        //                         return $query->where('name', 'LIKE', "%{$search}%")
+        //                                     ->orWhere('descricao', 'LIKE', "%{$search}%"); 
+        //                     })->paginate(6);
 
+        $farmacias = Farmacia::where(function ($query) use  ($search){
+                                 $query->where('name', 'LIKE', "%{$search}%")
+                                            ->orWhere('bairro', 'LIKE', "%{$search}%")
+                                            ->orWhere('descricao', 'LIKE', "%{$search}%");
+                            })->paginate(6);
+                                   
         return view('clientes.dashboard.farmacias_resultado' , compact('farmacias'));
     }
     

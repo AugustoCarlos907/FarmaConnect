@@ -33,4 +33,5 @@ class DashboardEntregadorController extends Controller
 
         return view('entregadores.dashboard.index', compact('data'));
     }
+    
 }

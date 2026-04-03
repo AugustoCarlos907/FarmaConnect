@@ -11,6 +11,7 @@ use App\Http\Controllers\DashboardEntregadorController;
 use App\Http\Controllers\DashboardFarmaciaController;
 use App\Http\Controllers\EnderecoController;
 use App\Http\Controllers\EntregaController;
+use App\Http\Controllers\EntregadorController;
 use App\Http\Controllers\FacturaController;
 use App\Http\Controllers\FarmaciaController;
 use App\Http\Controllers\FileController;
@@ -80,14 +81,16 @@ use Twilio\Rest\Client;
         Route::post('/farmacia/relatorios/gerar', [ReportController::class, 'gerarRelatorioPedidos'])->name('farmacias.report');
         // Route::post('/relatorios/gerar', [ReportController::class, 'gerarRelatorioClientes'])->name('farmacias.reportClientesk');
 
-        
-        });
+    });
     
     //Entregadores
     Route::middleware(['auth', 'entregador'])->group(function(){
 
-        Route::get('entregador/dashboard', [DashboardEntregadorController::class, 'dashboard'])->name('index.entregadores');
-        Route::get('entregas/concluidas/{entregadorId}', [EntregaController::class, 'concluidasPorEntregador']);
+        Route::get('entregador/dashboard', [EntregaController::class, 'dashboard'])->name('index.entregadores');
+        Route::get('entregador/entregas', [EntregaController::class, 'entregas'])->name('entregas.entregadores');
+        Route::get('entregador/ganhos', [EntregaController::class, 'ganhos'])->name('ganhos.entregadores');
+        Route::get('entregador/perfil/{id}', [EntregadorController::class, 'perfil'])->name('perfil.entregadores');
+
         Route::get('entregas/em-transito/{entregadorId}', [EntregaController::class, 'emTransitoPorEntregador']);
         Route::get('entregas/canceladas/{entregadorId}', [EntregaController::class, 'canceladasPorEntregador']);
         Route::get('entregas/hoje/{entregadorId}', [EntregaController::class, 'deHojePorEntregador']);
@@ -96,32 +99,34 @@ use Twilio\Rest\Client;
     });
 
 
-    Route::get('/sms', function () {
+//     Route::get('/sms', function () {
 
-    $sid = config('services.twilio.sid');
-    $token = config('services.twilio.token');
-    $from = config('services.twilio.from');
+//     $sid = config('services.twilio.sid');
+//     $token = config('services.twilio.token');
+//     $from = config('services.twilio.from');
 
-    $client = new Client($sid, $token);
+//     $client = new Client($sid, $token);
 
-    try {
-        $message = $client->messages->create(
-            '+244959361115', 
-            [
-                'from' => $from,
-                'body' => 'FarmaConnect Testando Agora - Augusto Carlos',
-            ]
-        );
+//     try {
+//         $message = $client->messages->create(
+//             '+244959361115', 
+//             [
+//                 'from' => $from,
+//                 'body' => 'FarmaConnect Testando Agora - Augusto Carlos',
+//             ]
+//         );
 
-        return "SMS enviado com sucesso! SID: " . $message->sid;
+//         return "SMS enviado com sucesso! SID: " . $message->sid;
 
-    } catch (\Exception $e) {
-        return "Erro ao enviar SMS: " . $e->getMessage();
-    }
+//     } catch (\Exception $e) {
+//         return "Erro ao enviar SMS: " . $e->getMessage();
+//     }
 
-});
+// });
 
-    //clientes
+
+
+
     Route::middleware(['auth' , 'user'])->group(function(){
         Route::get('/home', function(){ 
             // Auth::loginUsingId(3);

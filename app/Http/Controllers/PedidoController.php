@@ -22,6 +22,7 @@ class PedidoController extends Controller
 
      public function store(Request $request)
     {
+
         try {
 
         return DB::transaction(function () use ($request) {
@@ -38,7 +39,8 @@ class PedidoController extends Controller
             $request->endereco,
             $request->latitude,
             $request->longitude,
-            $request->metodo_pagamento
+            $request->metodo_pagamento,
+            
         );
 
         if (!$pedido) {

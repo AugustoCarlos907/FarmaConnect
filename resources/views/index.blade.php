@@ -810,8 +810,10 @@
                 <i class="bi bi-clock"></i> Aberta agora
               </span>
               <div class="pharmacy-actions">
-                <a href="#" class="btn-view">Ver medicamentos</a>
-                <a href="#" class="btn-order">Pedir entrega</a>
+                <a href="{{ route('farmacias.list') }}" class="btn-view"> 
+                    <i class="bi bi-eye"></i> Ver Detalhes
+                </a>
+                {{-- <a href="#" class="btn-order">Pedir entrega</a> --}}
               </div>
             </div>
           </div>
@@ -828,8 +830,11 @@
                 <i class="bi bi-clock"></i> Aberta agora
               </span>
               <div class="pharmacy-actions">
-                <a href="#" class="btn-view">Ver medicamentos</a>
-                <a href="#" class="btn-order">Pedir entrega</a>
+                
+                <a href="{{ route('farmacias.list') }}" class="btn-view"> 
+                    <i class="bi bi-eye"></i> Ver Detalhes
+                </a>
+                {{-- <a href="#" class="btn-order">Pedir entrega</a> --}}
               </div>
             </div>
           </div>
@@ -846,8 +851,10 @@
                 <i class="bi bi-clock"></i> Aberta agora
               </span>
               <div class="pharmacy-actions">
-                <a href="#" class="btn-view">Ver medicamentos</a>
-                <a href="#" class="btn-order">Pedir entrega</a>
+                <a href="{{ route('farmacias.list') }}" class="btn-view"> 
+                    <i class="bi bi-eye"></i> Ver Detalhes
+                </a>
+                {{-- <a href="#" class="btn-order">Pedir entrega</a> --}}
               </div>
             </div>
           </div>

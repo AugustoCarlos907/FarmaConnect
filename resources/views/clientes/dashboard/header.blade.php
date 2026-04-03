@@ -249,7 +249,8 @@
 
             <div class="d-flex align-items-center gap-3 flex-shrink-0 ms-auto ms-lg-0">
                 <a href="{{ route('carrinho.clientes') }}" class="hdr-icon d-none d-sm-inline-flex">
-                    <i class="bi bi-bag"></i>
+                    <i class="bi bi-cart"></i>
+                    {{-- <i class="bi bi-bag"></i> --}}
                     <span class="hdr-badge">{{ $cartCount }}</span>
                 </a>
 

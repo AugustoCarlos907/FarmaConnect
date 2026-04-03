@@ -237,7 +237,7 @@
 
             <div class="hsb-inner">
               <i class="bi bi-hospital"></i>
-              <input type="text" id="searchPharm" name="query" placeholder="Nome da farmácia " oninput="filterPharmacies()" value="{{ request('query') }}">
+              <input type="text" id="searchPharm" name="query" placeholder="Nome ou bairro da farmácia..." oninput="filterPharmacies()" value="{{ request('query') }}">
     
               <button type="submit" class="hsb-btn"><i class="bi bi-search"></i> Pesquisar</button>
             </div>

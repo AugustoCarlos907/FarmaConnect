@@ -7,12 +7,13 @@ use App\Models\Entregador;
 use App\Models\Pedido;
 use DB;
 use Exception;
+use Illuminate\Support\Facades\Auth;
 
 class EntregaService{
 
     // Entregas concluídas
     public function entregasConcluidasPorEntregador($entregadorId) {
-        return Entrega::where('status', 'concluída')
+        return Entrega::where('status', 'entregue')
             ->where('entregador_id', $entregadorId)
             ->orderByDesc('id')
             ->paginate(10);
@@ -36,24 +37,26 @@ class EntregaService{
     public function getEntregasDeHojeByEntregador($entregadorId ) {
         return Entrega::where(function($query) use ($entregadorId) {
                 $query->where('entregador_id', $entregadorId)
-                      ->where('status', 'concluída');
+                      ->where('status', 'entregue');
             })
             ->whereDate('created_at', now()->toDateString())
             ->orderByDesc('id')
             ->paginate(10);
     }
 
-    public function getAllEntregasByEntregador($perPage){
-        return Entrega::with('entregador')
+    public function getAllEntregasByEntregador(){
+        return Entrega::where('entregador_id' , Auth::user()->id)
                         ->orderByDesc('id')
-                        ->get();
+                        ->paginate(10);
     }
 
-    public function getLastEntregasByEntregador($entregadorId, $limit) {
-        return Entrega::where('entregador_id', $entregadorId)
-            ->orderByDesc('id')
-            ->limit($limit)
-            ->get();
+    public function getLastEntregasByEntregador($entregadorId) {
+        return Entrega::where(function($query) use ($entregadorId){
+            $query->where('entregador_id', $entregadorId)
+                  ->where('status' , 'entregue');
+        })->orderByDesc('id')
+          ->limit(4)
+          ->get();
     }
 
         

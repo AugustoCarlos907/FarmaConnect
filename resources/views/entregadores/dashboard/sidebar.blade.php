@@ -1,0 +1,244 @@
+<style>
+.sidebar {
+  width: 260px;
+  background: var(--navy);
+  position: fixed;
+  top: 0; left: 0;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  overflow: hidden;
+  z-index: 100;
+  animation: slideInLeft .5s cubic-bezier(.16,1,.3,1) both;
+}
+
+/* subtle background texture */
+.sidebar::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 160% 60% at 50% -10%, rgba(11,191,204,.12) 0%, transparent 60%),
+    radial-gradient(ellipse 80% 80% at 110% 110%, rgba(11,191,204,.07) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.sidebar-top {
+  padding: 2rem 1.6rem 1.2rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.logo {
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin-bottom: 2.5rem;
+  text-decoration: none;
+  display: block;
+}
+.logo .farma { color: var(--accent); }
+.logo .connect { color: #e0f7f5; }
+
+/* Deliverer profile strip */
+.driver-strip {
+  display: flex;
+  align-items: center;
+  gap: .9rem;
+  padding: 1rem 1.6rem;
+  border-bottom: 1px solid var(--border);
+}
+.driver-avatar {
+  width: 40px; height: 40px;
+  background: linear-gradient(135deg, var(--teal), var(--teal-dim));
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  color: #fff;
+  font-size: 1.1rem;
+  flex-shrink: 0;
+  box-shadow: 0 4px 14px rgba(11,191,204,.35);
+}
+.driver-info { flex: 1; min-width: 0; }
+.driver-name { font-weight: 600; color: #fff; font-size: .95rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.driver-id { font-size: .75rem; color: var(--text-dim); }
+
+/* Status pill */
+.status-pill {
+  display: flex;
+  align-items: center;
+  gap: .4rem;
+  padding: .3rem .7rem;
+  border-radius: 50px;
+  font-size: .72rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all .2s;
+  white-space: nowrap;
+}
+.status-pill.online  { background: rgba(30,201,122,.15); color: var(--green); border: 1px solid rgba(30,201,122,.25); }
+.status-pill.offline { background: rgba(240,78,96,.12);  color: var(--red);   border: 1px solid rgba(240,78,96,.2); }
+.status-dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; animation: blink 2s infinite; }
+
+/* Nav */
+.sidebar-nav {
+  flex: 1;
+  padding: 1rem 1rem;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: .15rem;
+}
+.sidebar-nav::-webkit-scrollbar { width: 4px; }
+.sidebar-nav::-webkit-scrollbar-track { background: transparent; }
+.sidebar-nav::-webkit-scrollbar-thumb { background: var(--navy-4); border-radius: 4px; }
+
+.nav-label {
+  font-size: .67rem;
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  padding: .8rem .8rem .3rem;
+}
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  gap: .85rem;
+  padding: .72rem .9rem;
+  border-radius: var(--r12);
+  color: rgba(255,255,255,.5);
+  text-decoration: none;
+  font-size: .9rem;
+  font-weight: 500;
+  transition: all .2s;
+  position: relative;
+  cursor: pointer;
+}
+.nav-link i { font-size: 1.05rem; width: 20px; text-align: center; flex-shrink: 0; }
+.nav-link:hover { color: rgba(255,255,255,.85); background: rgba(255,255,255,.05); }
+.nav-link.active {
+  color: #fff;
+  background: linear-gradient(135deg, rgba(11,191,204,.25), rgba(11,191,204,.1));
+  border: 1px solid rgba(11,191,204,.2);
+}
+.nav-link.active i { color: var(--teal); }
+.nav-link.active::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 20%; bottom: 20%;
+  width: 3px;
+  background: var(--teal);
+  border-radius: 0 4px 4px 0;
+}
+
+.nav-badge {
+  margin-left: auto;
+  padding: .18rem .55rem;
+  border-radius: 50px;
+  font-size: .68rem;
+  font-weight: 700;
+}
+.nb-teal   { background: rgba(11,191,204,.2);  color: var(--teal); }
+.nb-green  { background: rgba(30,201,122,.15); color: var(--green); }
+.nb-amber  { background: rgba(245,166,35,.15); color: var(--amber); }
+.nb-red    { background: rgba(240,78,96,.15);  color: var(--red); }
+
+.nav-divider { height: 1px; background: var(--border); margin: .6rem 0; }
+
+/* Animations */
+@keyframes slideInLeft {
+  from { transform: translateX(-20px); opacity: 0; }
+  to   { transform: translateX(0);     opacity: 1; }
+}
+@keyframes blink {
+  0%,100% { opacity: 1; }
+  50%      { opacity: .4; }
+}
+</style>
+
+<aside class="sidebar">
+  <div class="sidebar-top">
+    <a href="#" class="logo">
+      <span class="farma" style="color: #22c2d1">Farma</span><span class="connect">Connect</span>
+    </a>
+  </div>
+
+  <div class="driver-strip">
+    <div class="driver-avatar"></div>
+    <div class="driver-info">
+      <div class="driver-name">{{ Auth::user()->name }}</div>
+      <div class="driver-id">ID · ENT-001</div>
+    </div>
+    @php
+    $entregador = Auth::user()->entregador;
+    @endphp
+    <div class="status-pill online" id="statusPill" onclick="toggleStatus()">
+      <span class="status-dot"></span>
+      <span id="statusLabel">{{ $entregador->status =='Ativo'? 'Online' : 'Offline'  }}</span>
+    </div>
+  </div>
+
+  <nav class="sidebar-nav">
+    <span class="nav-label">Principal</span>
+
+    <a href="{{ route('index.entregadores') }}" class="nav-link active">
+      <i class="bi bi-speedometer2"></i>
+      <span>Dashboard</span>
+    </a>
+    <a href="{{ route('entregas.entregadores') }}" class="nav-link ">
+      <i class="bi bi-truck"></i>
+      <span>Entregas</span>
+      {{-- <span class="nav-badge nb-red">3</span> --}}
+    </a>
+    {{-- <a href="#" class="nav-link">
+      <i class="bi bi-clock-history"></i>
+      <span>Histórico</span>
+      <span class="nav-badge nb-teal">127</span>
+    </a> --}}
+    <a href="{{ route('ganhos.entregadores') }}" class="nav-link">
+      <i class="bi bi-cash-stack"></i>
+      <span>Ganhos</span>
+      {{-- <span class="nav-badge nb-green">4.200 KZ</span> --}}
+    </a>
+
+    <span class="nav-label" style="margin-top:.4rem">Conta</span>
+
+    {{-- <a href="#" class="nav-link">
+      <i class="bi bi-folder2"></i>
+      <span>Documentos</span>
+      <span class="nav-badge nb-amber">2</span>
+    </a> --}}
+    <a href="{{ route('perfil.entregadores' , ['id'=>Auth::user()->id]) }}" class="nav-link">
+      <i class="bi bi-person-circle"></i>
+      <span>Perfil</span>
+    </a>
+
+    <div class="nav-divider"></div>
+
+    <a href="#" class="nav-link" style="color:rgba(240,78,96,.7)" 
+      onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+        <i class="bi bi-box-arrow-right"></i>
+        <span>Sair</span>
+    </a>
+
+    <form id="logout-form" action="{{ route('logout', ['id' => Auth::user()->id]) }}" method="POST" style="display: none;">
+        @csrf
+    </form>
+
+        </a>
+  </nav>
+</aside>
+
+<script>
+    /* ── STATUS TOGGLE ── */
+let isOnline = true;
+function toggleStatus() {
+  isOnline = !isOnline;
+  const pill  = document.getElementById('statusPill');
+  const label = document.getElementById('statusLabel');
+  pill.className  = 'status-pill ' + (isOnline ? 'online' : 'offline');
+  label.textContent = isOnline ? 'Online' : 'Offline';
+}
+</script>

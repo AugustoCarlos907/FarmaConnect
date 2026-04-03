@@ -8,6 +8,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
+    /* (todos os estilos mantidos, iguais aos seus) */ 
     :root{--accent:#099aa7;--accent-dark:#067e8a;--heading:#1f2f31;--text:#363f40;--soft:#dff3f0;--mint:#eaf6f5;--muted:#6c8285;--border:#e4f0f0;--shadow:0 8px 32px rgba(9,154,167,.08);}
     *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
     html{scroll-behavior:smooth;}
@@ -400,14 +401,15 @@
           </div>
           <div class="ac-body">
             @forelse($enderecos as $endereco)
-              <div class="addr-option {{ $loop->first ? 'selected' : '' }}"
-                   onclick="selectAddr(this)"
-                   data-endereco="{{ $endereco->endereco }}"
-                   data-lat="{{ $endereco->latitude  ?? '' }}"
-                   data-lng="{{ $endereco->longitude ?? '' }}">
-                <div class="ao-label">{{ $endereco->name }}</div>
-                <div class="ao-addr">{{ $endereco->endereco }}</div>
+              <div class="addr-option" 
+                  onclick="selectAddr(this)"
+                  data-endereco="{{ $endereco->endereco }}"
+                  data-lat="{{ $endereco->latitude  ?? '' }}"
+                  data-lng="{{ $endereco->longitude ?? '' }}">
+                  <div class="ao-label">{{ $endereco->name }}</div>
+                  <div class="ao-addr">{{ $endereco->endereco }}</div>
               </div>
+
             @empty
               <p style="font-size:.84rem;color:var(--muted)">
                 <i class="bi bi-exclamation-circle me-1"></i> Nenhuma morada guardada.
@@ -463,20 +465,6 @@
           <div class="sc-head"><h6><i class="bi bi-receipt"></i> Resumo do pedido</h6></div>
           <div class="sc-body">
 
-            {{--
-              ═══════════════════════════════════════════════════
-              FORM DO PEDIDO — fica apenas no resumo (col direita)
-              para não envolver os forms secundários de qty/remover.
-
-              Campos enviados para PedidoController@store → criarPedido():
-                items[N][stockId]    = stock_item_id
-                items[N][quantidade] = quantidade
-                endereco             = texto da morada seleccionada
-                latitude             = lat (actualizada por JS)
-                longitude            = lng (actualizada por JS)
-                metodo_pagamento     = iban | express | dinheiro
-              ═══════════════════════════════════════════════════
-            --}}
             <form action="{{ route('pedidos.store') }}" method="POST" id="formPedido" novalidate>
             @csrf
 
@@ -487,10 +475,10 @@
             @endforeach
 
             {{-- endereco / lat / lng — valor inicial = primeira morada guardada --}}
-            <input type="hidden" name="endereco"  id="h-endereco" value="{{ $enderecos->first()->endereco  ?? '' }}">
-            <input type="hidden" name="latitude"  id="h-lat"      value="{{ $enderecos->first()->latitude  ?? '' }}">
-            <input type="hidden" name="longitude" id="h-lng"      value="{{ $enderecos->first()->longitude ?? '' }}">
-
+            <input type="hidden" name="endereco"  id="h-endereco" value="">
+            <input type="hidden" name="latitude"  id="h-lat"      value="">
+            <input type="hidden" name="longitude" id="h-lng"      value="">
+            <input type="hidden" name="taxa_entrega" id="taxaEntregaHidden" value="0">
             {{-- metodo_pagamento — valor inicial = express; actualizado pelo JS selectPay() --}}
             <input type="hidden" name="metodo_pagamento" id="h-metodo" value="express">
 
@@ -514,9 +502,9 @@
 
             <div class="tot-divider"></div>
             <div class="tot-row"><span>Subtotal</span><span>{{ number_format($total,0,',','.') }} Kz</span></div>
-            {{-- <div class="tot-row"><span>Taxa de entrega</span><span id="sumDelivery">800 Kz</span></div> --}}
+            <div class="tot-row"><span>Taxa de entrega</span><span id="sumDelivery">-- Kz</span></div>            
+            <div class="tot-row"><span>Distância</span><span id="sumDistance">-- km</span></div>
             <div class="tot-row bold"><span>Total</span><span id="sumTotal">{{ number_format($total,0,',','.') }} Kz</span></div>
-
             <div style="background:var(--mint);border-radius:12px;padding:.75rem 1rem;margin:1rem 0;font-size:.78rem;color:var(--muted);display:flex;align-items:center;gap:.5rem">
               <i class="bi bi-info-circle-fill" style="color:var(--accent);flex-shrink:0"></i>
               O pagamento só é cobrado após a confirmação da farmácia.
@@ -589,6 +577,28 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script>
+
+// Coordenadas da farmácia (do backend)
+const farmaciaLat = {{ $farmaciaLat ?? 'null' }};
+const farmaciaLng = {{ $farmaciaLng ?? 'null' }};
+
+function haversine(lat1, lng1, lat2, lng2) {
+    const R = 6371; // km
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLng = (lng2 - lng1) * Math.PI / 180;
+    const a = Math.sin(dLat/2)**2 +
+              Math.cos(lat1 * Math.PI/180) * Math.cos(lat2 * Math.PI/180) *
+              Math.sin(dLng/2)**2;
+    return R * 2 * Math.asin(Math.sqrt(a));
+}
+
+function calcularTaxaEntrega(distanciaKm) {
+    const bloco = 16;      // km
+    const taxaPorBloco = 300; // Kz
+    const blocos = Math.max(1, Math.ceil(distanciaKm / bloco));
+    return blocos * taxaPorBloco;
+}
+
 const subtotalBase = {{ (int) $total }};
 let deliveryFee = 800;
 
@@ -601,18 +611,41 @@ function selectAddr(el) {
     document.querySelectorAll('.addr-option').forEach(addr => addr.classList.remove('selected'));
     el.classList.add('selected');
 
-    // Obter os valores dos data-* atributos
     const endereco = el.getAttribute('data-endereco') || '';
-    const lat = el.getAttribute('data-lat') || '';
-    const lng = el.getAttribute('data-lng') || '';
+    const lat = parseFloat(el.getAttribute('data-lat'));
+    const lng = parseFloat(el.getAttribute('data-lng'));
 
-    // Preencher os campos hidden
     document.getElementById('h-endereco').value = endereco;
-    document.getElementById('h-lat').value = lat;
-    document.getElementById('h-lng').value = lng;
+    document.getElementById('h-lat').value = lat || '';
+    document.getElementById('h-lng').value = lng || '';
 
-    console.log('Endereço selecionado:', endereco, 'lat:', lat, 'lng:', lng);
+    // Calcular taxa de entrega se tivermos coordenadas da farmácia e do endereço
+    let taxa = 0;
+    let distancia = 0;
 
+    if (farmaciaLat && farmaciaLng && !isNaN(lat) && !isNaN(lng)) {
+        distancia = haversine(farmaciaLat, farmaciaLng, lat, lng);
+        taxa = calcularTaxaEntrega(distancia);
+    } else {
+        // Se faltar alguma coordenada, usa uma taxa fixa (ex: 800 Kz)
+        taxa = 800;
+        distancia = 0;
+        console.warn('Coordenadas da farmácia ou do endereço não disponíveis. Aplicada taxa fixa.');
+    }
+
+    // Actualizar o resumo
+    const sumDelivery = document.getElementById('sumDelivery');
+    const sumTotal = document.getElementById('sumTotal');
+    const sumDistance = document.getElementById('sumDistance');
+    const taxaEntregaHidden = document.getElementById('taxaEntregaHidden');
+
+    if (sumDelivery) sumDelivery.textContent = taxa === 0 ? 'Grátis' : taxa.toLocaleString('pt-AO') + ' Kz';
+    if (sumDistance) sumDistance.textContent = distancia.toFixed(2) + ' km';
+    const totalFinal = subtotalBase + taxa;
+    if (sumTotal) sumTotal.textContent = totalFinal.toLocaleString('pt-AO') + ' Kz';
+    if (taxaEntregaHidden) taxaEntregaHidden.value = taxa;
+
+    window.taxaEntregaCalculada = taxa;
 }
 
 /* ── ENTREGA ──────────────────────────────────────── */
@@ -634,14 +667,13 @@ function selectPay(el, metodo) {
   document.getElementById('h-metodo').value = metodo;
 }
 
-/* ── TOTAIS VISUAIS ───────────────────────────────── */
+/* ── TOTAIS VISUAIS (se necessário) ───────────────── */
 function updateTotals() {
   const total = subtotalBase + deliveryFee;
-  document.getElementById('sumDelivery').textContent = deliveryFee === 0
-    ? 'Grátis'
-    : deliveryFee.toLocaleString('pt-AO') + ' Kz';
-  document.getElementById('sumTotal').textContent =
-    total.toLocaleString('pt-AO') + ' Kz';
+  const sumDelivery = document.getElementById('sumDelivery');
+  const sumTotal = document.getElementById('sumTotal');
+  if (sumDelivery) sumDelivery.textContent = deliveryFee === 0 ? 'Grátis' : deliveryFee.toLocaleString('pt-AO') + ' Kz';
+  if (sumTotal) sumTotal.textContent = total.toLocaleString('pt-AO') + ' Kz';
 }
 
 /* ── VALIDAÇÃO PRÉ-SUBMIT ─────────────────────────── */
@@ -661,7 +693,6 @@ document.getElementById('formPedido').addEventListener('submit', function (e) {
     return;
   }
 
-  /* Bloqueia contra dupla submissão */
   const btn = document.getElementById('btnConfirmar');
   btn.disabled = true;
   btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status"></span> A processar…';
@@ -702,3 +733,4 @@ window.addEventListener('scroll', () => {
 
 </body>
 </html>
+```

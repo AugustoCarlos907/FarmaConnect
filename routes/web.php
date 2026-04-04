@@ -30,7 +30,7 @@ use Twilio\Rest\Client;
         })->name('index');
 
 
-        Route::get('client/register', [AuthController::class, 'create'])->name('register');
+        Route::get('cliente/register', [AuthController::class, 'create'])->name('register');
         Route::post('/register', [AuthController::class, 'store']);
 
         Route::get('/email/verify', function () {
@@ -54,7 +54,7 @@ use Twilio\Rest\Client;
     })->name('companhia.farmacia.create');
 
     Route::post('companhia/register/farmacia', [CompanhiaController::class, 'registerFarmacia'])->name('companhia.farmacia.register');
-    // Route::post('companhia/register/farmacia', [CompanhiaController::class, 'registerFarmacia']);
+
 
     //farmacias
     Route::middleware(['auth', 'farma'])->group(function(){ 
@@ -90,6 +90,9 @@ use Twilio\Rest\Client;
         Route::get('entregador/entregas', [EntregaController::class, 'entregas'])->name('entregas.entregadores');
         Route::get('entregador/ganhos', [EntregaController::class, 'ganhos'])->name('ganhos.entregadores');
         Route::get('entregador/perfil/{id}', [EntregadorController::class, 'perfil'])->name('perfil.entregadores');
+        Route::post('/entregador/concluir-entrega/{id}' , [EntregaController::class , 'concluir'])->name('concluir.entrega');
+
+        Route::post('/entregador/status', [EntregadorController::class, 'updateStatus'])->name('entregador.status.update');
 
         Route::get('entregas/em-transito/{entregadorId}', [EntregaController::class, 'emTransitoPorEntregador']);
         Route::get('entregas/canceladas/{entregadorId}', [EntregaController::class, 'canceladasPorEntregador']);

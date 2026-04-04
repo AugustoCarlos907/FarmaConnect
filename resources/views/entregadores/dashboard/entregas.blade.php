@@ -207,7 +207,9 @@
 <div class="layout">
 
   <!-- ── SIDEBAR ── -->
-  <aside class="sidebar">
+  @include('entregadores.dashboard.sidebar')
+
+  {{-- <aside class="sidebar">
     <div class="sidebar-top">
       <a href="#" class="logo">
         <span class="farma">Farma</span><span class="connect">Connect</span>
@@ -252,7 +254,7 @@
 
         </a>
     </nav>
-  </aside>
+  </aside> --}}
 
   <!-- ── MAIN ── -->
   <main class="main">
@@ -439,10 +441,13 @@
                     Detalhes
                   </button>
                   @if($entrega->status === 'em_transito')
+                  <form action="{{ route('concluir.entrega',['id'=>$entrega->id]) }}" method="POST">
+                    @csrf
                     <button class="btn-concluir"
-                            onclick="concluirEntrega({{ $entrega->id }}, this)">
+                           type="submit">
                       <i class="bi bi-check2-circle"></i> Concluir
                     </button>
+                  </form>
                     <button class="btn-cancelar"
                             onclick="abrirCancelar({{ $entrega->id }})">
                       <i class="bi bi-x-circle"></i>

@@ -312,7 +312,8 @@
     <div class="topbar">
       <div class="topbar-left">
         <div>
-          <div class="topbar-sub">{{ \Carbon\Carbon::now()->translatedFormat('l, j \\d\\e F \\d\\e Y') }}</div>
+          <div class="topbar-greeting">Ganhos</div>
+          <div class="topbar-sub">{{ \Carbon\Carbon::now()->locale('pt')->translatedFormat('l, j \\d\\e F \\d\\e Y') }}</div>
         </div>
       </div>
       <div class="topbar-right">

@@ -366,7 +366,7 @@
         <div><div class="sum-val">{{ Auth::user()->pedidos()->where('status', 'Concluído')->count() }}</div><div class="sum-lbl">Entregues</div></div>
       </div>
       <div class="sum-card">
-        <div><div class="sum-val">0</div><div class="sum-lbl">Total gasto</div></div>
+        <div><div class="sum-val">{{ Auth::user()->pedidos()->where('status', 'Concluído')->sum('total') }} Kz</div><div class="sum-lbl">Total gasto</div></div>
       </div>
     </div>
   </div>

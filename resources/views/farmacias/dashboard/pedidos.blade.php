@@ -671,7 +671,7 @@
                   $cliente = $pedido->user ;
                   $items = $pedido->items;
                   $total = $items->sum(function($item) {
-                      return $item->preco * $item->quantidade;
+                      return $item->preco_unitario * $item->quantidade;
                   });
                   $primeiroItem = $items->first();
                   $restantes = $items->count() - 1;
@@ -707,10 +707,10 @@
                     </div>
                   </td>
                   <td class="meds-cell">
-                    <div class="med-name">{{ $primeiroItem->medicamento->name ?? $primeiroItem->name ?? 'Medicamento' }}</div>
-                    @if($restantes > 0)
+                    <div class="med-name">{{ $items->count() ?? $primeiroItem->name ?? 'Medicamento' }}</div>
+                    {{-- @if($restantes > 0)
                       <div class="med-more">+{{ $restantes }} mais</div>
-                    @endif
+                    @endif --}}
                   </td>
 
                   <td>
@@ -719,34 +719,18 @@
                     </span>
                   </td>
                   <td>
-                    @if($pedido->entregador)
+                    @if($pedido->entrega )
                       <div class="entregador-cell">
-                        <div class="del-dot {{ $pedido->entregador->status == 'online' ? 'dd-online' : 'dd-busy' }}"></div>
-                        <span style="font-size:.78rem;color:var(--text-2)">{{ $pedido->entregador->name }}</span>
+                        <span style="font-size:.78rem;color:var(--text-2)"><strong>{{ $pedido->entrega->entregador->name }}</strong></span>
                       </div>
+
                     @else
-                      <span style="font-size:.75rem;color:var(--text-4)">—</span>
+                      <span style="font-size:.75rem;color:var(--text-4)">UNKNOWN</span>
                     @endif
                   </td>
                   <td><span class="price-val">{{ number_format($total, 0, ',', '.') }} Kz</span></td>
                   <td>
-                      <!-- Botões existentes (com JavaScript) -->
-                      {{-- <div class="row-actions">
-                          <button class="act-btn" title="Ver detalhe" onclick="openDrawer({{ $pedido->id }})"><i class="bi bi-eye"></i></button>
-                          @if(in_array($pedido->status, ['Pendente', 'Aprovado']))
-                              <button class="act-btn" title="Preparar" onclick="changeStatus({{ $pedido->id }}, 'prep')"><i class="bi bi-box-seam"></i></button>
-                          @endif
-                          @if($pedido->status == 'pago')
-                              <button class="act-btn" title="Enviar" onclick="changeStatus({{ $pedido->id }}, 'route')"><i class="bi bi-bicycle"></i></button>
-                          @endif
-                          @if($pedido->status == 'Em Entrega')
-                              <button class="act-btn" title="Concluir" onclick="changeStatus({{ $pedido->id }}, 'done')"><i class="bi bi-check-circle"></i></button>
-                          @endif
-                          @if(!in_array($pedido->status, ['Concluído', 'Cancelado', 'Rejeitado']))
-                              <button class="act-btn d" title="Cancelar" onclick="openCancelModal({{ $pedido->id }})"><i class="bi bi-x-circle"></i></button>
-                          @endif
-                      </div> --}}
-
+                     
                          <!-- NOVOS BOTÕES DE APROVAÇÃO -->
                     <div class="workflow-actions">
                       @if($pedido->status == "Pendente")
@@ -850,14 +834,33 @@
 </div>
 
 <script>
+  function escapeHtml(str) {
+    if (!str) return '';
+    return str.replace(/[&<>]/g, function(m) {
+        if (m === '&') return '&amp;';
+        if (m === '<') return '&lt;';
+        if (m === '>') return '&gt;';
+        return m;
+    });
+}
 /* ══ DADOS DO BACKEND ═══════════════════════════ */
 const pedidosBackend = @json($pedidos->items());
 const entregadoresBackend = @json($entregadores ?? []);
 
 let allOrders = pedidosBackend.map(p => {
     const cliente = p.user || {};
-    const items = p.items || [];
-    const total = items.reduce((sum, item) => sum + (item.preco * item.quantidade), 0);
+    // Mapeamento completo dos itens
+    const items = (p.items || []).map(item => ({
+        id: item.id,
+        name: item.stockItem?.medicamento?.name || 'Medicamento',
+        quantidade: item.quantidade,
+        preco_unitario: item.preco_unitario,
+        subtotal: item.subtotal,
+        prescricao_path: item.prescricao_path || null,
+        requer_receita: item.stockItem?.medicamento?.requer_receita || false
+    }));
+    
+    const total = items.reduce((sum, it) => sum + (it.subtotal || it.preco_unitario * it.quantidade), 0);
     
     return {
         id: p.id,
@@ -869,18 +872,19 @@ let allOrders = pedidosBackend.map(p => {
             email: cliente.email || '',
             initials: cliente.name ? cliente.name.split(' ').map(n => n[0] || '').join('').substring(0,2).toUpperCase() : '--',
         },
-        meds: items.map(i => i.medicamento?.name || i.produto || 'Medicamento'),
+        items: items,        // lista completa de itens
         status: p.status,
-        entregador: p.entregador ? {
-            id: p.entregador.id,
-            name: p.entregador.name,
-            status: p.entregador.status || 'online'
+        entregador: p.entrega?.entregador ? {
+            id: p.entrega.entregador.id,
+            name: p.entrega.entregador.name,
+            status: p.entrega.entregador.status || 'online'
         } : null,
         total: total,
         morada: p.endereco || '—',
         data: p.data_pedido,
         minsAgo: Math.floor((new Date() - new Date(p.data_pedido)) / (1000 * 60)),
-        pagamento: p.pagamento?.metodo || '—',
+        pagamento: p.pagamento?.metodo_pagamento || '—',
+        pagamento_id: p.pagamento?.id || null
     };
 });
 
@@ -1158,21 +1162,43 @@ function openDrawer(id) {
       </div>`;
   }
 
-  // Itens do pedido
-  let itemsHtml = '';
-  if (o.meds && o.meds.length > 0) {
-    itemsHtml = o.meds.map(m => `
-      <div class="order-item">
-        <div class="oi-ico"><i class="bi bi-capsule"></i></div>
-        <div>
-          <div class="oi-name">${m}</div>
-          <div class="oi-qty">1 unidade</div>
+// Itens do pedido (detalhados)
+let itemsHtml = '';
+if (o.items && o.items.length > 0) {
+    itemsHtml = o.items.map(item => `
+        <div class="order-item">
+            <div class="oi-ico"><i class="bi bi-capsule"></i></div>
+            <div>
+                <div class="oi-name">${escapeHtml(item.name)}</div>
+                <div class="oi-qty">${item.quantidade} un. × ${item.preco_unitario.toLocaleString('pt-AO')} Kz</div>
+            </div>
+            <div class="oi-price">${item.subtotal.toLocaleString('pt-AO')} Kz</div>
         </div>
-        <div class="oi-price">${Math.round(o.total/o.meds.length).toLocaleString('pt-AO')} Kz</div>
-      </div>`).join('');
-  } else {
+    `).join('');
+} else {
     itemsHtml = '<div class="text-center p-3 text-secondary">Nenhum item encontrado</div>';
-  }
+}
+
+// Secção de receitas médicas (apenas se existirem itens com prescrição)
+let prescHtml = '';
+const itensComReceita = o.items.filter(item => item.requer_receita && item.prescricao_path);
+if (itensComReceita.length > 0) {
+    prescHtml = `
+        <div class="d-section">
+            <div class="d-section-title"><i class="bi bi-file-earmark-medical"></i> Receitas médicas</div>
+            ${itensComReceita.map(item => `
+                <div class="d-row">
+                    <span class="d-lbl">${escapeHtml(item.name)}</span>
+                    <span class="d-val">
+                        <a href="${item.prescricao_path}" target="_blank" class="presc-link">
+                            <i class="bi bi-file-pdf"></i> Ver receita
+                        </a>
+                    </span>
+                </div>
+            `).join('')}
+        </div>
+    `;
+}
 
   document.getElementById('drawerBody').innerHTML = `
     <div class="d-section">
@@ -1232,5 +1258,478 @@ function toggleSub(id) {
 /* ══ INIT ════════════════════════════════════════════ */
 applyFilters();
 </script>
+
+{{-- <script>
+function escapeHtml(str) {
+    if (!str) return '';
+    return str.replace(/[&<>]/g, function(m) {
+        if (m === '&') return '&amp;';
+        if (m === '<') return '&lt;';
+        if (m === '>') return '&gt;';
+        return m;
+    });
+}
+
+/* ══ DADOS DO BACKEND ═══════════════════════════ */
+const pedidosBackend = @json($pedidos->items());
+const entregadoresBackend = @json($entregadores ?? []);
+
+let allOrders = pedidosBackend.map(p => {
+    const cliente = p.user || {};
+    // Mapeamento completo dos itens
+    const items = (p.items || []).map(item => ({
+        id: item.id,
+        name: item.stockItem?.medicamento?.name || 'Medicamento',
+        quantidade: item.quantidade,
+        preco_unitario: item.preco_unitario,
+        subtotal: item.subtotal,
+        prescricao_path: item.prescricao_path || null,
+        requer_receita: item.stockItem?.medicamento?.requer_receita || false
+    }));
+    
+    const total = items.reduce((sum, it) => sum + (it.subtotal || it.preco_unitario * it.quantidade), 0);
+    
+    return {
+        id: p.id,
+        ref: '#' + String(p.id).padStart(4, '0'),
+        client: {
+            id: cliente.id,
+            name: cliente.name || 'Cliente',
+            phone: cliente.phone || '—',
+            email: cliente.email || '',
+            initials: cliente.name ? cliente.name.split(' ').map(n => n[0] || '').join('').substring(0,2).toUpperCase() : '--',
+        },
+        items: items,                              // lista completa de itens
+        status: p.status,
+        entregador: p.entrega?.entregador ? {
+            id: p.entrega.entregador.id,
+            name: p.entrega.entregador.name,
+            status: p.entrega.entregador.status || 'online'
+        } : null,
+        total: total,
+        morada: p.endereco || '—',
+        data: p.data_pedido,
+        minsAgo: Math.floor((new Date() - new Date(p.data_pedido)) / (1000 * 60)),
+        metodo_pagamento: p.pagamento?.metodo_pagamento || '—',
+        comprovativo_path: p.pagamento?.comprovativo?.arquivo_path || null
+    };
+});
+
+/* ══ STATE ══════════════════════════════════════════ */
+let filtered    = [...allOrders];
+let currentPage = 1;
+let currentTab  = 'all';
+let currentSort = { key: 'id', dir: 'desc' };
+let selected    = new Set();
+let cancelTargetId = null;
+
+/* ══ DATE ════════════════════════════════════════════ */
+const DIAS  = ['Domingo','Segunda-feira','Terça-feira','Quarta-feira','Quinta-feira','Sexta-feira','Sábado'];
+const MESES = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+const now = new Date();
+document.getElementById('topbar-date').textContent =
+  `${DIAS[now.getDay()]}, ${now.getDate()} de ${MESES[now.getMonth()]} de ${now.getFullYear()}`;
+
+/* ══ RENDER ═════════════════════════════════════════ */
+function getRPP() { return parseInt(document.getElementById('rowsPerPage').value); }
+
+const STATUS_MAP = {
+  'Pendente':    { tag:'t-new',      label:'Pendente',     icon:'bi-bell' },
+  'Aprovado':    { tag:'t-prep',     label:'Aprovado',     icon:'bi-box-seam' },
+  'pago':        { tag:'t-prep',     label:'Pago',         icon:'bi-credit-card' },
+  'Em Entrega':  { tag:'t-route',    label:'Em Entrega',   icon:'bi-bicycle' },
+  'Concluído':   { tag:'t-done',     label:'Concluído',    icon:'bi-check-circle' },
+  'Cancelado':   { tag:'t-canceled', label:'Cancelado',    icon:'bi-x-circle' },
+  'Rejeitado':   { tag:'t-canceled', label:'Rejeitado',    icon:'bi-x-circle' },
+};
+
+function render() {
+  const rpp   = getRPP();
+  const total = filtered.length;
+  const pages = Math.max(1, Math.ceil(total / rpp));
+  if (currentPage > pages) currentPage = pages;
+  const start = (currentPage - 1) * rpp;
+  const slice = filtered.slice(start, start + rpp);
+
+  const tbody = document.getElementById('ordersBody');
+  tbody.innerHTML = '';
+  
+  if (slice.length === 0) {
+    document.getElementById('emptyState').style.display = 'flex';
+    document.querySelector('.table-scroll').style.display = 'none';
+    return;
+  }
+  
+  document.getElementById('emptyState').style.display = 'none';
+  document.querySelector('.table-scroll').style.display = '';
+
+  slice.forEach(o => {
+    const sm  = STATUS_MAP[o.status] || STATUS_MAP['Pendente'];
+    const sel = selected.has(o.id);
+    // Primeiro medicamento da lista (baseado em o.items)
+    const firstMed = o.items[0]?.name || '—';
+    const medExtra = o.items.length > 1 ? `+${o.items.length-1} mais` : '';
+    const delHtml = o.entregador
+      ? `<div class="entregador-cell"><div class="del-dot ${o.entregador.status==='online'?'dd-online':'dd-busy'}"></div><span style="font-size:.78rem;color:var(--text-2)">${escapeHtml(o.entregador.name)}</span></div>`
+      : `<span style="font-size:.75rem;color:var(--text-4)">—</span>`;
+
+    tbody.innerHTML += `
+      <tr data-id="${o.id}" class="${sel?'selected':''}">
+        <td class="col-chk"><input type="checkbox" class="row-chk" ${sel?'checked':''} onchange="toggleRow(${o.id},this)"></td>
+        <td>
+          <div class="order-id">${o.ref}</div>
+          <div class="order-time">${o.minsAgo < 60 ? o.minsAgo+'min atrás' : Math.floor(o.minsAgo/60)+'h atrás'}</div>
+        </td>
+        <td>
+          <div class="client-cell">
+            <div class="c-av" style="background:#0899a6;color:white">${escapeHtml(o.client.initials)}</div>
+            <div>
+              <div class="c-name">${escapeHtml(o.client.name)}</div>
+              <div class="c-phone">${escapeHtml(o.client.phone)}</div>
+            </div>
+          </div>
+        </td>
+        <td class="meds-cell">
+          <div class="med-name">${escapeHtml(firstMed)}</div>
+          ${medExtra ? `<div class="med-more">${medExtra}</div>` : ''}
+        </td>
+        <td><span class="tag ${sm.tag}"><i class="bi ${sm.icon}"></i>${sm.label}</span></td>
+        <td>${delHtml}</td>
+        <td><span class="price-val">${o.total.toLocaleString('pt-AO')} Kz</span></td>
+        <td>
+          <div class="row-actions">
+            <button class="act-btn" title="Ver detalhe" onclick="openDrawer(${o.id})"><i class="bi bi-eye"></i></button>
+            ${['Pendente','Aprovado'].includes(o.status) ? `<button class="act-btn" title="Preparar" onclick="changeStatus(${o.id},'Aprovado')"><i class="bi bi-box-seam"></i></button>` : ''}
+            ${o.status === 'pago' ? `<button class="act-btn" title="Enviar" onclick="changeStatus(${o.id},'Em Entrega')"><i class="bi bi-bicycle"></i></button>` : ''}
+            ${o.status === 'Em Entrega' ? `<button class="act-btn" title="Concluir" onclick="changeStatus(${o.id},'Concluído')"><i class="bi bi-check-circle"></i></button>` : ''}
+            ${!['Concluído','Cancelado','Rejeitado'].includes(o.status) ? `<button class="act-btn d" title="Cancelar" onclick="openCancelModal(${o.id})"><i class="bi bi-x-circle"></i></button>` : ''}
+          </div>
+        </td>
+      </tr>`;
+  });
+
+  const end = Math.min(start + rpp, total);
+  document.getElementById('pageInfo').textContent = total === 0 ? '0 resultados' : `${start+1}–${end} de ${total}`;
+  updateSelectAll();
+}
+
+function updateSelectAll() {
+  const rpp=getRPP(), start=(currentPage-1)*rpp, slice=filtered.slice(start,start+rpp);
+  const allSel = slice.length>0 && slice.every(o=>selected.has(o.id));
+  document.getElementById('selAll').checked = allSel;
+  document.getElementById('selAll').indeterminate = !allSel && slice.some(o=>selected.has(o.id));
+}
+
+function updateBulkBar() {
+  const bar = document.getElementById('bulkBar');
+  bar.classList.toggle('show', selected.size>0);
+  document.getElementById('bulkCount').textContent = selected.size;
+}
+
+function clearSel() { selected.clear(); render(); updateBulkBar(); }
+
+function toggleRow(id, cb) {
+  if(cb.checked) selected.add(id); else selected.delete(id);
+  document.querySelector(`tr[data-id="${id}"]`).classList.toggle('selected', cb.checked);
+  updateBulkBar(); updateSelectAll();
+}
+
+function toggleAll(cb) {
+  const rpp=getRPP(), start=(currentPage-1)*rpp, slice=filtered.slice(start,start+rpp);
+  slice.forEach(o=>{ if(cb.checked) selected.add(o.id); else selected.delete(o.id); });
+  render(); updateBulkBar();
+}
+
+/* ══ FILTER & SORT ══════════════════════════════════ */
+function applyFilters() {
+  const q = document.getElementById('searchInput').value.trim().toLowerCase();
+  
+  filtered = allOrders.filter(o => {
+    // Criar lista de nomes de medicamentos para pesquisa
+    const medNames = o.items.map(it => it.name.toLowerCase());
+    const matchSearch = !q || 
+      o.ref.toLowerCase().includes(q) || 
+      o.client.name.toLowerCase().includes(q) || 
+      medNames.some(m => m.includes(q));
+      
+    if (currentTab === 'all') return matchSearch;
+    if (currentTab === 'new') return matchSearch && o.status === 'Pendente';
+    if (currentTab === 'prep') return matchSearch && (o.status === 'Aprovado' || o.status === 'pago');
+    if (currentTab === 'route') return matchSearch && o.status === 'Em Entrega';
+    if (currentTab === 'done') return matchSearch && o.status === 'Concluído';
+    if (currentTab === 'canceled') return matchSearch && (o.status === 'Cancelado' || o.status === 'Rejeitado');
+    return matchSearch;
+  });
+  
+  // Ordenação básica (por tempo e total)
+  if (currentSort.key === 'id') {
+    filtered.sort((a,b) => currentSort.dir === 'desc' ? b.id - a.id : a.id - b.id);
+  } else if (currentSort.key === 'total') {
+    filtered.sort((a,b) => currentSort.dir === 'desc' ? b.total - a.total : a.total - b.total);
+  } else if (currentSort.key === 'client') {
+    filtered.sort((a,b) => currentSort.dir === 'desc' ? b.client.name.localeCompare(a.client.name) : a.client.name.localeCompare(b.client.name));
+  } else if (currentSort.key === 'status') {
+    filtered.sort((a,b) => currentSort.dir === 'desc' ? b.status.localeCompare(a.status) : a.status.localeCompare(b.status));
+  } else {
+    filtered.sort((a,b) => b.id - a.id);
+  }
+  
+  currentPage = 1;
+  render();
+}
+
+function sortBy(key) {
+  if (currentSort.key === key) {
+    currentSort.dir = currentSort.dir === 'desc' ? 'asc' : 'desc';
+  } else {
+    currentSort.key = key;
+    currentSort.dir = 'desc';
+  }
+  // Actualizar ícones das colunas (simples)
+  document.querySelectorAll('th').forEach(th => th.classList.remove('sorted'));
+  const th = document.querySelector(`th[onclick*="${key}"]`);
+  if (th) th.classList.add('sorted');
+  applyFilters();
+}
+
+function setTab(el, status) {
+  document.querySelectorAll('.st-tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  currentTab = status;
+  applyFilters();
+}
+
+function filterStatus(status) {
+  const tabMap = { 'new': 'new', 'prep': 'prep', 'route': 'route', 'done': 'done' };
+  const tab = document.querySelector(`.st-tab[data-status="${tabMap[status] || 'all'}"]`);
+  if(tab) setTab(tab, tabMap[status] || 'all');
+}
+
+function changePage(p) { currentPage = p; render(); }
+
+/* ══ STATUS CHANGE ══════════════════════════════════ */
+function changeStatus(id, newStatus) {
+  const o = allOrders.find(x => x.id === id);
+  if (o) {
+    const oldStatus = o.status;
+    o.status = newStatus;
+    
+    fetch(`/farmacias/pedidos/${id}/status`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
+      body: JSON.stringify({ status: newStatus })
+    }).then(() => {
+      applyFilters();
+      if (currentDrawerId === id) openDrawer(id);
+    }).catch(() => {
+      o.status = oldStatus;
+      applyFilters();
+    });
+  }
+}
+
+function bulkChangeStatus(newStatus) {
+  const ids = Array.from(selected);
+  ids.forEach(id => {
+    const o = allOrders.find(x => x.id === id);
+    if (o) o.status = newStatus;
+  });
+  
+  fetch(`/farmacias/pedidos/bulk-status`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
+    body: JSON.stringify({ ids: ids, status: newStatus })
+  }).then(() => {
+    clearSel();
+    applyFilters();
+  }).catch(() => {
+    applyFilters();
+  });
+}
+
+/* ══ CANCEL ═════════════════════════════════════════ */
+function openCancelModal(id) {
+  cancelTargetId = id;
+  const o = allOrders.find(x=>x.id===id);
+  document.getElementById('cancelText').textContent = `Vai cancelar o pedido ${o?.ref} de ${o?.client.name}. O cliente será notificado.`;
+  document.getElementById('cancelModal').classList.add('open');
+}
+
+function confirmCancel() {
+  if(cancelTargetId) changeStatus(cancelTargetId, 'Cancelado');
+  document.getElementById('cancelModal').classList.remove('open');
+  cancelTargetId = null;
+  closeDrawer();
+}
+
+document.getElementById('cancelModal').addEventListener('click', function(e){ if(e.target===this) this.classList.remove('open'); });
+
+/* ══ DRAWER ═════════════════════════════════════════ */
+let currentDrawerId = null;
+
+function openDrawer(id) {
+  currentDrawerId = id;
+  const o = allOrders.find(x => x.id === id);
+  if (!o) return;
+  
+  const sm = STATUS_MAP[o.status] || STATUS_MAP['Pendente'];
+
+  document.getElementById('drawerTitle').textContent = `Pedido ${o.ref}`;
+  document.getElementById('drawerSubtitle').innerHTML = `
+    <span class="tag ${sm.tag}" style="font-size:.68rem">
+      <i class="bi ${sm.icon}"></i>${sm.label}
+    </span> &nbsp;·&nbsp; 
+    ${o.minsAgo < 60 ? o.minsAgo+'min atrás' : Math.floor(o.minsAgo/60)+'h atrás'}`;
+
+  // Timeline
+  const statusOrder = ['Pendente', 'Aprovado', 'pago', 'Em Entrega', 'Concluído'];
+  const curOrd = statusOrder.indexOf(o.status);
+  
+  let tlHtml = '';
+  statusOrder.forEach((st, i) => {
+    if (st === 'pago' || st === 'Aprovado') return; // Pular estados intermédios
+    const stepLabel = st === 'Pendente' ? 'Pedido recebido' :
+                      st === 'Em Entrega' ? 'Em rota de entrega' :
+                      st === 'Concluído' ? 'Entregue ao cliente' : st;
+    const cls = (o.status === 'Cancelado' || o.status === 'Rejeitado') ? 'pending' :
+                (i < curOrd) ? 'done' : (i === curOrd) ? 'active' : 'pending';
+    
+    tlHtml += `
+      <div class="tl-item ${cls}">
+        <div class="tl-dot"></div>
+        <div class="tl-label ${cls==='pending'?'pending':''}">${stepLabel}</div>
+        ${cls !== 'pending' ? `<div class="tl-time">${o.data ? new Date(o.data).toLocaleTimeString() : ''}</div>` : ''}
+      </div>`;
+  });
+  
+  if (o.status === 'Cancelado' || o.status === 'Rejeitado') {
+    tlHtml += `
+      <div class="tl-item pending">
+        <div class="tl-dot" style="background:var(--danger)"></div>
+        <div class="tl-label" style="color:var(--danger)">Pedido cancelado</div>
+      </div>`;
+  }
+
+  // Itens do pedido (detalhados)
+  let itemsHtml = '';
+  if (o.items && o.items.length > 0) {
+    itemsHtml = o.items.map(item => `
+        <div class="order-item">
+            <div class="oi-ico"><i class="bi bi-capsule"></i></div>
+            <div>
+                <div class="oi-name">${escapeHtml(item.name)}</div>
+                <div class="oi-qty">${item.quantidade} un. × ${item.preco_unitario.toLocaleString('pt-AO')} Kz</div>
+            </div>
+            <div class="oi-price">${item.subtotal.toLocaleString('pt-AO')} Kz</div>
+        </div>
+    `).join('');
+  } else {
+    itemsHtml = '<div class="text-center p-3 text-secondary">Nenhum item encontrado</div>';
+  }
+
+  // Secção de receitas médicas
+  let prescHtml = '';
+  const itensComReceita = (o.items || []).filter(item => item.requer_receita && item.prescricao_path);
+  if (itensComReceita.length > 0) {
+    prescHtml = `
+        <div class="d-section">
+            <div class="d-section-title"><i class="bi bi-file-earmark-medical"></i> Receitas médicas</div>
+            ${itensComReceita.map(item => `
+                <div class="d-row">
+                    <span class="d-lbl">${escapeHtml(item.name)}</span>
+                    <span class="d-val">
+                        <a href="${item.prescricao_path}" target="_blank" class="presc-link">
+                            <i class="bi bi-file-pdf"></i> Ver receita
+                        </a>
+                    </span>
+                </div>
+            `).join('')}
+        </div>
+    `;
+  }
+
+  // Secção de comprovativo de pagamento (apenas para Multicaixa Express)
+  let comprovativoHtml = '';
+  if ((o.metodo_pagamento === 'Multicaixa Express' || o.metodo_pagamento === 'express') && o.comprovativo_path) {
+    comprovativoHtml = `
+        <div class="d-section">
+            <div class="d-section-title"><i class="bi bi-receipt"></i> Comprovativo de pagamento</div>
+            <div class="d-row">
+                <span class="d-lbl">Método</span>
+                <span class="d-val">${escapeHtml(o.metodo_pagamento)}</span>
+            </div>
+            <div class="d-row">
+                <span class="d-lbl">Comprovativo</span>
+                <span class="d-val">
+                    <a href="${o.comprovativo_path}" target="_blank" class="presc-link">
+                        <i class="bi bi-file-earmark-text"></i> Abrir comprovativo
+                    </a>
+                </span>
+            </div>
+        </div>
+    `;
+  }
+
+  document.getElementById('drawerBody').innerHTML = `
+    <div class="d-section">
+      <div class="d-section-title">Progresso</div>
+      <div class="timeline" style="margin-top:6px">${tlHtml}</div>
+    </div>
+
+    <div class="d-section">
+      <div class="d-section-title">Itens do pedido</div>
+      ${itemsHtml}
+      <div style="display:flex;justify-content:space-between;padding:10px 10px 0;font-size:.8rem">
+        <span style="color:var(--text-3)">Total</span>
+        <span style="font-family:'Sora',sans-serif;font-weight:700;color:var(--text)">${o.total.toLocaleString('pt-AO')} Kz</span>
+      </div>
+    </div>
+
+    ${prescHtml}
+    ${comprovativoHtml}
+
+    <div class="d-section">
+      <div class="d-section-title">Cliente & Entrega</div>
+      <div class="d-row"><span class="d-lbl">Cliente</span><span class="d-val">${escapeHtml(o.client.name)}</span></div>
+      <div class="d-row"><span class="d-lbl">Contacto</span><span class="d-val">${escapeHtml(o.client.phone)}</span></div>
+      <div class="d-row"><span class="d-lbl">Morada</span><span class="d-val">${escapeHtml(o.morada)}</span></div>
+      <div class="d-row"><span class="d-lbl">Entregador</span><span class="d-val">${o.entregador ? escapeHtml(o.entregador.name) : '—'}</span></div>
+      <div class="d-row"><span class="d-lbl">Pagamento</span><span class="d-val">${escapeHtml(o.metodo_pagamento)}</span></div>
+    </div>`;
+
+  // Botões de ação no drawer
+  let btns = '';
+  if (o.status === 'Pendente') btns += `<button class="sa-btn sa-prep" onclick="changeStatus(${o.id},'Aprovado')"><i class="bi bi-box-seam"></i> Aprovar</button>`;
+  if (o.status === 'Aprovado') btns += `<button class="sa-btn sa-route" onclick="changeStatus(${o.id},'pago')"><i class="bi bi-credit-card"></i> Confirmar pagamento</button>`;
+  if (o.status === 'pago') btns += `<button class="sa-btn sa-route" onclick="changeStatus(${o.id},'Em Entrega')"><i class="bi bi-bicycle"></i> Iniciar entrega</button>`;
+  if (o.status === 'Em Entrega') btns += `<button class="sa-btn sa-done" onclick="changeStatus(${o.id},'Concluído')"><i class="bi bi-check-circle"></i> Concluir</button>`;
+  if (!['Concluído','Cancelado','Rejeitado'].includes(o.status)) {
+    btns += `<button class="sa-btn sa-cancel" onclick="openCancelModal(${o.id})"><i class="bi bi-x-circle"></i> Cancelar</button>`;
+  }
+  document.getElementById('drawerStatusBtns').innerHTML = btns;
+
+  document.getElementById('drawerOverlay').classList.add('open');
+  document.getElementById('drawer').classList.add('open');
+}
+
+function closeDrawer() {
+  document.getElementById('drawerOverlay').classList.remove('open');
+  document.getElementById('drawer').classList.remove('open');
+  currentDrawerId = null;
+}
+
+/* ══ SIDEBAR ═════════════════════════════════════════ */
+function setActive(el) { 
+  document.querySelectorAll('.nav-item.active').forEach(i => i.classList.remove('active')); 
+  el.classList.add('active'); 
+}
+
+function toggleSub(id) { 
+  document.getElementById(id).classList.toggle('open'); 
+}
+
+/* ══ INIT ════════════════════════════════════════════ */
+applyFilters();
+</script> --}}
 </body>
 </html>

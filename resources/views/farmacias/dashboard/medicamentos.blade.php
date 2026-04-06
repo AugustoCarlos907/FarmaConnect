@@ -652,7 +652,7 @@
           <form action="{{ route('upload.files') }}  " method="POST" enctype="multipart/form-data" id="csvUploadForm">
           @csrf
           <input type="file" name="file" id="csvFileInput" accept=".csv" style="display: none;">
-          <button type="button" class="btn btn-outline btn-icon   w-25" title="Importar CSV" onclick="document.getElementById('csvFileInput').click();">
+          <button type="button" class="btn btn-outline btn-icon   w-100" title="Importar CSV" onclick="document.getElementById('csvFileInput').click();">
               <i class="bi bi-upload"></i>IMPORTAR CSV
           </button>
       </form>

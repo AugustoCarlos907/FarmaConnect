@@ -21,19 +21,16 @@ class PedidoService
         string $endereco,
         float $latitude,
         float $longitude,
-        string $metodoPagamento
+        string $metodoPagamento,
+        string $prescricaoPath = null ,
+        string $comprovativoExpress = null,
     ) {
 
-        return DB::transaction(function () use (
-            $usuarioId,
-            $items,
-            $endereco,
-            $latitude,
-            $longitude,
-            $metodoPagamento ,
-        ) {
-            
-        $dataPedido = null;
+       
+        $metodosPermitidos = ['express', 'numerario']; 
+        if (!in_array($metodoPagamento, $metodosPermitidos)) {
+            throw new \Exception("Método de pagamento inválido. Use: express ou numerario.");
+        }
 
         $farmacia = $this->encontrarFarmaciaComTodosItens($items, $latitude, $longitude);
 
@@ -42,7 +39,29 @@ class PedidoService
                 'farmacia' => 'Os medicamentos selecionados estão dispostos em múltiplas farmácias , não é possivel confirmar o pedido...'
             ]);        
         }
-         
+
+        // if (!$farmacia) {
+        //     throw new \Exception('Os medicamentos selecionados estão em múltiplas farmácias, não é possível confirmar o pedido.');
+        // }
+
+        
+        if ($metodoPagamento === 'express' && empty($farmacia->numero_express)) {
+        throw new \Exception(" Seleccione uma fármacia para ter  accesso às coordenadas bancárias disponíveis .");
+        }
+
+        return DB::transaction(function () use (
+            $usuarioId,
+            $items,
+            $endereco,
+            $latitude,
+            $longitude,
+            $metodoPagamento ,
+            $prescricaoPath,
+            $comprovativoExpress,
+            $farmacia
+        ) {
+            
+        $dataPedido = null;
 
         $pedido = Pedido::create([
                 'user_id' => $usuarioId,
@@ -52,7 +71,9 @@ class PedidoService
                 'data_pedido' => $dataPedido ?? now(),
                 'endereco'=> $endereco,
                 'latitude' =>  $latitude,
-                'longitude' => $longitude 
+                'longitude' => $longitude ,
+                'metodo_pagamento' => $metodoPagamento ,
+                'comprovativo_express' => ($metodoPagamento === 'express') ? $comprovativoExpress : null,
                 ]);
 
             $total = 0;
@@ -73,7 +94,8 @@ class PedidoService
                     'quantidade' => $item['quantidade'],
                     'preco_unitario' => $stock->preco,
                     'subtotal' => $subtotal,
-                    'pedido_id' => $pedido->id
+                    'pedido_id' => $pedido->id,
+                    'prescricao_path' => $prescricaoPath ?? null 
                     // 'medicamento_id' => $farmacia->medicamentos->id
                 ]); 
 
@@ -90,39 +112,6 @@ class PedidoService
 
             $pedido->update(['total' => $total]);
 
-            // Validação simples para garantir que o método é permitido
-            $metodosPermitidos = ['iban', 'express', 'dinheiro'];
-            if (!in_array($metodoPagamento, $metodosPermitidos)) {
-                throw new Exception('Método de pagamento inválido. Use: iban, express ou dinheiro.');
-            }
-
-            // // Buscar dados da farmácia
-            // $farmacia = \App\Models\Farmacia::findOrFail($farmacia->id);
-
-            $ibanDestino = null;
-            $numeroExpress = null;
-
-            if ($metodoPagamento === 'iban') {
-                $ibanDestino = $farmacia->iban;
-                if (empty($ibanDestino)) {
-                    throw new Exception('A farmácia não possui IBAN cadastrado.');
-                }
-            }
-            if ($metodoPagamento === 'express') {
-                $numeroExpress = $farmacia->numero_express;
-                if (empty($numeroExpress)) {
-                    throw new Exception('A farmácia não possui Número Express cadastrado.');
-                }
-            }
-
-            $pedido->pagamento()->create([
-                'metodo' => $metodoPagamento,
-                'valor' => $total,
-                'status' => 'pendente',
-                'iban_destino' => $ibanDestino,
-                'numero_express' => $numeroExpress,
-                'pedido_id' => $pedido->id
-            ]);
 
             return $pedido;
         });

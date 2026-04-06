@@ -10,9 +10,9 @@ class ItemPedido extends Model
         'quantidade',
         'preco_unitario',
         'subtotal',
-        
         'pedido_id',
         'stock_items_id',
+        'prescricao_path'
     ];
 
     public function pedido()

@@ -10,10 +10,15 @@ class Pagamento extends Model
     protected $fillable = [
         'pedido_id',
         'status',
-        'metodo_pagamento',
+        'metodo',
         'valor',
+        'data_pagamento'
     ];
 
+    public function comprovativo(){
+        return $this->hasOne(ComprovativoPagamento::class);
+    }
+    
     public function pedido()
     {
         return $this->belongsTo(Pedido::class);

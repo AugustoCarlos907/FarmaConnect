@@ -135,6 +135,210 @@
         margin-top: 0.5rem;
         margin-bottom: 0;
     }
+
+    /* ─── MODAL BACKDROP MAIS INTENSO ────────────────── */
+    .modal-backdrop {
+      background-color: rgba(0, 0, 0, 0.7) !important;  /* escurece o fundo */
+      backdrop-filter: blur(4px);                       /* desfoca ligeiramente o conteúdo atrás */
+      transition: backdrop-filter 0.2s ease;
+    }
+
+    /* ─── MODAL EM SI (centralizado, sombra, borda suave) ─── */
+    .modal-content {
+      border: none;
+      border-radius: 28px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);
+      overflow: hidden;
+    }
+
+    .modal-header {
+      border-bottom: 1px solid var(--border);
+      background: #fff;
+      padding: 1.2rem 1.5rem;
+    }
+
+    .modal-header .modal-title {
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: var(--heading);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .modal-body {
+      padding: 1.2rem 1.5rem;
+      background: #fff;
+    }
+
+    .modal-footer {
+      border-top: 1px solid var(--border);
+      background: #fafefe;
+      padding: 1rem 1.5rem;
+    }
+
+    /* ─── ESTILO PARA CADA OPÇÃO DE ENDEREÇO DENTRO DO MODAL ─── */
+    .addr-option-modal {
+      border: 1.5px solid var(--border);
+      border-radius: 20px;
+      padding: 1rem 1.2rem;
+      margin-bottom: 0.8rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      background: #fff;
+    }
+
+    .addr-option-modal:hover {
+      border-color: var(--accent);
+      background: var(--soft);
+      transform: translateX(4px);
+    }
+
+    .addr-option-modal .ao-label {
+      font-size: 0.7rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--accent);
+      margin-bottom: 0.2rem;
+    }
+
+    .addr-option-modal .ao-addr {
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: var(--heading);
+      word-break: break-word;
+    }
+
+      /* ─── EXPRESS INFO CARD ───────────────────────────── */
+    .express-info-card {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      background: linear-gradient(135deg, #f0f9ff 0%, #e6f7f8 100%);
+      border-radius: 20px;
+      padding: 1.1rem 1.2rem;
+      margin-bottom: 1rem;
+      border: 1px solid rgba(9,154,167,.2);
+      box-shadow: 0 4px 12px rgba(9,154,167,.08);
+    }
+
+    .express-info-icon {
+      width: 48px;
+      height: 48px;
+      background: var(--accent);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .express-info-icon i {
+      font-size: 1.4rem;
+      color: white;
+    }
+
+    .express-info-content {
+      flex: 1;
+    }
+
+    .express-info-label {
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--accent-dark);
+      margin-bottom: 0.2rem;
+    }
+
+    .express-info-number {
+      font-family: 'Inter', monospace;
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: var(--heading);
+      letter-spacing: 0.5px;
+      margin-bottom: 0.2rem;
+    }
+
+    .express-info-hint {
+      font-size: 0.68rem;
+      color: var(--muted);
+    }
+
+    /* ─── UPLOAD AREA (estilo melhorado) ───────────────── */
+    .upload-comprovativo-area {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      background: var(--surface);
+      border: 2px dashed var(--border);
+      border-radius: 18px;
+      padding: 0.9rem 1rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      margin-top: 0.75rem;
+    }
+
+    .upload-comprovativo-area:hover {
+      border-color: var(--accent);
+      background: var(--soft);
+      transform: translateY(-1px);
+    }
+
+    .upload-icon {
+      width: 44px;
+      height: 44px;
+      background: var(--mint);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .upload-icon i {
+      font-size: 1.3rem;
+      color: var(--accent);
+    }
+
+    .upload-text {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .upload-text strong {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .upload-text span {
+      font-size: 0.7rem;
+      color: var(--muted);
+    }
+
+    /* ─── PREVIEW DO FICHEIRO ─────────────────────────── */
+    .comprovativo-preview {
+      margin-top: 0.6rem;
+      font-size: 0.75rem;
+      color: var(--accent);
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.3rem 0.5rem;
+      background: var(--surface-2);
+      border-radius: 12px;
+      width: fit-content;
+    }
+
+    /* ─── QUANDO O MODAL ESTÁ ABERTO, EVITA ROLAGEM DO FUNDO (opcional) ─── */
+    body.modal-open {
+      overflow: hidden;
+      padding-right: 0 !important; /* evita salto lateral */
+    }
     @keyframes fadeUp{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:none;}}
     .cc-head,.ac-head{padding:1.1rem 1.4rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
     .cc-head h6,.ac-head h6{font-size:.9rem;font-weight:800;color:var(--heading);margin:0;display:flex;align-items:center;gap:.5rem;}
@@ -393,71 +597,129 @@
           @endforelse
         </div>
 
-        <!-- MORADA -->
-        <div class="address-card">
-          <div class="ac-head">
-            <h6><i class="bi bi-geo-alt-fill"></i> Endereço de entrega</h6>
-            <a href="{{ route('perfil.clientes') }}" style="font-size:.78rem;font-weight:700;color:var(--accent);text-decoration:none">Gerir endereços</a>
-          </div>
-          <div class="ac-body">
-            @forelse($enderecos as $endereco)
-              <div class="addr-option" 
-                  onclick="selectAddr(this)"
-                  data-endereco="{{ $endereco->endereco }}"
-                  data-lat="{{ $endereco->latitude  ?? '' }}"
-                  data-lng="{{ $endereco->longitude ?? '' }}">
+        <!-- MORADA (apenas para Entrega Expresso) -->
+      <div class="address-card" id="addressCardWrapper" style="display: none;">
+        <div class="ac-head">
+          <h6><i class="bi bi-geo-alt-fill"></i> Endereço de entrega</h6>
+          <button type="button" class="btn btn-sm btn-outline-accent" style="font-size:.78rem;font-weight:700;color:var(--accent);border:1px solid var(--accent);border-radius:50px;padding:.2rem .8rem" onclick="abrirModalEnderecos()">
+            <i class="bi bi-pencil"></i> Alterar
+          </button>
+        </div>
+        <div class="ac-body" id="enderecoSelecionadoDisplay">
+          <p class="text-muted" style="margin:0"><i class="bi bi-info-circle"></i> Nenhum endereço seleccionado</p>
+        </div>
+      </div>
+
+      <!-- Modal com a lista de endereços -->
+      <div class="modal fade" id="modalEnderecos" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title"><i class="bi bi-geo-alt"></i> Selecione o endereço de entrega</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+            <div class="modal-body">
+              @forelse($enderecos as $endereco)
+                <div class="addr-option-modal" 
+                    onclick="selecionarEndereco(this)"
+                    data-endereco="{{ $endereco->endereco }}"
+                    data-lat="{{ $endereco->latitude ?? '' }}"
+                    data-lng="{{ $endereco->longitude ?? '' }}"
+                    data-label="{{ $endereco->name }}">
                   <div class="ao-label">{{ $endereco->name }}</div>
                   <div class="ao-addr">{{ $endereco->endereco }}</div>
-              </div>
-
-            @empty
-              <p style="font-size:.84rem;color:var(--muted)">
-                <i class="bi bi-exclamation-circle me-1"></i> Nenhuma morada guardada.
-                <a href="{{ route('perfil.clientes') }}" style="color:var(--accent)">Adicionar agora</a>
-              </p>
-            @endforelse
+                </div>
+              @empty
+                <p class="text-muted">
+                  <i class="bi bi-exclamation-circle"></i> Nenhuma morada guardada.
+                  <a href="{{ route('perfil.clientes') }}" style="color:var(--accent)">Adicionar agora</a>
+                </p>
+              @endforelse
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+            </div>
           </div>
         </div>
+      </div>
+
 
         <!-- ENTREGA -->
-        {{-- <div class="delivery-card">
+        <div class="delivery-card">
           <div class="ac-head"><h6><i class="bi bi-truck"></i> Tipo de entrega</h6></div>
           <div class="dc-body">
-            <div class="deliv-option selected" onclick="selectDeliv(this, 800)">
-              <div class="deliv-badge">Recomendado</div>
-              <div><div class="deliv-name">Entrega Expresso</div><div class="deliv-sub">Entrega em ~25 min · Seg-Dom 08h–22h</div></div>
-              <div class="deliv-price">800 Kz</div>
+            <div class="deliv-option" onclick="selectDeliv('express')">
+              <div><div class="deliv-name">Entrega Expresso</div><div class="deliv-sub">Calculado em função da distância em Km</div></div>
             </div>
-            <div class="deliv-option" onclick="selectDeliv(this, 0)">
-              <div><div class="deliv-name">Retirar na Farmácia</div><div class="deliv-sub">Pronto em ~15 min · Sem custo adicional</div></div>
+            <div class="deliv-option" onclick="selectDeliv('retirada')">
+              <div><div class="deliv-name">Retirar na Farmácia</div><div class="deliv-sub">Sem custo adicional</div></div>
               <div class="deliv-price free">Grátis</div>
             </div>
           </div>
-        </div> --}}
+        </div>
 
         <!-- PAGAMENTO -->
-        {{-- <div class="payment-card">
+        <div class="payment-card">
           <div class="ac-head"><h6><i class="bi bi-credit-card-2-front"></i> Método de pagamento</h6></div>
           <div class="pay-body">
-            <div class="pay-option selected" onclick="selectPay(this,'express')">
+            <div class="pay-option " onclick="selectPay(this,'express')">
               <div class="pay-icon">📱</div>
               <div><div class="pay-name">Multicaixa Express</div><div class="pay-sub">Pagamento rápido via app do banco</div></div>
-              <input type="radio" class="pay-radio" name="pay_ui" checked>
+              <input type="radio" class="pay-radio" name="pay_ui" >
             </div>
-            <div class="pay-option" onclick="selectPay(this,'iban')">
-              <div class="pay-icon">🏦</div>
-              <div><div class="pay-name">Transferência IBAN</div><div class="pay-sub">Transferência bancária para o IBAN da farmácia</div></div>
-              <input type="radio" class="pay-radio" name="pay_ui">
+            
+            <!-- Área para pagamento Express (número + comprovativo) -->
+            <div id="comprovativoExpressArea" style="display: none; margin-top: 1.5rem;">
+                @php
+                    $farmacia = $itens->first()->stockItem->farmacia ?? null;
+                    $numeroExpress = $farmacia->numero_express ?? null;
+                @endphp
+
+                @if(!$numeroExpress)
+                    <div class="alert-fc alert-err" style="margin-top: 0.75rem;">
+                        <i class="bi bi-exclamation-triangle-fill"></i>
+                        Seleccione uma fármacia para ter  accesso às coordenadas bancárias disponíveis .                    
+                    </div>
+
+                @else
+                {{-- Card com o número Express --}}
+                <div class="express-info-card">
+                    <div class="express-info-icon">
+                        <i class="bi bi-phone-fill"></i>
+                    </div>
+                    <div class="express-info-content">
+                        <div class="express-info-label">Pagamento via Multicaixa Express</div>
+                        <div class="express-info-number">{{ $numeroExpress ?? 'Numero não disponível'  }}</div>
+                        <div class="express-info-hint">
+                            Utilize este número na aplicação do seu banco para efectuar o pagamento.
+                        </div>
+                    </div>
+                </div>
+
+                 <!-- Área de upload (agora sem input, apenas visual) -->
+                  <div class="upload-comprovativo-area" onclick="document.getElementById('comprovativoExpressInput').click()">
+                      <div class="upload-icon"><i class="bi bi-cloud-upload-fill"></i></div>
+                      <div class="upload-text">
+                          <strong>Clique para anexar o comprovativo</strong>
+                          <span>Formatos: JPG, PNG, PDF (máx. 2MB)</span>
+                      </div>
+                  </div>
+                  <div id="comprovativoPreview" class="comprovativo-preview"></div>
+
+                @endif
+
             </div>
+
             <div class="pay-option" onclick="selectPay(this,'dinheiro')">
               <div class="pay-icon">💵</div>
-              <div><div class="pay-name">Pagamento em Numerário</div><div class="pay-sub">Pague ao entregador na entrega</div></div>
-              <input type="radio" class="pay-radio" name="pay_ui">
+              <div><div class="pay-name">Pagamento em Numerário</div><div class="pay-sub">Pague ao entregador na entrega ou no levantamento na farmácia</div></div>
+              <input type="radio" class="pay-radio" name="pay_ui" checked>
             </div>
           </div>
-        </div> --}}
+        </div>
 
-      </div>{{-- /col-lg-8 --}}
+      </div>
+      {{-- /col-lg-8 --}}
 
       <!-- ═ COLUNA DIREITA — RESUMO ═ -->
       <div class="col-lg-4 mt-5">
@@ -465,13 +727,15 @@
           <div class="sc-head"><h6><i class="bi bi-receipt"></i> Resumo do pedido</h6></div>
           <div class="sc-body">
 
-            <form action="{{ route('pedidos.store') }}" method="POST" id="formPedido" novalidate>
-            @csrf
+            <form action="{{ route('pedidos.store') }}" method="POST" id="formPedido" novalidate  
+              enctype="multipart/form-data">
+              @csrf
 
             {{-- items[] — um par por cada item no carrinho --}}
             @foreach($itens as $i => $item)
               <input type="hidden" name="items[{{ $i }}][stockId]"    value="{{ $item->stock_item_id }}">
               <input type="hidden" name="items[{{ $i }}][quantidade]" value="{{ $item->quantidade }}">
+              <input type="hidden" name="items[{{ $i }}][prescricao_path]" value="{{ $item->prescricao_path }}">
             @endforeach
 
             {{-- endereco / lat / lng — valor inicial = primeira morada guardada --}}
@@ -479,8 +743,12 @@
             <input type="hidden" name="latitude"  id="h-lat"      value="">
             <input type="hidden" name="longitude" id="h-lng"      value="">
             <input type="hidden" name="taxa_entrega" id="taxaEntregaHidden" value="0">
+
             {{-- metodo_pagamento — valor inicial = express; actualizado pelo JS selectPay() --}}
             <input type="hidden" name="metodo_pagamento" id="h-metodo" value="express">
+
+            {{-- Comprovativo para Multicaixa Express (ficheiro) --}}
+            <input type="file" name="comprovativo_express" id="comprovativoExpressInput" style="display: none;">
 
             @foreach($itens as $item)
               @php 
@@ -507,8 +775,10 @@
             <div class="tot-row bold"><span>Total</span><span id="sumTotal">{{ number_format($total,0,',','.') }} Kz</span></div>
             <div style="background:var(--mint);border-radius:12px;padding:.75rem 1rem;margin:1rem 0;font-size:.78rem;color:var(--muted);display:flex;align-items:center;gap:.5rem">
               <i class="bi bi-info-circle-fill" style="color:var(--accent);flex-shrink:0"></i>
-              O pagamento só é cobrado após a confirmação da farmácia.
+              {{-- O pagamento só é cobrado após a confirmação da farmácia. --}}
+            <span>Poderá acompanhar o estado do seu pedido em tempo real após a confirmação.</span>
             </div>
+
 
             <button type="submit" id="btnConfirmar" class="checkout-btn"
                     {{ $itens->isEmpty() ? 'disabled' : '' }}>
@@ -606,65 +876,152 @@ let deliveryFee = 800;
    Actualiza os 3 hidden inputs (endereco / lat / lng).
    Os valores vêm dos data-* dos .addr-option renderizados pelo Blade.
 ──────────────────────────────────────────────────── */
-function selectAddr(el) {
-    // Remove a classe 'selected' de todos
-    document.querySelectorAll('.addr-option').forEach(addr => addr.classList.remove('selected'));
-    el.classList.add('selected');
+let enderecoAtual = null;   // guarda o objeto do endereço seleccionado
 
+function selecionarEndereco(el) {
     const endereco = el.getAttribute('data-endereco') || '';
     const lat = parseFloat(el.getAttribute('data-lat'));
     const lng = parseFloat(el.getAttribute('data-lng'));
+    const label = el.getAttribute('data-label') || 'Endereço';
 
+    enderecoAtual = { endereco, lat, lng, label };
+
+    // Preenche os hidden inputs
     document.getElementById('h-endereco').value = endereco;
     document.getElementById('h-lat').value = lat || '';
     document.getElementById('h-lng').value = lng || '';
 
-    // Calcular taxa de entrega se tivermos coordenadas da farmácia e do endereço
-    let taxa = 0;
-    let distancia = 0;
+    // Actualiza a exibição no card
+    const displayDiv = document.getElementById('enderecoSelecionadoDisplay');
+    displayDiv.innerHTML = `
+        <div class="ao-label">${label}</div>
+        <div class="ao-addr">${endereco}</div>
+    `;
 
+    // Fecha o modal
+    const modal = bootstrap.Modal.getInstance(document.getElementById('modalEnderecos'));
+    if (modal) modal.hide();
+
+    // Recalcula a taxa (se for entrega expresso)
+    if (tipoEntrega === 'express') {
+        recalcularTaxaPorEndereco();
+    }
+}
+
+function recalcularTaxaPorEndereco() {
+    if (!enderecoAtual || tipoEntrega !== 'express') return;
+
+    const lat = enderecoAtual.lat;
+    const lng = enderecoAtual.lng;
+
+    let taxa = 0, distancia = 0;
     if (farmaciaLat && farmaciaLng && !isNaN(lat) && !isNaN(lng)) {
         distancia = haversine(farmaciaLat, farmaciaLng, lat, lng);
         taxa = calcularTaxaEntrega(distancia);
     } else {
-        // Se faltar alguma coordenada, usa uma taxa fixa (ex: 800 Kz)
-        taxa = 800;
+        taxa = 0;
         distancia = 0;
-        console.warn('Coordenadas da farmácia ou do endereço não disponíveis. Aplicada taxa fixa.');
     }
 
-    // Actualizar o resumo
-    const sumDelivery = document.getElementById('sumDelivery');
-    const sumTotal = document.getElementById('sumTotal');
-    const sumDistance = document.getElementById('sumDistance');
-    const taxaEntregaHidden = document.getElementById('taxaEntregaHidden');
-
-    if (sumDelivery) sumDelivery.textContent = taxa === 0 ? 'Grátis' : taxa.toLocaleString('pt-AO') + ' Kz';
-    if (sumDistance) sumDistance.textContent = distancia.toFixed(2) + ' km';
-    const totalFinal = subtotalBase + taxa;
-    if (sumTotal) sumTotal.textContent = totalFinal.toLocaleString('pt-AO') + ' Kz';
-    if (taxaEntregaHidden) taxaEntregaHidden.value = taxa;
-
+    actualizarResumo(distancia, taxa);
+    document.getElementById('taxaEntregaHidden').value = taxa;
     window.taxaEntregaCalculada = taxa;
 }
 
-/* ── ENTREGA ──────────────────────────────────────── */
-function selectDeliv(el, fee) {
-  document.querySelectorAll('.deliv-option').forEach(d => d.classList.remove('selected'));
-  el.classList.add('selected');
-  deliveryFee = fee;
-  updateTotals();
+function actualizarResumo(distanciaKm, taxaKz) {
+    const sumDistance = document.getElementById('sumDistance');
+    const sumDelivery = document.getElementById('sumDelivery');
+    const sumTotal = document.getElementById('sumTotal');
+
+    if (sumDistance) sumDistance.textContent = distanciaKm.toFixed(2) + ' km';
+    if (sumDelivery) sumDelivery.textContent = taxaKz === 0 ? 'Grátis' : taxaKz.toLocaleString('pt-AO') + ' Kz';
+    const totalFinal = subtotalBase + taxaKz;
+    if (sumTotal) sumTotal.textContent = totalFinal.toLocaleString('pt-AO') + ' Kz';
 }
+
+function abrirModalEnderecos() {
+    const modal = new bootstrap.Modal(document.getElementById('modalEnderecos'));
+    modal.show();
+}
+
+/* ── ENTREGA ──────────────────────────────────────── */
+let tipoEntrega = 'express'; // 'express' ou 'retirada'
+
+function selectDeliv(tipo) {
+    tipoEntrega = tipo;
+    // Actualiza o visual das opções
+    document.querySelectorAll('.deliv-option').forEach(opt => opt.classList.remove('selected'));
+    const selectedDiv = document.querySelector(`.deliv-option[onclick*="${tipo}"]`);
+    if (selectedDiv) selectedDiv.classList.add('selected');
+
+    const addressCard = document.getElementById('addressCardWrapper');
+    if (tipo === 'express') {
+        addressCard.style.display = 'block';
+        // Se já houver endereço seleccionado, recalcula; senão, mostra aviso para escolher
+        if (enderecoAtual) {
+            recalcularTaxaPorEndereco();
+        } else {
+            // Nenhum endereço: abre o modal automaticamente
+            abrirModalEnderecos();
+            // Enquanto não seleccionar, deixa taxa 0 e mostra mensagem
+            actualizarResumo(0, 0);
+            document.getElementById('h-endereco').value = '';
+        }
+    } else {
+        addressCard.style.display = 'none';
+        // Retirada na farmácia: limpa endereço, taxa = 0, distância = 0
+        enderecoAtual = null;
+        document.getElementById('h-endereco').value = 'Retirar na Farmácia';
+        document.getElementById('h-lat').value = 0.0;
+        document.getElementById('h-lng').value = 0.0;
+        document.getElementById('taxaEntregaHidden').value = 0;
+        actualizarResumo(0, 0);
+        // Actualiza o display do endereço (opcional)
+        const displayDiv = document.getElementById('enderecoSelecionadoDisplay');
+        displayDiv.innerHTML = `<p class="text-muted" style="margin:0"><i class="bi bi-building"></i> Retirar na Farmácia</p>`;
+    }
+}
+
+// Listener para o input de ficheiro (dentro do formulário)
+document.addEventListener('DOMContentLoaded', function() {
+    const fileInput = document.getElementById('comprovativoExpressInput');
+    if (fileInput) {
+        fileInput.addEventListener('change', function(e) {
+            const preview = document.getElementById('comprovativoPreview');
+            if (preview) {
+                if (this.files && this.files[0]) {
+                    preview.innerHTML = `<i class="bi bi-check-circle-fill"></i> Ficheiro seleccionado: ${this.files[0].name}`;
+                } else {
+                    preview.innerHTML = '';
+                }
+            }
+        });
+    }
+});
 
 /* ── PAGAMENTO ────────────────────────────────────── */
 function selectPay(el, metodo) {
-  document.querySelectorAll('.pay-option').forEach(p => {
-    p.classList.remove('selected');
-    p.querySelector('.pay-radio').checked = false;
-  });
-  el.classList.add('selected');
-  el.querySelector('.pay-radio').checked = true;
-  document.getElementById('h-metodo').value = metodo;
+    document.querySelectorAll('.pay-option').forEach(p => {
+        p.classList.remove('selected');
+        p.querySelector('.pay-radio').checked = false;
+    });
+    el.classList.add('selected');
+    el.querySelector('.pay-radio').checked = true;
+    document.getElementById('h-metodo').value = metodo;
+
+    const comprovativoArea = document.getElementById('comprovativoExpressArea');
+    if (metodo === 'express') {
+        comprovativoArea.style.display = 'block';
+    } else {
+        comprovativoArea.style.display = 'none';
+        // Limpa o ficheiro seleccionado
+        const fileInput = document.getElementById('comprovativoExpressInput');
+        if (fileInput) {
+            fileInput.value = '';
+            const preview = document.getElementById('comprovativoPreview');
+            if (preview) preview.innerHTML = '';
+        }
+    }
 }
 
 /* ── TOTAIS VISUAIS (se necessário) ───────────────── */
@@ -678,25 +1035,27 @@ function updateTotals() {
 
 /* ── VALIDAÇÃO PRÉ-SUBMIT ─────────────────────────── */
 document.getElementById('formPedido').addEventListener('submit', function (e) {
-  const endereco = document.getElementById('h-endereco').value.trim();
-  const metodo   = document.getElementById('h-metodo').value.trim();
+    if (tipoEntrega === 'express') {
+        if (!enderecoAtual) {
+            e.preventDefault();
+            showToast('Endereço em falta', 'Seleccione um endereço de entrega para o serviço Expresso.');
+            abrirModalEnderecos();
+            return;
+        }
+    }
 
-  if (!endereco) {
-    e.preventDefault();
-    showToast('Endereço em falta', 'Seleccione uma morada de entrega.');
-    document.querySelector('.address-card')?.scrollIntoView({ behavior:'smooth', block:'center' });
-    return;
-  }
-  if (!metodo) {
-    e.preventDefault();
-    showToast('Pagamento em falta', 'Seleccione um método de pagamento.');
-    return;
-  }
+    const metodo = document.getElementById('h-metodo').value.trim();
+    if (!metodo) {
+        e.preventDefault();
+        showToast('Pagamento em falta', 'Seleccione um método de pagamento.');
+        return;
+    }
 
-  const btn = document.getElementById('btnConfirmar');
-  btn.disabled = true;
-  btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status"></span> A processar…';
+    const btn = document.getElementById('btnConfirmar');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status"></span> A processar…';
 });
+
 
 /* ── TOAST ────────────────────────────────────────── */
 function showToast(title, msg) {
@@ -733,4 +1092,3 @@ window.addEventListener('scroll', () => {
 
 </body>
 </html>
-```

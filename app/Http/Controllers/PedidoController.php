@@ -7,6 +7,7 @@ use App\Jobs\NotifyUserOrderCompletedJob;
 use App\Jobs\ProcessPendingDelivery;
 use App\Models\Carrinho;
 use App\Models\Factura;
+use App\Models\Pagamento;
 use App\Models\Pedido;
 use App\Services\EntregaService;
 use App\Services\PedidoService;
@@ -27,19 +28,34 @@ class PedidoController extends Controller
 
         return DB::transaction(function () use ($request) {
 
+        if (empty($request->items)) {
+                throw new \Exception('Carrinho vazio.');
+        }
+
         $farmacia = $this->service->encontrarFarmaciaComTodosItens($request->items, $request->latitude, $request->longitude);
 
         if (!$farmacia) {
         return back()->withErrors(['farmacia' => 'Medicamentos em múltiplas farmácias ou indisponíveis...']);
         }
 
+        $comprovativoPath = null;
+        if ($request->hasFile('comprovativo_express') && $request->metodo_pagamento === 'express') {
+                $file = $request->file('comprovativo_express');
+                $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+                $path = $file->storeAs('comprovativos', $filename, 'public');
+                $comprovativoPath = $path; 
+        }
+        
+
         $pedido = $this->service->criarPedido(
             auth()->id(),
             $request->items,
             $request->endereco,
-            $request->latitude,
-            $request->longitude,
+            $request->latitude ?? 0.0,
+            $request->longitude ?? 0.0,
             $request->metodo_pagamento,
+            $request->prescricao_path ?? null ,
+            $comprovativoPath,
             
         );
 
@@ -106,6 +122,16 @@ class PedidoController extends Controller
                 
                 $pedido->update(['status' => $request->status]);
 
+                if (in_array($pedido->status, ['pago'])) {
+                        Pagamento::create([
+                            'pedido_id'      => $pedido->id,
+                            'status' => 'confirmado',
+                            'metodo'     => $pedido->metodo_pagamento ,
+                            'valor'    => $pedido->total,
+                            'data_pagamento'=> now()
+                        ]);
+                }
+
                 if (in_array($pedido->status, ['Aprovado', 'pago'])) {
                     if (!$pedido->factura) {
                         Factura::create([
@@ -120,7 +146,8 @@ class PedidoController extends Controller
                     }
                 }
 
-                if (in_array($pedido->status, ['pago', 'Aprovado'])) {
+                if (in_array($pedido->status, ['pago', 'Aprovado']) && $pedido->entrega 
+                && $pedido->entrega->taxa_entrega != 0) {
                     if (!$pedido->entrega) {
                         try {
                             $entrega = $this->entregaService->criarEntrega($pedido);

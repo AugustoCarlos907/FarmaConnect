@@ -16,6 +16,8 @@ class Pedido extends Model
         'latitude',
         'longitude',
         'total',
+        'metodo_pagamento',
+        'comprovativo_express'
     ];
 
 

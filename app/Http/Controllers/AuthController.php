@@ -7,6 +7,7 @@ use Auth;
 use Event;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
@@ -22,7 +23,7 @@ class AuthController extends Controller
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8|confirmed',
             'phone' => 'nullable|string|max:20',
-            'data_nascimento' => 'nullable|date |before_or_equal_today',
+            'data_nascimento' => 'nullable|date ',
             'genero' => 'nullable|string',
             'last_name'=> 'required|string|max:255',
             'endereco' => 'nullable|string|max:500',
@@ -31,15 +32,15 @@ class AuthController extends Controller
 
         ]);
 
+        $data['password'] = Hash::make($data['password']);
 
-        if($data ){
 
-            $user = User::create($data);
+        $user = User::create($data);
+        if($user ){
 
-            
             // Event::dispatch(new Registered($user));
 
-            Auth::user()->login($user);
+            Auth::login($user);
 
             return redirect()->route('index.clientes');
             // return redirect()->route('verification.notice');

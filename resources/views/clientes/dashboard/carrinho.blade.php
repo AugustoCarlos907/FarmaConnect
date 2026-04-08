@@ -678,7 +678,7 @@
                 @if(!$numeroExpress)
                     <div class="alert-fc alert-err" style="margin-top: 0.75rem;">
                         <i class="bi bi-exclamation-triangle-fill"></i>
-                        Seleccione uma fármacia para ter  accesso às coordenadas bancárias disponíveis .                    
+                        Seleccione o produto  de uma fármacia para ter  accesso às coordenadas bancárias disponíveis .                    
                     </div>
 
                 @else

@@ -513,9 +513,14 @@
               <i class="bi bi-heart-fill"></i> Favoritos
             </a>
             <div class="snav-divider"></div>
-            <a class="snav-item" href="{{ route('logout' , ['id'=>auth()->user()->id]) }}" style="color:#e74c3c;">
-              <i class="bi bi-box-arrow-right" style="color:#e74c3c;"></i> Terminar Sessão
-            </a>
+                            <a class="dropdown-item text-danger" href="{{ route('logout', ['id' => auth()->id()]) }}"
+                            onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                <i class="bi bi-box-arrow-right me-2"></i>Terminar Sessão
+                            </a>
+
+                            <form id="logout-form" action="{{ route('logout', ['id' => auth()->id()]) }}" method="POST" class="d-none">
+                                @csrf
+                            </form>
           </div>
         </div>
       </div>

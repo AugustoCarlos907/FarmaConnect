@@ -600,7 +600,7 @@
           {{-- <div class="tot-row"><span>Taxa de entrega</span><span>{{ $pedido->taxa_entrega }} Kz</span></div> --}}
           {{-- <div class="tot-row"><span>Desconto</span><span style="color:#22c55e;">— {{ $pedido->desconto }} Kz</span></div> --}}
           <div class="tot-row bold">
-            <span>Total {{ $st === 'Concluído' ? 'pago' : 'a pagar' }}</span>
+            <span>Total {{ $st === 'Concluído' || $st === 'pago' ? 'pago' : 'a pagar' }}</span>
             <span>{{ number_format($pedido->total + $taxaEntrega , 0, ',', ' ') }} Kz</span>
           </div>
         </div>
@@ -645,7 +645,7 @@
 
           @elseif($st === 'Aprovado')
 
-          <a class="oa-btn oa-ghost text-decoration-none" href="{{ route('pedidos.factura', ['id' => $pedido->id]) }}"><i class="bi bi-receipt"></i> Ver factura</a>
+          {{-- <a class="oa-btn oa-ghost text-decoration-none" href="{{ route('pedidos.factura', ['id' => $pedido->id]) }}"><i class="bi bi-receipt"></i> Ver factura</a> --}}
           <button class="oa-btn oa-ghost"><i class="bi bi-receipt"></i> Ver detalhes</button>
 
  

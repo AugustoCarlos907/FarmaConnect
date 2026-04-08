@@ -513,7 +513,7 @@
             @if($factura->pagamento)
             <div class="info-row">
               <div class="info-key">Método de pagamento</div>
-              <div class="info-val">{{ $factura->pagamento->metodo ?? '—' }}</div>
+              <div class="info-val">{{ $factura->pedido->metodo_pagamento ?? '—' }}</div>
             </div>
             @endif
 

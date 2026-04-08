@@ -767,23 +767,25 @@
         <!-- Stats bar -->
         <div class="stats-bar">
           <div class="stat-item">
-            <span class="stat-num">50+</span>
-            <span class="stat-lbl">Farmácias Parceiras</span>
+            <span class="stat-num">24h</span>
+            <span class="stat-lbl">Suporte Técnico</span>
           </div>
           <div class="stat-sep"></div>
           <div class="stat-item">
-            <span class="stat-num">5 000+</span>
-            <span class="stat-lbl">Medicamentos</span>
+            <span class="stat-num">100%</span>
+            <span class="stat-lbl">Entrega Rastreada</span>
           </div>
           <div class="stat-sep"></div>
           <div class="stat-item">
-            <span class="stat-num">30 min</span>
-            <span class="stat-lbl">Entrega Média</span>
+            <span class="stat-num">+300%</span>
+            <span class="stat-lbl">Crescimento <A></A>nual</span>
           </div>
           <div class="stat-sep"></div>
           <div class="stat-item">
-            <span class="stat-num">10 000+</span>
-            <span class="stat-lbl">Clientes Satisfeitos</span>
+            <span class="stat-num">100%</span>
+            <span class="stat-lbl">Transações Seguras ( Criptografia )</span>
+
+            {{-- <span class="stat-lbl">Clientes Satisfeitos</span> --}}
           </div>
         </div>
       </div>

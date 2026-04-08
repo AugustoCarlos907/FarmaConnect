@@ -118,11 +118,13 @@ class PedidoController extends Controller
 
             $pedido = Pedido::findOrFail($id);
 
-            return DB::transaction(function () use ($pedido, $request) {
+            DB::transaction(function () use ($pedido, $request) {
                 
-                $pedido->update(['status' => $request->status]);
+                $pedido->update([
+                    'status' => $request->status
+                ]);
 
-                if (in_array($pedido->status, ['pago'])) {
+                if ($pedido->status == 'pago') {
                         Pagamento::create([
                             'pedido_id'      => $pedido->id,
                             'status' => 'confirmado',
@@ -132,23 +134,19 @@ class PedidoController extends Controller
                         ]);
                 }
 
-                if (in_array($pedido->status, ['Aprovado', 'pago'])) {
-                    if (!$pedido->factura) {
+                if ($pedido->status == 'pago' &&  !$pedido->factura()->exists() ) {
                         Factura::create([
                             'user_id'        => $pedido->user_id,
                             'pedido_id'      => $pedido->id,
-                            'pagamento_id'   => $pedido->pagamento->id ?? null,
+                            'pagamento_id'   => $pedido->pagamento->id ?? 'UNKNOWN',
                             'numero_factura' => 'FAC-' . now()->format('Ymd') . '-' . strtoupper(uniqid()),
                             'valor_total'    => $pedido->total,
                             'IVA'            => $pedido->total * 0.14,
                             'emitida_em'     => now()
                         ]);
-                    }
                 }
 
-                if (in_array($pedido->status, ['pago', 'Aprovado']) && $pedido->entrega 
-                && $pedido->entrega->taxa_entrega != 0) {
-                    if (!$pedido->entrega) {
+                if (in_array($pedido->status, ['pago', 'Aprovado']) && $pedido->entrega && $pedido->entrega->taxa_entrega > 0 ) {
                         try {
                             $entrega = $this->entregaService->criarEntrega($pedido);
                             $pedido->update(['status' => 'Em Entrega']);
@@ -161,11 +159,9 @@ class PedidoController extends Controller
                             // Se não houver entregador, agendamos para tentar mais tarde
                             ProcessPendingDelivery::dispatch($pedido);
                         }
-                    }
                 }
-
-                return redirect()->back()->with('success', 'Status do pedido atualizado para ' . $request->status);
             });
+                return redirect()->back()->with('success', 'Status do pedido atualizado para ' . $request->status);
         } catch (\Exception $e) {
             return back()->withErrors($e->getMessage());
         }

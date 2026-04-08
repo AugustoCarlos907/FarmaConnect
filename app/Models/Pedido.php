@@ -17,7 +17,8 @@ class Pedido extends Model
         'longitude',
         'total',
         'metodo_pagamento',
-        'comprovativo_express'
+        'comprovativo_express',
+        'prescricao_path'
     ];
 
 

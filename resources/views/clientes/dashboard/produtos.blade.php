@@ -276,7 +276,7 @@
         @foreach($categorias as $cat)
         <a class="cat-card" href="{{ route('produtos.categoria' , ['id'=>$cat->id]) }}" title="{{ $cat->name }}">
           <div class="cc-img">
-            <img src="{{'https://conceito.de/wp-content/uploads/2023/03/pill-1884775_1280.jpg' }}"
+            <img src="{{asset('storage/'.$cat->imagem) }}"
                  alt="{{ $cat->name }}" loading="lazy">
             <div class="cc-img-overlay"></div>
             <div class="cc-arrow"><i class="bi bi-arrow-right"></i></div>

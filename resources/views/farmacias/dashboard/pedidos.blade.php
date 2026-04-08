@@ -565,7 +565,7 @@
                           </button>
                         </form>
                       @endif
-                      @if($pedido->status !== 'Rejeitado' && $pedido->status !== 'Concluído')
+                      @if($pedido->status !== 'Rejeitado' && $pedido->status !== 'Concluído' && $pedido->status !== 'Cancelado')
                         <form action="{{ route('pedidos.status.update', $pedido->id) }}" method="POST" style="display:inline">
                           @csrf @method('PUT')
                           <input type="hidden" name="status" value="Rejeitado">

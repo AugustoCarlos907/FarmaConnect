@@ -267,8 +267,8 @@
           <div class="brand-tagline">Crie a sua conta</div>
         </div>
 
-        <!-- FORMULÁRIO DE CADASTRO -->
-        <form action="{{ route('store.clientes') }}" method="POST">
+        <!-- FORMULÁRIO DE CADASTRO (agora com ID) -->
+        <form action="{{ route('store.clientes') }}" method="POST" id="formCadastro">
           @csrf
           <div class="row g-4">
 
@@ -462,10 +462,6 @@
     });
 
     // Geocoder para pesquisa de endereços (Esri)
-    const geocoder = L.esri.Geocoding.geocode({
-      providers: [L.esri.Geocoding.arcgisOnlineProvider()]
-    });
-
     const searchControl = L.esri.Geocoding.geosearch({
       position: 'topleft',
       placeholder: 'Pesquisar endereço...',
@@ -484,24 +480,27 @@
   })();
 
   // ------------------------------------------------------------------
-  // VALIDAÇÃO DO FORMULÁRIO E SIMULAÇÕES
+  // VALIDAÇÃO DO FORMULÁRIO (no evento submit)
   // ------------------------------------------------------------------
   (function() {
-    // Elementos principais
+    // Elementos do formulário
+    const form = document.getElementById('formCadastro');
     const emailInput = document.getElementById('email');
     const telefoneInput = document.getElementById('telefone');
+    const senha = document.getElementById('senha');
+    const confirmSenha = document.getElementById('confirmSenha');
+    const termosCheck = document.getElementById('termosCheck');
+    const enderecoInput = document.getElementById('endereco');
+    const toastMsg = document.getElementById('liveToastMsg');
+
+    // Elementos da verificação (apenas para simulação, não bloqueiam o envio)
     const btnEnviarEmail = document.getElementById('enviarCodigoEmailBtn');
     const btnEnviarSms = document.getElementById('enviarCodigoSmsBtn');
     const codigoArea = document.getElementById('codigoVerificacaoArea');
     const codigoDigitado = document.getElementById('codigoDigitado');
     const confirmarCodigoBtn = document.getElementById('confirmarCodigoBtn');
     const feedbackCodigo = document.getElementById('feedbackCodigo');
-    const inscreverBtn = document.getElementById('inscreverBtn');
     const cancelarBtn = document.getElementById('cancelarBtn');
-    const termosCheck = document.getElementById('termosCheck');
-    const toastMsg = document.getElementById('liveToastMsg');
-    const senha = document.getElementById('senha');
-    const confirmSenha = document.getElementById('confirmSenha');
     const googleBtn = document.getElementById('googleSignup');
     const appleBtn = document.getElementById('appleSignup');
 
@@ -511,125 +510,136 @@
       setTimeout(() => { toastMsg.textContent = ''; }, 4500);
     }
 
-    function abrirAreaCodigo(metodo = 'email') {
-      if (!codigoArea.style.display || codigoArea.style.display === 'none') {
-        codigoArea.style.display = 'block';
-      }
-      mostrarFeedback(`📨 Código enviado por ${metodo === 'email' ? 'e-mail' : 'SMS'} (simulado: 123456)`, true);
-      codigoDigitado.value = '';
-      feedbackCodigo.innerHTML = '';
+    // --- Simulação de envio de código (apenas visual) ---
+    if (btnEnviarEmail) {
+      btnEnviarEmail.addEventListener('click', function(e) {
+        e.preventDefault();
+        if (!emailInput.value.trim()) {
+          mostrarFeedback('⚠️ Por favor, insira um e-mail válido.', false);
+          return;
+        }
+        if (codigoArea) codigoArea.style.display = 'block';
+        mostrarFeedback('📨 Código enviado por e-mail (simulado: 123456)', true);
+        if (codigoDigitado) codigoDigitado.value = '';
+        if (feedbackCodigo) feedbackCodigo.innerHTML = '';
+      });
     }
 
-    btnEnviarEmail.addEventListener('click', function(e) {
-      e.preventDefault();
-      if (!emailInput.value.trim()) {
-        mostrarFeedback('⚠️ Por favor, insira um e-mail válido.', false);
-        return;
-      }
-      abrirAreaCodigo('email');
-    });
-
-    btnEnviarSms.addEventListener('click', function(e) {
-      e.preventDefault();
-      if (!telefoneInput.value.trim()) {
-        mostrarFeedback('⚠️ Insira um número de telefone para SMS.', false);
-        return;
-      }
-      abrirAreaCodigo('sms');
-    });
-
-    confirmarCodigoBtn.addEventListener('click', function() {
-      const codigo = codigoDigitado.value.trim();
-      if (codigo === '') {
-        feedbackCodigo.innerHTML = '<span class="text-danger">🔴 Digite o código</span>';
-        return;
-      }
-      if (codigo === '123456') {
-        feedbackCodigo.innerHTML = '<span class="text-success fw-bold">✅ Código verificado!</span>';
-      } else {
-        feedbackCodigo.innerHTML = '<span class="text-danger">❌ Código incorreto. Tente 123456</span>';
-      }
-    });
-
-    // Validação do formulário antes de submeter
-    inscreverBtn.addEventListener('click', function(e) {
-      const nome = document.getElementById('nome').value.trim();
-      const sobrenome = document.getElementById('sobrenome').value.trim();
-      const emailVal = emailInput.value.trim();
-      const foneVal = telefoneInput.value.trim();
-      const senhaVal = senha.value.trim();
-      const confirmVal = confirmSenha.value.trim();
-      const enderecoVal = document.getElementById('endereco').value.trim();
-
-      if (!nome || !sobrenome) {
+    if (btnEnviarSms) {
+      btnEnviarSms.addEventListener('click', function(e) {
         e.preventDefault();
-        mostrarFeedback('❌ Nome e sobrenome são obrigatórios.', false);
-        return;
-      }
-      if (!emailVal || !emailVal.includes('@')) {
-        e.preventDefault();
-        mostrarFeedback('❌ E-mail válido é obrigatório.', false);
-        return;
-      }
-      if (!foneVal) {
-        e.preventDefault();
-        mostrarFeedback('❌ Número de telefone necessário.', false);
-        return;
-      }
-      if (senhaVal.length < 6) {
-        e.preventDefault();
-        mostrarFeedback('🔐 A senha deve ter pelo menos 6 caracteres.', false);
-        return;
-      }
-      if (senhaVal !== confirmVal) {
-        e.preventDefault();
-        mostrarFeedback('❌ As senhas não coincidem.', false);
-        return;
-      }
-      if (!termosCheck.checked) {
-        e.preventDefault();
-        mostrarFeedback('📄 Aceite os Termos e Condições.', false);
-        return;
-      }
-      if (!enderecoVal) {
-        e.preventDefault();
-        mostrarFeedback('📍 Selecione um endereço no mapa.', false);
-        return;
-      }
-      // Se chegou aqui, o formulário será submetido normalmente
-      mostrarFeedback('🎉 Cadastro validado! A enviar...', true);
-    });
+        if (!telefoneInput.value.trim()) {
+          mostrarFeedback('⚠️ Insira um número de telefone para SMS.', false);
+          return;
+        }
+        if (codigoArea) codigoArea.style.display = 'block';
+        mostrarFeedback('📱 Código enviado por SMS (simulado: 123456)', true);
+        if (codigoDigitado) codigoDigitado.value = '';
+        if (feedbackCodigo) feedbackCodigo.innerHTML = '';
+      });
+    }
 
-    cancelarBtn.addEventListener('click', function() {
-      if (confirm('Deseja cancelar o cadastro? Os dados serão perdidos.')) {
-        document.getElementById('nome').value = '';
-        document.getElementById('sobrenome').value = '';
-        emailInput.value = '';
-        telefoneInput.value = '';
-        senha.value = '';
-        confirmSenha.value = '';
-        document.getElementById('nascimento').value = '2026-01-01';
-        document.getElementById('genero').selectedIndex = 0;
-        document.getElementById('endereco').value = '';
-        document.getElementById('latitude').value = '';
-        document.getElementById('longitude').value = '';
-        termosCheck.checked = false;
-        codigoArea.style.display = 'none';
-        feedbackCodigo.innerHTML = '';
-        mostrarFeedback('✖️ Cadastro cancelado.', false);
-      }
-    });
+    if (confirmarCodigoBtn) {
+      confirmarCodigoBtn.addEventListener('click', function() {
+        const codigo = codigoDigitado ? codigoDigitado.value.trim() : '';
+        if (codigo === '') {
+          if (feedbackCodigo) feedbackCodigo.innerHTML = '<span class="text-danger">🔴 Digite o código</span>';
+        } else if (codigo === '123456') {
+          if (feedbackCodigo) feedbackCodigo.innerHTML = '<span class="text-success fw-bold">✅ Código verificado!</span>';
+        } else {
+          if (feedbackCodigo) feedbackCodigo.innerHTML = '<span class="text-danger">❌ Código incorreto. Tente 123456</span>';
+        }
+      });
+    }
 
-    googleBtn.addEventListener('click', function() {
-      mostrarFeedback('🌐 Redirecionamento para Google (simulação)', true);
-    });
-    appleBtn.addEventListener('click', function() {
-      mostrarFeedback('🍎 Autenticação Apple (simulação)', true);
-    });
+    // --- VALIDAÇÃO PRINCIPAL (submit do formulário) ---
+    if (form) {
+      form.addEventListener('submit', function(e) {
+        const nome = document.getElementById('nome').value.trim();
+        const sobrenome = document.getElementById('sobrenome').value.trim();
+        const emailVal = emailInput.value.trim();
+        const foneVal = telefoneInput.value.trim();
+        const senhaVal = senha.value.trim();
+        const confirmVal = confirmSenha.value.trim();
+        const enderecoVal = enderecoInput.value.trim();
 
-    const termosLinks = document.querySelectorAll('.termos-link');
-    termosLinks.forEach(link => {
-      link.addEventListener('click', function(e) {
+        // Validações
+        if (!nome || !sobrenome) {
+          e.preventDefault();
+          mostrarFeedback('❌ Nome e sobrenome são obrigatórios.', false);
+          return false;
+        }
+        if (!emailVal || !emailVal.includes('@')) {
+          e.preventDefault();
+          mostrarFeedback('❌ E-mail válido é obrigatório.', false);
+          return false;
+        }
+        if (!foneVal) {
+          e.preventDefault();
+          mostrarFeedback('❌ Número de telefone necessário.', false);
+          return false;
+        }
+        if (senhaVal.length < 6) {
+          e.preventDefault();
+          mostrarFeedback('🔐 A senha deve ter pelo menos 6 caracteres.', false);
+          return false;
+        }
+        if (senhaVal !== confirmVal) {
+          e.preventDefault();
+          mostrarFeedback('❌ As senhas não coincidem.', false);
+          return false;
+        }
+        if (!termosCheck.checked) {
+          e.preventDefault();
+          mostrarFeedback('📄 Aceite os Termos e Condições.', false);
+          return false;
+        }
+        if (!enderecoVal) {
+          e.preventDefault();
+          mostrarFeedback('📍 Selecione um endereço no mapa.', false);
+          return false;
+        }
+
+        // Se chegou aqui, tudo ok – o formulário será enviado normalmente
+        mostrarFeedback('🎉 Cadastro validado! A enviar...', true);
+        // Não chamamos preventDefault, então o submit ocorre
+      });
+    }
+
+    // --- Botão Cancelar ---
+    if (cancelarBtn) {
+      cancelarBtn.addEventListener('click', function() {
+        if (confirm('Deseja cancelar o cadastro? Os dados serão perdidos.')) {
+          document.getElementById('nome').value = '';
+          document.getElementById('sobrenome').value = '';
+          emailInput.value = '';
+          telefoneInput.value = '';
+          senha.value = '';
+          confirmSenha.value = '';
+          document.getElementById('nascimento').value = '2026-01-01';
+          document.getElementById('genero').selectedIndex = 0;
+          enderecoInput.value = '';
+          document.getElementById('latitude').value = '';
+          document.getElementById('longitude').value = '';
+          termosCheck.checked = false;
+          if (codigoArea) codigoArea.style.display = 'none';
+          if (feedbackCodigo) feedbackCodigo.innerHTML = '';
+          mostrarFeedback('✖️ Cadastro cancelado.', false);
+        }
+      });
+    }
+
+    // --- Botões sociais (simulação) ---
+    if (googleBtn) {
+      googleBtn.addEventListener('click', () => mostrarFeedback('🌐 Redirecionamento para Google (simulação)', true));
+    }
+    if (appleBtn) {
+      appleBtn.addEventListener('click', () => mostrarFeedback('🍎 Autenticação Apple (simulação)', true));
+    }
+
+    // --- Links dos termos (simulação) ---
+    document.querySelectorAll('.termos-link').forEach(link => {
+      link.addEventListener('click', (e) => {
         e.preventDefault();
         mostrarFeedback('📋 Termos e Condições da FarmaConnect', true);
       });

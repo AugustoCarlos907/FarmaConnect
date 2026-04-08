@@ -33,13 +33,13 @@ use Twilio\Rest\Client;
         Route::get('cliente/register', [AuthController::class, 'create'])->name('register');
         Route::post('/register', [AuthController::class, 'store'])->name('store.clientes');
 
-        Route::get('/email/verify', function () {
-            return view('auth.verify-email');
-        })->middleware('auth')->name('verification.notice');
+        // Route::get('/email/verify', function () {
+        //     return view('auth.verify-email');
+        // })->middleware('auth')->name('verification.notice');
 
-        Route::get('/email/verify/{id}/{hash}', function () {
-            return view('auth.verify-email');
-        })->middleware(['auth', 'signed'])->name('verification.verify');
+        // Route::get('/email/verify/{id}/{hash}', function () {
+        //     return view('auth.verify-email');
+        // })->middleware(['auth', 'signed'])->name('verification.verify');
         
         Route::get('/login', [AuthController::class, 'login'])->name('login');
         Route::post('/login', [AuthController::class, 'authenticate'])->name('authenticate');

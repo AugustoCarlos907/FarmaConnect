@@ -37,11 +37,12 @@ class AuthController extends Controller
             $user = User::create($data);
 
             
-            Event::dispatch(new Registered($user));
+            // Event::dispatch(new Registered($user));
 
             Auth::user()->login($user);
 
-            return redirect()->route('verification.notice');
+            return redirect()->route('index.clientes');
+            // return redirect()->route('verification.notice');
         }
 
         return back()->withErrors(['msg' => 'Registration failed. Please try again.']);

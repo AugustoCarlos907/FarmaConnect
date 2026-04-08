@@ -31,7 +31,7 @@ use Twilio\Rest\Client;
 
 
         Route::get('cliente/register', [AuthController::class, 'create'])->name('register');
-        Route::post('/register', [AuthController::class, 'store']);
+        Route::post('/register', [AuthController::class, 'store'])->name('store.clientes');
 
         Route::get('/email/verify', function () {
             return view('auth.verify-email');

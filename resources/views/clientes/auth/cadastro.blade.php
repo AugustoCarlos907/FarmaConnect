@@ -9,13 +9,19 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
   <!-- Fonte Inter -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+  <!-- Leaflet.js para OpenStreetMap -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <!-- Esri Geocoder (para pesquisa de endereços) -->
+  <script src="https://unpkg.com/esri-leaflet-geocoder/dist/esri-leaflet-geocoder.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/esri-leaflet-geocoder/dist/esri-leaflet-geocoder.css" />
   <style>
     /* ----- PALETA OFICIAL –– VERDE FARMA + TONS NEUTROS ----- */
     :root {
       --background-color: #ffffff;
       --default-color: #363f40;
       --heading-color: #1f2f31;
-      --accent-color: #099aa7;        /* verde‑azulado Farma */
+      --accent-color: #099aa7;
       --surface-color: #ffffff;
       --contrast-color: #ffffff;
       --soft-green: #dff3f0;
@@ -33,7 +39,6 @@
       align-items: center;
       background: linear-gradient(145deg, #f8fbfb 0%, #ffffff 100%);
     }
-     /* Botão voltar */
     .btn-back {
       color: var(--heading-color);
       background-color: transparent;
@@ -68,7 +73,6 @@
       font-weight: 650;
       letter-spacing: -0.02em;
     }
-    /* Botão accent (verde Farma) */
     .btn-accent {
       background-color: var(--accent-color);
       border-color: var(--accent-color);
@@ -84,7 +88,6 @@
       color: white;
       transform: scale(1.02);
     }
-    /* Botão cancelar (agora sozinho, mais abaixo) */
     .btn-cancel {
       background-color: transparent;
       color: #6c8285;
@@ -111,7 +114,6 @@
       background-color: var(--accent-color);
       color: white;
     }
-    /* Inputs com foco verde */
     .form-control, .form-select {
       border: 1.5px solid #e0e9ea;
       border-radius: 20px;
@@ -135,7 +137,6 @@
       background-color: var(--accent-color);
       border-color: var(--accent-color);
     }
-    /* Divisor com linha suave */
     .divider {
       display: flex;
       align-items: center;
@@ -151,8 +152,6 @@
     }
     .divider::before { margin-right: 1rem; }
     .divider::after { margin-left: 1rem; }
-
-    /* Seção de verificação (verde suave) */
     .verification-section {
       background-color: var(--light-mint);
       border-radius: 24px;
@@ -173,7 +172,6 @@
       background-color: #aad4cf;
       color: #054e52;
     }
-    /* Botões sociais */
     .btn-social {
       border-radius: 50px;
       padding: 0.65rem 1rem;
@@ -204,19 +202,14 @@
       font-size: 1.2rem;
       margin-right: 8px;
     }
-    /* Marca FarmaConnect com cores personalizadas */
     .brand-farma {
       font-size: 2rem;
       font-weight: 700;
       letter-spacing: -0.03em;
       line-height: 1.2;
     }
-    .farma {
-      color: var(--accent-color); /* #099aa7 */
-    }
-    .connect {
-      color: var(--heading-color); /* #1f2f31 */
-    }
+    .farma { color: var(--accent-color); }
+    .connect { color: var(--heading-color); }
     .brand-tagline {
       color: #6c8285;
       font-size: 0.95rem;
@@ -232,7 +225,6 @@
     .termos-link:hover {
       border-bottom: 1px solid var(--accent-color);
     }
-    /* Animações */
     .animate-slide-up {
       animation: slideUpFade 0.6s cubic-bezier(0.23, 1, 0.32, 1);
     }
@@ -240,393 +232,409 @@
       0% { opacity: 0; transform: translateY(15px); }
       100% { opacity: 1; transform: translateY(0); }
     }
-    /* Linha fina entre secções */
     hr.separator {
       border: 0;
       border-top: 1.5px solid #ecf3f3;
       margin: 1.8rem 0 1.5rem 0;
       opacity: 0.8;
     }
+    #map {
+      height: 300px;
+      border-radius: 18px;
+      border: 1.5px solid #e0e9ea;
+      z-index: 1;
+    }
   </style>
 </head>
 <body>
-  <div class="container">
-    <div class="row justify-content-center">
-      <div class="col-12 col-md-10 col-lg-9 col-xl-8">
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-12 col-md-10 col-lg-9 col-xl-8">
 
-        <!-- CARD PRINCIPAL -->
-        <div class="card border-0 p-4 p-md-5 animate-slide-up">
+      <!-- CARD PRINCIPAL -->
+      <div class="card border-0 p-4 p-md-5 animate-slide-up">
 
-            <!-- BOTÃO VOLTAR -->
-          <div class="d-flex mb-0">
-            <a class="btn-back text-decoration-none" href="{{ route('index') }}">
-              <i class="bi bi-arrow-left"></i> Voltar
-            </a>
-          </div>
-          
-          <!-- CABEÇALHO: FarmaConnect com cores distintas -->
-          <div class="mb-4">
-            <div class="brand-farma">
-              <span class="farma">Farma</span><span class="connect">Connect</span>
+        <!-- BOTÃO VOLTAR -->
+        <div class="d-flex mb-0">
+          <a class="btn-back text-decoration-none" href="{{ route('index') }}">
+            <i class="bi bi-arrow-left"></i> Voltar
+          </a>
+        </div>
+
+        <!-- CABEÇALHO -->
+        <div class="mb-4">
+          <div class="brand-farma"><span class="farma">Farma</span><span class="connect">Connect</span></div>
+          <div class="brand-tagline">Crie a sua conta</div>
+        </div>
+
+        <!-- FORMULÁRIO DE CADASTRO -->
+        <form action="{{ route('store.clientes') }}" method="POST">
+          @csrf
+          <div class="row g-4">
+
+            <!-- Nome e Sobrenome -->
+            <div class="col-sm-6">
+              <label class="form-label fw-semibold">Nome</label>
+              <input type="text" class="form-control" name="name" id="nome" placeholder="Nome">
             </div>
-            <div class="brand-tagline">
-              Crie a sua conta
+            <div class="col-sm-6">
+              <label class="form-label fw-semibold">Sobrenome</label>
+              <input type="text" class="form-control" name="last_name" id="sobrenome" placeholder="Sobrenome">
             </div>
-          </div>
-          
 
-          <!-- FORMULÁRIO DE CADASTRO -->
-          <form action="" method="POST">
-            @csrf
-              <div class="row g-4">
-
-                <!-- Nome e Sobrenome -->
-                <div class="col-sm-6">
-                  <label class="form-label fw-semibold">Nome</label>
-                  <input type="text" class="form-control" name="name" id="nome" placeholder="Nome">
-                </div>
-                <div class="col-sm-6">
-                  <label class="form-label fw-semibold">Sobrenome</label>
-                  <input type="text" class="form-control" name="last_name" id="sobrenome" placeholder="Sobrenome">
-                </div>
-                
-                <!-- E-mail e Telefone -->
-                <div class="col-sm-6">
-                  <label class="form-label fw-semibold">E-mail</label>
-                  <div class="input-group">
-                    <span class="input-group-text bg-white"><i class="bi bi-envelope"></i></span>
-                    <input type="email" class="form-control" name="email" id="email" placeholder="E-mail">
-                  </div>
-                </div>
-                <div class="col-sm-6">
-                  <label class="form-label fw-semibold">Nº telefone</label>
-                  <div class="input-group">
-                    <span class="input-group-text bg-white"><i class="bi bi-telephone"></i></span>
-                    <input type="tel" class="form-control" name="phone" id="telefone" placeholder="Telefone">
-                  </div>
-                </div>
-                
-                <!-- Data nascimento + Gênero -->
-                <div class="col-sm-6">
-                  <label class="form-label fw-semibold">Data de nascimento</label>
-                  <input type="date" class="form-control" name="data_nascimento" id="nascimento" value="2026-01-01">
-                </div>
-                <div class="col-sm-6">
-                  <label class="form-label fw-semibold">Gênero (opcional)</label>
-                  <select class="form-select" name="genero" id="genero">
-                    <option selected disabled>— selecione —</option>
-                    <option value="F">Feminino</option>
-                    <option value="M">Masculino</option>
-                  </select>
-                </div>
-
-                <!-- Endereço -->
-                <div class="col-12 mb-3">
-                  <label class="form-label fw-semibold">Localização no mapa</label>
-                  <div id="map" style="height: 300px; border-radius: 18px; border: 1.5px solid #e0e9ea;"></div>
-                </div>
-                <div class="col-12">
-                  <label class="form-label fw-semibold">Endereço</label>
-                  <input type="text" class="form-control" name="endereco" id="endereco" placeholder="Endereço completo" readonly>
-                </div>
-                <div class="col-sm-6">
-                  <label class="form-label fw-semibold">Latitude</label>
-                  <input type="text" class="form-control" name="latitude" id="latitude" placeholder="Latitude" readonly>
-                </div>
-                <div class="col-sm-6">
-                  <label class="form-label fw-semibold">Longitude</label>
-                  <input type="text" class="form-control" name="longitude" id="longitude" placeholder="Longitude" readonly>
-                </div>
-                
-                <!-- Senha e Confirmar senha -->
-                <div class="col-sm-6">
-                  <label class="form-label fw-semibold">Senha</label>
-                  <div class="input-group">
-                    <span class="input-group-text bg-white"><i class="bi bi-lock"></i></span>
-                    <input type="password" class="form-control" name="password" id="senha" placeholder="Senha">
-                  </div>
-                </div>
-                <div class="col-sm-6">
-                  <label class="form-label fw-semibold">Confirmar senha</label>
-                  <div class="input-group">
-                    <span class="input-group-text bg-white"><i class="bi bi-check2-circle"></i></span>
-                    <input type="password" class="form-control" name="password_confirmation" id="confirmSenha" placeholder="Confirmar senha">
-                  </div>
-                </div>
-              </div> <!-- fim row -->
-
-              <!-- SEÇÃO DE VERIFICAÇÃO (E-mail / SMS) -->
-              <div class="verification-section mt-4">
-                <div class="d-flex flex-wrap align-items-center justify-content-between">
-                  <span class="fw-semibold mb-2 mb-sm-0" style="color: var(--heading-color);">
-                    <i class="bi bi-shield-check me-1" style="color: var(--accent-color);"></i> 
-                    Verificação de segurança
-                  </span>
-                  <div class="d-flex gap-2">
-                    <button class="btn btn-soft-green btn-sm" id="enviarCodigoEmailBtn" type="button">
-                      <i class="bi bi-envelope-check"></i> Enviar por e-mail
-                    </button>
-                    <button class="btn btn-soft-green btn-sm" id="enviarCodigoSmsBtn" type="button">
-                      <i class="bi bi-chat-dots"></i> Enviar por SMS
-                    </button>
-                  </div>
-                </div>
-                <!-- Área do código de verificação -->
-                <div id="codigoVerificacaoArea" style="display: none; margin-top: 1.2rem;" class="animate-slide-up">
-                  <label class="form-label fw-semibold">Digite o código de 6 dígitos</label>
-                  <div class="d-flex flex-wrap gap-2">
-                    <input type="text" class="form-control" id="codigoDigitado" placeholder="000000" style="max-width: 180px; background: white;" maxlength="6">
-                    <button class="btn btn-accent" id="confirmarCodigoBtn" type="button">Confirmar</button>
-                    <span id="feedbackCodigo" class="align-self-center ms-2 small"></span>
-                  </div>
-                  <div id="codigoSimuladoHelper" class="mt-2 small text-secondary">
-                    <i class="bi bi-info-circle"></i> Código simulado: <strong>123456</strong> (use para testar)
-                  </div>
-                </div>
+            <!-- E-mail e Telefone -->
+            <div class="col-sm-6">
+              <label class="form-label fw-semibold">E-mail</label>
+              <div class="input-group">
+                <span class="input-group-text bg-white"><i class="bi bi-envelope"></i></span>
+                <input type="email" class="form-control" name="email" id="email" placeholder="E-mail">
               </div>
-
-              <!-- CHECKBOX DOS TERMOS (agora sozinho, antes dos botões) -->
-              <div class="form-check mt-4 mb-3">
-                <input class="form-check-input" type="checkbox" id="termosCheck" style="cursor: pointer;">
-                <label class="form-check-label fw-medium" for="termosCheck">
-                  Aceito os <a href="#" class="termos-link">Termos e Condições</a> e a 
-                  <a href="#" class="termos-link">Política de Privacidade</a>.
-                </label>
+            </div>
+            <div class="col-sm-6">
+              <label class="form-label fw-semibold">Nº telefone</label>
+              <div class="input-group">
+                <span class="input-group-text bg-white"><i class="bi bi-telephone"></i></span>
+                <input type="tel" class="form-control" name="phone" id="telefone" placeholder="Telefone">
               </div>
+            </div>
 
-              <!-- BOTÕES CANCELAR E INSCREVER-SE – separados, mais abaixo, um ao lado do outro -->
-              <div class="d-flex flex-column flex-sm-row gap-3 mt-2">
-                <a class="btn btn-cancel flex-fill" href="{{ route('index') }}">
-                  <i class="bi bi-x-lg me-1"></i> Cancelar
-                </a>
-                <button class="btn btn-accent flex-fill"  type="submit">
-                  <i class="bi bi-check-lg me-1"></i> Inscrever-se
+            <!-- Data nascimento + Gênero -->
+            <div class="col-sm-6">
+              <label class="form-label fw-semibold">Data de nascimento</label>
+              <input type="date" class="form-control" name="data_nascimento" id="nascimento" value="2026-01-01">
+            </div>
+            <div class="col-sm-6">
+              <label class="form-label fw-semibold">Gênero (opcional)</label>
+              <select class="form-select" name="genero" id="genero">
+                <option selected disabled>— selecione —</option>
+                <option value="F">Feminino</option>
+                <option value="M">Masculino</option>
+              </select>
+            </div>
+
+            <!-- MAPA + ENDEREÇO -->
+            <div class="col-12 mb-3">
+              <label class="form-label fw-semibold">Localização no mapa</label>
+              <div id="map"></div>
+            </div>
+            <div class="col-12">
+              <label class="form-label fw-semibold">Endereço</label>
+              <input type="text" class="form-control" name="endereco" id="endereco" placeholder="Endereço completo" readonly>
+            </div>
+            <div class="col-sm-6">
+              <label class="form-label fw-semibold">Latitude</label>
+              <input type="text" class="form-control" name="latitude" id="latitude" placeholder="Latitude" readonly>
+            </div>
+            <div class="col-sm-6">
+              <label class="form-label fw-semibold">Longitude</label>
+              <input type="text" class="form-control" name="longitude" id="longitude" placeholder="Longitude" readonly>
+            </div>
+
+            <!-- Senha e Confirmar senha -->
+            <div class="col-sm-6">
+              <label class="form-label fw-semibold">Senha</label>
+              <div class="input-group">
+                <span class="input-group-text bg-white"><i class="bi bi-lock"></i></span>
+                <input type="password" class="form-control" name="password" id="senha" placeholder="Senha">
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <label class="form-label fw-semibold">Confirmar senha</label>
+              <div class="input-group">
+                <span class="input-group-text bg-white"><i class="bi bi-check2-circle"></i></span>
+                <input type="password" class="form-control" name="password_confirmation" id="confirmSenha" placeholder="Confirmar senha">
+              </div>
+            </div>
+          </div> <!-- fim row -->
+
+          <!-- SEÇÃO DE VERIFICAÇÃO -->
+          <div class="verification-section mt-4">
+            <div class="d-flex flex-wrap align-items-center justify-content-between">
+              <span class="fw-semibold mb-2 mb-sm-0" style="color: var(--heading-color);">
+                <i class="bi bi-shield-check me-1" style="color: var(--accent-color);"></i> 
+                Verificação de segurança
+              </span>
+              <div class="d-flex gap-2">
+                <button class="btn btn-soft-green btn-sm" id="enviarCodigoEmailBtn" type="button">
+                  <i class="bi bi-envelope-check"></i> Enviar por e-mail
+                </button>
+                <button class="btn btn-soft-green btn-sm" id="enviarCodigoSmsBtn" type="button">
+                  <i class="bi bi-chat-dots"></i> Enviar por SMS
                 </button>
               </div>
-          </form>
-
-          <!-- Divisor "ou registe-se com" -->
-          <div class="divider mt-5">
-            <span class="px-2 text-uppercase small fw-semibold" style="color: #66898b;">ou registe-se com</span>
+            </div>
+            <div id="codigoVerificacaoArea" style="display: none; margin-top: 1.2rem;" class="animate-slide-up">
+              <label class="form-label fw-semibold">Digite o código de 6 dígitos</label>
+              <div class="d-flex flex-wrap gap-2">
+                <input type="text" class="form-control" id="codigoDigitado" placeholder="000000" style="max-width: 180px; background: white;" maxlength="6">
+                <button class="btn btn-accent" id="confirmarCodigoBtn" type="button">Confirmar</button>
+                <span id="feedbackCodigo" class="align-self-center ms-2 small"></span>
+              </div>
+              <div id="codigoSimuladoHelper" class="mt-2 small text-secondary">
+                <i class="bi bi-info-circle"></i> Código simulado: <strong>123456</strong> (use para testar)
+              </div>
+            </div>
           </div>
 
-          <!-- Botões Apple e Google -->
-          <div class="d-flex flex-column flex-sm-row gap-3 justify-content-center">
-            <button class="btn btn-social btn-google flex-fill" id="googleSignup">
-              <i class="bi bi-google"></i> Cadastrar com Google
+          <!-- CHECKBOX DOS TERMOS -->
+          <div class="form-check mt-4 mb-3">
+            <input class="form-check-input" type="checkbox" id="termosCheck" style="cursor: pointer;">
+            <label class="form-check-label fw-medium" for="termosCheck">
+              Aceito os <a href="#" class="termos-link">Termos e Condições</a> e a 
+              <a href="#" class="termos-link">Política de Privacidade</a>.
+            </label>
+          </div>
+
+          <!-- BOTÕES CANCELAR E INSCREVER-SE -->
+          <div class="d-flex flex-column flex-sm-row gap-3 mt-2">
+            <button type="button" class="btn btn-cancel flex-fill" id="cancelarBtn">
+              <i class="bi bi-x-lg me-1"></i> Cancelar
             </button>
-            <button class="btn btn-social btn-apple flex-fill" id="appleSignup">
-              <i class="bi bi-apple"></i> Cadastrar com Apple
+            <button type="submit" class="btn btn-accent flex-fill" id="inscreverBtn">
+              <i class="bi bi-check-lg me-1"></i> Inscrever-se
             </button>
           </div>
-          
-          <!-- Link para login -->
-          <p class="text-center text-muted small mt-4 mb-0">
-            Já tem uma conta? <a href="login.html" style="color: var(--accent-color); font-weight: 600; text-decoration: none;">Entrar</a>
-          </p>
-        </div> <!-- fim card -->
-        
-        <!-- Feedback flutuante -->
-        <div id="liveToastMsg" class="text-center mt-3 small fw-semibold" style="color: var(--accent-color); min-height: 28px;"></div>
-      </div>
+        </form>
+
+        <!-- Divisor e botões sociais -->
+        <div class="divider mt-5"><span class="px-2 text-uppercase small fw-semibold" style="color: #66898b;">ou registe-se com</span></div>
+        <div class="d-flex flex-column flex-sm-row gap-3 justify-content-center">
+          <button class="btn btn-social btn-google flex-fill" id="googleSignup"><i class="bi bi-google"></i> Cadastrar com Google</button>
+          <button class="btn btn-social btn-apple flex-fill" id="appleSignup"><i class="bi bi-apple"></i> Cadastrar com Apple</button>
+        </div>
+        <p class="text-center text-muted small mt-4 mb-0">
+          Já tem uma conta? <a href="{{ route('login') }}" style="color: var(--accent-color); font-weight: 600; text-decoration: none;">Entrar</a>
+        </p>
+      </div> <!-- fim card -->
+
+      <div id="liveToastMsg" class="text-center mt-3 small fw-semibold" style="color: var(--accent-color); min-height: 28px;"></div>
     </div>
   </div>
+</div>
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- Leaflet.js para OpenStreetMap -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script src="https://unpkg.com/esri-leaflet-geocoder/dist/esri-leaflet-geocoder.js"></script>
-    <link rel="stylesheet" href="https://unpkg.com/esri-leaflet-geocoder/dist/esri-leaflet-geocoder.css" />
-  <script>
-    (function() {
-          // --- MAPA OPENSTREETMAP ---
-          let map, marker;
-          const enderecoInput = document.getElementById('endereco');
-          const latitudeInput = document.getElementById('latitude');
-          const longitudeInput = document.getElementById('longitude');
-          // Coordenadas padrão (centro de Angola)
-          const defaultLat = -11.2027;
-          const defaultLng = 17.8739;
-          map = L.map('map').setView([defaultLat, defaultLng], 6);
-          L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            maxZoom: 19,
-            attribution: '© OpenStreetMap'
-          }).addTo(map);
-          // Geocoder (busca endereço)
-          const geocoder = L.esri.Geocoding.geosearch({
-            providers: [L.esri.Geocoding.arcgisOnlineProvider()],
-            placeholder: 'Pesquisar endereço...'
-          }).addTo(map);
-          geocoder.on('results', function(data) {
-            if (data.results.length > 0) {
-              const result = data.results[0];
-              setMarker(result.latlng.lat, result.latlng.lng, result.text);
-            }
-          });
-          // Clique no mapa
-          map.on('click', function(e) {
-            const lat = e.latlng.lat;
-            const lng = e.latlng.lng;
-            // Reverse geocode para endereço
-            fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}`)
-              .then(res => res.json())
-              .then(data => {
-                setMarker(lat, lng, data.display_name || '');
-              });
-          });
-          function setMarker(lat, lng, address) {
-            if (marker) map.removeLayer(marker);
-            marker = L.marker([lat, lng]).addTo(map);
-            latitudeInput.value = lat;
-            longitudeInput.value = lng;
-            enderecoInput.value = address;
-          }
-      "use strict";
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  // ------------------------------------------------------------------
+  // MAPA FUNCIONAL (Leaflet + Nominatim + Esri Geocoder)
+  // ------------------------------------------------------------------
+  (function() {
+    // Coordenadas padrão: Angola (Luanda)
+    const defaultLat = -8.839987;
+    const defaultLng = 13.289437;
 
-      // Elementos principais
-      const emailInput = document.getElementById('email');
-      const telefoneInput = document.getElementById('telefone');
-      const btnEnviarEmail = document.getElementById('enviarCodigoEmailBtn');
-      const btnEnviarSms = document.getElementById('enviarCodigoSmsBtn');
-      const codigoArea = document.getElementById('codigoVerificacaoArea');
-      const codigoDigitado = document.getElementById('codigoDigitado');
-      const confirmarCodigoBtn = document.getElementById('confirmarCodigoBtn');
-      const feedbackCodigo = document.getElementById('feedbackCodigo');
-      const inscreverBtn = document.getElementById('inscreverBtn');
-      const cancelarBtn = document.getElementById('cancelarBtn');
-      const termosCheck = document.getElementById('termosCheck');
-      const toastMsg = document.getElementById('liveToastMsg');
+    // Inicializar mapa
+    const map = L.map('map').setView([defaultLat, defaultLng], 12);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+      attribution: '© OpenStreetMap'
+    }).addTo(map);
 
-      const senha = document.getElementById('senha');
-      const confirmSenha = document.getElementById('confirmSenha');
-      const googleBtn = document.getElementById('googleSignup');
-      const appleBtn = document.getElementById('appleSignup');
+    let marker = null;
 
-      // Feedback
-      function mostrarFeedback(texto, isSucesso = true) {
-        toastMsg.textContent = texto;
-        toastMsg.style.color = isSucesso ? '#099aa7' : '#b34a4a';
-        setTimeout(() => { toastMsg.textContent = ''; }, 4500);
+    // Função para colocar marcador e preencher os campos
+    function setMarkerAndAddress(lat, lng, address) {
+      if (marker) map.removeLayer(marker);
+      marker = L.marker([lat, lng]).addTo(map);
+      map.setView([lat, lng], 15);
+      document.getElementById('latitude').value = lat;
+      document.getElementById('longitude').value = lng;
+      document.getElementById('endereco').value = address;
+    }
+
+    // Buscar endereço via Nominatim (reverse geocode)
+    async function reverseGeocode(lat, lng) {
+      try {
+        const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}`);
+        const data = await response.json();
+        return data.display_name || `${lat}, ${lng}`;
+      } catch (error) {
+        console.error("Erro no reverse geocode:", error);
+        return `${lat}, ${lng}`;
       }
+    }
 
-      function abrirAreaCodigo(metodo = 'email') {
-        if (!codigoArea.style.display || codigoArea.style.display === 'none') {
-          codigoArea.style.display = 'block';
-        }
-        mostrarFeedback(`📨 Código enviado por ${metodo === 'email' ? 'e-mail' : 'SMS'} (simulado: 123456)`, true);
-        codigoDigitado.value = '';
+    // Ao clicar no mapa
+    map.on('click', async function(e) {
+      const lat = e.latlng.lat;
+      const lng = e.latlng.lng;
+      const address = await reverseGeocode(lat, lng);
+      setMarkerAndAddress(lat, lng, address);
+    });
+
+    // Geocoder para pesquisa de endereços (Esri)
+    const geocoder = L.esri.Geocoding.geocode({
+      providers: [L.esri.Geocoding.arcgisOnlineProvider()]
+    });
+
+    const searchControl = L.esri.Geocoding.geosearch({
+      position: 'topleft',
+      placeholder: 'Pesquisar endereço...',
+      useMapBounds: false,
+      providers: [L.esri.Geocoding.arcgisOnlineProvider()]
+    }).addTo(map);
+
+    searchControl.on('results', function(data) {
+      if (data.results.length > 0) {
+        const result = data.results[0];
+        const lat = result.latlng.lat;
+        const lng = result.latlng.lng;
+        setMarkerAndAddress(lat, lng, result.text);
+      }
+    });
+  })();
+
+  // ------------------------------------------------------------------
+  // VALIDAÇÃO DO FORMULÁRIO E SIMULAÇÕES
+  // ------------------------------------------------------------------
+  (function() {
+    // Elementos principais
+    const emailInput = document.getElementById('email');
+    const telefoneInput = document.getElementById('telefone');
+    const btnEnviarEmail = document.getElementById('enviarCodigoEmailBtn');
+    const btnEnviarSms = document.getElementById('enviarCodigoSmsBtn');
+    const codigoArea = document.getElementById('codigoVerificacaoArea');
+    const codigoDigitado = document.getElementById('codigoDigitado');
+    const confirmarCodigoBtn = document.getElementById('confirmarCodigoBtn');
+    const feedbackCodigo = document.getElementById('feedbackCodigo');
+    const inscreverBtn = document.getElementById('inscreverBtn');
+    const cancelarBtn = document.getElementById('cancelarBtn');
+    const termosCheck = document.getElementById('termosCheck');
+    const toastMsg = document.getElementById('liveToastMsg');
+    const senha = document.getElementById('senha');
+    const confirmSenha = document.getElementById('confirmSenha');
+    const googleBtn = document.getElementById('googleSignup');
+    const appleBtn = document.getElementById('appleSignup');
+
+    function mostrarFeedback(texto, isSucesso = true) {
+      toastMsg.textContent = texto;
+      toastMsg.style.color = isSucesso ? '#099aa7' : '#b34a4a';
+      setTimeout(() => { toastMsg.textContent = ''; }, 4500);
+    }
+
+    function abrirAreaCodigo(metodo = 'email') {
+      if (!codigoArea.style.display || codigoArea.style.display === 'none') {
+        codigoArea.style.display = 'block';
+      }
+      mostrarFeedback(`📨 Código enviado por ${metodo === 'email' ? 'e-mail' : 'SMS'} (simulado: 123456)`, true);
+      codigoDigitado.value = '';
+      feedbackCodigo.innerHTML = '';
+    }
+
+    btnEnviarEmail.addEventListener('click', function(e) {
+      e.preventDefault();
+      if (!emailInput.value.trim()) {
+        mostrarFeedback('⚠️ Por favor, insira um e-mail válido.', false);
+        return;
+      }
+      abrirAreaCodigo('email');
+    });
+
+    btnEnviarSms.addEventListener('click', function(e) {
+      e.preventDefault();
+      if (!telefoneInput.value.trim()) {
+        mostrarFeedback('⚠️ Insira um número de telefone para SMS.', false);
+        return;
+      }
+      abrirAreaCodigo('sms');
+    });
+
+    confirmarCodigoBtn.addEventListener('click', function() {
+      const codigo = codigoDigitado.value.trim();
+      if (codigo === '') {
+        feedbackCodigo.innerHTML = '<span class="text-danger">🔴 Digite o código</span>';
+        return;
+      }
+      if (codigo === '123456') {
+        feedbackCodigo.innerHTML = '<span class="text-success fw-bold">✅ Código verificado!</span>';
+      } else {
+        feedbackCodigo.innerHTML = '<span class="text-danger">❌ Código incorreto. Tente 123456</span>';
+      }
+    });
+
+    // Validação do formulário antes de submeter
+    inscreverBtn.addEventListener('click', function(e) {
+      const nome = document.getElementById('nome').value.trim();
+      const sobrenome = document.getElementById('sobrenome').value.trim();
+      const emailVal = emailInput.value.trim();
+      const foneVal = telefoneInput.value.trim();
+      const senhaVal = senha.value.trim();
+      const confirmVal = confirmSenha.value.trim();
+      const enderecoVal = document.getElementById('endereco').value.trim();
+
+      if (!nome || !sobrenome) {
+        e.preventDefault();
+        mostrarFeedback('❌ Nome e sobrenome são obrigatórios.', false);
+        return;
+      }
+      if (!emailVal || !emailVal.includes('@')) {
+        e.preventDefault();
+        mostrarFeedback('❌ E-mail válido é obrigatório.', false);
+        return;
+      }
+      if (!foneVal) {
+        e.preventDefault();
+        mostrarFeedback('❌ Número de telefone necessário.', false);
+        return;
+      }
+      if (senhaVal.length < 6) {
+        e.preventDefault();
+        mostrarFeedback('🔐 A senha deve ter pelo menos 6 caracteres.', false);
+        return;
+      }
+      if (senhaVal !== confirmVal) {
+        e.preventDefault();
+        mostrarFeedback('❌ As senhas não coincidem.', false);
+        return;
+      }
+      if (!termosCheck.checked) {
+        e.preventDefault();
+        mostrarFeedback('📄 Aceite os Termos e Condições.', false);
+        return;
+      }
+      if (!enderecoVal) {
+        e.preventDefault();
+        mostrarFeedback('📍 Selecione um endereço no mapa.', false);
+        return;
+      }
+      // Se chegou aqui, o formulário será submetido normalmente
+      mostrarFeedback('🎉 Cadastro validado! A enviar...', true);
+    });
+
+    cancelarBtn.addEventListener('click', function() {
+      if (confirm('Deseja cancelar o cadastro? Os dados serão perdidos.')) {
+        document.getElementById('nome').value = '';
+        document.getElementById('sobrenome').value = '';
+        emailInput.value = '';
+        telefoneInput.value = '';
+        senha.value = '';
+        confirmSenha.value = '';
+        document.getElementById('nascimento').value = '2026-01-01';
+        document.getElementById('genero').selectedIndex = 0;
+        document.getElementById('endereco').value = '';
+        document.getElementById('latitude').value = '';
+        document.getElementById('longitude').value = '';
+        termosCheck.checked = false;
+        codigoArea.style.display = 'none';
         feedbackCodigo.innerHTML = '';
+        mostrarFeedback('✖️ Cadastro cancelado.', false);
       }
+    });
 
-      // Enviar código
-      btnEnviarEmail.addEventListener('click', function(e) {
+    googleBtn.addEventListener('click', function() {
+      mostrarFeedback('🌐 Redirecionamento para Google (simulação)', true);
+    });
+    appleBtn.addEventListener('click', function() {
+      mostrarFeedback('🍎 Autenticação Apple (simulação)', true);
+    });
+
+    const termosLinks = document.querySelectorAll('.termos-link');
+    termosLinks.forEach(link => {
+      link.addEventListener('click', function(e) {
         e.preventDefault();
-        if (!emailInput.value.trim()) {
-          mostrarFeedback('⚠️ Por favor, insira um e-mail válido.', false);
-          return;
-        }
-        abrirAreaCodigo('email');
+        mostrarFeedback('📋 Termos e Condições da FarmaConnect', true);
       });
-
-      btnEnviarSms.addEventListener('click', function(e) {
-        e.preventDefault();
-        if (!telefoneInput.value.trim()) {
-          mostrarFeedback('⚠️ Insira um número de telefone para SMS.', false);
-          return;
-        }
-        abrirAreaCodigo('sms');
-      });
-
-      // Confirmar código (123456)
-      confirmarCodigoBtn.addEventListener('click', function() {
-        const codigo = codigoDigitado.value.trim();
-        if (codigo === '') {
-          feedbackCodigo.innerHTML = '<span class="text-danger">🔴 Digite o código</span>';
-          return;
-        }
-        if (codigo === '123456') {
-          feedbackCodigo.innerHTML = '<span class="text-success fw-bold">✅ Código verificado!</span>';
-        } else {
-          feedbackCodigo.innerHTML = '<span class="text-danger">❌ Código incorreto. Tente 123456</span>';
-        }
-      });
-
-      // Botão Inscrever-se
-      inscreverBtn.addEventListener('click', function(e) {
-        e.preventDefault();
-
-        const nome = document.getElementById('nome').value.trim();
-        const sobrenome = document.getElementById('sobrenome').value.trim();
-        const emailVal = emailInput.value.trim();
-        const foneVal = telefoneInput.value.trim();
-        const senhaVal = senha.value.trim();
-        const confirmVal = confirmSenha.value.trim();
-
-        if (!nome || !sobrenome) {
-          mostrarFeedback('❌ Nome e sobrenome são obrigatórios.', false);
-          return;
-        }
-        if (!emailVal || !emailVal.includes('@')) {
-          mostrarFeedback('❌ E-mail válido é obrigatório.', false);
-          return;
-        }
-        if (!foneVal) {
-          mostrarFeedback('❌ Número de telefone necessário.', false);
-          return;
-        }
-        if (senhaVal.length < 6) {
-          mostrarFeedback('🔐 A senha deve ter pelo menos 6 caracteres.', false);
-          return;
-        }
-        if (senhaVal !== confirmVal) {
-          mostrarFeedback('❌ As senhas não coincidem.', false);
-          return;
-        }
-        if (!termosCheck.checked) {
-          mostrarFeedback('📄 Aceite os Termos e Condições.', false);
-          return;
-        }
-
-        mostrarFeedback('🎉 Cadastro simulado com sucesso! (FarmaConnect)', true);
-      });
-
-      // Cancelar
-      cancelarBtn.addEventListener('click', function() {
-        if (confirm('Deseja cancelar o cadastro? Os dados serão perdidos.')) {
-          document.getElementById('nome').value = '';
-          document.getElementById('sobrenome').value = '';
-          emailInput.value = '';
-          telefoneInput.value = '';
-          senha.value = '';
-          confirmSenha.value = '';
-          document.getElementById('nascimento').value = '1990-01-01';
-          document.getElementById('genero').selectedIndex = 0;
-          termosCheck.checked = false;
-          codigoArea.style.display = 'none';
-          feedbackCodigo.innerHTML = '';
-          mostrarFeedback('✖️ Cadastro cancelado.', false);
-        }
-      });
-
-      // Botões sociais
-      googleBtn.addEventListener('click', function() {
-        mostrarFeedback('🌐 Redirecionamento para Google (simulação)', true);
-      });
-      appleBtn.addEventListener('click', function() {
-        mostrarFeedback('🍎 Autenticação Apple (simulação)', true);
-      });
-
-      // Links de termos
-      const termosLinks = document.querySelectorAll('.termos-link');
-      termosLinks.forEach(link => {
-        link.addEventListener('click', function(e) {
-          e.preventDefault();
-          mostrarFeedback('📋 Termos e Condições da FarmaConnect', true);
-        });
-      });
-
-    })();
-  </script>
+    });
+  })();
+</script>
 </body>
 </html>

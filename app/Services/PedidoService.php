@@ -74,6 +74,7 @@ class PedidoService
                 'longitude' => $longitude ,
                 'metodo_pagamento' => $metodoPagamento ,
                 'comprovativo_express' => ($metodoPagamento === 'express') ? $comprovativoExpress : null,
+                'prescricao_path' => $prescricaoPath
                 ]);
 
             $total = 0;
@@ -95,7 +96,7 @@ class PedidoService
                     'preco_unitario' => $stock->preco,
                     'subtotal' => $subtotal,
                     'pedido_id' => $pedido->id,
-                    'prescricao_path' => $prescricaoPath ?? null 
+                    // 'prescricao_path' => $prescricaoPath ?? null 
                     // 'medicamento_id' => $farmacia->medicamentos->id
                 ]); 
 

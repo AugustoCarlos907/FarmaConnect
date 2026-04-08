@@ -45,7 +45,14 @@ class PedidoController extends Controller
                 $path = $file->storeAs('comprovativos', $filename, 'public');
                 $comprovativoPath = $path; 
         }
-        
+
+        $prescricaoPath = null;
+        if ($request->hasFile('prescricao_path')) {
+                $file = $request->file('prescricao_path');
+                $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+                $path = $file->storeAs('prescricoes', $filename, 'public');
+                $prescricaoPath = $path; 
+        }
 
         $pedido = $this->service->criarPedido(
             auth()->id(),
@@ -54,7 +61,7 @@ class PedidoController extends Controller
             $request->latitude ?? 0.0,
             $request->longitude ?? 0.0,
             $request->metodo_pagamento,
-            $request->prescricao_path ?? null ,
+            $prescricaoPath,
             $comprovativoPath,
             
         );

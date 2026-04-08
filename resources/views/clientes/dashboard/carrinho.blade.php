@@ -135,6 +135,67 @@
         margin-top: 0.5rem;
         margin-bottom: 0;
     }
+    /* ─── Input file personalizado (receita médica) ────── */
+.prescricao-input {
+    flex: 1;
+    min-width: 150px;
+    padding: 6px 8px;
+    border: 1px solid var(--border);
+    border-radius: var(--r-sm);
+    font-size: 0.7rem;
+    font-family: 'DM Sans', sans-serif;
+    background: var(--surface);
+    color: var(--text);
+    transition: border-color .1s;
+}
+
+/* Esconde o texto padrão "Nenhum ficheiro selecionado" e estiliza o botão interno */
+.prescricao-input::file-selector-button {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: var(--r-sm);
+    padding: 4px 8px;
+    margin-right: 8px;
+    font-size: 0.7rem;
+    font-weight: 500;
+    font-family: 'DM Sans', sans-serif;
+    color: var(--text-2);
+    cursor: pointer;
+    transition: all .1s;
+}
+
+.prescricao-input::file-selector-button:hover {
+    background: var(--accent-light);
+    border-color: var(--accent-mid);
+    color: var(--accent-2);
+}
+
+.prescricao-input:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 2px rgba(8,153,166,.12);
+}
+
+/* Para navegadores que usam ::-webkit-file-upload-button (fallback) */
+.prescricao-input::-webkit-file-upload-button {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: var(--r-sm);
+    padding: 4px 8px;
+    margin-right: 8px;
+    font-size: 0.7rem;
+    font-weight: 500;
+    font-family: 'DM Sans', sans-serif;
+    color: var(--text-2);
+    cursor: pointer;
+    transition: all .1s;
+}
+
+.prescricao-input::-webkit-file-upload-button:hover {
+    background: var(--accent-light);
+    border-color: var(--accent-mid);
+    color: var(--accent-2);
+}
 
     /* ─── MODAL BACKDROP MAIS INTENSO ────────────────── */
     .modal-backdrop {
@@ -510,6 +571,11 @@
             </form>
           </div>
 
+          @php
+              $requerReceita = $itens->contains(function($item) {
+                  return $item->stockItem->medicamento->requer_receita ?? false;
+              });
+          @endphp
           @forelse($itens as $item)
               @php
                   $med   = $item->stockItem->medicamento;
@@ -564,29 +630,9 @@
                           <button type="submit" class="ci-remove" title="Remover"><i class="bi bi-trash3"></i></button>
                       </form>
                   </div>
-
-                  {{-- Receita médica (apenas se necessário) --}}
-                  @if($med->requer_receita)
-                      <div class="prescricao-section">
-                          @if($item->prescricao_path)
-                              <div class="prescricao-alert prescricao-success">
-                                  <i class="bi bi-check-circle-fill"></i> Receita anexada.
-                                  <a href="{{ asset('storage/'.$item->prescricao_path) }}" target="_blank" class="prescricao-link">Ver</a>
-                              </div>
-                          @else
-                              <form action="" method="POST" enctype="multipart/form-data" class="prescricao-form">
-                                  @csrf
-                                  <input type="file" name="receita" accept="image/*,application/pdf" class="prescricao-input" required>
-                                  <button type="submit" class="prescricao-btn">
-                                      <i class="bi bi-upload"></i> Anexar receita
-                                  </button>
-                              </form>
-                              <p class="prescricao-help text-danger">{{strtoupper(' Medicamento sujeito a receita mÉdica. Anexe a receita para finalizar o pedido.')}}</p>
-                          @endif
-                      </div>
-                  @endif
                   
               </div>
+              
           @empty
               <div class="empty-cart">
                   <span class="ec-icon">🛒</span>
@@ -595,6 +641,38 @@
                   <a href="{{ route('produtos.clientes') }}" class="btn-go-shop"><i class="bi bi-box-seam"></i> Ver produtos</a>
               </div>
           @endforelse
+
+                  {{-- Receita médica (apenas se necessário) --}}
+                  @if($requerReceita)
+                      <div class="prescricao-section mt-2">
+                          {{-- @if($item->prescricao_path)
+                              <div class="prescricao-alert prescricao-success">
+                                  <i class="bi bi-check-circle-fill"></i> Receita anexada.
+                                  <a href="{{ asset('storage/'.$item->prescricao_path) }}" target="_blank" class="prescricao-link">Ver</a>
+                              </div>
+                          @else --}}
+                              <p class="prescricao-help text-danger mb-3"><strong>{{strtoupper(' Pedido sujeito a receita mÉdica. Anexe a receita para finalizar o pedido.')}}</strong></p>
+
+                              {{-- <form class="prescricao-form">
+                                  @csrf
+                                  <input type="file" name="prescricao_path" id="receitaInput" accept="image/*,application/pdf" class="prescricao-input" required>
+                                  <button type="button" class="prescricao-btn" id="anexarBtn">
+                                      <i class="bi bi-upload"></i> Anexar receita
+                                  </button>
+                              </form> --}}
+
+                              <!-- Input file real (oculto) -->
+
+                              <!-- Botão estilizado que aciona o input -->
+                              <button type="button" class="prescricao-btn" id="anexarBtn">
+                                  <i class="bi bi-upload"></i> Anexar receita
+                              </button>
+
+                              <!-- Local para mostrar o nome do ficheiro seleccionado -->
+                              <div id="prescricaoPreview" class="comprovativo-preview"></div>
+                          {{-- @endif --}}
+                      </div>
+                  @endif
         </div>
 
         <!-- MORADA (apenas para Entrega Expresso) -->
@@ -710,7 +788,7 @@
 
             </div>
 
-            <div class="pay-option" onclick="selectPay(this,'dinheiro')">
+            <div class="pay-option" onclick="selectPay(this,'numerario')">
               <div class="pay-icon">💵</div>
               <div><div class="pay-name">Pagamento em Numerário</div><div class="pay-sub">Pague ao entregador na entrega ou no levantamento na farmácia</div></div>
               <input type="radio" class="pay-radio" name="pay_ui" checked>
@@ -735,7 +813,7 @@
             @foreach($itens as $i => $item)
               <input type="hidden" name="items[{{ $i }}][stockId]"    value="{{ $item->stock_item_id }}">
               <input type="hidden" name="items[{{ $i }}][quantidade]" value="{{ $item->quantidade }}">
-              <input type="hidden" name="items[{{ $i }}][prescricao_path]" value="{{ $item->prescricao_path }}">
+              {{-- <input type="hidden" name="items[{{ $i }}][prescricao_path]" value="{{ $item->prescricao_path }}"> --}}
             @endforeach
 
             {{-- endereco / lat / lng — valor inicial = primeira morada guardada --}}
@@ -749,6 +827,10 @@
 
             {{-- Comprovativo para Multicaixa Express (ficheiro) --}}
             <input type="file" name="comprovativo_express" id="comprovativoExpressInput" style="display: none;">
+
+            <!-- Input file oculto -->
+            <input type="file" name="prescricao_path" id="prescricaoInput" accept="image/*,application/pdf" style="display: none;">
+            {{-- <input type="file" name="prescricao_path" id="receitaInput" value=""  style="display: none;"> --}}
 
             @foreach($itens as $item)
               @php 
@@ -846,6 +928,20 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+document.getElementById('anexarBtn').addEventListener('click', function() {
+    document.getElementById('prescricaoInput').click();
+});
+
+document.getElementById('prescricaoInput').addEventListener('change', function() {
+    const preview = document.getElementById('prescricaoPreview');
+    if (this.files && this.files[0]) {
+        preview.innerHTML = `<i class="bi bi-check-circle-fill"></i> Receita anexada: ${this.files[0].name}`;
+    } else {
+        preview.innerHTML = '';
+    }
+});
+</script>
 <script>
 
 // Coordenadas da farmácia (do backend)

@@ -647,6 +647,7 @@
     $dSt         = $statusMap[$pedido->status] ?? $statusMap['Pendente'];
     $isExpress   = in_array($pedido->metodo_pagamento, ['express','Multicaixa Express']);
     $comprovativo = $pedido->comprovativo_express;
+    $prescricao = $pedido->prescricao_path
   @endphp
 
   <div class="drawer" id="drawer-{{ $pedido->id }}">
@@ -728,7 +729,22 @@
       </div>
 
       {{-- ─── Comprovativo (só express) ─── --}}
-      @if($isExpress && $comprovativo)
+      @if($prescricao)
+        <div class="d-section">
+          <div class="d-section-title"><i class="bi bi-receipt"></i> Prescrição Médica</div>
+          <div class="d-row">
+            <span class="d-val">
+              <a href="{{ asset('storage/'.$prescricao) }}"
+                 target="_blank"
+                 class="doc-link">
+                <i class="bi bi-file-earmark-text"></i> Abrir Prescrição
+              </a>
+            </span>
+          </div>
+        </div>
+      @endif
+      
+      @if($comprovativo)
         <div class="d-section">
           <div class="d-section-title"><i class="bi bi-receipt"></i> Comprovativo de pagamento</div>
           <div class="d-row">

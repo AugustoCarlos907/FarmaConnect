@@ -48,7 +48,8 @@ class ParsePharmacyStockCsvJob implements ShouldQueue
                 'PrecoUnitario',
                 'Categoria',
                 'Dosagem',
-                'PrecoMedicamento'
+                'PrecoMedicamento',
+                'RequerReceita'
             ];
 
             $header = $file->fgetcsv();
@@ -79,10 +80,15 @@ class ParsePharmacyStockCsvJob implements ShouldQueue
             while (!$file->eof()) {
                 $lineNumber++;
                 $row = $file->fgetcsv();
-                if (!$row || !is_array($row) || count($row) < count($expectedHeader)) {
+                // if (!$row || !is_array($row) || count($row) < count($expectedHeader)) {
+                //     continue;
+                // }
+
+                if (!$row || !is_array($row)) {
                     continue;
                 }
-
+                // Garante que a linha tenha exatamente 10 elementos (preenche com vazio se faltar)
+                $row = array_pad($row, count($expectedHeader), '');
                 [
                     $codigoArtigo,
                     $nomeProduto,
@@ -92,8 +98,11 @@ class ParsePharmacyStockCsvJob implements ShouldQueue
                     $precoUnitario,
                     $categoriaNome,
                     $dosagem,
-                    $precoMedicamento
+                    $precoMedicamento,
+                    $requerReceita
                 ] = array_map(fn($v) => trim((string)$v), $row);
+                // Converter requer_receita para booleano
+                $requerReceitaBool = in_array(strtolower($requerReceita), ['sim', '1', 'true', 'yes']) ? true : false;
 
                 if (empty($codigoArtigo) || empty($nomeProduto)) {
                     Log::warning("Linha {$lineNumber}: Código ou nome do medicamento ausente");
@@ -118,6 +127,7 @@ class ParsePharmacyStockCsvJob implements ShouldQueue
                     'dosagem'            => $dosagem ?: null,
                     'categoria_id'       => $categoria->id,
                     'preco'              => is_numeric($precoMedicamento) ? (float) $precoMedicamento : 0.00,
+                    'requer_receita'     => $requerReceitaBool,
                 ];
 
                 $medicamento = Medicamento::updateOrCreate(

@@ -62,6 +62,7 @@ use Twilio\Rest\Client;
 
         Route::get('/farmacia/medicamentos', [FarmaciaController::class, 'listMedicamentos'])->name('medicamentos.farmacias');
         Route::post('/farmacia/create-medicamento' , [MedicamentoController::class , 'create'])->name('medicamentos.store');
+        Route::post('/farmacia/create-medicamento' , [MedicamentoController::class , 'create'])->name('medicamentos.store');
         Route::delete('/farmacias/medicamento-delete/{id}' , [MedicamentoController::class , 'destroy'])->name('medicamentos.destroy');
 
         Route::get('/farmacia/pedidos', [FarmaciaController::class, 'pedidos'])->name('pedidos.farmacias');

@@ -647,6 +647,7 @@
 
           {{-- <a class="oa-btn oa-ghost text-decoration-none" href="{{ route('pedidos.factura', ['id' => $pedido->id]) }}"><i class="bi bi-receipt"></i> Ver factura</a> --}}
           <button class="oa-btn oa-ghost"><i class="bi bi-receipt"></i> Ver detalhes</button>
+          <a class="oa-btn oa-ghost text-decoration-none" href="{{ route('pedidos.factura', ['id' => $pedido->id]) }}"><i class="bi bi-receipt"></i> Ver factura</a>
 
  
           @elseif($st === 'pago')

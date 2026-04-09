@@ -141,7 +141,7 @@ class PedidoController extends Controller
                         ]);
                 }
 
-                if ($pedido->status == 'pago' &&  !$pedido->factura()->exists() ) {
+                if ($pedido->status == 'pago'&& $pedido->status == 'Aprovado' &&  !$pedido->factura()->exists() ) {
                         Factura::create([
                             'user_id'        => $pedido->user_id,
                             'pedido_id'      => $pedido->id,
@@ -153,7 +153,7 @@ class PedidoController extends Controller
                         ]);
                 }
 
-                if (in_array($pedido->status, ['pago', 'Aprovado']) && $pedido->entrega && $pedido->entrega->taxa_entrega > 0 ) {
+                if (in_array($pedido->status, ['pago', 'Aprovado'])  ) {
                         try {
                             $entrega = $this->entregaService->criarEntrega($pedido);
                             $pedido->update(['status' => 'Em Entrega']);

@@ -25,7 +25,7 @@ class AuthController extends Controller
             'phone' => 'nullable|string|max:20',
             'data_nascimento' => 'nullable|date ',
             'genero' => 'nullable|string',
-            'last_name'=> 'required|string|max:255',
+            // 'last_name'=> 'required|string|max:255',
             'endereco' => 'nullable|string|max:500',
             'latitude' => 'nullable|string',
             'longitude' => 'nullable|string',
@@ -35,20 +35,18 @@ class AuthController extends Controller
         $data['password'] = Hash::make($data['password']);
 
 
-        $user = User::create($data);
-        if($user ){
-
-            // Event::dispatch(new Registered($user));
-
+         try {
+        $user = User::create($data); // ← corrigido: sem colchetes extras
+        if ($user) {
             Auth::login($user);
-
             return redirect()->route('index.clientes');
-            // return redirect()->route('verification.notice');
         }
-
-        return back()->withErrors(['msg' => 'Registration failed. Please try again.']);
+    } catch (\Exception $e) {
+        return back()->withErrors(['msg' => 'Erro ao criar utilizador: ' . $e->getMessage()])->withInput();
     }
 
+    return back()->withErrors(['msg' => 'Falha no registo. Tente novamente.'])->withInput();
+}
     
     public function login()
     {

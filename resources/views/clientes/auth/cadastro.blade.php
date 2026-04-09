@@ -270,6 +270,16 @@
         <!-- FORMULÁRIO DE CADASTRO (agora com ID) -->
         <form action="{{ route('store.clientes') }}" method="POST" id="formCadastro">
           @csrf
+
+          @if($errors->any())
+    <div class="alert alert-danger mb-4">
+        <ul class="mb-0">
+            @foreach($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
           <div class="row g-4">
 
             <!-- Nome e Sobrenome -->
@@ -277,10 +287,10 @@
               <label class="form-label fw-semibold">Nome</label>
               <input type="text" class="form-control" name="name" id="nome" placeholder="Nome">
             </div>
-            <div class="col-sm-6">
+            {{-- <div class="col-sm-6">
               <label class="form-label fw-semibold">Sobrenome</label>
               <input type="text" class="form-control" name="last_name" id="sobrenome" placeholder="Sobrenome">
-            </div>
+            </div> --}}
 
             <!-- E-mail e Telefone -->
             <div class="col-sm-6">
@@ -348,7 +358,7 @@
           </div> <!-- fim row -->
 
           <!-- SEÇÃO DE VERIFICAÇÃO -->
-          <div class="verification-section mt-4">
+          {{-- <div class="verification-section mt-4">
             <div class="d-flex flex-wrap align-items-center justify-content-between">
               <span class="fw-semibold mb-2 mb-sm-0" style="color: var(--heading-color);">
                 <i class="bi bi-shield-check me-1" style="color: var(--accent-color);"></i> 
@@ -374,7 +384,7 @@
                 <i class="bi bi-info-circle"></i> Código simulado: <strong>123456</strong> (use para testar)
               </div>
             </div>
-          </div>
+          </div> --}}
 
           <!-- CHECKBOX DOS TERMOS -->
           <div class="form-check mt-4 mb-3">
@@ -390,7 +400,7 @@
             <button type="button" class="btn btn-cancel flex-fill" id="cancelarBtn">
               <i class="bi bi-x-lg me-1"></i> Cancelar
             </button>
-            <button type="submit" class="btn btn-accent flex-fill" id="inscreverBtn">
+            <button type="submit" class="btn btn-accent flex-fill" >
               <i class="bi bi-check-lg me-1"></i> Inscrever-se
             </button>
           </div>
@@ -418,20 +428,14 @@
   // MAPA FUNCIONAL (Leaflet + Nominatim + Esri Geocoder)
   // ------------------------------------------------------------------
   (function() {
-    // Coordenadas padrão: Angola (Luanda)
     const defaultLat = -8.839987;
     const defaultLng = 13.289437;
-
-    // Inicializar mapa
     const map = L.map('map').setView([defaultLat, defaultLng], 12);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 19,
       attribution: '© OpenStreetMap'
     }).addTo(map);
-
     let marker = null;
-
-    // Função para colocar marcador e preencher os campos
     function setMarkerAndAddress(lat, lng, address) {
       if (marker) map.removeLayer(marker);
       marker = L.marker([lat, lng]).addTo(map);
@@ -440,41 +444,31 @@
       document.getElementById('longitude').value = lng;
       document.getElementById('endereco').value = address;
     }
-
-    // Buscar endereço via Nominatim (reverse geocode)
     async function reverseGeocode(lat, lng) {
       try {
         const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}`);
         const data = await response.json();
         return data.display_name || `${lat}, ${lng}`;
       } catch (error) {
-        console.error("Erro no reverse geocode:", error);
         return `${lat}, ${lng}`;
       }
     }
-
-    // Ao clicar no mapa
     map.on('click', async function(e) {
       const lat = e.latlng.lat;
       const lng = e.latlng.lng;
       const address = await reverseGeocode(lat, lng);
       setMarkerAndAddress(lat, lng, address);
     });
-
-    // Geocoder para pesquisa de endereços (Esri)
     const searchControl = L.esri.Geocoding.geosearch({
       position: 'topleft',
       placeholder: 'Pesquisar endereço...',
       useMapBounds: false,
       providers: [L.esri.Geocoding.arcgisOnlineProvider()]
     }).addTo(map);
-
     searchControl.on('results', function(data) {
       if (data.results.length > 0) {
         const result = data.results[0];
-        const lat = result.latlng.lat;
-        const lng = result.latlng.lng;
-        setMarkerAndAddress(lat, lng, result.text);
+        setMarkerAndAddress(result.latlng.lat, result.latlng.lng, result.text);
       }
     });
   })();
@@ -483,8 +477,9 @@
   // VALIDAÇÃO DO FORMULÁRIO (no evento submit)
   // ------------------------------------------------------------------
   (function() {
-    // Elementos do formulário
     const form = document.getElementById('formCadastro');
+    if (!form) return;
+
     const emailInput = document.getElementById('email');
     const telefoneInput = document.getElementById('telefone');
     const senha = document.getElementById('senha');
@@ -493,7 +488,7 @@
     const enderecoInput = document.getElementById('endereco');
     const toastMsg = document.getElementById('liveToastMsg');
 
-    // Elementos da verificação (apenas para simulação, não bloqueiam o envio)
+    // Elementos de simulação (código, cancelar, etc.)
     const btnEnviarEmail = document.getElementById('enviarCodigoEmailBtn');
     const btnEnviarSms = document.getElementById('enviarCodigoSmsBtn');
     const codigoArea = document.getElementById('codigoVerificacaoArea');
@@ -510,7 +505,7 @@
       setTimeout(() => { toastMsg.textContent = ''; }, 4500);
     }
 
-    // --- Simulação de envio de código (apenas visual) ---
+    // Simulação de código (opcional)
     if (btnEnviarEmail) {
       btnEnviarEmail.addEventListener('click', function(e) {
         e.preventDefault();
@@ -524,7 +519,6 @@
         if (feedbackCodigo) feedbackCodigo.innerHTML = '';
       });
     }
-
     if (btnEnviarSms) {
       btnEnviarSms.addEventListener('click', function(e) {
         e.preventDefault();
@@ -538,7 +532,6 @@
         if (feedbackCodigo) feedbackCodigo.innerHTML = '';
       });
     }
-
     if (confirmarCodigoBtn) {
       confirmarCodigoBtn.addEventListener('click', function() {
         const codigo = codigoDigitado ? codigoDigitado.value.trim() : '';
@@ -552,66 +545,58 @@
       });
     }
 
-    // --- VALIDAÇÃO PRINCIPAL (submit do formulário) ---
-    if (form) {
-      form.addEventListener('submit', function(e) {
-        const nome = document.getElementById('nome').value.trim();
-        const sobrenome = document.getElementById('sobrenome').value.trim();
-        const emailVal = emailInput.value.trim();
-        const foneVal = telefoneInput.value.trim();
-        const senhaVal = senha.value.trim();
-        const confirmVal = confirmSenha.value.trim();
-        const enderecoVal = enderecoInput.value.trim();
+    // VALIDAÇÃO PRINCIPAL
+    form.addEventListener('submit', function(e) {
+      const nome = document.getElementById('nome').value.trim();
+      const emailVal = emailInput.value.trim();
+      const foneVal = telefoneInput.value.trim();
+      const senhaVal = senha.value.trim();
+      const confirmVal = confirmSenha.value.trim();
+      const enderecoVal = enderecoInput.value.trim();
 
-        // Validações
-        if (!nome || !sobrenome) {
-          e.preventDefault();
-          mostrarFeedback('❌ Nome e sobrenome são obrigatórios.', false);
-          return false;
-        }
-        if (!emailVal || !emailVal.includes('@')) {
-          e.preventDefault();
-          mostrarFeedback('❌ E-mail válido é obrigatório.', false);
-          return false;
-        }
-        if (!foneVal) {
-          e.preventDefault();
-          mostrarFeedback('❌ Número de telefone necessário.', false);
-          return false;
-        }
-        if (senhaVal.length < 6) {
-          e.preventDefault();
-          mostrarFeedback('🔐 A senha deve ter pelo menos 6 caracteres.', false);
-          return false;
-        }
-        if (senhaVal !== confirmVal) {
-          e.preventDefault();
-          mostrarFeedback('❌ As senhas não coincidem.', false);
-          return false;
-        }
-        if (!termosCheck.checked) {
-          e.preventDefault();
-          mostrarFeedback('📄 Aceite os Termos e Condições.', false);
-          return false;
-        }
-        if (!enderecoVal) {
-          e.preventDefault();
-          mostrarFeedback('📍 Selecione um endereço no mapa.', false);
-          return false;
-        }
+      if (!nome) {
+        e.preventDefault();
+        mostrarFeedback('❌ Nome é obrigatório.', false);
+        return false;
+      }
+      if (!emailVal || !emailVal.includes('@')) {
+        e.preventDefault();
+        mostrarFeedback('❌ E-mail válido é obrigatório.', false);
+        return false;
+      }
+      if (!foneVal) {
+        e.preventDefault();
+        mostrarFeedback('❌ Número de telefone necessário.', false);
+        return false;
+      }
+      if (senhaVal.length < 6) {
+        e.preventDefault();
+        mostrarFeedback('🔐 A senha deve ter pelo menos 6 caracteres.', false);
+        return false;
+      }
+      if (senhaVal !== confirmVal) {
+        e.preventDefault();
+        mostrarFeedback('❌ As senhas não coincidem.', false);
+        return false;
+      }
+      if (!termosCheck.checked) {
+        e.preventDefault();
+        mostrarFeedback('📄 Aceite os Termos e Condições.', false);
+        return false;
+      }
+      if (!enderecoVal) {
+        e.preventDefault();
+        mostrarFeedback('📍 Selecione um endereço no mapa.', false);
+        return false;
+      }
+      mostrarFeedback('🎉 Cadastro validado! A enviar...', true);
+    });
 
-        // Se chegou aqui, tudo ok – o formulário será enviado normalmente
-        mostrarFeedback('🎉 Cadastro validado! A enviar...', true);
-        // Não chamamos preventDefault, então o submit ocorre
-      });
-    }
-
-    // --- Botão Cancelar ---
+    // Cancelar
     if (cancelarBtn) {
       cancelarBtn.addEventListener('click', function() {
         if (confirm('Deseja cancelar o cadastro? Os dados serão perdidos.')) {
           document.getElementById('nome').value = '';
-          document.getElementById('sobrenome').value = '';
           emailInput.value = '';
           telefoneInput.value = '';
           senha.value = '';
@@ -629,15 +614,8 @@
       });
     }
 
-    // --- Botões sociais (simulação) ---
-    if (googleBtn) {
-      googleBtn.addEventListener('click', () => mostrarFeedback('🌐 Redirecionamento para Google (simulação)', true));
-    }
-    if (appleBtn) {
-      appleBtn.addEventListener('click', () => mostrarFeedback('🍎 Autenticação Apple (simulação)', true));
-    }
-
-    // --- Links dos termos (simulação) ---
+    if (googleBtn) googleBtn.addEventListener('click', () => mostrarFeedback('🌐 Redirecionamento para Google (simulação)', true));
+    if (appleBtn) appleBtn.addEventListener('click', () => mostrarFeedback('🍎 Autenticação Apple (simulação)', true));
     document.querySelectorAll('.termos-link').forEach(link => {
       link.addEventListener('click', (e) => {
         e.preventDefault();

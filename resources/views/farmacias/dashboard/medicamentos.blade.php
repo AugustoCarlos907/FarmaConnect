@@ -486,10 +486,10 @@
                         <i class="bi bi-list-ul"></i>
                         <span>Lista de produtos</span>
                     </a>
-                    <div class="sub-item">
+                    {{-- <div class="sub-item">
                         <i class="bi bi-exclamation-triangle"></i>
                         <span>Stock baixo</span>
-                    </div>
+                    </div> --}}
                 </div>
             </div>
 
@@ -814,8 +814,8 @@
                   <td>
                     <div class="row-actions">
                       <button class="act-btn" title="Editar" onclick="openDrawer({{ $medicamento->id }})"><i class="bi bi-pencil"></i></button>
-                      <button class="act-btn" title="Repor stock" onclick="alert('Repor stock de {{ $medicamento->name }}')"><i class="bi bi-bag-plus"></i></button>
-                      <button class="act-btn" title="Ver histórico" onclick="alert('Histórico de movimentos')"><i class="bi bi-clock-history"></i></button>
+                      <button class="act-btn" title="Ajuste de inventário" onclick="alert('Repor stock de {{ $medicamento->name }}')"><i class="bi bi-bag-plus"></i></button>
+                      {{-- <button class="act-btn" title="Ver histórico" onclick="alert('Histórico de movimentos')"><i class="bi bi-clock-history"></i></button> --}}
                       <form id="form-delete-{{ $medicamento->id }}" action="{{ route('medicamentos.destroy', $medicamento->id) }}" method="POST">
                           @csrf
                           @method('DELETE')

@@ -947,6 +947,8 @@ document.getElementById('prescricaoInput').addEventListener('change', function()
 // Coordenadas da farmácia (do backend)
 const farmaciaLat = {{ $farmaciaLat ?? 'null' }};
 const farmaciaLng = {{ $farmaciaLng ?? 'null' }};
+// Verifica se o pedido contém medicamentos que exigem receita
+const requerReceita = {{ $requerReceita ? 'true' : 'false' }};
 
 function haversine(lat1, lng1, lat2, lng2) {
     const R = 6371; // km
@@ -1146,6 +1148,25 @@ document.getElementById('formPedido').addEventListener('submit', function (e) {
         showToast('Pagamento em falta', 'Seleccione um método de pagamento.');
         return;
     }
+
+        if (metodo === 'express') {
+        const comprovativoInput = document.getElementById('comprovativoExpressInput');
+        if (!comprovativoInput || !comprovativoInput.files.length) {
+            e.preventDefault();
+            showToast('Comprovativo em falta', 'Anexe o comprovativo de pagamento Multicaixa Express.');
+            return;
+        }
+    }
+
+      if (requerReceita) {
+          const prescricaoInput = document.getElementById('prescricaoInput');
+          if (!prescricaoInput || !prescricaoInput.files.length) {
+              e.preventDefault();
+              showToast('Receita médica em falta', 'Anexe a receita médica para finalizar o pedido.');
+              return;
+          }
+      }
+
 
     const btn = document.getElementById('btnConfirmar');
     btn.disabled = true;

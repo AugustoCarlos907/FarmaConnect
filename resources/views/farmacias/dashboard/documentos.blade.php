@@ -477,10 +477,10 @@
                         <i class="bi bi-list-ul"></i>
                         <span>Lista de produtos</span>
                     </a>
-                    <div class="sub-item">
+                    {{-- <div class="sub-item">
                         <i class="bi bi-exclamation-triangle"></i>
                         <span>Stock baixo</span>
-                    </div>
+                    </div> --}}
                 </div>
             </div>
 

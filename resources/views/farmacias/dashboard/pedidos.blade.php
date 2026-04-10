@@ -294,7 +294,7 @@
           </div>
           <div class="sub">
             <a href="{{ route('medicamentos.farmacias') }}" class="sub-item"><i class="bi bi-list-ul"></i><span>Lista de produtos</span></a>
-            <div class="sub-item"><i class="bi bi-exclamation-triangle"></i><span>Stock baixo</span></div>
+            {{-- <div class="sub-item"><i class="bi bi-exclamation-triangle"></i><span>Stock baixo</span></div> --}}
           </div>
         </div>
         <a href="{{ route('pedidos.farmacias') }}" class="nav-item {{ request()->routeIs('pedidos.farmacias') ? 'active' : '' }}">
@@ -517,7 +517,7 @@
                   <td>
                     <div class="order-id">#{{ str_pad($pedido->id,4,'0',STR_PAD_LEFT) }}</div>
                     <div class="order-time">
-                      {{ $pedido->data_pedido->format('H:i') }} · {{ $pedido->data_pedido->diffForHumans() }}
+                      {{ $pedido->data_pedido->format('d-m-y · H:i') }} · {{ $pedido->data_pedido->diffForHumans() }}
                     </div>
                   </td>
                   <td>

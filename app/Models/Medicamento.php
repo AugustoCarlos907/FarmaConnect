@@ -37,6 +37,9 @@ class Medicamento extends Model
         return $this->belongsTo(Categoria::class);
     }
 
+    //data_fabricacao
+    //laboratorio
+    //origem (indiano , português)
 
     
 }

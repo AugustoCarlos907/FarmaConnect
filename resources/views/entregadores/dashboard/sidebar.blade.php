@@ -202,6 +202,12 @@
        class="nav-link {{ request()->routeIs('ganhos.entregadores') ? 'active' : '' }}">
       <i class="bi bi-cash-stack"></i>
       <span>Ganhos</span>
+    </a>    
+    
+    <a href="" 
+       class="nav-link {{ request()->routeIs('avaliacao.entregadores') ? 'active' : '' }}">
+      <i class="bi bi-star"></i>
+      <span>Avaliações</span>
     </a>
 
     <span class="nav-label" style="margin-top:.4rem">Conta</span>

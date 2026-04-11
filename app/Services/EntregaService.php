@@ -151,18 +151,18 @@ class EntregaService{
         });
     }
 
-    public function criarRetirada($pedido)
-    {
-        return Entrega::create([
-            'pedido_id'        => $pedido->id,
-            'status'           => 'retirada',
-            'taxa_entrega'     => 0,
-            'distancia_km'     => 0,
-            'endereco_entrega' => $pedido->farmacia->endereco,
-            'data_saida'       => null, // ou now()
-        ]);
+    // public function criarRetirada($pedido)
+    // {
+    //     return Entrega::create([
+    //         'pedido_id'        => $pedido->id,
+    //         'status'           => 'retirada',
+    //         'taxa_entrega'     => 0,
+    //         'distancia_km'     => 0,
+    //         'endereco_entrega' => $pedido->farmacia->endereco,
+    //         'data_saida'       => null, // ou now()
+    //     ]);
 
-    }
+    // }
 
      private function buscarEntregadorDisponivel($pedido)
     {

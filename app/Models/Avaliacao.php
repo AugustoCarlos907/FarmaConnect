@@ -13,11 +13,16 @@ class Avaliacao extends Model
         'comentario',
 
         'farmacia_id',
-        'user_id'
+        'user_id',
+        'entregador_id'
         
     ];
 
 
+
+    public function entregador(){
+        return $this->belongsTo(Entregador::class);
+    }
 
     public function farmacia()
     {

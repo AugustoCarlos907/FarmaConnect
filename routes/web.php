@@ -91,6 +91,7 @@ use Twilio\Rest\Client;
         Route::get('entregador/dashboard', [EntregaController::class, 'dashboard'])->name('index.entregadores');
         Route::get('entregador/entregas', [EntregaController::class, 'entregas'])->name('entregas.entregadores');
         Route::get('entregador/ganhos', [EntregaController::class, 'ganhos'])->name('ganhos.entregadores');
+        Route::get('entregador/avaliacoes', [EntregadorController::class, 'avaliacoes'])->name('avaliacao.entregadores');
         Route::get('entregador/perfil/{id}', [EntregadorController::class, 'perfil'])->name('perfil.entregadores');
         Route::post('/entregador/concluir-entrega/{id}' , [EntregaController::class , 'concluir'])->name('concluir.entrega');
 

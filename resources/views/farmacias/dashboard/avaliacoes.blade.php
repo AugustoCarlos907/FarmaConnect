@@ -307,11 +307,11 @@
             </a>
 
             <!-- Entregadores -->
-            <a href="{{ route('entregadores.farmacias') }}" class="nav-item {{ request()->routeIs('entregadores.farmacias') ? 'active' : '' }}">
+            {{-- <a href="{{ route('entregadores.farmacias') }}" class="nav-item {{ request()->routeIs('entregadores.farmacias') ? 'active' : '' }}">
                 <i class="bi bi-person-badge"></i>
                 <span>Entregadores</span>
 
-            </a>
+            </a> --}}
 
             <!-- Clientes -->
             <a href="{{ route('clientes.farmacias') }}" class="nav-item {{ request()->routeIs('clientes.farmacias') ? 'active' : '' }}">

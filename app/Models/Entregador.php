@@ -25,11 +25,25 @@ class Entregador extends Authenticatable
         'disponivel',
         'latitude',
         'longitude',
-        'farmacia_id',
-        'user_id'
+        // 'farmacia_id',
+        'user_id',
+
+        'num_carta_conducao',
+        'validade_carta',
+        'seguro_veiculo',
+        'total_entregas',
+        'avaliacao_media',
+        'tipo_veiculo',
     ];
 
     protected $with = ['user'];
+    protected $casts = [
+        'validade_carta' => 'date',
+        'total_entregas' => 'integer',
+        'avaliacao_media' => 'decimal:2',
+        'disponivel' => 'boolean',
+    ];
+
     public function getNameAttribute()
     {
         return $this->user?->name;
@@ -45,12 +59,22 @@ class Entregador extends Authenticatable
         return $this->hasMany(Entrega::class);
     }
 
-    public function farmacia()
-    {
-        return $this->belongsTo(Farmacia::class);
+    public function avaliacoes(){
+        return $this->hasMany(Avaliacao::class);
     }
+    // public function farmacia()
+    // {
+    //     return $this->belongsTo(Farmacia::class);
+    // }
 
+    
     public function user(){
         return $this->belongsTo(User::class);
+    }
+
+    public function atualizarMetricas(): void {
+        $this->total_entregas = $this->entregas()->where('status', 'entregue')->count();
+        $this->avaliacao_media = $this->avaliacoes()->avg('classificacao') ?? 0;
+        $this->save();
     }
 }

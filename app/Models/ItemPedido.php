@@ -12,7 +12,9 @@ class ItemPedido extends Model
         'subtotal',
         'pedido_id',
         'stock_items_id',
-        'prescricao_path'
+        'prescricao_path',
+
+        'farmacia_id', // novo
     ];
 
     public function pedido()
@@ -25,5 +27,8 @@ class ItemPedido extends Model
         return $this->belongsTo(StockItem::class , 'stock_items_id');
     }
 
+    public function farmacia(){
+        return $this->belongsTo(Farmacia::class);
+    }
     
 }

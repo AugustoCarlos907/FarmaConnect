@@ -300,9 +300,9 @@
         <a href="{{ route('pedidos.farmacias') }}" class="nav-item {{ request()->routeIs('pedidos.farmacias') ? 'active' : '' }}">
           <i class="bi bi-truck"></i><span>Pedidos</span>
         </a>
-        <a href="{{ route('entregadores.farmacias') }}" class="nav-item {{ request()->routeIs('entregadores.farmacias') ? 'active' : '' }}">
+        {{-- <a href="{{ route('entregadores.farmacias') }}" class="nav-item {{ request()->routeIs('entregadores.farmacias') ? 'active' : '' }}">
           <i class="bi bi-person-badge"></i><span>Entregadores</span>
-        </a>
+        </a> --}}
         <a href="{{ route('clientes.farmacias') }}" class="nav-item {{ request()->routeIs('clientes.farmacias') ? 'active' : '' }}">
           <i class="bi bi-people"></i><span>Clientes</span>
         </a>

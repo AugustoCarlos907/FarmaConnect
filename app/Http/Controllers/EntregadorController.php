@@ -25,6 +25,10 @@ class EntregadorController extends Controller
         return view('entregadores.dashboard.perfil' , ['entregador' => $entregador]);
     }
 
+    public function avaliacoes(){
+        
+    }
+
     public function updateStatus(Request $request)
     {
     $entregador = Auth::user()->entregador;

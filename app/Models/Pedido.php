@@ -9,7 +9,7 @@ class Pedido extends Model
     protected $table = 'pedidos';
     protected $fillable = [
         'user_id',
-        'farmacia_id',
+        // 'farmacia_id',
         'status',
         'data_pedido',
         'endereco',
@@ -33,9 +33,16 @@ class Pedido extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function farmacia()
+    // public function farmacia()
+    // {
+    //     return $this->belongsTo(Farmacia::class);
+    // }
+
+    public function farmacias()
     {
-        return $this->belongsTo(Farmacia::class);
+        return $this->belongsToMany(Farmacia::class, 'farmacia_pedido')
+                    ->withPivot('status')
+                    ->withTimestamps();
     }
 
     public function items()

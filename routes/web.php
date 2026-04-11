@@ -63,6 +63,7 @@ use Twilio\Rest\Client;
         Route::get('/farmacia/medicamentos', [FarmaciaController::class, 'listMedicamentos'])->name('medicamentos.farmacias');
         Route::post('/farmacia/create-medicamento' , [MedicamentoController::class , 'create'])->name('medicamentos.store');
         Route::put('/farmacia/edit-medicamento' , [MedicamentoController::class , 'edit'])->name('medicamentos.edit');
+        Route::post('/farmacia/edit-stock/{id}' , [MedicamentoController::class , 'ajusteStock'])->name('medicamentos.edit.stock');
         Route::delete('/farmacias/medicamento-delete/{id}' , [MedicamentoController::class , 'destroy'])->name('medicamentos.destroy');
 
         Route::get('/farmacia/pedidos', [FarmaciaController::class, 'pedidos'])->name('pedidos.farmacias');
@@ -141,6 +142,8 @@ use Twilio\Rest\Client;
         Route::get('/farmacias', [ClientHomePageController::class, 'farmacias'])->name('farmacias.list');
         Route::get('/produtos' , [ClientHomePageController::class, 'produtos'])->name('produtos.clientes');
         Route::get('/carrinho', function(){ return view('clientes.dashboard.carrinho'); })->name('carrinho.clientes');
+
+        Route::post('/medicamentos/pesquisar-por-receita', [MedicamentoController::class, 'searchByPrescription'])->name('medicamentos.search.by.prescription');
 
         Route::post('/pedidos', [PedidoController::class, 'store'])->name('pedidos.store');
         Route::get('/pedidos', [PedidoController::class, 'pedidos'])->name('pedidos.clientes');

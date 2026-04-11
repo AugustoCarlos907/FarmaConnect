@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Companhia;
 use App\Models\Entregador;
 use App\Models\Farmacia;
+use App\Models\Medicamento;
 use App\Models\User;
 use App\Services\FarmaService;
 use App\Services\MedicamentoService;
@@ -97,8 +98,73 @@ class FarmaciaController extends Controller
        
 
     //stock
-    public function listMedicamentos(){
-        $medicamentos = $this->farmaService->listMedicamentosByPharmacy(Auth::user()->farmacia_id, 10);
+    // public function listMedicamentos(){
+    //     $medicamentos = $this->farmaService->listMedicamentosByPharmacy(Auth::user()->farmacia_id, 10);
+    //     return view('farmacias.dashboard.medicamentos', compact('medicamentos'));
+    // }
+
+    public function listMedicamentos(Request $request)
+    {
+        $farmaciaId = Auth::user()->farmacia_id;
+
+        // 1. Query base (sem paginar ainda)
+        $query = Medicamento::whereHas('stockItems', function ($q) use ($farmaciaId) {
+            $q->where('farmacia_id', $farmaciaId);
+        })
+        ->with('categoria')
+        ->withSum(['stockItems as total_stock' => function ($q) use ($farmaciaId) {
+            $q->where('farmacia_id', $farmaciaId);
+        }], 'quantidade')
+        ->withMin(['stockItems as data_validade' => function ($q) use ($farmaciaId) {
+            $q->where('farmacia_id', $farmaciaId);
+        }], 'data_validade');
+
+        // 2. Filtro por pesquisa (nome)
+        if ($request->filled('search')) {
+            $query->where('name', 'like', '%' . $request->search . '%');
+        }
+
+        // 3. Filtro por categoria
+        if ($request->filled('categoria')) {
+            $query->whereHas('categoria', function($q) use ($request) {
+                $q->where('name', $request->categoria);
+            });
+        }
+
+        // 4. Filtro por stock (usando having na subconsulta)
+        if ($request->filled('stock')) {
+            $stockFilter = $request->stock;
+            if ($stockFilter == 'ok') {
+                $query->having('total_stock', '>=', 20);
+            } elseif ($stockFilter == 'low') {
+                $query->havingBetween('total_stock', [8, 19]);
+            } elseif ($stockFilter == 'critical') {
+                $query->havingBetween('total_stock', [1, 7]);
+            } elseif ($stockFilter == 'out') {
+                $query->having('total_stock', 0);
+            }
+        }
+
+        // 5. Ordenação
+        if ($request->filled('sort')) {
+            $sort = explode('-', $request->sort);
+            $key = $sort[0];
+            $dir = $sort[1] ?? 'asc';
+            if ($key == 'name') {
+                $query->orderBy('name', $dir);
+            } elseif ($key == 'price') {
+                $query->orderBy('preco', $dir);
+            } elseif ($key == 'stock') {
+                $query->orderBy('total_stock', $dir);
+            }
+        } else {
+            // Ordenação padrão por nome
+            $query->orderBy('name', 'asc');
+        }
+
+        // 6. Paginar (depois de todos os filtros)
+        $medicamentos = $query->paginate(20)->appends($request->query());
+
         return view('farmacias.dashboard.medicamentos', compact('medicamentos'));
     }
 

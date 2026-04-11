@@ -35,7 +35,10 @@ class MedicamentoService
         $preco,
         $dataValidade,
         $lote,
-        $requerReceita
+        $requerReceita,
+        $dataFabricacao = null, 
+        $laboratorio = null, 
+        $origem = null 
         ){
 
         $medicamento =  Medicamento::create([
@@ -45,7 +48,10 @@ class MedicamentoService
             'forma_farmaceutica' => $forma_farmaceutica,
             'dosagem' => $dosagem,
             'categoria_id' => $categoria_id,
-            'requer_receita' => $requerReceita
+            'requer_receita' => $requerReceita,
+            'data_fabricacao' => $dataFabricacao,
+            'laboratorio' => $laboratorio,
+            'origem' => $origem
         ]);
 
         $medicamento->stockItems()->create([

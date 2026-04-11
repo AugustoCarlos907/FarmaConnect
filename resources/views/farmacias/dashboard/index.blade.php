@@ -488,7 +488,7 @@
   <div class="main">
     <header class="topbar">
       <div class="tb-left">
-        <h1>Dashboard</h1>
+        <h1>Paínel Administrativo</h1>
         <span class="tb-sep">/</span>
         <span class="tb-date" id="topbar-date">—</span>
       </div>

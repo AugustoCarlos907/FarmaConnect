@@ -1,7 +1,5 @@
 {{-- resources/views/layouts/partials/header.blade.php --}}
-
-<style>
-    /* Variáveis globais – apenas as usadas pelo header */
+ <style>
     :root {
         --accent: #099aa7;
         --accent-dark: #067e8a;
@@ -14,8 +12,10 @@
         --shadow: 0 8px 32px rgba(9,154,167,.08);
     }
 
+
     /* ========== HEADER ========== */
     .header {
+        /* width: 95%;  */
         background: rgba(255,255,255,.97);
         backdrop-filter: blur(16px);
         box-shadow: 0 1px 0 rgba(9,154,167,.08),0 4px 24px rgba(9,154,167,.06);
@@ -111,6 +111,22 @@
     .header-search .min-price-input {
         width: 90px;
     }
+
+    .btn-outline-accent {
+        border: 2px solid var(--accent);
+        color: var(--accent);
+        background: transparent;
+        border-radius: 50px;
+        font-size: 0.8rem;
+        padding: 0.25rem 1rem;
+        transition: all 0.2s ease;
+        white-space: nowrap;
+    }
+    .btn-outline-accent:hover {
+        background: var(--accent);
+        color: #fff;
+    }
+
     .navmenu ul {
         margin: 0;
         padding: 0;
@@ -205,7 +221,6 @@
 </style>
 
 @php
-    // Fornece variáveis padrão caso não sejam passadas
     $cartCount = $cartCount ?? (\App\Models\Carrinho::where('user_id', auth()->id())->count() ?? 0);
 @endphp
 
@@ -222,19 +237,16 @@
                     <form action="{{ route('medicamentos.search') }}" method="GET" class="search-form">
                         <input type="text" name="search" class="search-input" 
                             placeholder="Pesquise os medicamentos ..." 
-                            value="{{ request('search') }}">
-                        <!-- Campo para filtro de preço mínimo (opcional) -->
-                        {{-- <div class="price-filter d-none d-sm-flex align-items-center">
-                            <span class="price-label">Mín:</span>
-                            <input type="number" name="min_price" class="min-price-input" 
-                                placeholder="Preço mínimo" step="100" 
-                                value="{{ request('min_price') }} " 
-                                style="width: 80px; border: none; background: transparent; padding: .5rem 0 .5rem .2rem; font-size: .85rem; color: var(--heading); outline: none;">
-                        </div> --}}
+                            value="{{ request('search') }}" required>
+
                         <button type="submit" class="search-btn" aria-label="Pesquisar">
                             <i class="bi bi-arrow-right-circle-fill"></i>
                         </button>
                     </form>
+
+                    <button type="button" class="btn-outline-accent ms-2" data-bs-toggle="modal" data-bs-target="#receitaModal">
+                        <i class="bi bi-file-earmark-medical"></i> Receita
+                    </button>
                 </div>
             </div>
 
@@ -250,7 +262,6 @@
             <div class="d-flex align-items-center gap-3 flex-shrink-0 ms-auto ms-lg-0">
                 <a href="{{ route('carrinho.clientes') }}" class="hdr-icon d-none d-sm-inline-flex">
                     <i class="bi bi-cart"></i>
-                    {{-- <i class="bi bi-bag"></i> --}}
                     <span class="hdr-badge">{{ $cartCount }}</span>
                 </a>
 
@@ -258,7 +269,14 @@
                     <a href="#" class="profile-toggle dropdown-toggle" data-bs-toggle="dropdown">
                         <img src="https://ui-avatars.com/api/?name={{ urlencode(auth()->user()->name) }}&background=099aa7&color=fff&rounded=true&size=34"
                              width="34" height="34" class="rounded-circle" alt="">
-                        <span class="pname d-none d-md-inline">{{ auth()->user()->name }}</span>
+                        @php
+                            $nome = trim(auth()->user()->name);
+                            $primeira = mb_substr($nome, 0, 1);
+                            $ultima = mb_substr($nome, -1);
+                            $resultado = mb_strtoupper($primeira . $ultima);
+                        @endphp
+
+                        {{-- <span class="pname d-none d-md-inline">{{ $resultado }}</span> --}}
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end">
                         <li><a class="dropdown-item" href="{{ route('perfil.clientes') }}"><i class="bi bi-person me-2"></i>Minha Conta</a></li>
@@ -278,13 +296,63 @@
                 </div>
             </div>
         </div>
+
     </div>
+
 </header>
 
+    <!-- Modal Upload Receita (fora do header, mas dentro do body) -->
+    <div class="modal fade" id="receitaModal" tabindex="-1" aria-labelledby="receitaModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <form action="{{ route('medicamentos.search.by.prescription') }}" method="POST" enctype="multipart/form-data" id="formReceita">
+                    @csrf
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="receitaModalLabel"><i class="bi bi-camera"></i> Enviar receita médica</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="prescricaoImage" class="form-label">Tire uma foto ou faça upload da sua receita</label>
+                            <input type="file" class="form-control" name="prescricao_image" id="prescricaoImage" accept="image/*" required>
+                            <div class="form-text">Formatos aceites: JPG, PNG. Máx. 5MB.</div>
+                        </div>
+                        <div id="imagePreview" class="mt-2 text-center" style="display: none;">
+                            <img src="#" id="previewImg" class="img-fluid rounded" style="max-height: 200px;">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-accent">Pesquisar medicamentos</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
 <script>
+    // Preview da imagem antes de enviar
+    document.getElementById('prescricaoImage').addEventListener('change', function(e) {
+        const preview = document.getElementById('imagePreview');
+        const img = document.getElementById('previewImg');
+        if (this.files && this.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(ev) {
+                img.src = ev.target.result;
+                preview.style.display = 'block';
+            }
+            reader.readAsDataURL(this.files[0]);
+        } else {
+            preview.style.display = 'none';
+            img.src = '#';
+        }
+    });
+
     // Efeito de scroll no header
     window.addEventListener('scroll', () => {
         const header = document.getElementById('mainHeader');
         if (header) header.classList.toggle('scrolled', window.scrollY > 50);
     });
 </script>
+

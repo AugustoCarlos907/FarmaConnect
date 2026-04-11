@@ -131,29 +131,29 @@ class PedidoController extends Controller
                     'status' => $request->status
                 ]);
 
-                if ($pedido->status == 'pago') {
-                        Pagamento::create([
+                if ($request->status == 'pago') {
+                        $pagamento = Pagamento::create([
                             'pedido_id'      => $pedido->id,
                             'status' => 'confirmado',
-                            'metodo'     => $pedido->metodo_pagamento ,
+                            'metodo'     => $pedido->metodo_pagamento  ,
                             'valor'    => $pedido->total,
                             'data_pagamento'=> now()
                         ]);
-                }
 
-                if ($pedido->status == 'pago'&& $pedido->status == 'Aprovado' &&  !$pedido->factura()->exists() ) {
+                if (!$pedido->factura()->exists() ) {
                         Factura::create([
                             'user_id'        => $pedido->user_id,
                             'pedido_id'      => $pedido->id,
-                            'pagamento_id'   => $pedido->pagamento->id ?? 'UNKNOWN',
+                            'pagamento_id'   => $pagamento->id ,
                             'numero_factura' => 'FAC-' . now()->format('Ymd') . '-' . strtoupper(uniqid()),
                             'valor_total'    => $pedido->total,
                             'IVA'            => $pedido->total * 0.14,
                             'emitida_em'     => now()
                         ]);
                 }
+                }
 
-                if (in_array($pedido->status, ['pago', 'Aprovado'])  ) {
+                if (in_array($pedido->status, ['pago', 'Aprovado']) && $pedido->entrega && $pedido->entrega->taxa_entrega > 0 ) {
                         try {
                             $entrega = $this->entregaService->criarEntrega($pedido);
                             $pedido->update(['status' => 'Em Entrega']);
@@ -170,9 +170,17 @@ class PedidoController extends Controller
             });
                 return redirect()->back()->with('success', 'Status do pedido atualizado para ' . $request->status);
         } catch (\Exception $e) {
-            return back()->withErrors($e->getMessage());
-        }
+        // Regista o erro no log para diagnóstico
+        \Log::error('Erro ao atualizar status do pedido', [
+            'pedido_id' => $id,
+            'status'    => $request->status ?? 'null',
+            'error'     => $e->getMessage(),
+            'trace'     => $e->getTraceAsString()
+        ]);
+        return back()->withErrors('Erro: ' . $e->getMessage());
     }
+    }
+
     public function cancelar($id){
         $pedido = Pedido::findOrFail($id);
         $pedido->update([

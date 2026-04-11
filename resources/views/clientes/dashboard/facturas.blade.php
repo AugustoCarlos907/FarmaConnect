@@ -523,7 +523,7 @@
     </div>
 
     <!-- ===== ITENS DO PEDIDO ===== -->
-    @if($factura->pedido && $factura->pedido->itens && $factura->pedido->itens->count() > 0)
+    @if($factura->pedido && $factura->pedido->items && $factura->pedido->items->count() > 0)
     <table class="items-table">
       <thead>
         <tr>
@@ -534,12 +534,12 @@
         </tr>
       </thead>
       <tbody>
-        @foreach($factura->pedido->itens as $item)
+        @foreach($factura->pedido->items as $item)
         <tr>
           <td class="item-name">
-            {{ $item->medicamento->name ?? $item->descricao ?? 'Produto' }}
-            @if(isset($item->medicamento->dosagem))
-              <br><span style="font-size:9.5px;color:#6c8285;font-weight:400;">{{ $item->medicamento->dosagem }}</span>
+            {{ $item->stockItem->medicamento->name ?? $item->descricao ?? 'Produto' }}
+            @if(isset($item->stockItem->medicamento->dosagem))
+              <br><span style="font-size:9.5px;color:#6c8285;font-weight:400;">{{ $item->stockItem->medicamento->dosagem }}</span>
             @endif
           </td>
           <td class="item-qty">{{ $item->quantidade }}</td>

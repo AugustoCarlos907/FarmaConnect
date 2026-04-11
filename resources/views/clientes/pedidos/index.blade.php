@@ -343,7 +343,7 @@
 
 
 <!-- ===== PAGE TOPBAR ===== -->
-<div class="page-topbar mt-2" >
+<div class="page-topbar" >
   <div class="topbar-blob tb1"></div>
   <div class="topbar-blob tb2"></div>
   <div class="container-xl" style="position:relative;z-index:2;">
@@ -647,7 +647,7 @@
 
           {{-- <a class="oa-btn oa-ghost text-decoration-none" href="{{ route('pedidos.factura', ['id' => $pedido->id]) }}"><i class="bi bi-receipt"></i> Ver factura</a> --}}
           <button class="oa-btn oa-ghost"><i class="bi bi-receipt"></i> Ver detalhes</button>
-          <a class="oa-btn oa-ghost text-decoration-none" href="{{ route('pedidos.factura', ['id' => $pedido->id]) }}"><i class="bi bi-receipt"></i> Ver factura</a>
+          {{-- <a class="oa-btn oa-ghost text-decoration-none" href="{{ route('pedidos.factura', ['id' => $pedido->id]) }}"><i class="bi bi-receipt"></i> Ver factura</a> --}}
 
  
           @elseif($st === 'pago')

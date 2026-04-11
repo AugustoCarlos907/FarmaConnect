@@ -599,6 +599,13 @@
 
     <div class="content">
 
+      @if(session('success'))
+    <div class="alert-fc alert-success mt-3 mb-3" style="background: #dcfce7; border-color: #bbf7d0; color: #15803d;">
+        <i class="bi bi-check-circle-fill flex-shrink-0"></i>
+        <span>{{ session('success') }}</span>
+    </div>
+@endif
+
       <!-- ─── TOOLBAR ────────────────────── -->
       <div class="toolbar">
         <div class="toolbar-left">
@@ -606,19 +613,24 @@
 
           <div class="search-wrap">
             <i class="bi bi-search"></i>
-            <input type="text" class="search-input" name="search" value="{{ request('search') }}" id="searchInput" placeholder="Pesquisar por medicamento …" oninput="filterTable()">
+            <form action="{{ route('medicamentos.farmacias') }}" method="GET" id="filterForm" >
+              <input type="text" class="search-input" name="search" value="{{ request('search') }}" id="searchInput" placeholder="Pesquisar por medicamento …" oninput="filterTable()">
+                <input type="hidden" name="categoria" id="categoriaHidden" value="{{ request('categoria') }}">
+                <!-- Os outros inputs (search, stock, sort) serão movidos para dentro do form -->
+                <!-- ... -->
+            </form>
           </div>
           <!-- Filtros rápidos por categoria -->
           <div class="filter-chips" id="catChips">
-            <span class="chip active" data-cat="all" onclick="filterCat(this, 'all')">Todos</span>
-            @php
-              $categorias = $medicamentos->pluck('categoria.name')->unique()->filter();
-            @endphp
-            @foreach($categorias as $categoria)
-              <span class="chip" data-cat="{{ strtolower($categoria) }}" onclick="filterCat(this, '{{ strtolower($categoria) }}')">
-                <i class="bi bi-capsule"></i> {{ $categoria }}
-              </span>
-            @endforeach
+              <button type="button" class="chip {{ !request('categoria') ? 'active' : '' }}" data-cat="" onclick="setCategoriaAndSubmit('')">Todos</button>
+              @php
+                  $categorias = $medicamentos->pluck('categoria.name')->unique()->filter();
+              @endphp
+              @foreach($categorias as $categoria)
+                  <button type="button" class="chip {{ request('categoria') == $categoria ? 'active' : '' }}" data-cat="{{ $categoria }}" onclick="setCategoriaAndSubmit('{{ $categoria }}')">
+                      <i class="bi bi-capsule"></i> {{ $categoria }}
+                  </button>
+              @endforeach
           </div>
         </div>
 
@@ -643,10 +655,10 @@
           </select>
 
           <!-- View toggle -->
-          <div class="view-toggle">
+          {{-- <div class="view-toggle">
             <button class="view-btn active" id="viewTable" title="Tabela" onclick="setView('table')"><i class="bi bi-list-ul"></i></button>
             <button class="view-btn" id="viewGrid" title="Grelha" onclick="setView('grid')"><i class="bi bi-grid-3x3-gap"></i></button>
-          </div>
+          </div> --}}
 
           <button class="btn btn-outline btn-icon" title="Exportar CSV" onclick="alert('Exportar CSV — integrar com API Laravel')"><i class="bi bi-download"></i></button>
           <form action="{{ route('upload.files') }}  " method="POST" enctype="multipart/form-data" id="csvUploadForm">
@@ -814,12 +826,15 @@
                   <td>
                     <div class="row-actions">
                       <button class="act-btn" title="Editar" onclick="openDrawer({{ $medicamento->id }})"><i class="bi bi-pencil"></i></button>
-                      <button class="act-btn" title="Ajuste de inventário" onclick="alert('Repor stock de {{ $medicamento->name }}')"><i class="bi bi-bag-plus"></i></button>
+                      <button class="act-btn" title="Ajuste de inventário" onclick="abrirModalAjuste({{ $medicamento->id }}, '{{ addslashes($medicamento->name) }}')">
+                          <i class="bi bi-bag-plus"></i>
+                      </button>
+                      {{-- <button class="act-btn" title="Ajuste de inventário" ><i class="bi bi-bag-plus"></i></button> --}}
                       {{-- <button class="act-btn" title="Ver histórico" onclick="alert('Histórico de movimentos')"><i class="bi bi-clock-history"></i></button> --}}
                       <form id="form-delete-{{ $medicamento->id }}" action="{{ route('medicamentos.destroy', $medicamento->id) }}" method="POST">
                           @csrf
                           @method('DELETE')
-                          <button type="button" class="act-btn danger" onclick="openConfirmSingle({{ $medicamento->id }}, '{{ $medicamento->nome }}')">
+                          <button type="button" class="act-btn danger" title="Eliminar" onclick="openConfirmSingle({{ $medicamento->id }}, '{{ $medicamento->name }}')">
                               <i class="bi bi-trash"></i>
                           </button>
                       </form>
@@ -880,7 +895,7 @@
       <div class="field-group-title">Identificação</div>
       <div class="form-row">
         <div class="form-group">
-          <label>Nome comercial *</label>
+          <label>Nome comercial </label>
           <input type="text" name="name" id="fNome" class="form-input" placeholder="ex. Paracetamol" required>
         </div>
 
@@ -893,7 +908,7 @@
 
       <div class="form-row">
         <div class="form-group">
-          <label>Preço (Kz) *</label>
+          <label>Preço (Kz) </label>
           <input type="number" name="preco" id="fPreco" class="form-input" min="0" step="0.01" placeholder="1000" required>
         </div>
 
@@ -904,7 +919,7 @@
       </div>
       <div class="form-row">
         <div class="form-group">
-          <label>Categoria *</label>
+          <label>Categoria </label>
           <select class="form-select" name="categoria_id" id="fCat" required>
             <option value="">Selecionar categoria</option>
             @php
@@ -937,10 +952,30 @@
         </div>
       </div>
 
-      <div class="field-group-title">Stock & Validade</div>
+
+      <div class="field-group-title">Detalhes de Fabrico</div>
       <div class="form-row">
         <div class="form-group">
-          <label>Quantidade em stock *</label>
+          <label>Data de Fabrico</label>
+          <input type="date" name="data_fabricacao" id="fDataFabrico" class="form-input">
+        </div>
+        <div class="form-group">
+          <label>Laboratório</label>
+          <input type="text" name="laboratorio" id="fLaboratorio" class="form-input" placeholder="Ex: Pfizer, Roche">
+        </div>
+        <div class="form-group">
+          <label>Origem</label>
+          <select class="form-select" name="origem" id="fOrigem" required>
+            <option value="indiano">Indiano</option>
+            <option value="portugues">Português</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="field-group-title">Quantidade & Validade</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Quantidade </label>
           <input type="number" name="quantidade" id="fQuantidade" class="form-input" min="0" placeholder="0" required>
         </div>
       </div>
@@ -976,6 +1011,38 @@
     </div>
   </div>
 </div>
+
+
+
+<!-- Modal Ajuste de Inventário -->
+<div class="modal-overlay" id="modalAjusteInventario" style="display: none;">
+  <div class="modal-box" style="width: 420px;">
+    <div class="modal-ico" style="background:var(--accent-light); color:var(--accent);">
+      <i class="bi bi-bag-plus"></i>
+    </div>
+    <h3>Ajustes de inventário</h3>
+    <p id="ajusteProdutoNome"></p>
+    <form id="formAjusteInventario" method="POST">
+      @csrf
+      <input type="hidden" name="id" id="ajusteProdutoId">
+      <div class="form-group" style="margin-bottom: 16px;">
+        <label style="font-weight:600; margin-bottom:6px;">Quantidade </label>
+        <input type="number" name="quantidade" id="ajusteQuantidade" class="form-input" step="1"  required>
+        <small class="form-hint">O ajuste de stock é essencial para garantir a fiabilidade dos dados, evitar ruturas de stock e manter o controlo financeiro.</small>
+      </div>
+      {{-- <div class="form-group" style="margin-bottom: 16px;">
+        <label style="font-weight:600; margin-bottom:6px;">Motivo (opcional)</label>
+        <input type="text" name="motivo" id="ajusteMotivo" class="form-input" placeholder="ex: Reposição, devolução, quebra">
+      </div> --}}
+      <div class="modal-foot" style="margin-top: 8px;">
+        <button type="button" class="btn btn-outline" onclick="fecharModalAjuste()">Cancelar</button>
+        <button type="submit" class="btn btn-primary">Confirmar ajuste</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script>
@@ -1395,6 +1462,72 @@ document.addEventListener('DOMContentLoaded', function() {
   if (typeof allProducts !== 'undefined' && allProducts.length > 0) {
     applyFilters();
   }
+});
+
+// Função para definir a categoria e submeter o formulário
+function setCategoriaAndSubmit(categoria) {
+    document.getElementById('categoriaHidden').value = categoria;
+    document.getElementById('filterForm').submit();
+}
+
+// Submeter automaticamente quando os outros filtros mudarem
+document.getElementById('stockFilter')?.addEventListener('change', function() {
+    document.getElementById('filterForm').submit();
+});
+document.getElementById('sortSelect')?.addEventListener('change', function() {
+    document.getElementById('filterForm').submit();
+});
+document.getElementById('searchInput')?.addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+        e.preventDefault();
+        document.getElementById('filterForm').submit();
+    }
+});
+
+// Abrir modal de ajuste de inventário
+function abrirModalAjuste(id, nome) {
+    const modal = document.getElementById('modalAjusteInventario');
+    const form = document.getElementById('formAjusteInventario');
+    const produtoId = document.getElementById('ajusteProdutoId');
+    const produtoNome = document.getElementById('ajusteProdutoNome');
+    const quantidadeInput = document.getElementById('ajusteQuantidade');
+    // const motivoInput = document.getElementById('ajusteMotivo');
+
+    produtoId.value = id;
+    produtoNome.innerHTML = `<strong>${nome}</strong>`;
+    quantidadeInput.value = '';
+    // motivoInput.value = '';
+
+    // Define a action do formulário dinamicamente
+    let baseUrl = '{{ route("medicamentos.edit.stock", ["id" => ":id"]) }}';
+    document.getElementById('formAjusteInventario').action = baseUrl.replace(':id', id);
+
+    modal.style.display = 'flex';
+}
+
+function fecharModalAjuste() {
+    document.getElementById('modalAjusteInventario').style.display = 'none';
+}
+
+// Fechar modal ao clicar fora
+document.getElementById('modalAjusteInventario').addEventListener('click', function(e) {
+    if (e.target === this) fecharModalAjuste();
+});
+
+// Validação antes de enviar
+document.getElementById('formAjusteInventario').addEventListener('submit', function(e) {
+    const quantidade = parseInt(document.getElementById('ajusteQuantidade').value);
+    if (isNaN(quantidade) || quantidade === 0) {
+        e.preventDefault();
+        alert('Por favor, insira uma quantidade válida (diferente de zero).');
+        return false;
+    }
+    // Se quiser permitir apenas valores positivos (devido à validação min:1 do backend original), descomente a linha abaixo:
+    // if (quantidade < 0) {
+    //     e.preventDefault();
+    //     alert('O backend actual só permite adicionar stock (valores positivos). Contacte o administrador.');
+    //     return false;
+    // }
 });
 </script>
 </body>

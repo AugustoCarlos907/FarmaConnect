@@ -602,7 +602,10 @@
                           @if($farm)
                               <span><i class="bi bi-hospital"></i> {{ $farm->name }}</span>
                           @endif
-                      </div>
+                        </div>
+                        @if($med->requer_receita)
+                            <small class="text-danger "><i class="bi-exclamation-triangle"></i>  Requer receita médica</small>
+                        @endif
                       <div class="qty-ctrl">
                           <form action="{{ route('carrinho.actualizar', $item) }}" method="POST">
                               @csrf @method('PATCH')

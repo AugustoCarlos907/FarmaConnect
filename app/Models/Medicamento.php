@@ -15,7 +15,10 @@ class Medicamento extends Model
         'forma_farmaceutica',
         'dosagem',
         'categoria_id',
-        'requer_receita'
+        'requer_receita',
+        'data_fabricacao',
+        'laboratorio',
+        'origem'
         // 'principio_ativo',
     ];
 
@@ -37,9 +40,6 @@ class Medicamento extends Model
         return $this->belongsTo(Categoria::class);
     }
 
-    //data_fabricacao
-    //laboratorio
-    //origem (indiano , português)
 
     
 }

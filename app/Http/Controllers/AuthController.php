@@ -36,7 +36,7 @@ class AuthController extends Controller
 
 
          try {
-        $user = User::create($data); // ← corrigido: sem colchetes extras
+        $user = User::create($data); 
         if ($user) {
             Auth::login($user);
             return redirect()->route('index.clientes');

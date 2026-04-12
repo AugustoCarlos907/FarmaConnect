@@ -87,7 +87,7 @@ class EntregaService{
      */
     public function calcularTaxaEntrega(float $distanciaKm): float
     {
-        $taxaBase   = 300.00;   // Kz por bloco de 16 km
+        $taxaBase   = 1100.00;   // Kz por bloco de 16 km
         $blocoKm    = 16.0;
         $blocos     = ceil($distanciaKm / $blocoKm); // arredonda para cima
 

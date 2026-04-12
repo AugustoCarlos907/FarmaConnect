@@ -428,7 +428,7 @@
           <div class="featured-scroll">
             @foreach($farmaDestaque as $farma)
               <div class="feat-card" onclick="openModal({{ $farma->id }})">
-                <img src="https://images.unsplash.com/photo-1587854692152-cbe660dbde88?w=88&auto=format&fit=crop"
+                <img src="{{ asset('storage/img/'.$farma->img) }}"
                      class="feat-img" alt="{{ $farma->name }}">
                 <div>
                   <div class="feat-name">{{ $farma->name }}</div>
@@ -481,7 +481,9 @@
                  data-lng="{{ $farmacia->longitude ?? '' }}">
               <div class="ph-card">
                 <div class="ph-img-wrap">
-                  <img src="https://images.unsplash.com/photo-1587854692152-cbe660dbde88?w=500&auto=format&fit=crop" alt="{{ $farmacia->name }}">
+                <img src="{{ asset('storage/img/'.$farmacia->img) }}">
+
+                  {{-- <img src="https://images.unsplash.com/photo-1587854692152-cbe660dbde88?w=500&auto=format&fit=crop" alt="{{ $farmacia->name }}"> --}}
                   <div class="ph-img-overlay"></div>
                   <div class="ph-badge-top">
                     <span class="ph-badge {{ $aberta ? 'ph-open' : 'ph-closed' }}">

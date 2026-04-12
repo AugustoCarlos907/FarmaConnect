@@ -431,8 +431,8 @@
 
                 {{-- IMAGEM --}}
                 <div class="pc-img">
-                  @if($med->imagem ?? false)
-                    <img src="{{ asset('storage/'.$med->imagem) }}" alt="{{ $med->name }}" loading="lazy">
+                  @if($med->img ?? false)
+                    <img src="{{ asset('storage/img/'.$med->img) }}" alt="{{ $med->name }}" loading="lazy">
                   @else
                     <div class="pc-img-placeholder">💊</div>
                   @endif

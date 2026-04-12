@@ -491,6 +491,8 @@
 
     
 
+    
+
     /* Scroll top */
     #scroll-top {
       position:fixed; bottom:28px; right:28px;
@@ -675,9 +677,9 @@
           <div class="col-lg-4 col-md-6">
             <div class="pharmacy-card">
               <div class="pharmacy-img-wrap">
-                <img src="https://images.unsplash.com/photo-1587854692152-cbe660dbde88?w=600&auto=format&fit=crop" alt="Farmácia Central">
+                <img src="{{ asset('storage/img/Mecofarma_Kinaxixi_1.png') }}" >
               </div>
-              <h3 class="pharmacy-name">Farmácia Central</h3>
+              <h3 class="pharmacy-name">Farmácia Mecofarma</h3>
               <div class="pharmacy-location"><i class="bi bi-geo-alt-fill"></i> Ingombotas, Rua Ho Chi Min</div>
               <span class="pharmacy-status status-open"><i class="bi bi-circle-fill" style="font-size:.5rem;"></i> Aberta agora</span>
               <div class="pharmacy-actions">
@@ -692,9 +694,10 @@
           <div class="col-lg-4 col-md-6">
             <div class="pharmacy-card">
               <div class="pharmacy-img-wrap">
-                <img src="https://images.unsplash.com/photo-1576671081837-49000212a370?w=600&auto=format&fit=crop" alt="Farmácia Kilamba">
+                <img src="{{ asset('storage/img/palanca.jpeg') }}" >
+                {{-- <img src="https://images.unsplash.com/photo-1576671081837-49000212a370?w=600&auto=format&fit=crop" alt="Farmácia Kilamba"> --}}
               </div>
-              <h3 class="pharmacy-name">Farmácia Kilamba</h3>
+              <h3 class="pharmacy-name">Farmácia Palanca</h3>
               <div class="pharmacy-location"><i class="bi bi-geo-alt-fill"></i> Kilamba, Rua dos Combates</div>
               <span class="pharmacy-status status-open"><i class="bi bi-circle-fill" style="font-size:.5rem;"></i> Aberta agora</span>
               <div class="pharmacy-actions">
@@ -709,9 +712,11 @@
           <div class="col-lg-4 col-md-6">
             <div class="pharmacy-card">
               <div class="pharmacy-img-wrap">
-                <img src="https://images.unsplash.com/photo-1631549916768-4119b2e5f926?w=600&auto=format&fit=crop" alt="Farmácia Talatona">
+                <img src="{{ asset('storage/img/glover.jpeg') }}" >
+                
+                {{-- <img src="https://images.unsplash.com/photo-1631549916768-4119b2e5f926?w=600&auto=format&fit=crop" alt="Farmácia Talatona"> --}}
               </div>
-              <h3 class="pharmacy-name">Farmácia Talatona</h3>
+              <h3 class="pharmacy-name">Glover Group Pharmacy</h3>
               <div class="pharmacy-location"><i class="bi bi-geo-alt-fill"></i> Talatona, Belas Shopping</div>
               <span class="pharmacy-status status-open"><i class="bi bi-circle-fill" style="font-size:.5rem;"></i> Aberta agora</span>
               <div class="pharmacy-actions">
@@ -811,38 +816,6 @@
     </section>
 
     <!-- ===================== APP ===================== -->
-    <section class="app-section">
-      <div class="container">
-        <div class="app-card">
-          <div class="row align-items-center">
-            <div class="col-lg-6" style="position:relative;z-index:1;">
-              <h2 class="text-white mb-3" style="font-weight:800;font-size:2.1rem;">Baixe o nosso app</h2>
-              <p style="color:rgba(255,255,255,.72);" class="mb-4">
-                Tenha a FarmaConnect sempre à mão. Peça seus medicamentos de onde estiver, a qualquer hora.
-              </p>
-              <div class="d-flex gap-3 flex-wrap mb-4">
-                <a href="#" class="app-btn"><i class="bi bi-google-play"></i> Google Play</a>
-                <a href="#" class="app-btn"><i class="bi bi-apple"></i> App Store</a>
-              </div>
-              <div class="d-flex gap-4">
-                <div>
-                  <div style="font-size:1.5rem;font-weight:800;color:#fff;">5 000+</div>
-                  <div style="font-size:.75rem;color:rgba(255,255,255,.6);text-transform:uppercase;letter-spacing:.05em;">Downloads</div>
-                </div>
-                <div>
-                  <div style="font-size:1.5rem;font-weight:800;color:#fff;">4.8 ★</div>
-                  <div style="font-size:.75rem;color:rgba(255,255,255,.6);text-transform:uppercase;letter-spacing:.05em;">Avaliação</div>
-                </div>
-              </div>
-            </div>
-            <div class="col-lg-6 text-center mt-4 mt-lg-0">
-              <img src="https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=400&auto=format&fit=crop"
-                   alt="App FarmaConnect" class="app-img img-fluid" style="max-width:280px;">
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
 
     <!-- ===================== TESTIMONIALS ===================== -->
     <section class="py-5">

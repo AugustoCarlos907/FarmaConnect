@@ -585,8 +585,8 @@
               @endphp
               <div class="cart-item" id="ci-{{ $item->id }}">
                   {{-- Imagem --}}
-                  @if($med->imagem ?? false)
-                      <img class="ci-img" src="{{ asset('storage/'.$med->imagem) }}" alt="{{ $med->name }}">
+                  @if($med->img ?? false)
+                      <img class="ci-img" src="{{ asset('storage/img/'.$med->img) }}" alt="{{ $med->name }}">
                   @else
                       <div class="ci-img d-flex align-items-center justify-content-center" style="font-size:2rem">💊</div>
                   @endif
@@ -842,8 +842,8 @@
               @endphp
 
               <div class="sum-item">
-                @if($med->imagem ?? false)
-                  <img class="sum-item-img" src="{{ asset('storage/'.$med->imagem) }}" alt="{{ $med->name }}">
+                @if($med->img ?? false)
+                  <img class="sum-item-img" src="{{ asset('storage/img/'.$med->img) }}" alt="{{ $med->name }}">
                 @else
                   <div class="sum-item-img d-flex align-items-center justify-content-center" style="font-size:1.3rem">💊</div>
                 @endif
@@ -965,7 +965,7 @@ function haversine(lat1, lng1, lat2, lng2) {
 
 function calcularTaxaEntrega(distanciaKm) {
     const bloco = 16;      // km
-    const taxaPorBloco = 300; // Kz
+    const taxaPorBloco = 1100; // Kz
     const blocos = Math.max(1, Math.ceil(distanciaKm / bloco));
     return blocos * taxaPorBloco;
 }

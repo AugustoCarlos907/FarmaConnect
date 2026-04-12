@@ -8,9 +8,11 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Medicamento extends Model
 {
     // use SoftDeletes;
+    protected $table = 'medicamentos';
     protected $fillable = [
         'name',
         'descricao',
+        'img',
         'preco',
         'forma_farmaceutica',
         'dosagem',

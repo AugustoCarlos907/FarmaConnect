@@ -347,8 +347,8 @@
 
               <div class="med-card" style="animation-delay:{{ $i * 0.04 }}s">
                 <div class="mc-img">
-                  @if($med->imagem ?? false)
-                    <img src="{{ asset('storage/'.$med->imagem) }}" alt="{{ $med->name }}">
+                  @if($med->img ?? false)
+                    <img src="{{ asset('storage/img/'.$med->img) }}" alt="{{ $med->name }}">
                   @else
                     💊
                   @endif

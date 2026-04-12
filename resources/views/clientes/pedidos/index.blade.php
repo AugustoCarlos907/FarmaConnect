@@ -551,8 +551,8 @@
 
             <div class="item-row">
               {{-- Imagem --}}
-              @if($med && ($med->imagem ?? false))
-                <img src="{{ asset('storage/'.$med->imagem) }}"
+              @if($med && ($med->img ?? false))
+                <img src="{{ asset('storage/img/'.$med->img) }}"
                      class="item-img" alt="{{ $med->name }}">
               @else
                 <div class="item-img d-flex align-items-center justify-content-center"

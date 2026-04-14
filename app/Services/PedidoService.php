@@ -24,6 +24,8 @@ class PedidoService
         string $metodoPagamento,
         string $prescricaoPath = null ,
         string $comprovativoExpress = null,
+        $distanciaKm = null,    // novo
+        $taxaEntrega = null     // novo
     ) {
 
        
@@ -58,7 +60,9 @@ class PedidoService
             $metodoPagamento ,
             $prescricaoPath,
             $comprovativoExpress,
-            $farmacia
+            $farmacia,
+            $distanciaKm,
+            $taxaEntrega
         ) {
             
         $dataPedido = null;
@@ -74,7 +78,10 @@ class PedidoService
                 'longitude' => $longitude ,
                 'metodo_pagamento' => $metodoPagamento ,
                 'comprovativo_express' => ($metodoPagamento === 'express') ? $comprovativoExpress : null,
-                'prescricao_path' => $prescricaoPath
+                'prescricao_path' => $prescricaoPath,
+                'distancia_km' => $distanciaKm,      // guarda
+                'taxa_entrega' => $taxaEntrega,      // guarda
+
                 ]);
 
             $total = 0;

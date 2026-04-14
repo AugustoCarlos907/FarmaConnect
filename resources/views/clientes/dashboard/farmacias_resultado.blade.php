@@ -337,8 +337,8 @@
                    style="animation-delay:{{ $i * 0.05 }}s">
                 <div class="ph-card">
                   <div class="ph-img-wrap">
-                    @if($farmacia->foto ?? false)
-                      <img src="{{ asset('storage/'.$farmacia->foto) }}" alt="{{ $farmacia->name }}">
+                    @if($farmacia->img ?? false)
+                      <img src="{{ asset('storage/img/'.$farmacia->img) }}" alt="{{ $farmacia->name }}">
                     @else
                       <img src="https://images.unsplash.com/photo-1587854692152-cbe660dbde88?w=500&auto=format&fit=crop"
                            alt="{{ $farmacia->name }}">
@@ -400,8 +400,8 @@
               <div class="ph-list-card"
                    style="animation-delay:{{ $i * 0.04 }}s">
                 <div class="ph-list-img">
-                  @if($farmacia->foto ?? false)
-                    <img src="{{ asset('storage/'.$farmacia->foto) }}" alt="{{ $farmacia->name }}">
+                  @if($farmacia->img ?? false)
+                    <img src="{{ asset('storage/img/'.$farmacia->img) }}" alt="{{ $farmacia->name }}">
                   @else
                     <img src="https://images.unsplash.com/photo-1587854692152-cbe660dbde88?w=320&auto=format&fit=crop"
                          alt="{{ $farmacia->name }}">

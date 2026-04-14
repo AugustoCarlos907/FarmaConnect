@@ -28,6 +28,7 @@ class MedicamentoService
     public function createMedicamento(
         $name , 
         $descricao  , 
+        $img,
         $forma_farmaceutica , 
         $dosagem , 
         $categoria_id,
@@ -44,6 +45,7 @@ class MedicamentoService
         $medicamento =  Medicamento::create([
             'name' => $name,
             'descricao' => $descricao,
+            'img' => $img,
             'preco' => $preco,
             'forma_farmaceutica' => $forma_farmaceutica,
             'dosagem' => $dosagem,

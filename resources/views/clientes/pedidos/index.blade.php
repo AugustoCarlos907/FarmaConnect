@@ -583,11 +583,11 @@
         <div class="oc-totals">
           <div class="tot-row">
             <span>Distância</span>
-            <span>{{ $pedido->entrega->distancia_km ?? 'UNKNOWN' }} Km</span>
+            <span>{{ $pedido->distancia_km ?? 'UNKNOWN' }} Km</span>
           </div>
           <div class="tot-row">
             @php
-             $taxaEntrega = $pedido->entrega->taxa_entrega ?? 0
+             $taxaEntrega = $pedido->taxa_entrega ?? 0
             @endphp
             <span>Taxa de Entrega</span>
             <span>{{ number_format($taxaEntrega, 0, ',', ' ' )  }} Kz</span>

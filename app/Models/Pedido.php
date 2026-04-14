@@ -18,7 +18,9 @@ class Pedido extends Model
         'total',
         'metodo_pagamento',
         'comprovativo_express',
-        'prescricao_path'
+        'prescricao_path',
+        'distancia_km',      
+        'taxa_entrega',      
     ];
 
 

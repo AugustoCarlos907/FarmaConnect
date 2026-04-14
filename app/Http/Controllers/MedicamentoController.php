@@ -61,15 +61,30 @@ class MedicamentoController extends Controller
                 'data_fabricacao' => 'nullable|date',
                 'laboratorio' => 'nullable|string|max:255',
                 'origem' => 'required|in:indiano,portugues',
+                'img' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', 
 
                 // 'farmacia_id' => 'required|integer|exists:farmacias,id',
                 // 'ativo' => 'required|boolean'
 
             ]);
+
+            if ($request->hasFile('img')) {
+                $file = $request->file('img');
+                
+                // Gera um nome único e guarda na pasta storage/app/public/img
+                $filename = time() . '.' . $file->getClientOriginalExtension();
+                $file->storeAs('img', $filename, 'public');
+                
+                // Passamos apenas o nome (ex: 1712953200.jpg) para o serviço
+                $path = $filename;
+            } else {
+                $path = null;
+            }
     
             $medicamentos = $this->service->createMedicamento(
                 $validatedData['name'],
                 $validatedData['descricao'],
+                $path,
                 $validatedData['forma_farmaceutica'],
                 $validatedData['dosagem'],
                 $validatedData['categoria_id'],

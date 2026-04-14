@@ -548,7 +548,7 @@
                  data-lat="{{ $farmacia->latitude ?? '' }}"
                  data-lng="{{ $farmacia->longitude ?? '' }}">
               <div class="ph-list-img">
-                <img src="https://images.unsplash.com/photo-1587854692152-cbe660dbde88?w=320&auto=format&fit=crop" alt="{{ $farmacia->name }}">
+                <img src="{{ asset('storage/img/'.$farmacia->img) }}" alt="{{ $farmacia->name }}">
               </div>
               <div class="ph-list-body">
                 <div class="d-flex align-items-center gap-2 mb-1 flex-wrap">
@@ -672,6 +672,12 @@ const farmaciasData = {
     $hora   = now()->format('H:i');
     $aberta = ($farmacia->horario_abertura ?? '08:00') <= $hora
            && $hora <= ($farmacia->horario_fechamento ?? '22:00');
+
+    // Define a imagem: se existir no banco usa ela, senão usa uma padrão
+    $fotoPath = $farmacia->img 
+                ? asset('storage/img/' . $farmacia->img) 
+                : 'https://images.unsplash.com/photo-1587854692152-cbe660dbde88?w=800&auto=format&fit=crop';
+
   @endphp
   {{ $farmacia->id }}: {
     id:        {{ $farmacia->id }},
@@ -687,7 +693,7 @@ const farmaciasData = {
     aberta:    {{ $aberta ? 'true' : 'false' }},
     lat:       {{ $farmacia->latitude  ?? 'null' }},
     lng:       {{ $farmacia->longitude ?? 'null' }},
-    img:       "https://images.unsplash.com/photo-1587854692152-cbe660dbde88?w=800&auto=format&fit=crop",
+    img:       @json($fotoPath),
   },
   @endforeach
 };

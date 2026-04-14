@@ -823,7 +823,10 @@
             <input type="hidden" name="endereco"  id="h-endereco" value="">
             <input type="hidden" name="latitude"  id="h-lat"      value="">
             <input type="hidden" name="longitude" id="h-lng"      value="">
-            <input type="hidden" name="taxa_entrega" id="taxaEntregaHidden" value="0">
+            <input type="hidden" name="distancia_km" id="distanciaKmHidden" value="">
+            <input type="hidden" name="taxa_entrega" id="taxaEntregaHidden" value="">
+
+            {{-- <input type="hidden" name="taxa_entrega" id="taxaEntregaHidden" value="0"> --}}
 
             {{-- metodo_pagamento — valor inicial = express; actualizado pelo JS selectPay() --}}
             <input type="hidden" name="metodo_pagamento" id="h-metodo" value="express">
@@ -1019,6 +1022,8 @@ function recalcularTaxaPorEndereco() {
     if (farmaciaLat && farmaciaLng && !isNaN(lat) && !isNaN(lng)) {
         distancia = haversine(farmaciaLat, farmaciaLng, lat, lng);
         taxa = calcularTaxaEntrega(distancia);
+        document.getElementById('distanciaKmHidden').value = distancia.toFixed(2);
+        document.getElementById('taxaEntregaHidden').value = taxa;
     } else {
         taxa = 0;
         distancia = 0;
@@ -1070,11 +1075,11 @@ function selectDeliv(tipo) {
         }
     } else {
         addressCard.style.display = 'none';
-        // Retirada na farmácia: limpa endereço, taxa = 0, distância = 0
         enderecoAtual = null;
         document.getElementById('h-endereco').value = 'Retirar na Farmácia';
         document.getElementById('h-lat').value = 0.0;
         document.getElementById('h-lng').value = 0.0;
+          document.getElementById('distanciaKmHidden').value = '0';   // <-- ADICIONAR ESTA LINHA
         document.getElementById('taxaEntregaHidden').value = 0;
         actualizarResumo(0, 0);
         // Actualiza o display do endereço (opcional)
@@ -1134,8 +1139,25 @@ function updateTotals() {
   if (sumTotal) sumTotal.textContent = total.toLocaleString('pt-AO') + ' Kz';
 }
 
+
 /* ── VALIDAÇÃO PRÉ-SUBMIT ─────────────────────────── */
 document.getElementById('formPedido').addEventListener('submit', function (e) {
+    // 1. Garantir valores numéricos nos campos hidden
+    let distInput = document.getElementById('distanciaKmHidden');
+    let taxaInput = document.getElementById('taxaEntregaHidden');
+
+    if (!distInput.value || isNaN(parseFloat(distInput.value))) {
+        distInput.value = '0';
+    }
+    if (!taxaInput.value || isNaN(parseFloat(taxaInput.value))) {
+        taxaInput.value = '0';
+    }
+
+    // Debug (ver no console)
+    console.log('📦 Enviando distancia_km:', distInput.value);
+    console.log('💰 Enviando taxa_entrega:', taxaInput.value);
+
+    // 2. Validação do endereço para entrega expresso
     if (tipoEntrega === 'express') {
         if (!enderecoAtual) {
             e.preventDefault();
@@ -1145,6 +1167,7 @@ document.getElementById('formPedido').addEventListener('submit', function (e) {
         }
     }
 
+    // 3. Validação do método de pagamento
     const metodo = document.getElementById('h-metodo').value.trim();
     if (!metodo) {
         e.preventDefault();
@@ -1152,7 +1175,8 @@ document.getElementById('formPedido').addEventListener('submit', function (e) {
         return;
     }
 
-        if (metodo === 'express') {
+    // 4. Validação do comprovativo (se express)
+    if (metodo === 'express') {
         const comprovativoInput = document.getElementById('comprovativoExpressInput');
         if (!comprovativoInput || !comprovativoInput.files.length) {
             e.preventDefault();
@@ -1161,21 +1185,21 @@ document.getElementById('formPedido').addEventListener('submit', function (e) {
         }
     }
 
-      if (requerReceita) {
-          const prescricaoInput = document.getElementById('prescricaoInput');
-          if (!prescricaoInput || !prescricaoInput.files.length) {
-              e.preventDefault();
-              showToast('Receita médica em falta', 'Anexe a receita médica para finalizar o pedido.');
-              return;
-          }
-      }
+    // 5. Validação da receita médica (se necessária)
+    if (requerReceita) {
+        const prescricaoInput = document.getElementById('prescricaoInput');
+        if (!prescricaoInput || !prescricaoInput.files.length) {
+            e.preventDefault();
+            showToast('Receita médica em falta', 'Anexe a receita médica para finalizar o pedido.');
+            return;
+        }
+    }
 
-
+    // 6. Desabilitar botão e mostrar loading
     const btn = document.getElementById('btnConfirmar');
     btn.disabled = true;
     btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status"></span> A processar…';
 });
-
 
 /* ── TOAST ────────────────────────────────────────── */
 function showToast(title, msg) {

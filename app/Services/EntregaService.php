@@ -120,16 +120,18 @@ class EntregaService{
             $farmLng    = $farmacia->longitude ?? null;
 
             // ── Cálculo (só se ambos os pontos estiverem disponíveis) 
-            $distanciaKm  = null;
-            $taxaEntrega  = null;
+        // Usa os valores já guardados no pedido (calculados no front)
+        $distanciaKm = $pedido->distancia_km ?? 0;
+        $taxaEntrega = $pedido->taxa_entrega ?? 0;
 
-            if ($endLat && $endLng && $farmLat && $farmLng) {
-                $distanciaKm = $this->calcularDistanciaKm(
-                    (float) $farmLat, (float) $farmLng,
-                    (float) $endLat,  (float) $endLng
-                );
-                $taxaEntrega = $this->calcularTaxaEntrega($distanciaKm);
-            }
+
+            // if ($endLat && $endLng && $farmLat && $farmLng) {
+            //     $distanciaKm = $this->calcularDistanciaKm(
+            //         (float) $farmLat, (float) $farmLng,
+            //         (float) $endLat,  (float) $endLng
+            //     );
+            //     $taxaEntrega = $this->calcularTaxaEntrega($distanciaKm);
+            // }
 
             // ── Criar a entrega 
             $entrega = Entrega::create([

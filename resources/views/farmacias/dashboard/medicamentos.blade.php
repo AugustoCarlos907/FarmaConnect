@@ -880,6 +880,17 @@
   </div><!-- /main -->
 </div><!-- /layout -->
 
+@if ($errors->any())
+    <div class="alert alert-danger">
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
+
+
 <!-- ══ DRAWER — Adicionar / Editar produto ════════ -->
 <div class="drawer-overlay" id="drawerOverlay" onclick="closeDrawer()"></div>
 <div class="drawer" id="drawer">
@@ -888,7 +899,7 @@
     <button class="drawer-close" onclick="closeDrawer()"><i class="bi bi-x-lg"></i></button>
   </div>
   <div class="drawer-body" id="drawerBody">
-    <form id="productForm" method="POST" action="{{ route('medicamentos.store') }}">
+    <form id="productForm" method="POST" action="{{ route('medicamentos.store') }}" enctype="multipart/form-data">
       @csrf
       <input type="hidden" name="_method" id="formMethod" value="POST">
       
@@ -902,6 +913,11 @@
         <div class="form-group">
           <label>Descrição</label>
           <input type="text" name="descricao" id="fDescricao" class="form-input" placeholder="ex. Antibiótico oral">
+        </div>
+
+        <div class="form-group">
+          <label>Imagem</label>
+          <input type="file" name="img" id="fImagem" class="form-input" accept="image/*">
         </div>
 
       </div>
@@ -1345,6 +1361,7 @@ function openDrawer(id) {
     if (p) {
       document.getElementById('fNome')?.setAttribute('value', p.name || '');
       document.getElementById('fDescricao')?.setAttribute('value', p.descricao || '');
+      document.getElementById('fImagem')?.setAttribute('value', p.img || '');
       document.getElementById('fPreco')?.setAttribute('value', p.price || '');
       document.getElementById('fCat')?.setAttribute('value', p.catId || '');
       document.getElementById('fForma')?.setAttribute('value', p.forma_farmaceutica || 'Comprimido');
@@ -1357,6 +1374,7 @@ function openDrawer(id) {
     // Limpar formulário para novo produto
     document.getElementById('fNome')?.setAttribute('value', '');
     document.getElementById('fDescricao')?.setAttribute('value', '');
+    document.getElementById('fImagem')?.setAttribute('value', '');
     document.getElementById('fPreco')?.setAttribute('value', '');
     document.getElementById('fCat')?.setAttribute('value', '');
     document.getElementById('fForma')?.setAttribute('value', 'Comprimido');

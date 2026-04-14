@@ -23,11 +23,14 @@ class PedidoController extends Controller
 
      public function store(Request $request)
     {
-
+        
         try {
-
-        return DB::transaction(function () use ($request) {
-
+            
+            return DB::transaction(function () use ($request) {
+                $taxa      = $request->input('taxa_entrega');
+                
+                $distancia = $request->input('distancia_km');
+                
         if (empty($request->items)) {
                 throw new \Exception('Carrinho vazio.');
         }
@@ -61,8 +64,12 @@ class PedidoController extends Controller
             $request->latitude ?? 0.0,
             $request->longitude ?? 0.0,
             $request->metodo_pagamento,
+            
             $prescricaoPath,
             $comprovativoPath,
+            $distancia ,
+            $taxa     ,
+
             
         );
 
@@ -153,7 +160,7 @@ class PedidoController extends Controller
                 }
                 }
 
-                if (in_array($pedido->status, ['pago', 'Aprovado']) && $pedido->entrega && $pedido->entrega->taxa_entrega > 0 ) {
+                if (in_array($pedido->status, ['pago', 'Aprovado']) && $pedido->taxa_entrega > 0 ) {
                         try {
                             $entrega = $this->entregaService->criarEntrega($pedido);
                             $pedido->update(['status' => 'Em Entrega']);

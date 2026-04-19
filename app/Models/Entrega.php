@@ -15,9 +15,13 @@ class Entrega extends Model
         'distancia_km',
         'data_saida',
         'data_entrega',
-        'observacoes'
+        'observacoes',
         // 'avaliacao_id',
+        'rota'
     ];
+
+    protected $appends = ['rota_array'];
+
 
     public function pedido()
     {
@@ -30,4 +34,8 @@ class Entrega extends Model
     }
 
 
+    public function getRotaArrayAttribute()
+    {
+        return $this->rota ? json_decode($this->rota, true) : [];
+    }
 }

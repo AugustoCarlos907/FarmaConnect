@@ -35,11 +35,11 @@ class PedidoController extends Controller
                 throw new \Exception('Carrinho vazio.');
         }
 
-        $farmacia = $this->service->encontrarFarmaciaComTodosItens($request->items, $request->latitude, $request->longitude);
+        // $farmacia = $this->service->encontrarFarmaciaComTodosItens($request->items, $request->latitude, $request->longitude);
 
-        if (!$farmacia) {
-        return back()->withErrors(['farmacia' => 'Medicamentos em múltiplas farmácias ou indisponíveis...']);
-        }
+        // if (!$farmacia) {
+        // return back()->withErrors(['farmacia' => 'Medicamentos em múltiplas farmácias ou indisponíveis...']);
+        // }
 
         $comprovativoPath = null;
         if ($request->hasFile('comprovativo_express') && $request->metodo_pagamento === 'express') {
@@ -98,7 +98,7 @@ class PedidoController extends Controller
     {
         $user = auth()->user();
 
-        $pedidos = Pedido::with(['farmacia', 'items.stockItem.medicamento.categoria'])
+        $pedidos = Pedido::with(['farmacias', 'items.stockItem.medicamento.categoria'])
                         ->where('user_id', $user->id)
                         ->latest('data_pedido')
                         ->paginate(10);
@@ -130,7 +130,8 @@ class PedidoController extends Controller
                 'status' => 'required|string|in:Aprovado,pago,Cancelado,Rejeitado'
             ]);
 
-            $pedido = Pedido::findOrFail($id);
+            $pedido = Pedido::with('items.stockItem')->findOrFail($id);
+            // $pedido = Pedido::findOrFail($id);
 
             DB::transaction(function () use ($pedido, $request) {
                 
@@ -160,8 +161,8 @@ class PedidoController extends Controller
                 }
                 }
 
-                if (in_array($pedido->status, ['pago', 'Aprovado']) && $pedido->taxa_entrega > 0 ) {
-                        try {
+                if (in_array($pedido->status, ['pago', 'Aprovado', 'aprovado', 'APROVADO']) && $pedido->taxa_entrega > 0) {
+                      try {
                             $entrega = $this->entregaService->criarEntrega($pedido);
                             $pedido->update(['status' => 'Em Entrega']);
 

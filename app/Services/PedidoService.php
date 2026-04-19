@@ -34,22 +34,39 @@ class PedidoService
             throw new \Exception("Método de pagamento inválido. Use: express ou numerario.");
         }
 
-        $farmacia = $this->encontrarFarmaciaComTodosItens($items, $latitude, $longitude);
-
-        if (!$farmacia) {
-            return back()->withErrors([
-                'farmacia' => 'Os medicamentos selecionados estão dispostos em múltiplas farmácias , não é possivel confirmar o pedido...'
-            ]);        
-        }
+        // $farmacia = $this->encontrarFarmaciaComTodosItens($items, $latitude, $longitude);
 
         // if (!$farmacia) {
-        //     throw new \Exception('Os medicamentos selecionados estão em múltiplas farmácias, não é possível confirmar o pedido.');
+        //     return back()->withErrors([
+        //         'farmacia' => 'Os medicamentos selecionados estão dispostos em múltiplas farmácias , não é possivel confirmar o pedido...'
+        //     ]);        
         // }
 
-        
-        if ($metodoPagamento === 'express' && empty($farmacia->numero_express)) {
-        throw new \Exception(" Seleccione uma fármacia para ter  accesso às coordenadas bancárias disponíveis .");
+
+            $farmaciasIds = [];
+            foreach ($items as $item) {
+                $stock = StockItem::findOrFail($item['stockId']);
+                $farmaciasIds[] = $stock->farmacia_id;
+            }
+            $farmaciasIds = array_unique($farmaciasIds);
+
+
+        if ($metodoPagamento === 'express') {
+                    $farmaciasSemExpress = Farmacia::whereIn('id', $farmaciasIds)
+                        ->where(function ($query) {
+                            $query->whereNull('numero_express')
+                                ->orWhere('numero_express', '');
+                        })->exists();
+
+                if ($farmaciasSemExpress) {
+                        throw new \Exception("Uma ou mais farmácias não possuem número Multicaixa Express configurado. Não é possível usar este método de pagamento.");
+                    }
         }
+
+        
+        // if ($metodoPagamento === 'express' && empty($item->stock->farmacia->numero_express)) {
+        //     throw new \Exception(" Seleccione uma fármacia para ter  accesso às coordenadas bancárias disponíveis .");
+        // }
 
         return DB::transaction(function () use (
             $usuarioId,
@@ -60,7 +77,7 @@ class PedidoService
             $metodoPagamento ,
             $prescricaoPath,
             $comprovativoExpress,
-            $farmacia,
+            $farmaciasIds,
             $distanciaKm,
             $taxaEntrega
         ) {
@@ -69,33 +86,41 @@ class PedidoService
 
         $pedido = Pedido::create([
                 'user_id' => $usuarioId,
-                'farmacia_id' => $farmacia->id,
+                // 'farmacia_id' => $farmacia->id,
                 'status' => 'pendente',
                 'total' => 0,
-                'data_pedido' => $dataPedido ?? now(),
+                'data_pedido' =>  now(),
                 'endereco'=> $endereco,
                 'latitude' =>  $latitude,
                 'longitude' => $longitude ,
                 'metodo_pagamento' => $metodoPagamento ,
                 'comprovativo_express' => ($metodoPagamento === 'express') ? $comprovativoExpress : null,
                 'prescricao_path' => $prescricaoPath,
-                'distancia_km' => $distanciaKm,      // guarda
-                'taxa_entrega' => $taxaEntrega,      // guarda
+                'distancia_km' => $distanciaKm,      
+                'taxa_entrega' => $taxaEntrega,      
 
                 ]);
+
+            // Associar as farmácias ao pedido na tabela pivot (status inicial = 'pendente')
+            $pivotData = [];
+            foreach ($farmaciasIds as $fid) {
+                $pivotData[$fid] = ['status' => 'pendente'];
+            }
+            $pedido->farmacias()->attach($pivotData);
+
 
             $total = 0;
 
             foreach ($items as $item) {
                 $stock = StockItem::findOrFail($item['stockId']);
 
-                if (! $stock->temStock($item['quantidade'])) {
+                if (!$stock->temStock($item['quantidade'])) {
                     throw new Exception(
                         "Stock insuficiente para {$stock->medicamento->name}"
                     );
                 }
 
-                $subtotal = $stock->preco * $item['quantidade'];
+                $subtotal = $stock->medicamento->preco * $item['quantidade'];
 
                 $pedido->items()->create([
                     'stock_items_id' => $stock->id,
@@ -103,9 +128,11 @@ class PedidoService
                     'preco_unitario' => $stock->preco,
                     'subtotal' => $subtotal,
                     'pedido_id' => $pedido->id,
+                    'farmacia_id' => $stock->farmacia_id
                     // 'prescricao_path' => $prescricaoPath ?? null 
                     // 'medicamento_id' => $farmacia->medicamentos->id
                 ]); 
+
 
                 // $pedido->update(['status' => 'Aprovado']);
 
@@ -133,11 +160,16 @@ class PedidoService
         return $this->repository->getPedidosDeHojeByPharmacy($perPage);
     }
 
-    public function getLastPedidosByPharmacy(){
-        return Pedido::where('farmacia_id', auth()->user()->farmacia_id)
-                    ->orderBy('created_at', 'desc')
-                    ->limit(5)
-                    ->get();
+    public function getLastPedidosByPharmacy()
+    {
+        $farmaciaId = auth()->user()->farmacia_id;
+        
+        return Pedido::whereHas('farmacias', function ($query) use ($farmaciaId) {
+                $query->where('farmacias.id', $farmaciaId);
+            })
+            ->orderBy('created_at', 'desc')
+            ->limit(5)
+            ->get();
     }
 
     public function getPedidosPast7days()
@@ -154,8 +186,10 @@ class PedidoService
             $diasSemana[] = $data->format('D'); // Seg, Ter, Qua, etc.
         }
         
-        // Buscar pedidos agrupados por data
-        $pedidos = Pedido::where('farmacia_id', $farmaciaId)
+        // Buscar pedidos agrupados por data, filtrando pela farmácia via pivot
+        $pedidos = Pedido::whereHas('farmacias', function ($query) use ($farmaciaId) {
+                $query->where('farmacias.id', $farmaciaId);
+            })
             ->where('created_at', '>=', now()->subDays(6)->startOfDay())
             ->selectRaw('DATE(created_at) as data, COUNT(*) as total')
             ->groupBy('data')
@@ -173,24 +207,29 @@ class PedidoService
         ];
     }
 
-        public function getOrigemPedidosByPharmacy($farmaciaId)
-        {
-            return Pedido::where('farmacia_id', $farmaciaId)
-                ->whereNotNull('endereco')
-                ->selectRaw('endereco, COUNT(*) as total')
-                ->groupBy('endereco')
-                ->having('total', '>', 0)
-                ->orderBy('total', 'desc')
-                ->get()
-                ->mapWithKeys(function ($item) {
-                    // Limitar tamanho do texto para exibição no gráfico
-                    $endereco = strlen($item->endereco) > 30 
-                        ? substr($item->endereco, 0, 27) . '...' 
-                        : $item->endereco;
-                    return [$endereco => $item->total];
-                })
-                ->toArray();
-        }
+    // Observação: Se um mesmo pedido estiver associado a múltiplas farmácias, 
+    // ele será contado para cada uma delas separadamente (cada farmácia vê o pedido como seu). Isso é o comportamento desejado.
+        
+    public function getOrigemPedidosByPharmacy($farmaciaId)
+    {
+        return Pedido::whereHas('farmacias', function ($query) use ($farmaciaId) {
+                $query->where('farmacias.id', $farmaciaId);
+            })
+            ->whereNotNull('endereco')
+            ->selectRaw('endereco, COUNT(*) as total')
+            ->groupBy('endereco')
+            ->having('total', '>', 0)
+            ->orderBy('total', 'desc')
+            ->get()
+            ->mapWithKeys(function ($item) {
+                // Limitar tamanho do texto para exibição no gráfico
+                $endereco = strlen($item->endereco) > 30 
+                    ? substr($item->endereco, 0, 27) . '...' 
+                    : $item->endereco;
+                return [$endereco => $item->total];
+            })
+            ->toArray();
+    }
 
     // public function getOrigemPedidosByPharmacy($farmaciaId)
     // {

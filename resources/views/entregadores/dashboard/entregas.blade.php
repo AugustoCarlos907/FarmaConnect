@@ -157,7 +157,20 @@
     .map-head { display:flex; align-items:center; justify-content:space-between; padding:1rem 1.2rem; border-bottom:1px solid var(--border-light); }
     .map-head h6 { font-family:'Syne',sans-serif; font-size:.9rem; font-weight:700; display:flex; align-items:center; gap:.5rem; margin:0; }
     .map-head h6 i { color:var(--teal); }
-    #deliveryMap { height:260px; width:100%; z-index:1; }
+    #deliveryMap { height:380px; width:100%; z-index:1; }
+
+    /* Legenda do mapa */
+    .map-legend { display:flex; align-items:center; gap:1.2rem; padding:.65rem 1.2rem; border-top:1px solid var(--border-light); flex-wrap:wrap; }
+    .ml-item { display:flex; align-items:center; gap:.4rem; font-size:.75rem; color:var(--text-mid); font-weight:500; }
+    .ml-dot  { width:10px; height:10px; border-radius:50%; border:2px solid #fff; box-shadow:0 1px 4px rgba(0,0,0,.2); flex-shrink:0; }
+
+    /* Popup Leaflet com design FarmaConnect */
+    .leaflet-popup-content-wrapper { border-radius:12px !important; box-shadow:var(--shadow-md) !important; border:1px solid var(--border-light); font-family:'DM Sans',sans-serif; }
+    .leaflet-popup-content { font-size:.82rem !important; color:var(--text-main); line-height:1.5; }
+    .lp-tipo { font-size:.65rem; font-weight:700; text-transform:uppercase; letter-spacing:.08em; margin-bottom:.2rem; }
+    .lp-nome { font-weight:700; font-size:.88rem; color:var(--text-main); }
+    .lp-sub  { font-size:.75rem; color:var(--text-mid); margin-top:.1rem; }
+    .lp-step { display:inline-flex; align-items:center; gap:.3rem; font-size:.7rem; font-weight:600; padding:.15rem .5rem; border-radius:50px; margin-top:.3rem; }
 
     /* ── MODAL DETALHES ── */
     .modal-overlay { display:none; position:fixed; inset:0; background:rgba(9,22,26,.55); backdrop-filter:blur(4px); z-index:500; align-items:center; justify-content:center; }
@@ -207,9 +220,7 @@
 <div class="layout">
 
   <!-- ── SIDEBAR ── -->
-  @include('entregadores.dashboard.sidebar')
-
-  {{-- <aside class="sidebar">
+  <aside class="sidebar">
     <div class="sidebar-top">
       <a href="#" class="logo">
         <span class="farma">Farma</span><span class="connect">Connect</span>
@@ -242,19 +253,17 @@
         <i class="bi bi-person-circle"></i> Perfil
       </a>
       <div class="nav-divider"></div>
-          <a href="#" class="nav-link" style="color:rgba(240,78,96,.7)" 
-      onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-        <i class="bi bi-box-arrow-right"></i>
-        <span>Sair</span>
+    <a href="#" class="nav-link" style="color:rgba(240,78,96,.7)" 
+       onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+      <i class="bi bi-box-arrow-right"></i>
+      <span>Sair</span>
     </a>
 
     <form id="logout-form" action="{{ route('logout', ['id' => Auth::user()->id]) }}" method="POST" style="display: none;">
-        @csrf
+      @csrf
     </form>
-
-        </a>
     </nav>
-  </aside> --}}
+  </aside>
 
   <!-- ── MAIN ── -->
   <main class="main">
@@ -349,25 +358,30 @@
 
         $statusCfg = [
           'em_transito' => ['label'=>'Em andamento', 'icon'=>'bi-arrow-repeat', 'chip'=>'sch-em_transito', 'card'=>'ci-em_transito', 'acc'=>'ca-em_transito'],
-          'entregue'   => ['label'=>'Concluída',    'icon'=>'bi-check-circle', 'chip'=>'sch-concluida',   'card'=>'ci-concluida',   'acc'=>'ca-concluida'],
+          'concluida'   => ['label'=>'Concluída',    'icon'=>'bi-check-circle', 'chip'=>'sch-concluida',   'card'=>'ci-concluida',   'acc'=>'ca-concluida'],
+          'entregue'    => ['label'=>'Concluída',    'icon'=>'bi-check-circle', 'chip'=>'sch-concluida',   'card'=>'ci-concluida',   'acc'=>'ca-concluida'],
           'cancelada'   => ['label'=>'Cancelada',    'icon'=>'bi-x-circle',     'chip'=>'sch-cancelada',   'card'=>'ci-cancelada',   'acc'=>'ca-cancelada'],
         ];
       @endphp
 
       @forelse($todasEntregas as $i => $entrega)
         @php
-          $pedido   = $entrega->pedido;
-          $cliente  = $pedido->user;
-          $farmacia = $pedido->farmacia;
-          $cfg      = $statusCfg[$entrega->status] ?? $statusCfg['em_transito'];
+          $pedido         = $entrega->pedido;
+          $cliente        = $pedido->user;
+          $farmaciasList  = $pedido->farmacias ?? collect(); // suporte a multi-farmácia
+          $farmacia       = $farmaciasList->first();         // primeira para exibição
+          $farmaciaNome   = $farmacia?->name ?? ($pedido->farmacia?->name ?? '—');
+          if ($farmaciasList->count() > 1) {
+              $farmaciaNome .= ' +' . ($farmaciasList->count() - 1) . ' outra(s)';
+          }
+          $cfg       = $statusCfg[$entrega->status] ?? $statusCfg['em_transito'];
+          $rotaArray = $entrega->rota_array ?? []; // injectado pelo controller
 
           /* Medicamentos — nomes dos itens do pedido */
           $meds = $pedido->items
-          ->map(function($it) {
-              return optional(optional($it->stockItem)->medicamento)->name ?? '—';
-          })
-          ->take(3)
-          ->implode(', ');
+            ->map(fn($it) => optional(optional($it->stockItem)->medicamento)->name ?? '—')
+            ->take(3)
+            ->implode(', ');
           if ($pedido->items->count() > 3)
             $meds .= ' +'.($pedido->items->count() - 3);
         @endphp
@@ -441,17 +455,17 @@
                     Detalhes
                   </button>
                   @if($entrega->status === 'em_transito')
-                  <form action="{{ route('concluir.entrega',['id'=>$entrega->id]) }}" method="POST">
+                  <form action="{{ route('concluir.entrega' , ['id'=>$entrega->id]) }}" method="post">
                     @csrf
-                    <button class="btn-concluir"
-                           type="submit">
-                      <i class="bi bi-check2-circle"></i> Concluir
-                    </button>
-                  </form>
-                    <button class="btn-cancelar"
-                            onclick="abrirCancelar({{ $entrega->id }})">
-                      <i class="bi bi-x-circle"></i>
-                    </button>
+                      <button class="btn-concluir"
+                              type="submit">
+                        <i class="bi bi-check2-circle"></i> Concluir
+                      </button>
+                      {{-- <button class="btn-cancelar"
+                              onclick="abrirCancelar({{ $entrega->id }})">
+                        <i class="bi bi-x-circle"></i>
+                      </button> --}}
+                    </form>
                   @endif
                 </div>
               </div>
@@ -478,6 +492,14 @@
         </span>
       </div>
       <div id="deliveryMap"></div>
+      <div class="map-legend">
+        <div class="ml-item"><div class="ml-dot" style="background:#3b82f6"></div> Entregador</div>
+        <div class="ml-item"><div class="ml-dot" style="background:#f5a623"></div> Farmácia</div>
+        <div class="ml-item"><div class="ml-dot" style="background:#1ec97a"></div> Cliente</div>
+        <div class="ml-item" style="margin-left:auto;color:var(--text-dim);font-size:.72rem">
+          <i class="bi bi-info-circle"></i> Linha a tracejado = rota optimizada
+        </div>
+      </div>
     </div>
 
   </main>
@@ -526,40 +548,39 @@
 </div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
 
+/* ═══════════════════════════════════════════════════
+   DADOS DO BACKEND — injectados via json
+═══════════════════════════════════════════════════ */
 @php
-    $entregasData = [];
-    foreach ($todasEntregas as $e) {
-        try {
-            $entregasData[] = [
-                'id'           => $e->id,
-                'pedido_id'    => $e->pedido_id,
-                'status'       => $e->status,
-                'endereco'     => $e->endereco_entrega ?? '—',
-                'taxa'         => $e->taxa_entrega,
-                'distancia'    => $e->distancia_km,
-                'data_saida'   => $e->data_saida,
-                'data_entrega' => $e->data_entrega,
-                'observacoes'  => $e->observacoes,
-                'cliente'      => optional(optional($e->pedido)->user)->name ?? '—',
-                'farmacia'     => optional(optional($e->pedido)->farmacia)->name ?? '—',
-                'lat_dest'     => optional($e->pedido)->latitude ?? null,
-                'lng_dest'     => optional($e->pedido)->longitude ?? null,
-                'lat_farm'     => optional(optional($e->pedido)->farmacia)->latitude ?? null,
-                'lng_farm'     => optional(optional($e->pedido)->farmacia)->longitude ?? null,
-            ];
-        } catch (\Throwable $th) {
-            // Log error if needed
-            continue;
-        }
-    }
+/* Serialização segura para JS — inclui rota_array com todos os waypoints */
+$entregasJs = $todasEntregas->map(function($e) {
+    $pedido   = $e->pedido;
+    $farms    = $pedido->farmacias ?? collect();
+    $farmNome = $farms->count() > 0
+        ? $farms->first()->name . ($farms->count() > 1 ? ' +'.($farms->count()-1) : '')
+        : ($pedido->farmacia->name ?? '—');
+    return [
+        'id'           => $e->id,
+        'pedido_id'    => $e->pedido_id,
+        'status'       => $e->status,
+        'endereco'     => $e->endereco_entrega ?? '—',
+        'taxa'         => (float) ($e->taxa_entrega ?? 0),
+        'distancia'    => (float) ($e->distancia_km ?? 0),
+        'data_saida'   => $e->data_saida,
+        'data_entrega' => $e->data_entrega,
+        'observacoes'  => $e->observacoes,
+        'cliente'      => optional(optional($e->pedido)->user)->name ?? '—',
+        'farmacia'     => $farmNome,
+        /* rota_array = waypoints completos { lat, lng, tipo, nome, endereco }
+         * Injectado pelo EntregasController via ->each(fn($e) => $e->rota_array = ...) */
+        'rota'         => $e->rota_array ?? [],
+    ];
+});
 @endphp
+const ENTREGAS_DATA = @json($entregasJs);
 
-<script>
-const ENTREGAS_DATA = @json($entregasData);
-</script>
-
-<script>
 /* ═══════════════════════════════════════════════════
    DATA NO TOPBAR
 ═══════════════════════════════════════════════════ */
@@ -606,34 +627,127 @@ document.getElementById('searchInput').addEventListener('input', function () {
   applyFilters();
 });
 
-/* ═══════════════════════════════════════════════════
-   MAPA LEAFLET
-═══════════════════════════════════════════════════ */
-const map = L.map('deliveryMap', { zoomControl:true, attributionControl:false })
-             .setView([-8.8383, 13.2344], 13);
+/* ═══════════════════════════════════════════════════════════════════════
+   MAPA LEAFLET — rotas optimizadas com waypoints reais
+   Os waypoints vêm de Entrega.rota (JSON) guardado pelo EntregaService.
+   Estrutura de cada waypoint: { lat, lng, tipo, nome, endereco? }
+═══════════════════════════════════════════════════════════════════════ */
+const map = L.map('deliveryMap', { zoomControl: true, attributionControl: false })
+             .setView([-8.8383, 13.2344], 12);
 
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+  { maxZoom: 19 }).addTo(map);
 
-const tealPin = (color='#0bbfcc') => L.divIcon({
-  className: '',
-  html: `<div style="width:14px;height:14px;background:${color};border-radius:50%;border:3px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,.25)"></div>`,
-  iconSize:[14,14], iconAnchor:[7,7],
+/* ── Ícones por tipo de waypoint ───────────────────────────────────── */
+const TIPO_COR = {
+  entregador: '#3b82f6',  // azul
+  farmacia:   '#f5a623',  // laranja
+  cliente:    '#1ec97a',  // verde
+};
+const TIPO_LABEL = {
+  entregador: '📍 Entregador',
+  farmacia:   '🏥 Farmácia',
+  cliente:    '👤 Cliente',
+};
+
+function criarPin(cor, tamanho = 14) {
+  return L.divIcon({
+    className: '',
+    html: `<div style="
+      width:${tamanho}px;height:${tamanho}px;
+      background:${cor};border-radius:50%;
+      border:2.5px solid #fff;
+      box-shadow:0 2px 8px rgba(0,0,0,.28)"></div>`,
+    iconSize:   [tamanho, tamanho],
+    iconAnchor: [tamanho/2, tamanho/2],
+  });
+}
+
+function popupHtml(ponto, stepNum, total) {
+  const cor   = TIPO_COR[ponto.tipo] || '#0bbfcc';
+  const label = TIPO_LABEL[ponto.tipo] || ponto.tipo;
+  const step  = stepNum != null
+    ? `<div class="lp-step" style="background:${cor}22;color:${cor}">
+         Passo ${stepNum} de ${total}
+       </div>`
+    : '';
+  return `
+    <div class="lp-tipo" style="color:${cor}">${label}</div>
+    <div class="lp-nome">${ponto.nome || '—'}</div>
+    ${ponto.endereco ? `<div class="lp-sub">${ponto.endereco}</div>` : ''}
+    ${step}`;
+}
+
+/* ── Desenhar rotas ────────────────────────────────────────────────── */
+const todosOsLayer = [];
+
+ENTREGAS_DATA.forEach(entrega => {
+  const waypoints = entrega.rota; // array de { lat, lng, tipo, nome, endereco }
+  if (!waypoints || waypoints.length < 2) return;
+
+  /* Cor da linha conforme estado */
+  const corLinha = entrega.status === 'em_transito'  ? '#0bbfcc'
+                 : entrega.status === 'entregue'      ? '#1ec97a'
+                 : entrega.status === 'concluida'     ? '#1ec97a'
+                 : '#94a3b8'; /* cancelada */
+
+  const coords = waypoints.map(p => [p.lat, p.lng]);
+
+  /* Polyline tracejada */
+  const linha = L.polyline(coords, {
+    color:     corLinha,
+    weight:    4,
+    opacity:   0.75,
+    dashArray: entrega.status === 'em_transito' ? '8 6' : '4 4',
+    lineJoin:  'round',
+    lineCap:   'round',
+  }).addTo(map);
+
+  todosOsLayer.push(linha);
+
+  /* Marcadores em cada waypoint */
+  waypoints.forEach((ponto, idx) => {
+    const cor     = TIPO_COR[ponto.tipo] || '#0bbfcc';
+    const isFirst = idx === 0;
+    const isLast  = idx === waypoints.length - 1;
+    /* Entregador e cliente ligeiramente maiores */
+    const tam     = (isFirst || isLast) ? 16 : 13;
+    const stepNum = idx === 0 ? null : idx;           // 1-based para farms/cliente
+    const stepTot = waypoints.length - 1;
+
+    L.marker([ponto.lat, ponto.lng], { icon: criarPin(cor, tam) })
+     .addTo(map)
+     .bindPopup(popupHtml(ponto, stepNum, stepTot), {
+       className: '',
+       maxWidth: 200,
+     });
+
+    todosOsLayer.push(L.marker([ponto.lat, ponto.lng]));
+  });
 });
 
-ENTREGAS_DATA.forEach(e => {
-  /* Pin do destino */
-  if (e.lat_dest && e.lng_dest) {
-    L.marker([e.lat_dest, e.lng_dest], { icon: tealPin(e.status === 'em_transito' ? '#0bbfcc' : '#1ec97a') })
-     .addTo(map)
-     .bindPopup(`<strong>${e.cliente}</strong><br><small>${e.endereco}</small>`);
+/* ── Ajustar zoom para mostrar todas as rotas ─────────────────────── */
+if (todosOsLayer.length > 0) {
+  try {
+    const grupo = L.featureGroup(todosOsLayer);
+    map.fitBounds(grupo.getBounds().pad(0.12));
+  } catch (_) {
+    map.setView([-8.8383, 13.2344], 12);
   }
-  /* Pin da farmácia */
-  if (e.lat_farm && e.lng_farm) {
-    L.marker([e.lat_farm, e.lng_farm], { icon: tealPin('#f5a623') })
-     .addTo(map)
-     .bindPopup(`<strong>${e.farmacia}</strong><br><small>Farmácia de origem</small>`);
-  }
-});
+}
+
+/* ── Info quando não há entregas em trânsito ──────────────────────── */
+const semTransito = ENTREGAS_DATA.filter(e => e.status === 'em_transito').length === 0;
+if (semTransito) {
+  const info = L.control({ position: 'bottomright' });
+  info.onAdd = function () {
+    const div = L.DomUtil.create('div');
+    div.style.cssText = 'background:#fff;padding:6px 12px;border-radius:20px;font-size:12px;box-shadow:0 2px 8px rgba(0,0,0,.14);font-family:DM Sans,sans-serif;color:#4a6e78';
+    div.textContent = 'Nenhuma entrega em andamento';
+    return div;
+  };
+  info.addTo(map);
+}
 
 /* ═══════════════════════════════════════════════════
    MODAL DETALHES

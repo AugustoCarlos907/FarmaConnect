@@ -256,6 +256,19 @@
     .modal-foot { display: flex; gap: 7px; justify-content: flex-end; }
     .btn-danger-solid { background: var(--danger); color: #fff; border-color: var(--danger); }
 
+
+    /* ─── BOTÕES POR ITEM (aprovação individual) ─── */
+    .item-actions { display: flex; gap: 5px; margin-top: 6px; flex-wrap: wrap; }
+    .item-btn { display: inline-flex; align-items: center; gap: 4px; padding: 3px 9px; border: 1px solid; border-radius: 20px; font-size: 0.68rem; font-weight: 600; font-family: 'DM Sans', sans-serif; cursor: pointer; transition: all 0.15s; background: var(--surface); }
+    .item-btn.approve { background: #e6f7e6; color: #2b7a2b; border-color: #b3e6b3; }
+    .item-btn.approve:hover { background: #c8e6c8; transform: translateY(-1px); }
+    .item-btn.reject  { background: #ffe6e6; color: #b33; border-color: #ffcccc; }
+    .item-btn.reject:hover  { background: #ffcccc; transform: translateY(-1px); }
+    .item-status-badge { display: inline-flex; align-items: center; gap: 4px; padding: 2px 7px; border-radius: 20px; font-size: 0.65rem; font-weight: 600; margin-top: 6px; }
+    .isb-aprovado  { background: var(--success-light); color: var(--success); }
+    .isb-rejeitado { background: var(--danger-light);  color: var(--danger); }
+    .isb-pendente  { background: var(--warning-light); color: #854f0b; }
+
     ::-webkit-scrollbar { width: 4px; height: 4px; }
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
@@ -286,7 +299,7 @@
       <div class="nav-section">
         <span class="nav-label">Principal</span>
         <a href="{{ route('index.farmacias') }}" class="nav-item {{ request()->routeIs('index.farmacias') ? 'active' : '' }}">
-          <i class="bi bi-grid-1x2"></i><span>Dashboard</span>
+          <i class="bi bi-grid-1x2"></i><span>Paínel Administrativo</span>
         </a>
         <div class="has-sub {{ request()->routeIs('medicamentos.farmacias') ? 'open' : '' }}" id="sub-stock">
           <div class="nav-item" onclick="toggleSub('sub-stock')">
@@ -378,7 +391,15 @@
         $cancelados = $col->where('status','Cancelado')->count();
         $rejeitados = $col->where('status','Rejeitado')->count();
         $totalHoje  = $pedidosHoje->count();
-        $faturacaoHoje = $col->where('status','Concluído')->sum('total');
+        // $faturacaoHoje = $col->where('status','Concluído')->sum('total');
+
+        $farmaciaId = Auth::user()->farmacia_id;
+        $faturacaoHoje = DB::table('item_pedidos')
+        ->join('pedidos', 'item_pedidos.pedido_id', '=', 'pedidos.id')
+        ->where('item_pedidos.farmacia_id', $farmaciaId) // apenas itens da farmácia logada
+        // ->whereDate('pedidos.data_pedido', today())
+        ->where('pedidos.status', 'Concluído') // ou outro status adequado
+        ->sum('item_pedidos.subtotal');
       @endphp
 
       <!-- KPIs -->
@@ -517,7 +538,7 @@
                   <td>
                     <div class="order-id">#{{ str_pad($pedido->id,4,'0',STR_PAD_LEFT) }}</div>
                     <div class="order-time">
-                      {{ $pedido->data_pedido->format('d-m-y · H:i') }} · {{ $pedido->data_pedido->diffForHumans() }}
+                      {{ $pedido->data_pedido->format('H:i') }} · {{ $pedido->data_pedido->diffForHumans() }}
                     </div>
                   </td>
                   <td>
@@ -565,7 +586,7 @@
                           </button>
                         </form>
                       @endif
-                      @if($pedido->status !== 'Rejeitado' && $pedido->status !== 'Concluído' && $pedido->status !== 'Cancelado')
+                      @if($pedido->status !== 'Rejeitado' && $pedido->status !== 'Concluído')
                         <form action="{{ route('pedidos.status.update', $pedido->id) }}" method="POST" style="display:inline">
                           @csrf @method('PUT')
                           <input type="hidden" name="status" value="Rejeitado">
@@ -645,9 +666,16 @@
       'Rejeitado'  => ['tag'=>'t-canceled', 'icon'=>'bi-x-circle',     'label'=>'Rejeitado'],
     ];
     $dSt         = $statusMap[$pedido->status] ?? $statusMap['Pendente'];
-    $isExpress   = in_array($pedido->metodo_pagamento, ['express','Multicaixa Express']);
+    $isExpress    = in_array($pedido->metodo_pagamento, ['express','Multicaixa Express']);
     $comprovativo = $pedido->comprovativo_express;
-    $prescricao = $pedido->prescricao_path
+    $prescricao   = $pedido->prescricao_path ?? null;
+    /* Verifica se este pedido tem itens de múltiplas farmácias
+       (caso típico de marketplace). Se sim, mostra botões por item. */
+    $farmaciaIds  = $dItems->map(fn($i) => $i->stockItem?->farmacia_id)->unique()->filter();
+    $multiplesFarmacias = $farmaciaIds->count() > 1;
+    /* Também mostra botões por item quando o pedido ainda está Pendente
+       e existe campo status_item no modelo ItemPedido */
+    $mostraBotoesItem = $pedido->status === 'Pendente';
   @endphp
 
   <div class="drawer" id="drawer-{{ $pedido->id }}">
@@ -728,23 +756,25 @@
         @endif
       </div>
 
-      {{-- ─── Comprovativo (só express) ─── --}}
+      {{-- ─── Prescrição do pedido (se existir) ─── --}}
       @if($prescricao)
         <div class="d-section">
-          <div class="d-section-title"><i class="bi bi-receipt"></i> Prescrição Médica</div>
+          <div class="d-section-title"><i class="bi bi-file-earmark-medical"></i> Prescrição médica</div>
           <div class="d-row">
+            <span class="d-lbl">Receita do pedido</span>
             <span class="d-val">
               <a href="{{ asset('storage/'.$prescricao) }}"
                  target="_blank"
                  class="doc-link">
-                <i class="bi bi-file-earmark-text"></i> Abrir Prescrição
+                <i class="bi bi-file-earmark-medical"></i> Abrir prescrição
               </a>
             </span>
           </div>
         </div>
       @endif
-      
-      @if($comprovativo)
+
+      {{-- ─── Comprovativo (só express) ─── --}}
+      @if($isExpress && $comprovativo)
         <div class="d-section">
           <div class="d-section-title"><i class="bi bi-receipt"></i> Comprovativo de pagamento</div>
           <div class="d-row">
@@ -772,34 +802,92 @@
 
         @forelse($dItems as $item)
           @php
-            $med   = $item->stockItem?->medicamento;
-            $nome  = $med?->name ?? '—';
-            $preco = $item->preco_unitario ?? $item->stockItem?->preco ?? 0;
-            $sub   = $item->subtotal ?? ($preco * $item->quantidade);
-            $forma = $med?->forma_farmaceutica;
-            $cat   = $med?->categoria?->name;
+            $med        = $item->stockItem?->medicamento;
+            $nome       = $med?->name ?? '—';
+            $preco      = $item->preco_unitario ?? $item->stockItem?->preco ?? 0;
+            $sub        = $item->subtotal ?? ($preco * $item->quantidade);
+            $forma      = $med?->forma_farmaceutica;
+            $cat        = $med?->categoria?->name;
+            /*
+             * status_item: campo do modelo ItemPedido.
+             * Valores esperados: 'Pendente' | 'aprovado' | 'rejeitado'
+             * Mostra botões apenas quando o item ainda está Pendente
+             * e o pedido global também está Pendente.
+             */
+            $statusItem = $item->status_item ?? 'Pendente';
+            $itemPendente = strtolower($statusItem) === 'pendente';
           @endphp
-          <div class="di-row">
-            <div class="di-ico"><i class="bi bi-capsule"></i></div>
-            <div style="flex:1;min-width:0">
-              <div class="di-name">{{ $nome }}</div>
-              <div class="di-meta">
-                {{ $item->quantidade }} un.
-                @if($forma) · {{ $forma }} @endif
-                @if($cat)   · {{ $cat }}   @endif
+          <div class="di-row" style="flex-direction:column;align-items:stretch;gap:0">
+            {{-- Linha principal: ícone + info + preço --}}
+            <div style="display:flex;align-items:flex-start;gap:10px">
+              <div class="di-ico"><i class="bi bi-capsule"></i></div>
+              <div style="flex:1;min-width:0">
+                <div class="di-name">{{ $nome }}</div>
+                <div class="di-meta">
+                  {{ $item->quantidade }} un.
+                  @if($forma) · {{ $forma }} @endif
+                  @if($cat)   · {{ $cat }}   @endif
+                </div>
+                <div class="di-meta">
+                  {{ number_format($preco, 0, ',', '.') }} Kz / un.
+                </div>
+                @if($item->prescricao_path)
+                  <a href="{{ asset('storage/'.$item->prescricao_path) }}"
+                     target="_blank"
+                     class="doc-link">
+                    <i class="bi bi-file-earmark-medical"></i> Ver receita
+                  </a>
+                @endif
               </div>
-              <div class="di-meta">
-                {{ number_format($preco, 0, ',', '.') }} Kz / un.
-              </div>
-              @if($item->prescricao_path)
-                <a href="{{ asset('storage/'.$item->prescricao_path) }}"
-                   target="_blank"
-                   class="doc-link">
-                  <i class="bi bi-file-earmark-medical"></i> Ver receita
-                </a>
-              @endif
+              <div class="di-price">{{ number_format($sub, 0, ',', '.') }} Kz</div>
             </div>
-            <div class="di-price">{{ number_format($sub, 0, ',', '.') }} Kz</div>
+
+            {{--
+              ── BOTÕES DE APROVAÇÃO POR ITEM ────────────────────────────────
+              Aparecem quando:
+                1. O pedido está Pendente (status global)
+                2. Este item específico ainda não foi processado (status_item = Pendente)
+              Usam a rota: PUT /itens-pedido/{itemId}/status
+              Controller: ItemPedidoController@updateStatus
+              Payload: { status: 'aprovado' | 'rejeitado' }
+            --}}
+            @if($mostraBotoesItem && $itemPendente)
+              <div class="item-actions" style="padding-top:6px;border-top:1px dashed var(--border);margin-top:8px">
+                <form action="{{ route('itens-pedido.status.update', $item->id) }}"
+                      method="POST" style="display:inline"
+                      onclick="event.stopPropagation()">
+                  @csrf @method('PUT')
+                  <input type="hidden" name="status" value="aprovado">
+                  <button type="submit" class="item-btn approve">
+                    <i class="bi bi-check-circle"></i> Aprovar item
+                  </button>
+                </form>
+                <form action="{{ route('itens-pedido.status.update', $item->id) }}"
+                      method="POST" style="display:inline"
+                      onclick="event.stopPropagation()">
+                  @csrf @method('PUT')
+                  <input type="hidden" name="status" value="rejeitado">
+                  <button type="submit" class="item-btn reject">
+                    <i class="bi bi-x-circle"></i> Rejeitar item
+                  </button>
+                </form>
+              </div>
+
+            {{-- Item já processado — mostra badge do estado actual --}}
+            @elseif(!$itemPendente)
+              <div style="padding-top:6px;border-top:1px dashed var(--border);margin-top:8px">
+                @if(strtolower($statusItem) === 'aprovado')
+                  <span class="item-status-badge isb-aprovado">
+                    <i class="bi bi-check-circle-fill" style="font-size:.6rem"></i> Aprovado
+                  </span>
+                @else
+                  <span class="item-status-badge isb-rejeitado">
+                    <i class="bi bi-x-circle-fill" style="font-size:.6rem"></i> Rejeitado
+                  </span>
+                @endif
+              </div>
+            @endif
+
           </div>
         @empty
           <p style="font-size:.78rem;color:var(--text-4);padding:8px 0">Sem itens registados.</p>

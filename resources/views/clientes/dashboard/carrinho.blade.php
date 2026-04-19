@@ -947,12 +947,9 @@ document.getElementById('prescricaoInput').addEventListener('change', function()
         preview.innerHTML = '';
     }
 });
-</script>
-<script>
-
-// Coordenadas da farmácia (do backend)
-const farmaciaLat = {{ $farmaciaLat ?? 'null' }};
-const farmaciaLng = {{ $farmaciaLng ?? 'null' }};
+</script><script>
+// Coordenadas de todas as farmácias do carrinho (enviadas pelo backend)
+const farmacias = @json($farmacias);
 // Verifica se o pedido contém medicamentos que exigem receita
 const requerReceita = {{ $requerReceita ? 'true' : 'false' }};
 
@@ -967,7 +964,7 @@ function haversine(lat1, lng1, lat2, lng2) {
 }
 
 function calcularTaxaEntrega(distanciaKm) {
-    const bloco = 16;      // km
+    const bloco = 16;          // km
     const taxaPorBloco = 1100; // Kz
     const blocos = Math.max(1, Math.ceil(distanciaKm / bloco));
     return blocos * taxaPorBloco;
@@ -977,8 +974,7 @@ const subtotalBase = {{ (int) $total }};
 let deliveryFee = 800;
 
 /* ── MORADA ─────────────────────────────────────────
-   Actualiza os 3 hidden inputs (endereco / lat / lng).
-   Os valores vêm dos data-* dos .addr-option renderizados pelo Blade.
+   Actualiza os hidden inputs e guarda o endereço seleccionado.
 ──────────────────────────────────────────────────── */
 let enderecoAtual = null;   // guarda o objeto do endereço seleccionado
 
@@ -1012,26 +1008,80 @@ function selecionarEndereco(el) {
     }
 }
 
+/* ── CÁLCULO DA ROTA PARA MÚLTIPLAS FARMÁCIAS ──────── */
 function recalcularTaxaPorEndereco() {
     if (!enderecoAtual || tipoEntrega !== 'express') return;
 
-    const lat = enderecoAtual.lat;
-    const lng = enderecoAtual.lng;
+    const destino = {
+        lat: enderecoAtual.lat,
+        lng: enderecoAtual.lng
+    };
 
-    let taxa = 0, distancia = 0;
-    if (farmaciaLat && farmaciaLng && !isNaN(lat) && !isNaN(lng)) {
-        distancia = haversine(farmaciaLat, farmaciaLng, lat, lng);
-        taxa = calcularTaxaEntrega(distancia);
-        document.getElementById('distanciaKmHidden').value = distancia.toFixed(2);
-        document.getElementById('taxaEntregaHidden').value = taxa;
-    } else {
-        taxa = 0;
-        distancia = 0;
+    if (farmacias.length === 0) {
+        actualizarResumo(0, 0);
+        document.getElementById('distanciaKmHidden').value = '0';
+        document.getElementById('taxaEntregaHidden').value = '0';
+        return;
     }
 
-    actualizarResumo(distancia, taxa);
+    // 1. Ordenar farmácias pela proximidade ao destino (cliente)
+    let restantes = [...farmacias];
+    let ordenadas = [];
+
+    // Encontrar a farmácia mais próxima do destino
+    let idxMaisProxima = -1;
+    let menorDistDestino = Infinity;
+    for (let i = 0; i < restantes.length; i++) {
+        const d = haversine(destino.lat, destino.lng, restantes[i].lat, restantes[i].lng);
+        if (d < menorDistDestino) {
+            menorDistDestino = d;
+            idxMaisProxima = i;
+        }
+    }
+    ordenadas.push(restantes[idxMaisProxima]);
+    restantes.splice(idxMaisProxima, 1);
+    let atual = { lat: ordenadas[0].lat, lng: ordenadas[0].lng };
+
+    // 2. Restantes farmácias ordenadas pela proximidade à anterior
+    while (restantes.length > 0) {
+        let maisProximo = null;
+        let menorDist = Infinity;
+        let idxRemover = -1;
+        for (let i = 0; i < restantes.length; i++) {
+            const d = haversine(atual.lat, atual.lng, restantes[i].lat, restantes[i].lng);
+            if (d < menorDist) {
+                menorDist = d;
+                maisProximo = restantes[i];
+                idxRemover = i;
+            }
+        }
+        if (maisProximo) {
+            ordenadas.push(maisProximo);
+            atual = { lat: maisProximo.lat, lng: maisProximo.lng };
+            restantes.splice(idxRemover, 1);
+        } else break;
+    }
+
+    // 3. Calcular distância total: farmácia1 → farmácia2 → ... → destino
+    let distanciaTotal = 0;
+    for (let i = 0; i < ordenadas.length - 1; i++) {
+        distanciaTotal += haversine(
+            ordenadas[i].lat, ordenadas[i].lng,
+            ordenadas[i+1].lat, ordenadas[i+1].lng
+        );
+    }
+    // Adicionar distância da última farmácia até o destino
+    if (ordenadas.length > 0) {
+        distanciaTotal += haversine(
+            ordenadas[ordenadas.length-1].lat, ordenadas[ordenadas.length-1].lng,
+            destino.lat, destino.lng
+        );
+    }
+
+    const taxa = calcularTaxaEntrega(distanciaTotal);
+    document.getElementById('distanciaKmHidden').value = distanciaTotal.toFixed(2);
     document.getElementById('taxaEntregaHidden').value = taxa;
-    window.taxaEntregaCalculada = taxa;
+    actualizarResumo(distanciaTotal, taxa);
 }
 
 function actualizarResumo(distanciaKm, taxaKz) {
@@ -1063,13 +1113,10 @@ function selectDeliv(tipo) {
     const addressCard = document.getElementById('addressCardWrapper');
     if (tipo === 'express') {
         addressCard.style.display = 'block';
-        // Se já houver endereço seleccionado, recalcula; senão, mostra aviso para escolher
         if (enderecoAtual) {
             recalcularTaxaPorEndereco();
         } else {
-            // Nenhum endereço: abre o modal automaticamente
             abrirModalEnderecos();
-            // Enquanto não seleccionar, deixa taxa 0 e mostra mensagem
             actualizarResumo(0, 0);
             document.getElementById('h-endereco').value = '';
         }
@@ -1079,16 +1126,15 @@ function selectDeliv(tipo) {
         document.getElementById('h-endereco').value = 'Retirar na Farmácia';
         document.getElementById('h-lat').value = 0.0;
         document.getElementById('h-lng').value = 0.0;
-          document.getElementById('distanciaKmHidden').value = '0';   // <-- ADICIONAR ESTA LINHA
+        document.getElementById('distanciaKmHidden').value = '0';
         document.getElementById('taxaEntregaHidden').value = 0;
         actualizarResumo(0, 0);
-        // Actualiza o display do endereço (opcional)
         const displayDiv = document.getElementById('enderecoSelecionadoDisplay');
         displayDiv.innerHTML = `<p class="text-muted" style="margin:0"><i class="bi bi-building"></i> Retirar na Farmácia</p>`;
     }
 }
 
-// Listener para o input de ficheiro (dentro do formulário)
+// Listener para o input de ficheiro (comprovativo)
 document.addEventListener('DOMContentLoaded', function() {
     const fileInput = document.getElementById('comprovativoExpressInput');
     if (fileInput) {
@@ -1120,7 +1166,6 @@ function selectPay(el, metodo) {
         comprovativoArea.style.display = 'block';
     } else {
         comprovativoArea.style.display = 'none';
-        // Limpa o ficheiro seleccionado
         const fileInput = document.getElementById('comprovativoExpressInput');
         if (fileInput) {
             fileInput.value = '';
@@ -1130,19 +1175,9 @@ function selectPay(el, metodo) {
     }
 }
 
-/* ── TOTAIS VISUAIS (se necessário) ───────────────── */
-function updateTotals() {
-  const total = subtotalBase + deliveryFee;
-  const sumDelivery = document.getElementById('sumDelivery');
-  const sumTotal = document.getElementById('sumTotal');
-  if (sumDelivery) sumDelivery.textContent = deliveryFee === 0 ? 'Grátis' : deliveryFee.toLocaleString('pt-AO') + ' Kz';
-  if (sumTotal) sumTotal.textContent = total.toLocaleString('pt-AO') + ' Kz';
-}
-
-
 /* ── VALIDAÇÃO PRÉ-SUBMIT ─────────────────────────── */
 document.getElementById('formPedido').addEventListener('submit', function (e) {
-    // 1. Garantir valores numéricos nos campos hidden
+    // Garantir valores numéricos nos campos hidden
     let distInput = document.getElementById('distanciaKmHidden');
     let taxaInput = document.getElementById('taxaEntregaHidden');
 
@@ -1153,11 +1188,10 @@ document.getElementById('formPedido').addEventListener('submit', function (e) {
         taxaInput.value = '0';
     }
 
-    // Debug (ver no console)
     console.log('📦 Enviando distancia_km:', distInput.value);
     console.log('💰 Enviando taxa_entrega:', taxaInput.value);
 
-    // 2. Validação do endereço para entrega expresso
+    // Validação do endereço para entrega expresso
     if (tipoEntrega === 'express') {
         if (!enderecoAtual) {
             e.preventDefault();
@@ -1167,7 +1201,7 @@ document.getElementById('formPedido').addEventListener('submit', function (e) {
         }
     }
 
-    // 3. Validação do método de pagamento
+    // Validação do método de pagamento
     const metodo = document.getElementById('h-metodo').value.trim();
     if (!metodo) {
         e.preventDefault();
@@ -1175,7 +1209,7 @@ document.getElementById('formPedido').addEventListener('submit', function (e) {
         return;
     }
 
-    // 4. Validação do comprovativo (se express)
+    // Validação do comprovativo (se express)
     if (metodo === 'express') {
         const comprovativoInput = document.getElementById('comprovativoExpressInput');
         if (!comprovativoInput || !comprovativoInput.files.length) {
@@ -1185,7 +1219,7 @@ document.getElementById('formPedido').addEventListener('submit', function (e) {
         }
     }
 
-    // 5. Validação da receita médica (se necessária)
+    // Validação da receita médica (se necessária)
     if (requerReceita) {
         const prescricaoInput = document.getElementById('prescricaoInput');
         if (!prescricaoInput || !prescricaoInput.files.length) {
@@ -1195,7 +1229,7 @@ document.getElementById('formPedido').addEventListener('submit', function (e) {
         }
     }
 
-    // 6. Desabilitar botão e mostrar loading
+    // Desabilitar botão e mostrar loading
     const btn = document.getElementById('btnConfirmar');
     btn.disabled = true;
     btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status"></span> A processar…';
@@ -1203,24 +1237,23 @@ document.getElementById('formPedido').addEventListener('submit', function (e) {
 
 /* ── TOAST ────────────────────────────────────────── */
 function showToast(title, msg) {
-  document.getElementById('toastTitle').textContent = title;
-  document.getElementById('toastMsg').textContent   = ' ' + msg;
-  const t = document.getElementById('toastFc');
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 3600);
+    document.getElementById('toastTitle').textContent = title;
+    document.getElementById('toastMsg').textContent = ' ' + msg;
+    const t = document.getElementById('toastFc');
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3600);
 }
 
 /* ── SCROLL HEADER ────────────────────────────────── */
 window.addEventListener('scroll', () => {
-  document.getElementById('mainHeader')?.classList.toggle('scrolled', scrollY > 50);
+    document.getElementById('mainHeader')?.classList.toggle('scrolled', scrollY > 50);
 });
 
-/* ── FLASH ────────────────────────────────────────── */
+/* ── FLASH MESSAGES ───────────────────────────────── */
 @if(session('success'))
-  showToast('Pedido criado!', '{{ session("success") }}');
+    showToast('Pedido criado!', '{{ session("success") }}');
 @endif
 
-// Verifica se há dados de entrega flash e abre o modal automaticamente
 @if(session('entrega'))
     const entrega = @json(session('entrega'));
     document.getElementById('modalTaxa').innerText = 
@@ -1228,11 +1261,9 @@ window.addEventListener('scroll', () => {
             .format(entrega.taxa_entrega);
     document.getElementById('modalDistancia').innerText = 
         entrega.distancia_km.toFixed(2) + ' km';
-    
     const modal = new bootstrap.Modal(document.getElementById('confirmacaoModal'));
     modal.show();
 @endif
 </script>
-
 </body>
 </html>

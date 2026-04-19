@@ -15,6 +15,7 @@ use App\Http\Controllers\EntregadorController;
 use App\Http\Controllers\FacturaController;
 use App\Http\Controllers\FarmaciaController;
 use App\Http\Controllers\FileController;
+use App\Http\Controllers\ItemPedidoController;
 use App\Http\Controllers\MedicamentoController;
 use App\Http\Controllers\PedidoController;
 use App\Http\Controllers\PerfilController;
@@ -67,6 +68,9 @@ use Twilio\Rest\Client;
         Route::delete('/farmacias/medicamento-delete/{id}' , [MedicamentoController::class , 'destroy'])->name('medicamentos.destroy');
 
         Route::get('/farmacia/pedidos', [FarmaciaController::class, 'pedidos'])->name('pedidos.farmacias');
+
+        Route::put('/itens-pedido/{itemId}/status', [ItemPedidoController::class, 'updateStatus'])
+        ->name('itens-pedido.status.update');
         Route::put('/pedidos/{id}/status', [PedidoController::class, 'updateStatus'])->name('pedidos.status.update');       
 
         Route::get('/farmacia/entregadores', [FarmaciaController::class, 'entregadores'])->name('entregadores.farmacias');
@@ -101,6 +105,8 @@ use Twilio\Rest\Client;
         Route::get('entregas/canceladas/{entregadorId}', [EntregaController::class, 'canceladasPorEntregador']);
         Route::get('entregas/hoje/{entregadorId}', [EntregaController::class, 'deHojePorEntregador']);
 
+        Route::post('/entregador/localizacao', [EntregadorController::class, 'atualizarLocalizacao'])
+        ->name('entregador.localizacao');
         // Route::post('/logout/{id}' , [AuthController::class, 'logout'])->name('logout');
     });
 

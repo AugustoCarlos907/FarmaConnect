@@ -45,7 +45,7 @@ class EntregaController extends Controller
         $entregadorId = $entregador->id;
 
         // ---------- Entregas em andamento (em_transito) ----------
-        $entregasEmAndamento = Entrega::with(['pedido.user', 'pedido.farmacia'])
+        $entregasEmAndamento = Entrega::with(['pedido.user', 'pedido.farmacias'])
             ->where('entregador_id', $entregadorId)
             ->where('status', 'em_transito')
             ->latest()
@@ -67,7 +67,7 @@ class EntregaController extends Controller
             ->sum('taxa_entrega');
 
         // ---------- Últimas entregas (já existia, mas com eager loading) ----------
-        $lastEntregas = Entrega::with(['pedido.user', 'pedido.farmacia', 'pedido.items'])
+        $lastEntregas = Entrega::with(['pedido.user', 'pedido.farmacias', 'pedido.items'])
             ->where('entregador_id', $entregadorId)
             ->where('status', 'entregue')
             ->latest()
@@ -140,71 +140,63 @@ class EntregaController extends Controller
     // }
 
   
-    public function entregas()
+   public function entregas()
     {
-        /*
-         * O Entregador está ligado ao User via user_id.
-         * Auth::user() devolve o User; Auth::user()->entregador devolve o Entregador.
-         */
-        $user      = Auth::user();
-        $entregador = $user->entregador; // relação belongsTo no modelo User, ou hasOne
-
+        $user       = Auth::user();
+        $entregador = $user->entregador;
+ 
         if (!$entregador) {
             abort(403, 'Conta de entregador não encontrada.');
         }
-
+ 
         $entregadorId = $entregador->id;
-
-        /* ── Entregas em trânsito (activas) ─────────────────────────── */
+ 
+        /* ── Em trânsito — inclui rota JSON decodificada ──────────────────── */
         $emTransito = Entrega::with([
                 'pedido.user',
-                'pedido.farmacia',
+                'pedido.farmacias',
                 'pedido.items.stockItem.medicamento',
             ])
             ->where('entregador_id', $entregadorId)
             ->where('status', 'em_transito')
             ->latest()
-            ->get();
-
-        /* ── Entregas concluídas ─────────────────────────────────────── */
+            ->get()
+            ->each(function (Entrega $e) {
+                /* rota_array = array de waypoints { lat, lng, tipo, nome, endereco? }
+                 * guardado pelo EntregaService em Entrega.rota (JSON)              */
+                $e->rota_array = $e->rota ? json_decode($e->rota, true) : [];
+            });
+ 
+        /* ── Concluídas ────────────────────────────────────────────────────── */
         $concluidas = Entrega::with([
                 'pedido.user',
-                'pedido.farmacia',
+                'pedido.farmacias',
                 'pedido.items.stockItem.medicamento',
             ])
             ->where('entregador_id', $entregadorId)
-            ->where('status', 'entregue')
+            ->whereIn('status', ['entregue', 'concluida'])
             ->latest()
             ->take(20)
             ->get();
-
-        /* ── Entregas canceladas ─────────────────────────────────────── */
-        $canceladas = Entrega::with(['pedido.user', 'pedido.farmacia'])
+ 
+        /* ── Canceladas ────────────────────────────────────────────────────── */
+        $canceladas = Entrega::with(['pedido.user', 'pedido.farmacias'])
             ->where('entregador_id', $entregadorId)
             ->where('status', 'cancelada')
             ->latest()
             ->take(10)
             ->get();
-
-        /* ── Todas (para contagens) ──────────────────────────────────── */
+ 
+        /* ── KPIs ──────────────────────────────────────────────────────────── */
         $todas = Entrega::where('entregador_id', $entregadorId)->get();
-
-        /* ── KPIs ────────────────────────────────────────────────────── */
+ 
         $totalEntregas   = $todas->count();
-        $totalEmTransito = $todas->where('status', 'em_transito')->count();
-        $totalConcluidas = $todas->where('status', 'entregue')->count();
+        $totalEmTransito = $emTransito->count();
+        $totalConcluidas = $todas->whereIn('status', ['entregue', 'concluida'])->count();
         $totalCanceladas = $todas->where('status', 'cancelada')->count();
-
-        /* Ganhos totais = soma das taxas das entregas concluídas */
-        $ganhosTotais = $todas
-            ->where('status', 'entregue')
-            ->sum('taxa_entrega');
-
-        /* Distância total percorrida */
-        $distanciaTotal = $todas
-            ->where('status', 'entregue')
-            ->sum('distancia_km');
-
+        $ganhosTotais    = $todas->whereIn('status', ['entregue', 'concluida'])->sum('taxa_entrega');
+        $distanciaTotal  = $todas->whereIn('status', ['entregue', 'concluida'])->sum('distancia_km');
+ 
         return view('entregadores.dashboard.entregas', compact(
             'entregador',
             'emTransito',
@@ -301,7 +293,7 @@ class EntregaController extends Controller
             ->sum('taxa_entrega');
 
         // ---------- Dados para o gráfico (últimos 30 dias) ----------
-        $startDate = Carbon::today()->subDays(29); // últimos 30 dias incluindo hoje
+        $startDate = Carbon::today()->subDays(29);
         $endDate = Carbon::today();
 
         // Buscar soma das taxas agrupadas por data
@@ -324,7 +316,7 @@ class EntregaController extends Controller
         }
 
         // ---------- Lista de entregas concluídas com paginação ----------
-        $entregas = Entrega::with(['pedido.user', 'pedido.farmacia'])
+        $entregas = Entrega::with(['pedido.user', 'pedido.farmacias'])
             ->where('entregador_id', $entregadorId)
             ->where('status', 'entregue')
             ->orderBy('data_entrega', 'desc')

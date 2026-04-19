@@ -284,7 +284,7 @@
           <div class="cc-body">
             <div class="cc-name">{{ $cat->name }}</div>
             @if($cat->descricao)
-              <div class="cc-desc">{{ Str::limit($cat->descricao, 60) }}</div>
+              <div class="cc-desc">{{ Illuminate\Support\Str::limit($cat->descricao, 60) }}</div>
             @endif
             <div class="cc-footer">
               <span class="cc-count">

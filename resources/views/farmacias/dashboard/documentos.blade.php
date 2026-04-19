@@ -462,7 +462,7 @@
             <!-- Dashboard -->
             <a href="{{ route('index.farmacias') }}" class="nav-item {{ request()->routeIs('index.farmacias') ? 'active' : '' }}">
                 <i class="bi bi-grid-1x2"></i>
-                <span>Dashboard</span>
+                <span>Paínel Administrativo</span>
             </a>
 
             <!-- Stock com submenu -->

@@ -14,6 +14,7 @@ class Farmacia  extends Authenticatable
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable , MustVerifyEmail ;
 
+    protected $table = 'farmacias';
     protected $fillable = [
         'name',
         'logo',
@@ -84,7 +85,7 @@ class Farmacia  extends Authenticatable
     }
 
     public function users(){
-        return $this->hasOne(User::class , );
+        return $this->hasOne(User::class  );
     }
 
     public function companhia(){

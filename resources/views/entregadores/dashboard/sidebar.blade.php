@@ -80,6 +80,27 @@
 .status-pill.offline { background: rgba(240,78,96,.12);  color: var(--red);   border: 1px solid rgba(240,78,96,.2); }
 .status-dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; animation: blink 2s infinite; }
 
+/* Location button (novo) */
+.location-btn {
+  background: rgba(11,191,204,.15);
+  border: 1px solid rgba(11,191,204,.3);
+  border-radius: 40px;
+  padding: .3rem .7rem;
+  font-size: .75rem;
+  font-weight: 600;
+  color: #22c2d1;
+  cursor: pointer;
+  transition: all .2s;
+  display: inline-flex;
+  align-items: center;
+  gap: .4rem;
+  white-space: nowrap;
+}
+.location-btn:hover {
+  background: rgba(11,191,204,.25);
+  transform: translateY(-1px);
+}
+
 /* Nav */
 .sidebar-nav {
   flex: 1;
@@ -171,7 +192,7 @@
     </div>
     <div class="driver-info">
       <div class="driver-name">{{ Auth::user()->name }}</div>
-      <div class="driver-id">ID · ENT-{{ str_pad(Auth::user()->entregador->id, 3, '0', STR_PAD_LEFT) }}</div>
+      {{-- <div class="driver-id">ID · ENT-{{ str_pad(Auth::user()->entregador->id, 3, '0', STR_PAD_LEFT) }}</div> --}}
     </div>
     @php
       $entregador = Auth::user()->entregador;
@@ -181,6 +202,11 @@
       <span class="status-dot"></span>
       <span id="statusLabel">{{ $isOnline ? 'Online' : 'Offline' }}</span>
     </div>
+    <!-- Botão de actualização de localização -->
+    <button class="location-btn" id="btnAtualizarLocalizacao">
+      <i class="bi bi-geo-alt-fill"></i> <span>Localização</span>
+    </button>
+    <span id="statusLocalizacao" class="ms-1" style="font-size: 0.7rem; color: #a0c4c8;"></span>
   </div>
 
   <nav class="sidebar-nav">
@@ -264,4 +290,75 @@
       alert('Erro ao atualizar status. Tente novamente.');
     });
   }
+
+  /* ── LOCALIZAÇÃO (manual + automática a cada 30 min) ── */
+  function enviarLocalizacao() {
+    const statusSpan = document.getElementById('statusLocalizacao');
+    if (!statusSpan) return;
+    statusSpan.innerHTML = '<i class="bi bi-hourglass-split"></i>';
+    statusSpan.style.opacity = '1';
+
+    if (!navigator.geolocation) {
+      statusSpan.innerHTML = '<i class="bi bi-exclamation-triangle"></i> Não suportado';
+      setTimeout(() => statusSpan.innerHTML = '', 3000);
+      return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      function(position) {
+        const lat = position.coords.latitude;
+        const lng = position.coords.longitude;
+
+        fetch('{{ route("entregador.localizacao") }}', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+          },
+          body: JSON.stringify({ latitude: lat, longitude: lng })
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            statusSpan.innerHTML = '<i class="bi bi-check-circle-fill text-success"></i>';
+            setTimeout(() => statusSpan.innerHTML = '', 3000);
+          } else {
+            statusSpan.innerHTML = '<i class="bi bi-x-circle-fill text-danger"></i>';
+            setTimeout(() => statusSpan.innerHTML = '', 3000);
+          }
+        })
+        .catch(error => {
+          console.error('Erro:', error);
+          statusSpan.innerHTML = '<i class="bi bi-x-circle-fill text-danger"></i>';
+          setTimeout(() => statusSpan.innerHTML = '', 3000);
+        });
+      },
+      function(error) {
+        let msg = '';
+        switch(error.code) {
+          case error.PERMISSION_DENIED: msg = 'Permissão negada'; break;
+          case error.POSITION_UNAVAILABLE: msg = 'Indisponível'; break;
+          case error.TIMEOUT: msg = 'Tempo esgotado'; break;
+          default: msg = 'Erro';
+        }
+        statusSpan.innerHTML = '<i class="bi bi-exclamation-triangle"></i> ' + msg;
+        setTimeout(() => statusSpan.innerHTML = '', 4000);
+      },
+      { enableHighAccuracy: true, timeout: 10000 }
+    );
+  }
+
+  // Botão manual
+  const btnLoc = document.getElementById('btnAtualizarLocalizacao');
+  if (btnLoc) {
+    btnLoc.addEventListener('click', enviarLocalizacao);
+  }
+
+  // Envio automático a cada 30 minutos (1800000 ms)
+  setInterval(enviarLocalizacao, 1800000);
+
+  // Opcional: enviar ao carregar a página (após 2 segundos)
+  window.addEventListener('load', function() {
+    setTimeout(enviarLocalizacao, 2000);
+  });
 </script>

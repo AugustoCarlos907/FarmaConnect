@@ -322,7 +322,7 @@
         <span class="nav-label">Principal</span>
 
         <a href="{{ route('index.farmacias') }}" class="nav-item {{ request()->routeIs('index.farmacias') ? 'active' : '' }}">
-          <i class="bi bi-grid-1x2"></i><span>Dashboard</span>
+          <i class="bi bi-grid-1x2"></i><span>Paínel Administrativo</span>
         </a>
 
         <div class="has-sub {{ request()->routeIs('medicamentos.farmacias') ? 'open' : '' }}" id="sub-stock">

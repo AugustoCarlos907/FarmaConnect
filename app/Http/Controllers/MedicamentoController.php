@@ -110,10 +110,11 @@ class MedicamentoController extends Controller
         return redirect()->route('medicamentos.farmacias')->with('success' , 'Medicamento Eliminado');
     }
 
-    public function searchByPrescription(Request $request)
+
+public function searchByPrescription(Request $request)
 {
     $request->validate([
-        'prescricao_image' => 'required|image|max:5120' // 5MB
+        'prescricao_image' => 'required|image|max:5120'
     ]);
 
     $image = $request->file('prescricao_image');
@@ -121,7 +122,6 @@ class MedicamentoController extends Controller
     $fullPath = storage_path('app/public/' . $path);
 
     try {
-        // Extrair texto da imagem (OCR)
         $textoExtraido = (new TesseractOCR($fullPath))
             ->lang('por')
             ->run();
@@ -129,39 +129,44 @@ class MedicamentoController extends Controller
         \Log::error('Erro OCR: ' . $e->getMessage());
         return redirect()->back()->withErrors('Não foi possível ler a receita. Tente uma imagem mais nítida.');
     } finally {
-        // Apagar imagem temporária
-        if (file_exists($fullPath)) unlink($fullPath);
+        if (file_exists($fullPath)) {
+            unlink($fullPath);
+        }
     }
 
-    // Normalizar texto: remover pontuação, converter para minúsculas
+    // Normalizar texto: remover pontuação, converter minúsculas
     $textoLimpo = preg_replace('/[^\p{L}\p{N}\s]/u', ' ', $textoExtraido);
     $palavras = array_unique(preg_split('/\s+/', $textoLimpo, -1, PREG_SPLIT_NO_EMPTY));
     $palavras = array_map('strtolower', $palavras);
+    
+    // Ignorar palavras muito curtas e ordenar as mais longas primeiro (mais relevantes)
+    $palavras = array_filter($palavras, fn($p) => strlen($p) >= 3);
+    usort($palavras, fn($a, $b) => strlen($b) - strlen($a));
+    $palavras = array_slice($palavras, 0, 15); // limite de 15 palavras
 
-    // Buscar medicamentos cujo nome contenha alguma das palavras (ou correspondência exacta)
+    // Buscar medicamentos por correspondência no nome
     $medicamentosEncontrados = collect();
     foreach ($palavras as $palavra) {
-        if (strlen($palavra) < 3) continue; // ignorar palavras muito curtas
         $meds = Medicamento::where('name', 'LIKE', "%{$palavra}%")->get();
         $medicamentosEncontrados = $medicamentosEncontrados->merge($meds);
     }
     $medicamentosEncontrados = $medicamentosEncontrados->unique('id');
 
     if ($medicamentosEncontrados->isEmpty()) {
-        return redirect()->route('produtos.clientes')->with('warning', 'Nenhum medicamento identificado na receita. Tente uma imagem mais clara.');
+        return redirect()->route('produtos.clientes')
+            ->with('warning', 'Nenhum medicamento identificado na receita. Tente uma imagem mais clara.');
     }
 
-    // Adicionar ao carrinho (ou redirecionar para página de selecção)
-    // Opção 1: Adicionar automaticamente ao carrinho (usando stock_item_id)
-    // Opção 2: Mostrar lista para o utilizador escolher
-
-    // Exemplo: Adicionar ao carrinho (assumindo que existe um método `adicionarAoCarrinho`)
     $adicionados = 0;
-    foreach ($medicamentosEncontrados as $med) {
-        // Pega o primeiro stock_item disponível (ou poderia perguntar a farmácia)
-        $stockItem = $med->stockItems()->where('ativo', true)->first();
+    foreach ($medicamentosEncontrados as $medicamento) {
+        // Buscar o stock item com MENOR PREÇO, ativo e com estoque (opcional)
+        $stockItem = $medicamento->stockItems()
+            ->where('ativo', true)
+            ->where('quantidade', '>', 0) // se existir controle de estoque
+            ->orderBy('preco', 'asc')
+            ->first();
+
         if ($stockItem) {
-            // Adicionar ao carrinho (usando a lógica já existente)
             $carrinho = Carrinho::where('user_id', auth()->id())
                                 ->where('stock_item_id', $stockItem->id)
                                 ->first();
@@ -179,12 +184,13 @@ class MedicamentoController extends Controller
     }
 
     if ($adicionados === 0) {
-        return redirect()->route('produtos.clientes')->with('warning', 'Os medicamentos identificados estão indisponíveis no momento.');
+        return redirect()->route('produtos.clientes')
+            ->with('warning', 'Os medicamentos identificados estão indisponíveis no momento.');
     }
 
-    return redirect()->route('carrinho.clientes')->with('success', "Foram adicionados {$adicionados} medicamento(s) ao carrinho com base na receita.");
+    return redirect()->route('carrinho.clientes')
+        ->with('success', "Foram adicionados {$adicionados} medicamento(s) ao carrinho com base na receita (sempre o menor preço disponível).");
 }
-
 
 public function ajusteStock(Request $request, $id)
 {

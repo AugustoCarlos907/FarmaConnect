@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Entregador;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 
 class EntregadorController extends Controller
@@ -39,5 +40,26 @@ class EntregadorController extends Controller
     return response()->json(['ok' => true]);
     }
 
+    public function atualizarLocalizacao(Request $request)
+    {
+        $request->validate([
+            'latitude'  => 'required|numeric|between:-90,90',
+            'longitude' => 'required|numeric|between:-180,180',
+        ]);
+
+        $entregador = Auth::user()->entregador; 
+
+        if (!$entregador) {
+            return response()->json(['error' => 'Perfil de entregador não encontrado.'], 404);
+        }
+
+        $entregador->update([
+            'latitude'  => $request->latitude,
+            'longitude' => $request->longitude,
+            'ultima_atividade' => Carbon::now(), 
+        ]);
+
+        return  $entregador;
+        }
     
 }

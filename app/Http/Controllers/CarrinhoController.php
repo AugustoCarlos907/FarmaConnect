@@ -35,8 +35,19 @@ class CarrinhoController extends Controller
         $farmaciaLat = $farmacia->latitude ?? null;
         $farmaciaLng = $farmacia->longitude ?? null;
 
+        $farmacias = $itens->map(function($item) {
+        $farm = $item->stockItem->farmacia;
+        return [
+            'id'   => $farm->id,
+            'name' => $farm->name,
+            'lat'  => (float) $farm->latitude,
+            'lng'  => (float) $farm->longitude,
+        ];
+        })->unique('id')->values();
+        
+
         return view('clientes.dashboard.carrinho', compact(
-            'itens', 'total', 'enderecos', 'farmaciaLat', 'farmaciaLng'
+            'itens', 'total', 'enderecos', 'farmacias' , 'farmaciaLat', 'farmaciaLng'
         ));
 
         // return view('clientes.dashboard.carrinho', compact('itens', 'total' , 'enderecos' ));

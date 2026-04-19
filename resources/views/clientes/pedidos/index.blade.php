@@ -442,11 +442,24 @@
         <div class="oc-farm">
           <div class="oc-farm-icon"><i class="bi bi-hospital"></i></div>
           <div>
-            <div class="oc-farm-name">{{ $pedido->farmacia->name ?? '—' }}</div>
-            <div class="oc-farm-loc">
-              <i class="bi bi-geo-alt"></i>
-              {{ $pedido->farmacia->municipio ?? $pedido->farmacia->bairro ?? '' }}
-            </div>
+           <div class="oc-farm-name">
+            @if($pedido->farmacias->count() == 1)
+                {{ $pedido->farmacias->first()->name ?? 'Farmácia não definida' }}
+            @else
+                {{ $pedido->farmacias->pluck('name')->implode(', ') }}
+            @endif
+        </div>
+        <div class="oc-farm-loc">
+            <i class="bi bi-geo-alt"></i>
+            @if($pedido->farmacias->count() == 1)
+                {{ $pedido->farmacias->first()->municipio ?? $pedido->farmacias->first()->bairro ?? '' }}
+            @else
+                {{ $pedido->farmacias->first()->municipio ?? $pedido->farmacias->first()->bairro ?? '' }}
+                @if($pedido->farmacias->count() > 1)
+                    <span class="badge bg-secondary ms-1">+{{ $pedido->farmacias->count() - 1 }} localidades</span>
+                @endif
+            @endif
+        </div>
           </div>
         </div>
         <span class="status-badge {{ $statusInfo['css'] }}">
@@ -544,6 +557,10 @@
         <div class="oc-items">
           <h6>Itens do pedido</h6>
 
+          @php
+          $pf = $pedido->farmacias->count() >1 ;
+          @endphp
+
           @foreach($pedido->items as $item)
             @php 
             $med = $item->stockItem->medicamento ?? null;
@@ -564,9 +581,12 @@
                 <div class="item-cat">
                   {{ $med->categoria->name ?? '' }}
                   @if($med && $med->forma_farmaceutica)
-                    · {{ $med->forma_farmaceutica }}
+                    · {{ $med->forma_farmaceutica }} - {{ $med->dosagem ?? 'UNKNOWN' }}
                   @endif
                 </div>
+                @if ($pf)
+                <small style="font-size: 8px">FC - <strong>{{ $item->stockItem->farmacia->name  ?? 'Fármacia não encontrada'}}</strong></small>
+                @endif
               </div>
 
               <div class="item-qty">x{{ $item->quantidade }}</div>
@@ -614,10 +634,15 @@
             <a class="oa-btn oa-ghost text-decoration-none" href="{{ route('pedidos.factura', ['id' => $pedido->id]) }}"><i class="bi bi-receipt"></i> Ver factura</a>
 
 
-          @elseif($st === 'Concluído')
-          <button class="oa-btn oa-primary" onclick="openRatingModal({{ $pedido->id }}, '{{ addslashes($pedido->farmacia->name) }}')">
-              <i class="bi bi-star"></i> Avaliar farmácia
-          </button>
+          @if($pedido->farmacias->count() === 1)
+              <button class="oa-btn oa-primary" onclick="openRatingModal({{ $pedido->id }}, '{{ addslashes($pedido->farmacias->first()->name) }}')">
+                  <i class="bi bi-star"></i> Avaliar farmácia
+              </button>
+          @else
+              <button class="oa-btn oa-primary disabled" disabled>
+                  <i class="bi bi-star"></i> Avaliar (várias farmácias)
+              </button>
+          @endif
             {{-- <button class="oa-btn oa-outline" onclick="reorder()">
               <i class="bi bi-arrow-repeat"></i> Repetir pedido
             </button> --}}

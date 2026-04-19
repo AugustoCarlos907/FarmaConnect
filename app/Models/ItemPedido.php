@@ -6,15 +6,17 @@ use Illuminate\Database\Eloquent\Model;
 
 class ItemPedido extends Model
 {
+    protected $table = 'item_pedidos';
     protected $fillable = [
         'quantidade',
         'preco_unitario',
         'subtotal',
-        'pedido_id',
         'stock_items_id',
         'prescricao_path',
-
-        'farmacia_id', // novo
+        
+        'pedido_id',
+        'farmacia_id',
+        'status_item'
     ];
 
     public function pedido()

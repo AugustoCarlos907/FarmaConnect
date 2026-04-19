@@ -42,14 +42,14 @@ class FarmaService{
     {
         $farmaciaId = auth()->user()->farmacia->id;
 
-        return User::whereHas('pedidos.farmacia', function($q) use ($farmaciaId) {
+        return User::whereHas('pedidos.items.stockItem.farmacia', function($q) use ($farmaciaId) {
                 $q->where('id', $farmaciaId);
-            })
-            ->with(['pedidos' => function($q) use ($farmaciaId) {
-                // Isto garante que $cliente->pedidos traga APENAS os desta farmácia
-                $q->where('farmacia_id', $farmaciaId);
-            }])
-            ->paginate(10);
+                })
+                ->paginate(10);
+            // ->with(['pedidos' => function($q) use ($farmaciaId) {
+            //     // Isto garante que $cliente->pedidos traga APENAS os desta farmácia
+            //     $q->where('farmacia_id', $farmaciaId);
+            // }])
     }
 
 

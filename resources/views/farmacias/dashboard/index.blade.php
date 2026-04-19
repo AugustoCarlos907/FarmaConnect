@@ -377,7 +377,7 @@
             <!-- Dashboard -->
             <a href="{{ route('index.farmacias') }}" class="nav-item {{ request()->routeIs('index.farmacias') ? 'active' : '' }}">
                 <i class="bi bi-grid-1x2"></i>
-                <span>Dashboard</span>
+                <span>Paínel Administrativo</span>
             </a>
 
             <!-- Stock com submenu -->
@@ -566,7 +566,17 @@
           <div class="kpi-head">
             <div class="kpi-ico amber"><i class="bi bi-cash-coin"></i></div>
           </div>
-          <div class="kpi-val">{{ number_format($pedidosHoje->sum('total') ?? 0, 0, ',', '.') }} Kz</div>
+          @php
+            $farmaciaId = Auth::user()->farmacia_id;
+            $faturacaoHoje = DB::table('item_pedidos')
+            ->join('pedidos', 'item_pedidos.pedido_id', '=', 'pedidos.id')
+            ->join('entregas', 'pedidos.id', '=', 'entregas.pedido_id')
+            ->where('item_pedidos.farmacia_id', $farmaciaId) 
+            ->whereDate('entregas.data_entrega', today())
+            ->where('pedidos.status', 'Concluído') 
+            ->sum('item_pedidos.subtotal');
+          @endphp
+          <div class="kpi-val">{{ number_format($faturacaoHoje ?? 0, 0, ',', '.') }} Kz</div>
           <div class="kpi-lbl">Faturação hoje</div>
         </div>
         <div class="kpi kpi-red">

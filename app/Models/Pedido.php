@@ -61,4 +61,15 @@ class Pedido extends Model
     public function factura(){
         return $this->hasOne(Factura::class);
     }
+
+    // Associar uma farmácia a um pedido com status inicial
+    // $pedido->farmacias()->attach($farmaciaId, ['status' => 'pendente']);
+
+    // Atualizar o status na pivot
+    // $pedido->farmacias()->updateExistingPivot($farmaciaId, ['status' => 'confirmado']);
+
+    // Aceder ao status através do relacionamento
+    // foreach ($pedido->farmacias as $farmacia) {
+    //     echo $farmacia->pivot->status;
+    // }
 }

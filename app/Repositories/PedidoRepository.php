@@ -24,19 +24,46 @@ class PedidoRepository implements PedidoInterface{
     //                     ->paginate($perPage);
     // }
     
+    // public function getAllPedidosByPharmacy($perPage)
+    // {
+    // return Pedido::where('farmacia_id', Auth::user()->farmacia_id)
+    //     ->with([
+    //         'user',
+    //         'items.stockItem.medicamento',  // para aceder a nome, preço, etc.
+    //         'items' => function ($query) {
+    //             $query->select('id', 'pedido_id', 'stock_items_id', 'quantidade', 'preco_unitario', 'subtotal', 'prescricao_path');
+    //         },
+    //         'pagamento',
+    //         'entrega.entregador'
+    //     ])
+    //     ->orderByDesc('id')
+    //     ->paginate($perPage);
+    // }
+
     public function getAllPedidosByPharmacy($perPage)
-    {
-    return Pedido::where('farmacia_id', Auth::user()->farmacia_id)
+{
+    $farmaciaId = Auth::user()->farmacia_id;
+
+    return Pedido::whereHas('items', function ($query) use ($farmaciaId) {
+            $query->whereHas('stockItem', function ($q) use ($farmaciaId) {
+                $q->where('farmacia_id', $farmaciaId);
+            });
+        })
         ->with([
             'user',
-            'items.stockItem.medicamento',  // para aceder a nome, preço, etc.
-            'items' => function ($query) {
-                $query->select('id', 'pedido_id', 'stock_items_id', 'quantidade', 'preco_unitario', 'subtotal', 'prescricao_path');
+            'items' => function ($query) use ($farmaciaId) {
+                // Carrega apenas os itens que pertencem a esta farmácia
+                $query->whereHas('stockItem', function ($q) use ($farmaciaId) {
+                    $q->where('farmacia_id', $farmaciaId);
+                })->with([
+                    'stockItem.medicamento',
+                    'stockItem.farmacia' // se quiser exibir o nome da farmácia
+                ]);
             },
             'pagamento',
             'entrega.entregador'
         ])
         ->orderByDesc('id')
         ->paginate($perPage);
-    }
+}
 }

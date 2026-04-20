@@ -166,7 +166,7 @@
     <div class="topbar">
       <div class="topbar-left">
         <div>
-          <div class="topbar-greeting">Dashboard</div>
+          <div class="topbar-greeting">Paínel Administrativo</div>
           <div class="topbar-sub">{{ Carbon\Carbon::now()->translatedFormat('l, d \d\e F \d\e Y') }}</div>
         </div>
       </div>

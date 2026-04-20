@@ -27,7 +27,7 @@ class EntregadorController extends Controller
     }
 
     public function avaliacoes(){
-        
+        return view('entregadores.dashboard.avaliacoes');
     }
 
     public function updateStatus(Request $request)

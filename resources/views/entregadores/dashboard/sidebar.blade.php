@@ -184,15 +184,17 @@
     <a href="#" class="logo">
       <span class="farma" style="color: #22c2d1">Farma</span><span class="connect">Connect</span>
     </a>
+
   </div>
 
+  
   <div class="driver-strip">
     <div class="driver-avatar">
       {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
     </div>
     <div class="driver-info">
       <div class="driver-name">{{ Auth::user()->name }}</div>
-      {{-- <div class="driver-id">ID · ENT-{{ str_pad(Auth::user()->entregador->id, 3, '0', STR_PAD_LEFT) }}</div> --}}
+      <div class="driver-id">ID · ENT-{{ str_pad(Auth::user()->entregador->id, 3, '0', STR_PAD_LEFT) }}</div>
     </div>
     @php
       $entregador = Auth::user()->entregador;
@@ -202,12 +204,13 @@
       <span class="status-dot"></span>
       <span id="statusLabel">{{ $isOnline ? 'Online' : 'Offline' }}</span>
     </div>
-    <!-- Botão de actualização de localização -->
+         <!-- Botão de actualização de localização -->
     <button class="location-btn" id="btnAtualizarLocalizacao">
-      <i class="bi bi-geo-alt-fill"></i> <span>Localização</span>
+      <i class="bi bi-geo-alt-fill"></i> 
     </button>
     <span id="statusLocalizacao" class="ms-1" style="font-size: 0.7rem; color: #a0c4c8;"></span>
-  </div>
+
+     </div>
 
   <nav class="sidebar-nav">
     <span class="nav-label">Principal</span>
@@ -215,7 +218,7 @@
     <a href="{{ route('index.entregadores') }}" 
        class="nav-link {{ request()->routeIs('index.entregadores') ? 'active' : '' }}">
       <i class="bi bi-speedometer2"></i>
-      <span>Dashboard</span>
+      <span>Paínel Administrativo</span>
     </a>
 
     <a href="{{ route('entregas.entregadores') }}" 
@@ -230,7 +233,7 @@
       <span>Ganhos</span>
     </a>    
     
-    <a href="" 
+    <a href="{{ route('avaliacao.entregadores') }}" 
        class="nav-link {{ request()->routeIs('avaliacao.entregadores') ? 'active' : '' }}">
       <i class="bi bi-star"></i>
       <span>Avaliações</span>

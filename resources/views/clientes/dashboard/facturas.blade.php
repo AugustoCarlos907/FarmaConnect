@@ -191,19 +191,6 @@
     .badge-pendente { background: #fff3cd; color: #856404; }
     .badge-cancelado{ background: #f8d7da; color: #721c24; }
 
-    /* ===== ADDRESSES ===== */
-    .addr-section {
-      display: table;
-      width: 100%;
-      margin-bottom: 28px;
-    }
-
-    .addr-col {
-      display: table-cell;
-      width: 50%;
-      vertical-align: top;
-    }
-
     /* ===== ITEMS TABLE ===== */
     .items-table {
       width: 100%;
@@ -402,7 +389,6 @@
       margin-top: 32px;
     }
 
-    /* Utility */
     .text-right { text-align: right; }
     .text-center { text-align: center; }
     .fw-700 { font-weight: 700; }
@@ -433,18 +419,18 @@
     <div class="meta-section">
       <div class="meta-left">
 
-        <!-- DE (Emitida por) -->
+        <!-- EMITIDA POR (Plataforma) -->
         <div class="meta-block">
           <div class="meta-label">Emitida por</div>
           <div class="meta-value">
-            <strong>{{ $factura->pedido->farmacia->name }}</strong><br>
-            {{$factura->pedido->farmacia->bairro}}<br>
-           {{ $factura->pedido->farmacia->municipio }}<br>
-           {{ $factura->pedido->farmacia->nif }}
+            <strong>FarmaConnect</strong><br>
+            Plataforma de integração farmacêutica<br>
+            Luanda, Angola<br>
+            NIF: 0000000000
           </div>
         </div>
 
-        <!-- COBRAR A -->
+        <!-- COBRAR A (Cliente) -->
         <div class="meta-block">
           <div class="meta-label">Cobrar a</div>
           <div class="meta-value">
@@ -458,6 +444,18 @@
             @endif
           </div>
         </div>
+
+        <!-- (Opcional) Listagem das farmácias envolvidas -->
+        @if($factura->pedido && $factura->pedido->farmacias->count() > 0)
+        <div class="meta-block">
+          <div class="meta-label">Farmácias parceiras</div>
+          <div class="meta-value">
+            @foreach($factura->pedido->farmacias as $farm)
+              • {{ $farm->name }}<br>
+            @endforeach
+          </div>
+        </div>
+        @endif
 
       </div>
 
@@ -541,7 +539,7 @@
             @if(isset($item->stockItem->medicamento->dosagem))
               <br><span style="font-size:9.5px;color:#6c8285;font-weight:400;">{{ $item->stockItem->medicamento->dosagem }}</span>
             @endif
-          </td>
+           </td>
           <td class="item-qty">{{ $item->quantidade }}</td>
           <td class="item-price">{{ number_format($item->preco_unitario, 2, ',', '.') }} Kz</td>
           <td class="item-total">{{ number_format($item->quantidade * $item->preco_unitario, 2, ',', '.') }} Kz</td>
@@ -625,7 +623,6 @@
 
     <!-- ===== FOOTER ===== -->
     <div class="footer-divider"></div>
-
 
   </div>
 

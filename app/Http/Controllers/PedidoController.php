@@ -147,19 +147,19 @@ class PedidoController extends Controller
                             'valor'    => $pedido->total,
                             'data_pagamento'=> now()
                         ]);
-
-                if (!$pedido->factura()->exists() ) {
+    
+                if ($pedido->status == "Aprovado" && !$pedido->factura()->exists() ) {
                         Factura::create([
                             'user_id'        => $pedido->user_id,
                             'pedido_id'      => $pedido->id,
-                            'pagamento_id'   => $pagamento->id ,
+                            'pagamento_id'   => $pagamento->id ?? 00,
                             'numero_factura' => 'FAC-' . now()->format('Ymd') . '-' . strtoupper(uniqid()),
                             'valor_total'    => $pedido->total,
                             'IVA'            => $pedido->total * 0.14,
                             'emitida_em'     => now()
                         ]);
-                }
-                }
+                
+                }}
 
                 if (in_array($pedido->status, ['pago', 'Aprovado', 'aprovado', 'APROVADO']) && $pedido->taxa_entrega > 0) {
                       try {

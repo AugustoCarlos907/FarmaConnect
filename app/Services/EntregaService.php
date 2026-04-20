@@ -326,21 +326,24 @@ class EntregaService
     {
         return Entrega::where('entregador_id', $entregadorId)
             ->where('status', 'entregue')
-            ->latest()->paginate(10);
+            ->latest()
+            ->paginate(10);
     }
 
     public function entregasEmTransitoPorEntregador(int $entregadorId)
     {
         return Entrega::where('entregador_id', $entregadorId)
             ->where('status', 'em_transito')
-            ->latest()->paginate(10);
+            ->latest()
+            ->paginate(10);
     }
 
     public function entregasCanceladasPorEntregador(int $entregadorId)
     {
         return Entrega::where('entregador_id', $entregadorId)
             ->where('status', 'cancelada')
-            ->latest()->paginate(10);
+            ->latest()
+            ->paginate(10);
     }
 
     public function getEntregasDeHojeByEntregador(int $entregadorId)
@@ -348,19 +351,23 @@ class EntregaService
         return Entrega::where('entregador_id', $entregadorId)
             ->where('status', 'entregue')
             ->whereDate('created_at', today())
-            ->latest()->paginate(10);
+            ->latest()
+            ->paginate(10);
     }
 
     public function getAllEntregasByEntregador(int $entregadorId)
     {
         return Entrega::where('entregador_id', $entregadorId)
-            ->latest()->paginate(10);
+            ->latest()
+            ->paginate(10);
     }
 
     public function getLastEntregasByEntregador(int $entregadorId, int $limit = 4)
     {
         return Entrega::where('entregador_id', $entregadorId)
             ->where('status', 'entregue')
-            ->latest()->limit($limit)->get();
+            ->latest()
+            ->limit($limit)
+            ->get();
     }
 }

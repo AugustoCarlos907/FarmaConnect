@@ -159,6 +159,26 @@
     .map-head h6 i { color:var(--teal); }
     #deliveryMap { height:380px; width:100%; z-index:1; }
 
+    /* Location button (novo) */
+.location-btn {
+  background: rgba(11,191,204,.15);
+  border: 1px solid rgba(11,191,204,.3);
+  border-radius: 40px;
+  padding: .3rem .7rem;
+  font-size: .75rem;
+  font-weight: 600;
+  color: #22c2d1;
+  cursor: pointer;
+  transition: all .2s;
+  display: inline-flex;
+  align-items: center;
+  gap: .4rem;
+  white-space: nowrap;
+}
+.location-btn:hover {
+  background: rgba(11,191,204,.25);
+  transform: translateY(-1px);
+}
     /* Legenda do mapa */
     .map-legend { display:flex; align-items:center; gap:1.2rem; padding:.65rem 1.2rem; border-top:1px solid var(--border-light); flex-wrap:wrap; }
     .ml-item { display:flex; align-items:center; gap:.4rem; font-size:.75rem; color:var(--text-mid); font-weight:500; }
@@ -238,20 +258,36 @@
         <span class="status-dot"></span>
         <span id="statusLabel">{{ $entregador->status === 'Ativo' ? 'Online' : 'Offline' }}</span>
       </div>
+
+     <!-- Botão de actualização de localização -->
+    <button class="location-btn" id="btnAtualizarLocalizacao">
+      <i class="bi bi-geo-alt-fill"></i> 
+    </button>
+    <span id="statusLocalizacao" class="ms-1" style="font-size: 0.7rem; color: #a0c4c8;"></span>
+
     </div>
     <nav class="sidebar-nav">
       <span class="nav-label">Principal</span>
-      <a href="{{ route('index.entregadores') }}"   class="nav-link"><i class="bi bi-speedometer2"></i> Dashboard</a>
+      <a href="{{ route('index.entregadores') }}"   class="nav-link"><i class="bi bi-speedometer2"></i> Paínel Administrativo</a>
       <a href="{{ route('entregas.entregadores') }}" class="nav-link active"><i class="bi bi-truck"></i> Entregas
         @if($totalEmTransito > 0)
           <span class="nav-badge nb-teal">{{ $totalEmTransito }}</span>
         @endif
       </a>
       <a href="{{ route('ganhos.entregadores') }}"  class="nav-link"><i class="bi bi-cash-stack"></i> Ganhos</a>
+
+      <a href="{{ route('avaliacao.entregadores') }}" 
+        class="nav-link {{ request()->routeIs('avaliacao.entregadores') ? 'active' : '' }}">
+        <i class="bi bi-star"></i>
+        <span>Avaliações</span>
+      </a>
+
       <span class="nav-label">Conta</span>
       <a href="{{ route('perfil.entregadores', ['id' => Auth::user()->id]) }}" class="nav-link">
         <i class="bi bi-person-circle"></i> Perfil
       </a>
+
+
       <div class="nav-divider"></div>
     <a href="#" class="nav-link" style="color:rgba(240,78,96,.7)" 
        onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
@@ -885,6 +921,78 @@ function showToast(title, msg) {
   t.classList.add('show');
   setTimeout(() => t.classList.remove('show'), 3500);
 }
+
+
+/* ── LOCALIZAÇÃO (manual + automática a cada 30 min) ── */
+  function enviarLocalizacao() {
+    const statusSpan = document.getElementById('statusLocalizacao');
+    if (!statusSpan) return;
+    statusSpan.innerHTML = '<i class="bi bi-hourglass-split"></i>';
+    statusSpan.style.opacity = '1';
+
+    if (!navigator.geolocation) {
+      statusSpan.innerHTML = '<i class="bi bi-exclamation-triangle"></i> Não suportado';
+      setTimeout(() => statusSpan.innerHTML = '', 3000);
+      return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      function(position) {
+        const lat = position.coords.latitude;
+        const lng = position.coords.longitude;
+
+        fetch('{{ route("entregador.localizacao") }}', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+          },
+          body: JSON.stringify({ latitude: lat, longitude: lng })
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            statusSpan.innerHTML = '<i class="bi bi-check-circle-fill text-success"></i>';
+            setTimeout(() => statusSpan.innerHTML = '', 3000);
+          } else {
+            statusSpan.innerHTML = '<i class="bi bi-x-circle-fill text-danger"></i>';
+            setTimeout(() => statusSpan.innerHTML = '', 3000);
+          }
+        })
+        .catch(error => {
+          console.error('Erro:', error);
+          statusSpan.innerHTML = '<i class="bi bi-x-circle-fill text-danger"></i>';
+          setTimeout(() => statusSpan.innerHTML = '', 3000);
+        });
+      },
+      function(error) {
+        let msg = '';
+        switch(error.code) {
+          case error.PERMISSION_DENIED: msg = 'Permissão negada'; break;
+          case error.POSITION_UNAVAILABLE: msg = 'Indisponível'; break;
+          case error.TIMEOUT: msg = 'Tempo esgotado'; break;
+          default: msg = 'Erro';
+        }
+        statusSpan.innerHTML = '<i class="bi bi-exclamation-triangle"></i> ' + msg;
+        setTimeout(() => statusSpan.innerHTML = '', 4000);
+      },
+      { enableHighAccuracy: true, timeout: 10000 }
+    );
+  }
+
+  // Botão manual
+  const btnLoc = document.getElementById('btnAtualizarLocalizacao');
+  if (btnLoc) {
+    btnLoc.addEventListener('click', enviarLocalizacao);
+  }
+
+  // Envio automático a cada 30 minutos (1800000 ms)
+  setInterval(enviarLocalizacao, 1800000);
+
+  // Opcional: enviar ao carregar a página (após 2 segundos)
+  window.addEventListener('load', function() {
+    setTimeout(enviarLocalizacao, 2000);
+  });
 
 /* Flash de sessão */
 @if(session('success'))

@@ -634,19 +634,11 @@
             <a class="oa-btn oa-ghost text-decoration-none" href="{{ route('pedidos.factura', ['id' => $pedido->id]) }}"><i class="bi bi-receipt"></i> Ver factura</a>
 
 
-          @if($pedido->farmacias->count() === 1)
-              <button class="oa-btn oa-primary" onclick="openRatingModal({{ $pedido->id }}, '{{ addslashes($pedido->farmacias->first()->name) }}')">
-                  <i class="bi bi-star"></i> Avaliar farmácia
-              </button>
-          @else
-              <button class="oa-btn oa-primary disabled" disabled>
-                  <i class="bi bi-star"></i> Avaliar (várias farmácias)
-              </button>
-          @endif
+
             {{-- <button class="oa-btn oa-outline" onclick="reorder()">
               <i class="bi bi-arrow-repeat"></i> Repetir pedido
             </button> --}}
-            <a class="oa-btn oa-ghost text-decoration-none" href="{{ route('pedidos.factura', ['id' => $pedido->id]) }}"><i class="bi bi-receipt"></i> Ver factura</a>
+            {{-- <a class="oa-btn oa-ghost text-decoration-none" href="{{ route('pedidos.factura', ['id' => $pedido->id]) }}"><i class="bi bi-receipt"></i> Ver factura</a> --}}
 
             {{-- <button class="oa-btn oa-ghost"><i class="bi bi-download"></i> Baixar PDF</button> --}}
 
@@ -672,18 +664,31 @@
 
           {{-- <a class="oa-btn oa-ghost text-decoration-none" href="{{ route('pedidos.factura', ['id' => $pedido->id]) }}"><i class="bi bi-receipt"></i> Ver factura</a> --}}
           <button class="oa-btn oa-ghost"><i class="bi bi-receipt"></i> Ver detalhes</button>
-          {{-- <a class="oa-btn oa-ghost text-decoration-none" href="{{ route('pedidos.factura', ['id' => $pedido->id]) }}"><i class="bi bi-receipt"></i> Ver factura</a> --}}
+          <a class="oa-btn oa-ghost text-decoration-none" href="{{ route('pedidos.factura', ['id' => $pedido->id]) }}"><i class="bi bi-receipt"></i> Ver factura</a>
 
  
           @elseif($st === 'pago')
 
           <button class="oa-btn oa-ghost"><i class="bi bi-receipt"></i> Ver detalhes</button>
           <a class="oa-btn oa-ghost text-decoration-none" href="{{ route('pedidos.factura', ['id' => $pedido->id]) }}"><i class="bi bi-receipt"></i> Ver factura</a>
-
-          @else
-            {{-- confirmado / preparando --}}
+          
+         
+          {{-- Concluído --}}
+          @elseif($st == 'Concluído')
             <button class="oa-btn oa-ghost"><i class="bi bi-receipt"></i> Ver detalhes</button>
             
+            @if($pedido->farmacias->count() === 1)
+                <button class="oa-btn oa-primary" onclick="openRatingModal({{ $pedido->id }}, '{{ addslashes($pedido->farmacias->first()->name) }}')">
+                    <i class="bi bi-star"></i> Avaliar farmácia
+                </button>
+            @else
+                <button class="oa-btn oa-primary disabled" disabled>
+                    <i class="bi bi-star"></i> Avaliar (várias farmácias)
+                </button>
+            @endif
+                <button class="oa-btn oa-primary" onclick="openRatingModal({{ $pedido->id }}, '{{ addslashes($pedido->farmacias->first()->name) }}')">
+                    <i class="bi bi-star"></i> Avaliar Entregador
+                </button>
           @endif
 
         </div>

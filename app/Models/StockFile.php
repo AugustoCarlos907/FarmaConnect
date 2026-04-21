@@ -14,7 +14,8 @@ class StockFile extends Model
         'farmacia_id',
         'filename',
         'file_path',
-        'status'
+        'status',
+        'tipo'
     ];
 
     public function farmacia(): BelongsTo{

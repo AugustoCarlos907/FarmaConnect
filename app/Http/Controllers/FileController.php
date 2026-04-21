@@ -15,8 +15,11 @@ class FileController extends Controller
 
     
 
-    public function uploadFile(StoreFileRequest $request){
-        $request->validated();
+    public function uploadFile(Request $request){
+        $request->validate([
+            'file' => 'required|file',
+            'tipo' => 'nullable|string|max:20'
+        ]);
 
         if($request->hasFile('file')){
             $file = $request->file('file')->store('uploads');
@@ -33,6 +36,8 @@ class FileController extends Controller
                 'file_path' => $relativePath, 
                 'filename' => $filename,
                 'farmacia_id' => $farmaciaId,
+                'status' => 'pendente',
+                'tipo'        => $request->input('tipo', 'entrada')
             ];
             
             $stockFile = $this->service->saveFile($data);

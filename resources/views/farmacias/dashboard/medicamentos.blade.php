@@ -425,6 +425,37 @@
     .si-item span { font-size: 0.67rem; font-weight: 600; color: var(--text-3); display: block; }
     .si-item.selected span { color: var(--accent-2); }
 
+      @keyframes fadeDown {
+    from { opacity:0; transform:translateY(-5px); }
+    to   { opacity:1; transform:translateY(0); }
+  }
+  .import-opt {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    width: 100%;
+    padding: 11px 14px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    text-align: left;
+    transition: background .1s;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .import-opt:hover { background: var(--surface-2); }
+  .import-opt i { font-size: 1rem; margin-top: 1px; flex-shrink: 0; }
+  .import-opt-title {
+    font-size: .78rem;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 2px;
+  }
+  .import-opt-sub {
+    font-size: .68rem;
+    color: var(--text-3);
+    line-height: 1.4;
+  }
+
     /* ─── MODAL CONFIRMAR ─────────────────── */
     .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(15,23,42,.48); z-index: 600; align-items: center; justify-content: center; backdrop-filter: blur(2px); }
     .modal-overlay.open { display: flex; }
@@ -661,13 +692,98 @@
           </div> --}}
 
           <button class="btn btn-outline btn-icon" title="Exportar CSV" onclick="alert('Exportar CSV — integrar com API Laravel')"><i class="bi bi-download"></i></button>
-          <form action="{{ route('upload.files') }}  " method="POST" enctype="multipart/form-data" id="csvUploadForm">
+          {{-- <form action="{{ route('upload.files') }}  " method="POST" enctype="multipart/form-data" id="csvUploadForm">
           @csrf
           <input type="file" name="file" id="csvFileInput" accept=".csv" style="display: none;">
-          <button type="button" class="btn btn-outline btn-icon   w-100" title="Importar CSV" onclick="document.getElementById('csvFileInput').click();">
-              <i class="bi bi-upload"></i>IMPORTAR CSV
+          <button type="button" class="btn btn-outline btn-icon   w-100" title="IMPORTAR MEDICAMENTOS EM MASSA" onclick="document.getElementById('csvFileInput').click();">
+              <i class="bi bi-upload"></i> ENTRADA EM LOTE
           </button>
-      </form>
+      </form> --}}
+
+
+{{-- Form para ENTRADA EM LOTE --}}
+<form action="{{ route('upload.files') }}" method="POST"
+      enctype="multipart/form-data" id="csvUploadFormEntrada">
+  @csrf
+  <input type="hidden" name="tipo" value="entrada">
+  {{-- Input oculto — activado pelo botão do dropdown --}}
+  <input type="file" name="file" id="csvFileEntrada"
+         accept=".csv" style="display:none"
+         onchange="this.form.submit()">
+</form>
+ 
+{{-- Form para AJUSTE DE INVENTÁRIO --}}
+<form action="{{ route('upload.files') }}" method="POST"
+      enctype="multipart/form-data" id="csvUploadFormInventario">
+  @csrf
+  <input type="hidden" name="tipo" value="inventario">
+  {{-- Input oculto — activado pelo botão do dropdown --}}
+  <input type="file" name="file" id="csvFileInventario"
+         accept=".csv" style="display:none"
+         onchange="this.form.submit()">
+</form>
+ 
+{{-- ══ DROPDOWN VISÍVEL ═══════════════════════════════════════════════════════
+     Dois botões separados por uma seta:
+       [↑ Entrada em lote] [∨]
+     Clicar no texto principal → abre selector para ENTRADA EM LOTE
+     Clicar na seta → mostra menu com as duas opções
+══════════════════════════════════════════════════════════════════════════════ --}}
+<div style="position:relative;display:inline-flex" id="importDropdownWrap">
+ 
+  {{-- Botão principal: dispara directamente o modo "entrada" --}}
+  <button type="button"
+          class="btn btn-outline btn-icon"
+          style="border-right:none;border-radius:var(--r-md) 0 0 var(--r-md)"
+          title="Entrada em lote — criar/actualizar medicamentos e somar stock"
+          onclick="document.getElementById('csvFileEntrada').click()">
+    <i class="bi bi-upload"></i> Entrada em lote
+  </button>
+ 
+  {{-- Seta separadora: abre o menu de opções --}}
+  <button type="button"
+          class="btn btn-outline btn-icon"
+          style="border-left:1px solid var(--border-strong);border-radius:0 var(--r-md) var(--r-md) 0;padding:5px 8px"
+          title="Mais opções de importação"
+          onclick="toggleImportMenu(event)">
+    <i class="bi bi-chevron-down" style="font-size:.7rem"></i>
+  </button>
+ 
+  {{-- Menu flutuante --}}
+  <div id="importMenu"
+       style="display:none;position:absolute;top:calc(100% + 5px);right:0;
+              background:var(--surface);border:1px solid var(--border);
+              border-radius:var(--r-lg);box-shadow:var(--shadow-md);
+              min-width:230px;z-index:400;overflow:hidden;
+              animation:fadeDown .14s ease">
+ 
+    {{-- Opção 1: Entrada em lote --}}
+    <button type="button"
+            class="import-opt"
+            onclick="document.getElementById('csvFileEntrada').click();closeImportMenu()">
+      <i class="bi bi-box-arrow-in-down" style="color:var(--accent)"></i>
+      <div>
+        <div class="import-opt-title">Entrada em lote</div>
+        <div class="import-opt-sub">Cria ou actualiza medicamentos + soma stock</div>
+      </div>
+    </button>
+ 
+    <div style="height:1px;background:var(--border);margin:0 12px"></div>
+ 
+    {{-- Opção 2: Ajuste de inventário --}}
+    <button type="button"
+            class="import-opt"
+            onclick="document.getElementById('csvFileInventario').click();closeImportMenu()">
+      <i class="bi bi-arrow-left-right" style="color:var(--warning)"></i>
+      <div>
+        <div class="import-opt-title">Ajuste de inventário</div>
+        <div class="import-opt-sub">Apenas soma ou subtrai stock (+/-) de itens existentes</div>
+      </div>
+    </button>
+ 
+  </div>
+</div>
+ 
 
           <button class="btn btn-primary" onclick="openDrawer(null)">
             <i class="bi bi-plus-lg"></i> Novo produto
@@ -1070,6 +1186,26 @@
     });
 </script>
 
+<script>
+/* ── Dropdown de importação ─────────────────────────────────────────────── */
+function toggleImportMenu(e) {
+  if (e) e.stopPropagation();
+  const menu = document.getElementById('importMenu');
+  menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
+}
+ 
+function closeImportMenu() {
+  document.getElementById('importMenu').style.display = 'none';
+}
+ 
+/* Fechar o menu ao clicar fora */
+document.addEventListener('click', function(e) {
+  const wrap = document.getElementById('importDropdownWrap');
+  if (wrap && !wrap.contains(e.target)) {
+    closeImportMenu();
+  }
+});
+</script>
 <script>
 /* ══ DADOS DO BACKEND ═══════════════════════════ */
 let allProducts = @json($medicamentos->items()).map(m => ({

@@ -676,6 +676,7 @@
           {{-- Concluído --}}
           @elseif($st == 'Concluído')
             <button class="oa-btn oa-ghost"><i class="bi bi-receipt"></i> Ver detalhes</button>
+          <a class="oa-btn oa-ghost text-decoration-none" href="{{ route('pedidos.factura', ['id' => $pedido->id]) }}"><i class="bi bi-receipt"></i> Ver factura</a>
             
             @if($pedido->farmacias->count() === 1)
                 <button class="oa-btn oa-primary" onclick="openRatingModal({{ $pedido->id }}, '{{ addslashes($pedido->farmacias->first()->name) }}')">
@@ -687,8 +688,9 @@
                 </button>
             @endif
                 <button class="oa-btn oa-primary" onclick="openRatingModal({{ $pedido->id }}, '{{ addslashes($pedido->farmacias->first()->name) }}')">
-                    <i class="bi bi-star"></i> Avaliar Entregador
+                   <i class="bi bi-bicycle"></i> Avaliar entregador
                 </button>
+
           @endif
 
         </div>

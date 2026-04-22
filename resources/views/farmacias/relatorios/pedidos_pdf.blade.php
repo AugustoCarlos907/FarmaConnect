@@ -328,6 +328,14 @@
             </tr>
           @endforeach
         </tbody>
+        @php
+        $farmaciaId = Auth::user()->farmacia_id;
+        $totalGeral = DB::table('item_pedidos')
+        ->join('pedidos', 'item_pedidos.pedido_id', '=', 'pedidos.id')
+        ->where('item_pedidos.farmacia_id', $farmaciaId) // apenas itens da farmácia logada
+        ->where('pedidos.status', 'Concluído') // ou outro status adequado
+        ->sum('item_pedidos.subtotal');
+        @endphp
         <tfoot>
            <tr>
             <td colspan="4" style="font-size:8px; text-transform:uppercase; letter-spacing:.05em">
@@ -335,7 +343,7 @@
             </td>
             <td style="font-size:8px; text-transform:uppercase">Total geral</td>
             <td style="text-align:right; color:#a8f0f4; font-size:11px">
-              {{ number_format($relatorio->total_receitas, 0, ',', '.') }} Kz
+              {{ number_format($totalGeral, 0, ',', '.') }} Kz
             </td>
            </tr>
         </tfoot>
@@ -362,7 +370,7 @@
          </tr>
          <tr>
           <td class="sum-lbl-t">Receita total (concluídos)</td>
-          <td class="sum-val-t">{{ number_format($relatorio->total_receitas, 0, ',', '.') }} Kz</td>
+          <td class="sum-val-t">{{ number_format($totalGeral, 0, ',', '.') }} Kz</td>
          </tr>
       </table>
     </div>

@@ -10,7 +10,7 @@ class Factura extends Model
     protected $fillable = [
         'user_id',
         'pedido_id',
-        'pagamento_id',
+        // 'pagamento_id',
         'numero_factura',
         'valor_total',
         'iva',

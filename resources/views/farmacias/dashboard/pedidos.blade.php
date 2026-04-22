@@ -576,6 +576,7 @@
                     <span class="price-val">{{ number_format($total,0,',','.') }} Kz</span>
                   </td>
                   <td onclick="event.stopPropagation()">
+                  {{-- Workflow de aprovação de pedidos --}}
                     <div class="workflow-actions">
                       @if($pedido->status === 'Pendente')
                         <form action="{{ route('pedidos.status.update', $pedido->id) }}" method="POST" style="display:inline">
@@ -595,7 +596,7 @@
                           </button>
                         </form>
                       @endif
-                      @if($pedido->status === 'Aprovado')
+                      {{-- @if($pedido->status === 'Aprovado')
                         <form action="{{ route('pedidos.status.update', $pedido->id) }}" method="POST" style="display:inline">
                           @csrf @method('PUT')
                           <input type="hidden" name="status" value="pago">
@@ -603,7 +604,7 @@
                             <i class="bi bi-credit-card"></i> Marcar pago
                           </button>
                         </form>
-                      @endif
+                      @endif --}}
                     </div>
                   </td>
                 </tr>
@@ -774,7 +775,7 @@
       @endif
 
       {{-- ─── Comprovativo (só express) ─── --}}
-      @if($isExpress && $comprovativo)
+      {{-- @if($isExpress && $comprovativo)
         <div class="d-section">
           <div class="d-section-title"><i class="bi bi-receipt"></i> Comprovativo de pagamento</div>
           <div class="d-row">
@@ -788,7 +789,7 @@
             </span>
           </div>
         </div>
-      @endif
+      @endif --}}
 
       {{-- ─── Itens ─── --}}
       <div class="d-section">

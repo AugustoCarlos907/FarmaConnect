@@ -41,13 +41,13 @@ class ReportService{
     }
 
 
-    public function gerarRelatorioPoPeriodo($farmaciaId, $dataInicio, $dataFim, $tipoRelatorio) {
+    public function gerarRelatorioPoPeriodo( $dataInicio, $dataFim, $tipoRelatorio) {
         $dataInicio = Carbon::parse($dataInicio)->startOfDay();
         $dataFim    = Carbon::parse($dataFim)->endOfDay();
 
-        $pedidos = Pedido::where('farmacia_id', $farmaciaId)
-                ->whereBetween('created_at', [$dataInicio, $dataFim])
-                ->get();
+        $pedidos = Pedido::whereHas('farmacias', function($q) use($dataInicio , $dataFim){
+                        $q->whereBetween('farmacia_pedido.created_at', [$dataInicio, $dataFim]);
+                        })->get();
         
         $totalVendas = $pedidos->where('status', 'Concluido')->count();
         $totalReceitas = $pedidos->where('status', 'Concluido')->sum('total'); 

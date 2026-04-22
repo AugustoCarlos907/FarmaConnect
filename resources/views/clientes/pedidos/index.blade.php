@@ -630,7 +630,7 @@
 
           @if($st === 'Em Entrega')
             <button class="oa-btn oa-primary"><i class="bi bi-map"></i> Rastrear entrega</button>
-            <button class="oa-btn oa-outline"><i class="bi bi-telephone"></i> Ligar ao entregador</button>
+            <button class="oa-btn oa-outline" title="{{ $pedido->entrega->entregador->user->phone ?? 'Sem número de telefone' }}"><i class="bi bi-telephone"></i> Ligar ao entregador</button>
             <a class="oa-btn oa-ghost text-decoration-none" href="{{ route('pedidos.factura', ['id' => $pedido->id]) }}"><i class="bi bi-receipt"></i> Ver factura</a>
 
 
@@ -676,7 +676,6 @@
           {{-- Concluído --}}
           @elseif($st == 'Concluído')
             <button class="oa-btn oa-ghost"><i class="bi bi-receipt"></i> Ver detalhes</button>
-          <a class="oa-btn oa-ghost text-decoration-none" href="{{ route('pedidos.factura', ['id' => $pedido->id]) }}"><i class="bi bi-receipt"></i> Ver factura</a>
             
             @if($pedido->farmacias->count() === 1)
                 <button class="oa-btn oa-primary" onclick="openRatingModal({{ $pedido->id }}, '{{ addslashes($pedido->farmacias->first()->name) }}')">

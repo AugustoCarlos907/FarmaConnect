@@ -613,7 +613,7 @@
                 <tr>
                   <th>Cliente</th>
                   {{-- <th>Medicamento</th> --}}
-                  <th>Hora</th>
+                  <th>DATA/Hora</th>
                   <th>Estado</th>
                 </tr>
               </thead>
@@ -645,7 +645,7 @@
                       </div>
                     </td>
                     {{-- <td style="color:var(--text-3)">{{ $medicamento }}</td> --}}
-                    <td style="color:var(--text-4)">{{ $pedido->data_pedido->format('H:i') }}</td>
+                    <td style="color:var(--text-4)">{{ $pedido->data_pedido->format('Y-m-d-H:i') }}</td>
                     <td><span class="tag {{ $statusClass }}">{{ $statusLabel }}</span></td>
                   </tr>
                 @empty

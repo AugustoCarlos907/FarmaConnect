@@ -65,7 +65,7 @@ class ReportController extends Controller
         }
 
         $relatorio = $this->service->gerarRelatorioPoPeriodo(
-           $user->farmacia_id,
+        //    $user->farmacia_id,
            $data['data_inicio'] ?? Carbon::now(),
            $data['data_fim'] ?? Carbon::now(),
            $data['tipo_relatorio'] ?? 'pdf'

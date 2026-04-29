@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\NotifyUserOrderCompletedJob;
 use App\Models\ItemPedido;
 use App\Models\Pedido;
 use App\Services\EntregaService;
@@ -32,14 +33,29 @@ class ItemPedidoController extends Controller
             }
 
             DB::transaction(function () use ($item, $request) {
+
                 $item->update(['status_item' => $request->status]);
 
                 
                 $this->atualizarStatusGlobal($item->pedido_id);
 
-                // if ($request->status === 'aprovado') {
-                //     $this->verificarEAcionarEntregaPorFarmacia($item->pedido_id, $item->stockItem->farmacia_id);
-                // }
+                $pedido = Pedido::find($item->pedido_id);
+                
+                if ($pedido->status === 'Aprovado' && !$pedido->entrega) {
+                        // Cria a entrega apenas uma vez, quando o pedido fica aprovado
+                        $entrega = $this->entregaService->criarEntrega($pedido);
+
+                         $pedido->update([
+                                'status' => 'Em Entrega',
+                                'codigo_confirmacao' => $entrega->codigo_confirmacao
+                            ]);
+
+
+                        $pedido->load(['user', 'items.stockItem.medicamento']);
+
+                        NotifyUserOrderCompletedJob::dispatch($pedido, $entrega);
+
+                    }
             });
 
             //  $item->refresh();
@@ -75,15 +91,15 @@ class ItemPedidoController extends Controller
         $pedido->update(['status' => $novoStatus]);
     }
 
-    private function verificarEAcionarEntregaPorFarmacia($pedidoId, $farmaciaId)
-    {
-        $pedido = Pedido::with('items.stockItem')->find($pedidoId);
-        $itensDaFarmacia = $pedido->items->filter(fn($i) => $i->stockItem->farmacia_id == $farmaciaId);
-        $todosAprovados = $itensDaFarmacia->every(fn($i) => $i->status_item === 'aprovado');
+    // private function verificarEAcionarEntregaPorFarmacia($pedidoId, $farmaciaId)
+    // {
+    //     $pedido = Pedido::with('items.stockItem')->find($pedidoId);
+    //     $itensDaFarmacia = $pedido->items->filter(fn($i) => $i->stockItem->farmacia_id == $farmaciaId);
+    //     $todosAprovados = $itensDaFarmacia->every(fn($i) => $i->status_item === 'aprovado');
 
-        if ($todosAprovados) {
-            // Chama serviço de entrega para esta farmácia
-            app(\App\Services\EntregaService::class)->criarEntregaParaFarmacia($pedido, $farmaciaId);
-        }
-    }
+    //     if ($todosAprovados) {
+    //         // Chama serviço de entrega para esta farmácia
+    //         app(\App\Services\EntregaService::class)->criarEntrega($pedido);
+    //     }
+    // }
 }

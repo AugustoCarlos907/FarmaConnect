@@ -382,11 +382,11 @@
           <div class="kpi-val">{{ number_format($totalGasto, 0, ',', '.') }} Kz</div>
           <div class="kpi-lbl">Gasto total</div>
         </div>
-        <div class="kpi k-teal">
+        {{-- <div class="kpi k-teal">
           <div class="kpi-head"><div class="kpi-ico teal"><i class="bi bi-calculator"></i></div></div>
           <div class="kpi-val">{{ $totalClientes > 0 ? number_format($totalGasto / $totalClientes, 0, ',', '.') : 0 }} Kz</div>
           <div class="kpi-lbl">Gasto médio/cliente</div>
-        </div>
+        </div> --}}
       </div>
 
       <!-- ─── TOOLBAR ───────────────────────────── -->
@@ -416,7 +416,7 @@
                 <th>Cliente</th>
                 <th>Nº Pedidos</th>
                 <th>Gasto Total</th>
-                <th>Endereço</th>
+                {{-- <th>Endereço</th> --}}
               </tr>
             </thead>
             <tbody id="clientsBody">
@@ -444,7 +444,7 @@
                     <div style="font-family:'Sora',sans-serif;font-weight:600;font-size:.82rem">{{ number_format($totalGastoCliente, 0, ',', '.') }} Kz</div>
                     <div class="spend-bar-wrap"><div class="spend-bar" style="width:{{ $barPct }}%"></div></div>
                   </td>
-                  <td style="color:var(--text-3);font-size:.77rem">{{ $cliente->endereco }}</td>
+                  {{-- <td style="color:var(--text-3);font-size:.77rem">{{ $cliente->endereco }}</td> --}}
                 </tr>
               @empty
                 <tr>
@@ -489,7 +489,7 @@ let allClients = @json($clientes->items()).map(c => ({
   pedidos: c.pedidos || [],
   totalPedidos: (c.pedidos || []).length,
   totalGasto: (c.pedidos || []).reduce((sum, p) => sum + (p.total || 0), 0),
-  endereco: c.pedidos && c.pedidos.length > 0 ? c.pedidos[0].endereco : '—'
+  // endereco: c.pedidos && c.pedidos.length > 0 ? c.pedidos[0].endereco : '—'
 }));
 
 /* ══ STATE ══════════════════════════════════════════ */
@@ -556,7 +556,6 @@ function render() {
           <div style="font-family:'Sora',sans-serif;font-weight:600;font-size:.82rem">${c.totalGasto.toLocaleString('pt-AO')} Kz</div>
           <div class="spend-bar-wrap"><div class="spend-bar" style="width:${barPct}%"></div></div>
         </td>
-        <td style="color:var(--text-3);font-size:.77rem">${c.endereco}</td>
       </tr>`;
   });
 

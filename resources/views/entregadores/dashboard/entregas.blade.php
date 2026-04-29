@@ -270,9 +270,9 @@
       <span class="nav-label">Principal</span>
       <a href="{{ route('index.entregadores') }}"   class="nav-link"><i class="bi bi-speedometer2"></i> Paínel Administrativo</a>
       <a href="{{ route('entregas.entregadores') }}" class="nav-link active"><i class="bi bi-truck"></i> Entregas
-        @if($totalEmTransito > 0)
+        {{-- @if($totalEmTransito > 0)
           <span class="nav-badge nb-teal">{{ $totalEmTransito }}</span>
-        @endif
+        @endif --}}
       </a>
       <a href="{{ route('ganhos.entregadores') }}"  class="nav-link"><i class="bi bi-cash-stack"></i> Ganhos</a>
 
@@ -497,11 +497,13 @@
                               type="submit">
                         <i class="bi bi-check2-circle"></i> Concluir
                       </button>
-                      {{-- <button class="btn-cancelar"
-                              onclick="abrirCancelar({{ $entrega->id }})">
-                        <i class="bi bi-x-circle"></i>
-                      </button> --}}
                     </form>
+
+
+                      <button class="btn-cancelar"
+                                onclick="abrirCancelar({{ $entrega->id }})">
+                          <i class="bi bi-x-circle"></i> Cancelar
+                        </button>
                   @endif
                 </div>
               </div>
@@ -865,25 +867,25 @@ function confirmarCancelamento() {
   if (!cancelTargetId) return;
   const motivo = document.getElementById('motivoCancel').value.trim();
 
-  fetch(`/entregadores/entregas/${cancelTargetId}/cancelar`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'X-CSRF-TOKEN': '{{ csrf_token() }}',
-    },
-    body: JSON.stringify({ motivo }),
-  })
-  .then(r => r.json())
-  .then(d => {
-    closeModal('modalCancelar');
-    if (d.ok) {
-      showToast('Entrega cancelada', 'A entrega foi cancelada com sucesso.');
-      setTimeout(() => location.reload(), 1500);
-    } else {
-      showToast('Erro', 'Não foi possível cancelar a entrega.');
-    }
-  })
-  .catch(() => showToast('Erro de rede', 'Verifique a ligação.'));
+  // fetch(`/entregadores/entregas/${cancelTargetId}/cancelar`, {
+  //   method: 'POST',
+  //   headers: {
+  //     'Content-Type': 'application/json',
+  //     'X-CSRF-TOKEN': '{{ csrf_token() }}',
+  //   },
+  //   body: JSON.stringify({ motivo }),
+  // })
+  // .then(r => r.json())
+  // .then(d => {
+  //   closeModal('modalCancelar');
+  //   if (d.ok) {
+  //     showToast('Entrega cancelada', 'A entrega foi cancelada com sucesso.');
+  //     setTimeout(() => location.reload(), 1500);
+  //   } else {
+  //     showToast('Erro', 'Não foi possível cancelar a entrega.');
+  //   }
+  // })
+  // .catch(() => showToast('Erro de rede', 'Verifique a ligação.'));
 }
 
 /* ═══════════════════════════════════════════════════

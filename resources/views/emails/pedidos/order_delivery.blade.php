@@ -12,6 +12,7 @@
         <li>Distância: {{ number_format($entrega->distancia_km, 2, ',', '.') }} km</li>
         <li>Taxa de entrega: {{ number_format($entrega->taxa_entrega, 2, ',', '.') }} Kz</li>
         <li>Endereço: {{ $pedido->endereco }}</li>
+        <li>Código: {{ $pedido->codigo_confirmacao ?? null}} </li>
     </ul>
 
     <h2>Itens do pedido</h2>

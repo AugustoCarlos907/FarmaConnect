@@ -166,7 +166,12 @@ class PedidoController extends Controller
                 if (in_array($pedido->status, ['Aprovado', 'aprovado', 'APROVADO']) && $pedido->taxa_entrega > 0) {
                       try {
                             $entrega = $this->entregaService->criarEntrega($pedido);
-                            $pedido->update(['status' => 'Em Entrega']);
+                            
+                            $pedido->update([
+                                'status' => 'Em Entrega',
+                                'codigo_confirmacao' => $entrega->codigo_confirmacao
+                            ]);
+
 
                             $pedido->load(['user', 'items.stockItem.medicamento']);
 

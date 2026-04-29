@@ -17,7 +17,8 @@ class Entrega extends Model
         'data_entrega',
         'observacoes',
         // 'avaliacao_id',
-        'rota'
+        'rota',
+        'codigo_confirmacao'
     ];
 
     protected $appends = ['rota_array'];

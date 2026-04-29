@@ -609,6 +609,7 @@ $entregasJs = $todasEntregas->map(function($e) {
         'observacoes'  => $e->observacoes,
         'cliente'      => optional(optional($e->pedido)->user)->name ?? '—',
         'farmacia'     => $farmNome,
+        'codigo_confirmacao' => $e->codigo_confirmacao ?? '—',
         /* rota_array = waypoints completos { lat, lng, tipo, nome, endereco }
          * Injectado pelo EntregasController via ->each(fn($e) => $e->rota_array = ...) */
         'rota'         => $e->rota_array ?? [],
@@ -810,6 +811,7 @@ function openDetail(id) {
     ${e.data_entrega ? `<div class="detail-row"><i class="bi bi-flag-fill"></i><div><span>Entregue em</span><br><strong>${new Date(e.data_entrega).toLocaleString('pt-PT')}</strong></div></div>` : ''}
     <div class="detail-row"><i class="bi bi-info-circle"></i><div><span>Estado</span><br><strong>${statusLabel}</strong></div></div>
     ${e.observacoes ? `<div class="detail-row"><i class="bi bi-chat-text"></i><div><span>Observações</span><br><strong>${e.observacoes}</strong></div></div>` : ''}
+    <div class="detail-row"><i class="bi bi-barcode"></i><div><span>Código de Confirmação</span><br><strong>${e.codigo_confirmacao ?? '—'}</strong></div></div>
   `;
 
   document.getElementById('modalDetail').classList.add('open');

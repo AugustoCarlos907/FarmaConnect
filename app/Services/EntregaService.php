@@ -299,6 +299,7 @@ class EntregaService
                 'taxa_entrega'     => $taxaEntrega,
                 'rota'             => json_encode($rota),   // consumido pelo Leaflet
                 'data_saida'       => now(),
+                'codigo_confirmacao' => strtoupper(uniqid('ENT-')), // código único para rastreamento
             ]);
 
             /* Marcar entregador como ocupado */

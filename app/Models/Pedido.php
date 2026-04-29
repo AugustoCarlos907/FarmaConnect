@@ -21,6 +21,7 @@ class Pedido extends Model
         'prescricao_path',
         'distancia_km',      
         'taxa_entrega',      
+        'codigo_confirmacao'
     ];
 
 

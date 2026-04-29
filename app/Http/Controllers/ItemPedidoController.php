@@ -4,12 +4,15 @@ namespace App\Http\Controllers;
 
 use App\Models\ItemPedido;
 use App\Models\Pedido;
+use App\Services\EntregaService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class ItemPedidoController extends Controller
 {
+    public function __construct(public EntregaService $entregaService)
+    {}
     public function updateStatus($itemId, Request $request)
     {
             $request->validate([
@@ -80,7 +83,7 @@ class ItemPedidoController extends Controller
 
         if ($todosAprovados) {
             // Chama serviço de entrega para esta farmácia
-            // app(\App\Services\EntregaService::class)->criarEntregaParaFarmacia($pedido, $farmaciaId);
+            app(\App\Services\EntregaService::class)->criarEntregaParaFarmacia($pedido, $farmaciaId);
         }
     }
 }

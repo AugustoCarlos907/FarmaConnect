@@ -199,8 +199,8 @@
 
     /* ─── MODAL BACKDROP MAIS INTENSO ────────────────── */
     .modal-backdrop {
-      background-color: rgba(0, 0, 0, 0.7) !important;  /* escurece o fundo */
-      backdrop-filter: blur(4px);                       /* desfoca ligeiramente o conteúdo atrás */
+      background-color: rgba(0, 0, 0, 0.7) !important;
+      backdrop-filter: blur(4px);
       transition: backdrop-filter 0.2s ease;
     }
 
@@ -395,10 +395,18 @@
       width: fit-content;
     }
 
+    /* ─── OPÇÃO DE PAGAMENTO DESACTIVADA ─────────────── */
+    .pay-option.disabled-pay {
+      opacity: 0.4;
+      pointer-events: none;
+      cursor: not-allowed;
+      filter: grayscale(60%);
+    }
+
     /* ─── QUANDO O MODAL ESTÁ ABERTO, EVITA ROLAGEM DO FUNDO (opcional) ─── */
     body.modal-open {
       overflow: hidden;
-      padding-right: 0 !important; /* evita salto lateral */
+      padding-right: 0 !important;
     }
     @keyframes fadeUp{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:none;}}
     .cc-head,.ac-head{padding:1.1rem 1.4rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
@@ -648,23 +656,7 @@
                   {{-- Receita médica (apenas se necessário) --}}
                   @if($requerReceita)
                       <div class="prescricao-section mt-2">
-                          {{-- @if($item->prescricao_path)
-                              <div class="prescricao-alert prescricao-success">
-                                  <i class="bi bi-check-circle-fill"></i> Receita anexada.
-                                  <a href="{{ asset('storage/'.$item->prescricao_path) }}" target="_blank" class="prescricao-link">Ver</a>
-                              </div>
-                          @else --}}
                               <p class="prescricao-help text-danger mb-3"><strong>{{strtoupper(' Pedido sujeito a receita mÉdica. Anexe a receita para finalizar o pedido.')}}</strong></p>
-
-                              {{-- <form class="prescricao-form">
-                                  @csrf
-                                  <input type="file" name="prescricao_path" id="receitaInput" accept="image/*,application/pdf" class="prescricao-input" required>
-                                  <button type="button" class="prescricao-btn" id="anexarBtn">
-                                      <i class="bi bi-upload"></i> Anexar receita
-                                  </button>
-                              </form> --}}
-
-                              <!-- Input file real (oculto) -->
 
                               <!-- Botão estilizado que aciona o input -->
                               <button type="button" class="prescricao-btn" id="anexarBtn">
@@ -673,7 +665,6 @@
 
                               <!-- Local para mostrar o nome do ficheiro seleccionado -->
                               <div id="prescricaoPreview" class="comprovativo-preview"></div>
-                          {{-- @endif --}}
                       </div>
                   @endif
         </div>
@@ -743,10 +734,10 @@
         <div class="payment-card">
           <div class="ac-head"><h6><i class="bi bi-credit-card-2-front"></i> Método de pagamento</h6></div>
           <div class="pay-body">
-            <div class="pay-option " onclick="selectPay(this,'express')">
+            <div class="pay-option" id="payOptionExpress" onclick="selectPay(this,'express')">
               <div class="pay-icon">📱</div>
               <div><div class="pay-name">Multicaixa Express</div><div class="pay-sub">Pagamento rápido via app do banco</div></div>
-              <input type="radio" class="pay-radio" name="pay_ui" >
+              <input type="radio" class="pay-radio" name="pay_ui">
             </div>
             
             <!-- Área para pagamento Express (número + comprovativo) -->
@@ -759,9 +750,8 @@
                 @if(!$numeroExpress)
                     <div class="alert-fc alert-err" style="margin-top: 0.75rem;">
                         <i class="bi bi-exclamation-triangle-fill"></i>
-                        Seleccione o produto  de uma fármacia para ter  accesso às coordenadas bancárias disponíveis .                    
+                        Seleccione o produto  de uma fármacia para ter  accesso às coordenadas bancárias disponíveis.
                     </div>
-
                 @else
                 {{-- Card com o número Express --}}
                 <div class="express-info-card">
@@ -770,7 +760,7 @@
                     </div>
                     <div class="express-info-content">
                         <div class="express-info-label">Pagamento via Multicaixa Express</div>
-                        <div class="express-info-number">{{ $numeroExpress ?? 'Numero não disponível'  }}</div>
+                        <div class="express-info-number">{{ $numeroExpress ?? 'Numero não disponível' }}</div>
                         <div class="express-info-hint">
                             Utilize este número na aplicação do seu banco para efectuar o pagamento.
                         </div>
@@ -786,12 +776,10 @@
                       </div>
                   </div>
                   <div id="comprovativoPreview" class="comprovativo-preview"></div>
-
                 @endif
-
             </div>
 
-            <div class="pay-option" onclick="selectPay(this,'numerario')">
+            <div class="pay-option" id="payOptionNumerario" onclick="selectPay(this,'numerario')">
               <div class="pay-icon">💵</div>
               <div><div class="pay-name">Pagamento em Numerário</div><div class="pay-sub">Pague ao entregador na entrega ou no levantamento na farmácia</div></div>
               <input type="radio" class="pay-radio" name="pay_ui" checked>
@@ -816,7 +804,6 @@
             @foreach($itens as $i => $item)
               <input type="hidden" name="items[{{ $i }}][stockId]"    value="{{ $item->stock_item_id }}">
               <input type="hidden" name="items[{{ $i }}][quantidade]" value="{{ $item->quantidade }}">
-              {{-- <input type="hidden" name="items[{{ $i }}][prescricao_path]" value="{{ $item->prescricao_path }}"> --}}
             @endforeach
 
             {{-- endereco / lat / lng — valor inicial = primeira morada guardada --}}
@@ -826,8 +813,6 @@
             <input type="hidden" name="distancia_km" id="distanciaKmHidden" value="">
             <input type="hidden" name="taxa_entrega" id="taxaEntregaHidden" value="">
 
-            {{-- <input type="hidden" name="taxa_entrega" id="taxaEntregaHidden" value="0"> --}}
-
             {{-- metodo_pagamento — valor inicial = express; actualizado pelo JS selectPay() --}}
             <input type="hidden" name="metodo_pagamento" id="h-metodo" value="express">
 
@@ -836,7 +821,6 @@
 
             <!-- Input file oculto -->
             <input type="file" name="prescricao_path" id="prescricaoInput" accept="image/*,application/pdf" style="display: none;">
-            {{-- <input type="file" name="prescricao_path" id="receitaInput" value=""  style="display: none;"> --}}
 
             @foreach($itens as $item)
               @php 
@@ -863,10 +847,8 @@
             <div class="tot-row bold"><span>Total</span><span id="sumTotal">{{ number_format($total,0,',','.') }} Kz</span></div>
             <div style="background:var(--mint);border-radius:12px;padding:.75rem 1rem;margin:1rem 0;font-size:.78rem;color:var(--muted);display:flex;align-items:center;gap:.5rem">
               <i class="bi bi-info-circle-fill" style="color:var(--accent);flex-shrink:0"></i>
-              {{-- O pagamento só é cobrado após a confirmação da farmácia. --}}
-            <span>Poderá acompanhar o estado do seu pedido em tempo real após a confirmação.</span>
+              <span>Poderá acompanhar o estado do seu pedido em tempo real após a confirmação.</span>
             </div>
-
 
             <button type="submit" id="btnConfirmar" class="checkout-btn"
                     {{ $itens->isEmpty() ? 'disabled' : '' }}>
@@ -947,14 +929,15 @@ document.getElementById('prescricaoInput').addEventListener('change', function()
         preview.innerHTML = '';
     }
 });
-</script><script>
+</script>
+<script>
 // Coordenadas de todas as farmácias do carrinho (enviadas pelo backend)
 const farmacias = @json($farmacias);
 // Verifica se o pedido contém medicamentos que exigem receita
 const requerReceita = {{ $requerReceita ? 'true' : 'false' }};
 
 function haversine(lat1, lng1, lat2, lng2) {
-    const R = 6371; // km
+    const R = 6371;
     const dLat = (lat2 - lat1) * Math.PI / 180;
     const dLng = (lng2 - lng1) * Math.PI / 180;
     const a = Math.sin(dLat/2)**2 +
@@ -964,8 +947,8 @@ function haversine(lat1, lng1, lat2, lng2) {
 }
 
 function calcularTaxaEntrega(distanciaKm) {
-    const bloco = 16;          // km
-    const taxaPorBloco = 1100; // Kz
+    const bloco = 16;
+    const taxaPorBloco = 1100;
     const blocos = Math.max(1, Math.ceil(distanciaKm / bloco));
     return blocos * taxaPorBloco;
 }
@@ -973,10 +956,7 @@ function calcularTaxaEntrega(distanciaKm) {
 const subtotalBase = {{ (int) $total }};
 let deliveryFee = 800;
 
-/* ── MORADA ─────────────────────────────────────────
-   Actualiza os hidden inputs e guarda o endereço seleccionado.
-──────────────────────────────────────────────────── */
-let enderecoAtual = null;   // guarda o objeto do endereço seleccionado
+let enderecoAtual = null;
 
 function selecionarEndereco(el) {
     const endereco = el.getAttribute('data-endereco') || '';
@@ -986,36 +966,28 @@ function selecionarEndereco(el) {
 
     enderecoAtual = { endereco, lat, lng, label };
 
-    // Preenche os hidden inputs
     document.getElementById('h-endereco').value = endereco;
     document.getElementById('h-lat').value = lat || '';
     document.getElementById('h-lng').value = lng || '';
 
-    // Actualiza a exibição no card
     const displayDiv = document.getElementById('enderecoSelecionadoDisplay');
     displayDiv.innerHTML = `
         <div class="ao-label">${label}</div>
         <div class="ao-addr">${endereco}</div>
     `;
 
-    // Fecha o modal
     const modal = bootstrap.Modal.getInstance(document.getElementById('modalEnderecos'));
     if (modal) modal.hide();
 
-    // Recalcula a taxa (se for entrega expresso)
     if (tipoEntrega === 'express') {
         recalcularTaxaPorEndereco();
     }
 }
 
-/* ── CÁLCULO DA ROTA PARA MÚLTIPLAS FARMÁCIAS ──────── */
 function recalcularTaxaPorEndereco() {
     if (!enderecoAtual || tipoEntrega !== 'express') return;
 
-    const destino = {
-        lat: enderecoAtual.lat,
-        lng: enderecoAtual.lng
-    };
+    const destino = { lat: enderecoAtual.lat, lng: enderecoAtual.lng };
 
     if (farmacias.length === 0) {
         actualizarResumo(0, 0);
@@ -1024,11 +996,9 @@ function recalcularTaxaPorEndereco() {
         return;
     }
 
-    // 1. Ordenar farmácias pela proximidade ao destino (cliente)
     let restantes = [...farmacias];
     let ordenadas = [];
 
-    // Encontrar a farmácia mais próxima do destino
     let idxMaisProxima = -1;
     let menorDistDestino = Infinity;
     for (let i = 0; i < restantes.length; i++) {
@@ -1042,7 +1012,6 @@ function recalcularTaxaPorEndereco() {
     restantes.splice(idxMaisProxima, 1);
     let atual = { lat: ordenadas[0].lat, lng: ordenadas[0].lng };
 
-    // 2. Restantes farmácias ordenadas pela proximidade à anterior
     while (restantes.length > 0) {
         let maisProximo = null;
         let menorDist = Infinity;
@@ -1062,7 +1031,6 @@ function recalcularTaxaPorEndereco() {
         } else break;
     }
 
-    // 3. Calcular distância total: farmácia1 → farmácia2 → ... → destino
     let distanciaTotal = 0;
     for (let i = 0; i < ordenadas.length - 1; i++) {
         distanciaTotal += haversine(
@@ -1070,7 +1038,6 @@ function recalcularTaxaPorEndereco() {
             ordenadas[i+1].lat, ordenadas[i+1].lng
         );
     }
-    // Adicionar distância da última farmácia até o destino
     if (ordenadas.length > 0) {
         distanciaTotal += haversine(
             ordenadas[ordenadas.length-1].lat, ordenadas[ordenadas.length-1].lng,
@@ -1087,7 +1054,7 @@ function recalcularTaxaPorEndereco() {
 function actualizarResumo(distanciaKm, taxaKz) {
     const sumDistance = document.getElementById('sumDistance');
     const sumDelivery = document.getElementById('sumDelivery');
-    const sumTotal = document.getElementById('sumTotal');
+    const sumTotal    = document.getElementById('sumTotal');
 
     if (sumDistance) sumDistance.textContent = distanciaKm.toFixed(2) + ' km';
     if (sumDelivery) sumDelivery.textContent = taxaKz === 0 ? 'Grátis' : taxaKz.toLocaleString('pt-AO') + ' Kz';
@@ -1101,18 +1068,33 @@ function abrirModalEnderecos() {
 }
 
 /* ── ENTREGA ──────────────────────────────────────── */
-let tipoEntrega = 'express'; // 'express' ou 'retirada'
+let tipoEntrega = 'express';
 
 function selectDeliv(tipo) {
     tipoEntrega = tipo;
-    // Actualiza o visual das opções
+
+    // Actualiza o visual das opções de entrega
     document.querySelectorAll('.deliv-option').forEach(opt => opt.classList.remove('selected'));
     const selectedDiv = document.querySelector(`.deliv-option[onclick*="${tipo}"]`);
     if (selectedDiv) selectedDiv.classList.add('selected');
 
-    const addressCard = document.getElementById('addressCardWrapper');
+    const payExpress   = document.getElementById('payOptionExpress');
+    const payNumerario = document.getElementById('payOptionNumerario');
+
     if (tipo === 'express') {
-        addressCard.style.display = 'block';
+        // ── Entrega Expresso: só Multicaixa Express está disponível ──
+
+        // Remove disabled do Multicaixa Express e desativa Numerário
+        payExpress.classList.remove('disabled-pay');
+        payNumerario.classList.add('disabled-pay');
+
+        // Se o Numerário estava selecionado, muda para Express
+        if (document.getElementById('h-metodo').value === 'numerario') {
+            selectPay(payExpress, 'express');
+        }
+
+        // Mostra card de endereço
+        document.getElementById('addressCardWrapper').style.display = 'block';
         if (enderecoAtual) {
             recalcularTaxaPorEndereco();
         } else {
@@ -1120,15 +1102,23 @@ function selectDeliv(tipo) {
             actualizarResumo(0, 0);
             document.getElementById('h-endereco').value = '';
         }
+
     } else {
-        addressCard.style.display = 'none';
+        // ── Retirar na Farmácia: ambas as opções estão disponíveis ──
+
+        payExpress.classList.remove('disabled-pay');
+        payNumerario.classList.remove('disabled-pay');
+
+        // Esconde card de endereço e limpa dados de entrega
+        document.getElementById('addressCardWrapper').style.display = 'none';
         enderecoAtual = null;
-        document.getElementById('h-endereco').value = 'Retirar na Farmácia';
-        document.getElementById('h-lat').value = 0.0;
-        document.getElementById('h-lng').value = 0.0;
+        document.getElementById('h-endereco').value     = 'Retirar na Farmácia';
+        document.getElementById('h-lat').value          = 0.0;
+        document.getElementById('h-lng').value          = 0.0;
         document.getElementById('distanciaKmHidden').value = '0';
         document.getElementById('taxaEntregaHidden').value = 0;
         actualizarResumo(0, 0);
+
         const displayDiv = document.getElementById('enderecoSelecionadoDisplay');
         displayDiv.innerHTML = `<p class="text-muted" style="margin:0"><i class="bi bi-building"></i> Retirar na Farmácia</p>`;
     }
@@ -1153,6 +1143,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
 /* ── PAGAMENTO ────────────────────────────────────── */
 function selectPay(el, metodo) {
+    // Ignora cliques em opções desactivadas
+    if (el.classList.contains('disabled-pay')) return;
+
     document.querySelectorAll('.pay-option').forEach(p => {
         p.classList.remove('selected');
         p.querySelector('.pay-radio').checked = false;
@@ -1177,7 +1170,6 @@ function selectPay(el, metodo) {
 
 /* ── VALIDAÇÃO PRÉ-SUBMIT ─────────────────────────── */
 document.getElementById('formPedido').addEventListener('submit', function (e) {
-    // Garantir valores numéricos nos campos hidden
     let distInput = document.getElementById('distanciaKmHidden');
     let taxaInput = document.getElementById('taxaEntregaHidden');
 

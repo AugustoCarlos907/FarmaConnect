@@ -33,6 +33,7 @@ class NotifyUserOrderCompletedJob implements ShouldQueue
         $user = $this->pedido->user;
         Mail::to($user->email)->send(new NotifyUserOrderCompleted($this->pedido, $this->entrega));
     } catch (\Exception $e) {
+        
         \Log::error('Falha ao enviar e‑mail de notificação', [
             'pedido_id' => $this->pedido->id,
             'error' => $e->getMessage(),

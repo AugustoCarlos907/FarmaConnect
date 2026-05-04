@@ -84,6 +84,9 @@ class AuthController extends Controller
             if(Auth::user()->role == 'admin'){
 
                 return redirect()->route('index.admin');
+                // echo "Admin logged in";
+                // dd(Auth::user());
+
             }
         }
 

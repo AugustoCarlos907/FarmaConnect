@@ -57,6 +57,15 @@ use Twilio\Rest\Client;
     Route::post('companhia/register/farmacia', [CompanhiaController::class, 'registerFarmacia'])->name('companhia.farmacia.register');
 
 
+    //admin
+    Route::middleware(['auth', 'admin'])->group(function(){ 
+        Route::get('admin/dashboard', function(){ 
+            return view('admins.dashboard.index'); 
+        })->name('index.admin');
+      
+    });
+
+
     //farmacias
     Route::middleware(['auth', 'farma'])->group(function(){ 
         Route::get('farmacia/dashboard', [DashboardFarmaciaController::class , 'dashboard'])->name('index.farmacias');
@@ -138,7 +147,7 @@ use Twilio\Rest\Client;
 
 
 
-
+    
     Route::middleware(['auth' , 'user'])->group(function(){
         Route::get('/home', function(){ 
             // Auth::loginUsingId(3);

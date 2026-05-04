@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\AdminMiddleware;
 use App\Http\Middleware\EntregadorMiddleware;
 use App\Http\Middleware\FarmaMiddleware;
 use App\Http\Middleware\UserMiddleware;
@@ -18,6 +19,7 @@ return Application::configure(basePath: dirname(__DIR__))
         'farma' => FarmaMiddleware::class,
         'user'  => UserMiddleware::class,
         'entregador' => EntregadorMiddleware::class,
+        'admin' => AdminMiddleware::class
     ]);  
     })
     ->withExceptions(function (Exceptions $exceptions): void {

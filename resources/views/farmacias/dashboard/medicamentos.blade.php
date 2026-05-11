@@ -635,6 +635,13 @@
         <i class="bi bi-check-circle-fill flex-shrink-0"></i>
         <span>{{ session('success') }}</span>
     </div>
+@endif      
+
+    @if(session('errors'))
+    <div class="alert-fc alert-danger mt-3 mb-3" style="background: #fee2e2; border-color: #fecaca; color: #dc2626;">
+        <i class="bi bi-exclamation-triangle-fill flex-shrink-0"></i>
+        <span>{{ session('errors') }}</span>
+    </div>
 @endif
 
       <!-- ─── TOOLBAR ────────────────────── -->

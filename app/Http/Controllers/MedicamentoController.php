@@ -61,7 +61,7 @@ class MedicamentoController extends Controller
                 'data_fabricacao' => 'nullable|date',
                 'laboratorio' => 'nullable|string|max:255',
                 'origem' => 'required|in:indiano,portugues',
-                'img' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', 
+                'img' => 'nullable|image|mimes:webp,jpeg,png,jpg,gif|max:5048' // 5MB, 
 
                 // 'farmacia_id' => 'required|integer|exists:farmacias,id',
                 // 'ativo' => 'required|boolean'
@@ -162,7 +162,7 @@ public function searchByPrescription(Request $request)
         // Buscar o stock item com MENOR PREÇO, ativo e com estoque (opcional)
         $stockItem = $medicamento->stockItems()
             ->where('ativo', true)
-            ->where('quantidade', '>', 0) // se existir controle de estoque
+            ->where('quantidade', '>', 0) 
             ->orderBy('preco', 'asc')
             ->first();
 

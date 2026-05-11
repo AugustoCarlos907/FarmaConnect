@@ -354,7 +354,7 @@
                   @endif
                   @if($dist !== null)
                     <div class="mc-dist-badge">
-                      <i class="bi bi-geo-alt-fill"></i> {{ $dist }} km
+                      {{-- <i class="bi bi-geo-alt-fill"></i> {{ $dist }} km --}}
                     </div>
                   @endif
                 </div>

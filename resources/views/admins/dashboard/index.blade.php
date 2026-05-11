@@ -504,7 +504,7 @@
       </div>
     </div>
     <div class="nav">
-      <div class="nav-item active"><i class="bi bi-grid-1x2-fill"></i><span>Dashboard</span></div>
+      <div class="nav-item active"><i class="bi bi-grid-1x2-fill"></i><span>Paínel de controle</span></div>
       <div class="nav-item" onclick="alert('Painel de validação em breve')"><i class="bi bi-credit-card-2-front"></i><span>Validar pag.</span><span class="badge">7</span></div>
       <div class="nav-item" onclick="alert('Gestão de pedidos')"><i class="bi bi-bag-check"></i><span>Pedidos</span><span class="badge">23</span></div>
       <div class="nav-item"><i class="bi bi-hospital"></i><span>Farmácias</span></div>
@@ -513,7 +513,7 @@
       <div class="nav-item"><i class="bi bi-graph-up"></i><span>Relatórios</span></div>
     </div>
     <div class="sidebar-footer">
-      <div><i class="bi bi-circle-fill" style="color:#22e0f0; font-size: 8px;"></i> sistema operacional</div>
+      {{-- <div><i class="bi bi-circle-fill" style="color:#22e0f0; font-size: 8px;"></i> sistema operacional</div> --}}
           <a href="#" class="nav-link" style="color:rgba(240,78,96,.7)" 
        onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
       <i class="bi bi-box-arrow-right"></i>
@@ -528,7 +528,7 @@
 
   <div class="main">
     <div class="top-bar">
-      <div class="page-title">📊 Painel de controlo</div>
+      <div class="page-title"> Paínel de controle</div>
       <div class="header-actions">
         <div class="notif-icon" onclick="alert('Notificações do sistema')"><i class="bi bi-bell"></i></div>
         <div class="admin-pill">
@@ -588,9 +588,9 @@
         <!-- lado direito: fundo centralizado + indicadores -->
         <div>
           <div class="fund-card">
-            <div style="opacity:0.7; display: flex; justify-content: space-between;"><span>💰 Fundo centralizado</span><span class="chip-val">saldo actual</span></div>
+            <div style="opacity:0.7; display: flex; justify-content: space-between;"><span> Fundo centralizado</span><span class="chip-val">saldo actual</span></div>
             <div class="saldo">1.837.200 Kz</div>
-            <div class="flex-between"><span>Entradas (mai)</span><span><strong>+4.286.500 Kz</strong></span></div>
+            <div class="flex-between"><span>Entradas </span><span><strong>+4.286.500 Kz</strong></span></div>
             <div class="flex-between"><span>Repasses farmácias</span><span style="color:#facc15;">-2.104.800 Kz</span></div>
             <div class="flex-between"><span>Comissões retidas (8%)</span><span>342.920 Kz</span></div>
             <div class="flex-between" style="margin-top: 12px;"><span>A pagar a farmácias</span><span class="text-gold">344.000 Kz</span></div>
@@ -598,7 +598,7 @@
           </div>
           <div class="card-modern" style="padding: 16px;">
             <div style="font-weight: 600; margin-bottom: 12px;"><i class="bi bi-pie-chart"></i> Distribuição de pedidos</div>
-            <div class="flex-between"><span><span class="status-badge status-confirmado">Pendente</span></span><span>12</span></div>
+            <div class="flex-between"><span><span class="status-badge status-pendente">Pendente</span></span><span>12</span></div>
             <div class="flex-between"><span><span class="status-badge status-entrega">Em entrega</span></span><span>11</span></div>
             <div class="flex-between"><span><span class="status-badge status-pago">Concluído</span></span><span>98</span></div>
             <div class="flex-between"><span><span class="status-badge" style="background:#ffe4e6; color:#c2410c;">Cancelado</span></span><span>7</span></div>
@@ -609,7 +609,7 @@
       <!-- Gráfico de barras e atalhos -->
       <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 28px;">
         <div class="card-modern">
-          <div class="card-header"><h2><i class="bi bi-graph-up"></i> Movimento diário (Kz milhares)</h2></div>
+          <div class="card-header"><h2><i class="bi bi-graph-up"></i> Movimento diário (Kz)</h2></div>
           <div class="chart-bars" id="chartContainer"></div>
         </div>
         <div class="card-modern">
@@ -647,10 +647,10 @@
 
 <script>
   // Gráfico de barras dinâmico (dados reais)
-  const dailyData = [142,280,195,380,420,310,260,490,520,380,440,610,580,490,520,680,720,590,640,780,820,710,760,890,940,820,880,1020,980,860,920];
+  const dailyData = [142,280,195,380,420,310,260,];
   const maxVal = Math.max(...dailyData);
   const container = document.getElementById('chartContainer');
-  const days = ['01','02','03','04','05','06','07','08','09','10','11','12','13','14','15','16','17','18','19','20','21','22','23','24','25','26','27','28','29','30','31'];
+  const days = ['01','02','03','04','05','06','07',];
   for (let i = 0; i < dailyData.length; i++) {
     const row = document.createElement('div');
     row.className = 'bar-item';

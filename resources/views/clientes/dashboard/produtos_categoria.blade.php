@@ -445,7 +445,7 @@
                   <div class="pc-name">{{ $med->name }}</div>
 
                   @if($med->forma_farmaceutica)
-                    <div class="pc-sub">{{ $med->forma_farmaceutica }} · {{ $med->dosagem }}</div>
+                    <div class="pc-sub">{{ $med->forma_farmaceutica }} · {{ $med->dosagem }} · {{ $med->origem }}</div>
                   @endif
 
                   {{-- Farmácia vem do StockItem --}}

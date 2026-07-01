@@ -130,61 +130,61 @@ class DatabaseSeeder extends Seeder
         // ]);
 
 
-        $categorias = [
-            'Analgésicos e Antitérmicos',
-            'Anti-inflamatórios',
-            'Antibióticos',
-            'Antivirais',
-            'Antifúngicos',
-            'Antiparasitários',
-            'Antialérgicos',
-            'Antigripais',
-            'Anestésicos',
-            'Antidepressivos',
-            'Ansiolíticos e Sedativos',
-            'Antipsicóticos',
-            'Antiepilépticos',
-            'Anti-hipertensivos',
-            'Diuréticos',
-            'Antidiabéticos',
-            'Hipolipemiantes',
-            'Medicamentos Cardiovasculares',
-            'Medicamentos Respiratórios',
-            'Medicamentos Gastrointestinais',
-            'Medicamentos Dermatológicos',
-            'Medicamentos Oftálmicos',
-            'Medicamentos Otológicos',
-            'Medicamentos Urológicos',
-            'Medicamentos Ginecológicos',
-            'Medicamentos Pediátricos',
-            'Medicamentos Oncológicos',
-            'Medicamentos Imunológicos',
-            'Vacinas',
-            'Hormônios e Endócrinos',
-            'Material Médico-Hospitalar',
-            'Produtos para Primeiros Socorros',
-            'Produtos Ortopédicos',
-            'Produtos para Diabéticos',
-            'Higiene Pessoal',
-            'Higiene Oral',
-            'Produtos Dermatológicos e Cosméticos',
-            'Vitaminas e Suplementos',
-            'Produtos Naturais e Fitoterápicos',
-            'Saúde Infantil',
-            'Saúde da Mulher',
-            'Saúde do Homem',
-            'Saúde do Idoso',
-        ];
+        // $categorias = [
+        //     'Analgésicos e Antitérmicos',
+        //     'Anti-inflamatórios',
+        //     'Antibióticos',
+        //     'Antivirais',
+        //     'Antifúngicos',
+        //     'Antiparasitários',
+        //     'Antialérgicos',
+        //     'Antigripais',
+        //     'Anestésicos',
+        //     'Antidepressivos',
+        //     'Ansiolíticos e Sedativos',
+        //     'Antipsicóticos',
+        //     'Antiepilépticos',
+        //     'Anti-hipertensivos',
+        //     'Diuréticos',
+        //     'Antidiabéticos',
+        //     'Hipolipemiantes',
+        //     'Medicamentos Cardiovasculares',
+        //     'Medicamentos Respiratórios',
+        //     'Medicamentos Gastrointestinais',
+        //     'Medicamentos Dermatológicos',
+        //     'Medicamentos Oftálmicos',
+        //     'Medicamentos Otológicos',
+        //     'Medicamentos Urológicos',
+        //     'Medicamentos Ginecológicos',
+        //     'Medicamentos Pediátricos',
+        //     'Medicamentos Oncológicos',
+        //     'Medicamentos Imunológicos',
+        //     'Vacinas',
+        //     'Hormônios e Endócrinos',
+        //     'Material Médico-Hospitalar',
+        //     'Produtos para Primeiros Socorros',
+        //     'Produtos Ortopédicos',
+        //     'Produtos para Diabéticos',
+        //     'Higiene Pessoal',
+        //     'Higiene Oral',
+        //     'Produtos Dermatológicos e Cosméticos',
+        //     'Vitaminas e Suplementos',
+        //     'Produtos Naturais e Fitoterápicos',
+        //     'Saúde Infantil',
+        //     'Saúde da Mulher',
+        //     'Saúde do Homem',
+        //     'Saúde do Idoso',
+        // ];
 
-        foreach ($categorias as $categoria) {
-            DB::table('categorias')->insert([
-                'name'       => $categoria,
-                'descricao'  => fake()->paragraph(),
-                'imagem' => 'https://idec.org.br/noticia/o-que-e-um-medicamento-e-quais-tipos-temos-por-ai-0',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]);
-        }
+        // foreach ($categorias as $categoria) {
+        //     DB::table('categorias')->insert([
+        //         'name'       => $categoria,
+        //         'descricao'  => fake()->paragraph(),
+        //         'imagem' => 'https://idec.org.br/noticia/o-que-e-um-medicamento-e-quais-tipos-temos-por-ai-0',
+        //         'created_at' => now(),
+        //         'updated_at' => now(),
+        //     ]);
+        // }
 
         // Medicamento::create([
         //     'name' => 'Paracetamol',
@@ -256,14 +256,15 @@ class DatabaseSeeder extends Seeder
         //     'longitude' => -46.6333,
         //  ]);
 
-        $farmacia = Farmacia::findOrFail(3);
-        $farmacia->update([
-            'endereco' => "Largo da Mutamba, n.º 5",
-            'rua' => "Rua Major Kanhangulo ",
-            'bairro' => "Mutamba",
-            'municipio' => "Luanda",
-            'latitude' => "-8.814700",
-            'longitude' => "13.230600",
+        User::create([
+            'name' => 'Augusto Carlos',
+            'email' => 'augustoaccarlos@gmail.com',
+            'password' => bcrypt('12345678'),
+            'longitude' => -46.6333,
+            'latitude' => -23.5505,
+            'genero' => 'M',
+            'data_nascimento' => '1990-01-01',
+            'phone' => '931334499',
         ]);
     }
 }

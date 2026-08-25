@@ -256,15 +256,21 @@ class DatabaseSeeder extends Seeder
         //     'longitude' => -46.6333,
         //  ]);
 
-        User::create([
-            'name' => 'Augusto Carlos',
-            'email' => 'augustoaccarlos@gmail.com',
-            'password' => bcrypt('12345678'),
-            'longitude' => -46.6333,
-            'latitude' => -23.5505,
-            'genero' => 'M',
-            'data_nascimento' => '1990-01-01',
-            'phone' => '931334499',
-        ]);
+        // User::create([
+        //     'name' => 'Augusto Carlos',
+        //     'email' => 'augustoaccarlos@gmail.com',
+        //     'password' => bcrypt('12345678'),
+        //     'longitude' => -46.6333,
+        //     'latitude' => -23.5505,
+        //     'genero' => 'M',
+        //     'data_nascimento' => '1990-01-01',
+        //     'phone' => '931334499',
+        // ]);
+
+
+        User::find(4)
+                ->update([
+                    'password' => bcrypt('12345678'),
+                ]);
     }
 }
